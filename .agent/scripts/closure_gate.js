@@ -2,7 +2,7 @@
 
 import { execSync, spawn } from 'child_process';
 import path, { join } from 'path';
-import { existsSync, readdirSync, statSync, readFileSync, writeFileSync } from 'fs';
+import { existsSync, readdirSync, statSync, readFileSync, writeFileSync, mkdirSync } from 'fs';
 import crypto from 'crypto';
 import { incrementRetryCount, resetRetryCount } from './session_manager.js';
 import { readJsonStrict } from './lib/gov_loader.js';
@@ -158,7 +158,7 @@ function generateEvidenceCode() {
 
 function saveSeal(code) {
     const sealDir = join(process.cwd(), '.agent', 'session');
-    if (!existsSync(sealDir)) fs.mkdirSync(sealDir, { recursive: true });
+    if (!existsSync(sealDir)) mkdirSync(sealDir, { recursive: true });
     
     const sealPath = join(sealDir, 'gate_success.json');
     const head = runCommand('git rev-parse HEAD', true);
