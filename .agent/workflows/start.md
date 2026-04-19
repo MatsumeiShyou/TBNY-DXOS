@@ -2,4 +2,4 @@
 description: アプリを起動する
 ---
 // turbo
-1. `npm run dev`
+1. `npm run dev:all`

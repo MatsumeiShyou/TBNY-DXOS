@@ -1,0 +1,43 @@
+{
+    "REQUIRED_MARKERS": [
+        {
+            "id": "LAYER_SEPARATION",
+            "name": "螻､縺ｮ蛻・屬",
+            "patterns": [
+                "[遒ｺ隱肴ｸ医∩莠句ｮ歉",
+                "[Fact]",
+                "[Confirmed Fact]",
+                "[蜷育炊逧・耳隲望",
+                "[Reasoning]",
+                "[莉ｮ隱ｬ繝ｻ謗ｨ貂ｬ]",
+                "[Hypothesis]",
+                "[荳肴・轤ｹ]",
+                "[Unknown]"
+            ],
+            "minMatch": 1,
+            "description": "蜃ｺ蜉帙↓蜷ｫ縺ｾ繧後ｋ諠・ｱ繧・螻､・井ｺ句ｮ・謗ｨ隲・莉ｮ隱ｬ/荳肴・轤ｹ・峨〒譏守､ｺ縺吶ｋ縺薙→"
+        },
+        {
+            "id": "SELF_CRITICISM",
+            "name": "莠梧ｮｵ髫取音蛻､繝輔ぉ繝ｼ繧ｺ",
+            "patterns": [
+                "[閾ｪ蟾ｱ謇ｹ蛻､]",
+                "[Self-Criticism]",
+                "[Criticism]"
+            ],
+            "minMatch": 1,
+            "description": "蛻・梵繧呈署遉ｺ縺励◆蠕後∝酔荳蜃ｺ蜉帛・縺ｧ謗ｨ貂ｬ繝ｻ莉ｮ螳壹・鬟幄ｺ阪ｒ閾ｪ蟾ｱ謇ｹ蛻､縺吶ｋ谿ｵ髫弱ｒ險ｭ縺代ｋ縺薙→"
+        },
+        {
+            "id": "CONFIDENCE_DISCLOSURE",
+            "name": "譛菴守｢ｺ菫｡蠎ｦ縺ｮ閾ｪ蟾ｱ髢狗､ｺ",
+            "patterns": [
+                "[譛菴守｢ｺ菫｡蠎ｦ鬆・岼]",
+                "[Low Confidence Item]",
+                "[Low Confidence Area]"
+            ],
+            "minMatch": 1,
+            "description": "鬮倥Μ繧ｹ繧ｯ蛻・梵縺ｮ譛ｫ蟆ｾ縺ｫ縲∵怙繧り・菫｡縺後↑縺・Κ蛻・ｒ1縺､莉･荳企幕遉ｺ縺吶ｋ縺薙→"
+        }
+    ]
+}

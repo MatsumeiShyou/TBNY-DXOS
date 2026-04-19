@@ -1,0 +1,315 @@
+/* ================================================================
+   TBNY DXOS ポータル専用スタイルシート
+   ================================================================
+   設計原則：
+   - ダークモード基調 + ガラスモルフィズム
+   - 日本語フォント最適化（Noto Sans JP）
+   - レスポンシブ（PC / タブレット）
+   ================================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Noto+Sans+JP:wght@400;500;600;700&display=swap');
+
+/* ----------------------------------------------------------------
+   ポータル全体
+   ---------------------------------------------------------------- */
+.dxos-portal {
+  min-height: 100vh;
+  background: #0b0d14;
+  background-image:
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(99, 102, 241, 0.12) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 80% 100%, rgba(59, 130, 246, 0.08) 0%, transparent 50%);
+  font-family: 'Inter', 'Noto Sans JP', sans-serif;
+  color: #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 3rem 1.5rem 2rem;
+}
+
+/* ----------------------------------------------------------------
+   ヘッダー
+   ---------------------------------------------------------------- */
+.dxos-portal__header {
+  text-align: center;
+  margin-bottom: 3rem;
+  animation: fadeInDown 0.6s ease-out;
+}
+
+.dxos-portal__logo-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #6366f1, #3b82f6);
+  margin-bottom: 1.25rem;
+  box-shadow: 0 0 40px rgba(99, 102, 241, 0.3);
+}
+
+.dxos-portal__title {
+  font-size: 1.75rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin: 0 0 0.5rem;
+  background: linear-gradient(135deg, #e2e8f0 30%, #94a3b8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.dxos-portal__subtitle {
+  font-size: 0.875rem;
+  color: #64748b;
+  margin: 0;
+  font-weight: 400;
+}
+
+/* ----------------------------------------------------------------
+   ユーザー情報バー
+   ---------------------------------------------------------------- */
+.dxos-portal__user-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.625rem 1.25rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 100px;
+  margin-bottom: 2.5rem;
+  backdrop-filter: blur(8px);
+  animation: fadeIn 0.8s ease-out;
+}
+
+.dxos-portal__user-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.dxos-portal__user-name {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: #cbd5e1;
+}
+
+.dxos-portal__user-role {
+  font-size: 0.6875rem;
+  color: #64748b;
+  padding: 0.125rem 0.5rem;
+  background: rgba(99, 102, 241, 0.1);
+  border-radius: 100px;
+  border: 1px solid rgba(99, 102, 241, 0.15);
+}
+
+.dxos-portal__logout-btn {
+  margin-left: auto;
+  background: none;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #94a3b8;
+  padding: 0.375rem 0.875rem;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.dxos-portal__logout-btn:hover {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.3);
+  color: #f87171;
+}
+
+/* ----------------------------------------------------------------
+   タイルグリッド
+   ---------------------------------------------------------------- */
+.dxos-portal__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.25rem;
+  width: 100%;
+  max-width: 960px;
+  animation: fadeInUp 0.7s ease-out;
+}
+
+/* ----------------------------------------------------------------
+   アプリタイル
+   ---------------------------------------------------------------- */
+.dxos-tile {
+  position: relative;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 20px;
+  padding: 2rem 1.75rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(12px);
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.dxos-tile::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--tile-gradient);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.dxos-tile:hover {
+  transform: translateY(-4px);
+  border-color: rgba(255, 255, 255, 0.12);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.3),
+    0 0 60px var(--tile-glow);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.dxos-tile:hover::before {
+  opacity: 1;
+}
+
+.dxos-tile:active {
+  transform: translateY(-2px);
+}
+
+.dxos-tile__icon-wrapper {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: var(--tile-gradient);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.25rem;
+  box-shadow: 0 4px 16px var(--tile-glow);
+  transition: transform 0.3s ease;
+}
+
+.dxos-tile:hover .dxos-tile__icon-wrapper {
+  transform: scale(1.08);
+}
+
+.dxos-tile__icon-wrapper svg {
+  width: 24px;
+  height: 24px;
+  color: #fff;
+}
+
+.dxos-tile__label {
+  font-size: 1rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem;
+  color: #f1f5f9;
+  letter-spacing: -0.01em;
+}
+
+.dxos-tile__description {
+  font-size: 0.8125rem;
+  color: #64748b;
+  margin: 0;
+  line-height: 1.6;
+}
+
+/* ----------------------------------------------------------------
+   権限なし状態
+   ---------------------------------------------------------------- */
+.dxos-portal__empty {
+  text-align: center;
+  padding: 4rem 2rem;
+  animation: fadeIn 0.6s ease-out;
+}
+
+.dxos-portal__empty-icon {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 1.5rem;
+  color: #334155;
+}
+
+.dxos-portal__empty-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #94a3b8;
+  margin: 0 0 0.5rem;
+}
+
+.dxos-portal__empty-message {
+  font-size: 0.875rem;
+  color: #475569;
+  margin: 0;
+}
+
+/* ----------------------------------------------------------------
+   フッター
+   ---------------------------------------------------------------- */
+.dxos-portal__footer {
+  margin-top: auto;
+  padding-top: 3rem;
+  text-align: center;
+  font-size: 0.6875rem;
+  color: #334155;
+  animation: fadeIn 1s ease-out;
+}
+
+/* ----------------------------------------------------------------
+   アニメーション定義
+   ---------------------------------------------------------------- */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ----------------------------------------------------------------
+   レスポンシブ
+   ---------------------------------------------------------------- */
+@media (max-width: 640px) {
+  .dxos-portal {
+    padding: 2rem 1rem 1.5rem;
+  }
+
+  .dxos-portal__title {
+    font-size: 1.375rem;
+  }
+
+  .dxos-portal__grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .dxos-tile {
+    padding: 1.5rem 1.25rem;
+  }
+
+  .dxos-portal__user-bar {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+  }
+}

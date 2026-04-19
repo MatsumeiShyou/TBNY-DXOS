@@ -1,0 +1,133 @@
+{
+    "version": "1.0",
+    "protocol": "CAP v3.0 (Cognitive Amplification Process)",
+    "reasoning_budget": {
+        "min_decomposition_count": 5,
+        "max_decomposition_count": 10,
+        "min_hypotheses_count": 2,
+        "max_hypotheses_count": 3,
+        "min_risk_audits": 2,
+        "max_risk_audits": 3,
+        "redesign_limit": 1
+    },
+    "thinking_steps": [
+        {
+            "id": 1,
+            "name": "隕∽ｻｶ隕∫ｴ・,
+            "mode": "謨ｴ逅・・
+        },
+        {
+            "id": 2,
+            "name": "蜑肴署謚ｽ蜃ｺ",
+            "mode": "謨ｴ逅・・
+        },
+        {
+            "id": 3,
+            "name": "荳咲｢ｺ螳滓ｧ隧穂ｾ｡",
+            "mode": "謨ｴ逅・・
+        },
+        {
+            "id": 4,
+            "name": "蝠城｡悟・隗｣",
+            "mode": "險ｭ險郁・
+        },
+        {
+            "id": 5,
+            "name": "莉ｮ隱ｬ逕滓・",
+            "mode": "險ｭ險郁・,
+            "requirements": [
+                "Evidence Mapping"
+            ]
+        },
+        {
+            "id": 6,
+            "name": "謚陦捺､懆ｨｼ",
+            "mode": "螳溯｣・晁・
+        },
+        {
+            "id": 7,
+            "name": "蜀・Κ逶｣譟ｻ",
+            "mode": "逶｣譟ｻ閠・
+        },
+        {
+            "id": 8,
+            "name": "謗ｨ螂ｨ豎ｺ螳・,
+            "mode": "逶｣譟ｻ閠・
+        },
+        {
+            "id": 9,
+            "name": "讀懈渊繝ｭ繧ｰ",
+            "mode": "逶｣譟ｻ閠・
+        },
+        {
+            "id": 10,
+            "name": "閾ｪ蟾ｱ繝ｬ繝薙Η繝ｼ",
+            "mode": "逶｣譟ｻ閠・,
+            "requirements": [
+                "AGENTS.md ﾂｧG [TASK_CLOSED] 蠖｢蠑上・譛邨ら｢ｺ隱・
+            ]
+        }
+    ],
+    "tiered_depth": {
+        "T1": {
+            "required_steps": [
+                1,
+                8
+            ],
+            "description": "L0/L1 Only"
+        },
+        "T2": {
+            "required_steps": [
+                1,
+                2,
+                4,
+                5,
+                8
+            ],
+            "description": "Standard Analysis"
+        },
+        "T3": {
+            "required_steps": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10
+            ],
+            "description": "Full Cognitive Governance"
+        }
+    },
+    "audit_thresholds": {
+        "min_edit_distance_ratio": 0.3,
+        "max_token_buffer_ratio": 0.8
+    },
+    "bypass_rules": {
+        "emergency_repair": true,
+        "talk_only": true
+    },
+    "constitutional_guard": {
+        "forbidden_intent_keywords": [
+            "繝ｫ繝ｼ繝ｫ邱ｩ蜥・,
+            "諞ｲ豕穂ｿｮ豁｣",
+            "諞ｲ豕輔ｒ菫ｮ豁｣",
+            "繧ｬ繝舌リ繝ｳ繧ｹ繧定ｪｿ謨ｴ",
+            "AGENTS.md",
+            "governance/",
+            "bypass",
+            "繝舌う繝代せ",
+            "萓句､悶ｒ驕ｩ逕ｨ",
+            "邱ｩ蜥・,
+            "驕ｩ豁｣蛹・
+        ],
+        "legislation_mode_required": [
+            "AGENTS.md",
+            "governance/",
+            ".agent/scripts/"
+        ]
+    }
+}

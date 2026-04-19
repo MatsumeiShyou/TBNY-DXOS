@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:all": "node start-all.js",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
@@ -12,6 +13,10 @@
     "governance:seal": "node .agent/scripts/check_seal.js"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.103.3",
+    "framer-motion": "^12.38.0",
+    "lucide-react": "^1.8.0",
+    "pg": "^8.20.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0"
   },
