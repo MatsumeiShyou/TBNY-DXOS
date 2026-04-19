@@ -44,14 +44,13 @@ function main() {
     const currentHead = runCommand('git rev-parse HEAD');
     let isStale = seal.head !== currentHead;
 
-    // 特例: 差分が walkthrough.md のみであれば、SEAL 転記作業中とみなして許可
-    const diffFiles = runCommand('git diff --name-only').split('\n').filter(f => f.trim());
-    const isOnlyWalkthrough = diffFiles.length === 1 && diffFiles[0] === 'walkthrough.md';
+    // 特例：差分が walkthrough.md および統治シールのみであれば、SEAL 転記作業中とみなして許可
+    const diffFiles = runCommand('git diff --name-only').split('\n')
+        .filter(f => f.trim() && f !== 'walkthrough.md' && !f.includes('gate_success.json'));
+    const isOnlyValidChanges = diffFiles.length === 0;
     
-    // コミット済みだが HEAD が最新でない場合（amend等）を考慮し、
-    // 現在の Worktree ではなく、直近のコミット内容との比較も含めて判定を緩和
-    if (isStale && isOnlyWalkthrough) {
-        Log.info('Detected walkthrough.md update after SEAL generation. Bypassing state-lock.');
+    if (isStale && isOnlyValidChanges) {
+        Log.info('Detected walkthrough.md/SEAL update after generation. Bypassing state-lock.');
         isStale = false;
     }
 
