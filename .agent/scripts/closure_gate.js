@@ -201,6 +201,20 @@ function main() {
     const evidenceCode = generateEvidenceCode();
     saveSeal(evidenceCode);
 
+    // [MOD] Automatically update walkthrough.md with the latest SEAL
+    const walkthroughPath = join(process.cwd(), 'walkthrough.md');
+    if (existsSync(walkthroughPath)) {
+        let content = readFileSync(walkthroughPath, 'utf8');
+        const sealMarker = `[GATE-SEAL: ${evidenceCode}]`;
+        if (!content.includes(sealMarker)) {
+            // Remove old seals if any to keep it clean
+            content = content.replace(/\[GATE-SEAL: GSEAL-[\w-]+\]/g, '').trim();
+            content += `\n\n> [!IMPORTANT]\n> **${sealMarker}**\n`;
+            writeFileSync(walkthroughPath, content);
+            Log.info('walkthrough.md updated with latest SEAL.');
+        }
+    }
+
     if (REFLECT_FLAG) {
         Log.info('Reflecting changes...');
         runCommand('git add -A');
