@@ -10,7 +10,10 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "governance:preflight": "node .agent/scripts/pre_flight.js",
-    "governance:seal": "node .agent/scripts/check_seal.js"
+    "governance:seal": "node .agent/scripts/check_seal.js",
+    "governance:closure": "node .agent/scripts/closure_gate.js",
+    "setup-governance": "node .agent/scripts/setup_gate.js",
+    "done": "node .agent/scripts/closure_gate.js --reflect"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.103.3",
