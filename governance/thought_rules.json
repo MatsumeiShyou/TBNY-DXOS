@@ -110,6 +110,41 @@
         "emergency_repair": true,
         "talk_only": true
     },
+    "classification_protocol": {
+        "version": "1.0",
+        "role": "軽量タスク分類器",
+        "objective": "入力をFAST / HEAVYに分類する",
+        "modes": {
+            "FAST": {
+                "criteria": "明確な処理、変換・要約・テンプレ作業、ドラフト生成",
+                "risk_tier_affinity": [
+                    "T1"
+                ]
+            },
+            "HEAVY": {
+                "criteria": "曖昧な意図、複数判断が必要、破壊的・重要な設計判断",
+                "risk_tier_affinity": [
+                    "T2",
+                    "T3"
+                ]
+            }
+        },
+        "complexity_levels": [
+            "LOW",
+            "MEDIUM",
+            "HIGH"
+        ],
+        "principles": [
+            "迷ったらHEAVY"
+        ],
+        "output_format": {
+            "TASK": "string",
+            "MODE": "FAST | HEAVY",
+            "COMPLEXITY": "LOW | MEDIUM | HIGH",
+            "CONFIDENCE": "number",
+            "REASON": "string (1 line)"
+        }
+    },
     "constitutional_guard": {
         "forbidden_intent_keywords": [
             "繝ｫ繝ｼ繝ｫ邱ｩ蜥・,

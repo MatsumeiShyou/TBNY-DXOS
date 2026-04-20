@@ -94,11 +94,13 @@ npm run done
 
 ### P. 思考統治 (Cognitive Governance)
 思考の形骸化（Ghost Thinking）を物理的に排除するため、AIは以下の「思考法廷プロトコル」に従う。
-- **CAP v3.0 (10-Step Process)**: ティア比例型の思考ステップを義務付ける。重要な意思決定（T3）においては、[thought_rules.json](file:///governance/thought_rules.json) に定義された全10段階（要件要約〜自己レビュー）を `[CAP_TRACE]` マーカーと共に提示しなければならない。
-- **Bypass Documentation**: ガイドラインをバイパスする際は、`// gov-bypass [ID]` 形式で理由を明記せよ。AIによる理由提案を活用し、技術負債（DEBT）としての登録を義務付ける。
-- **Reasoning Budget (思考予算)**: 分解数（Min 5）、仮説案（Min 2）等の具体的数値を満たさない思考は、Sentinel 3.0 により物理的に遮断（Hard Crash）される。同タスク内での「再設計（Redesign）」回数も厳格に制限される。
-- **Evidence Binding (事実参照拘束)**: ステップ5（仮説）以降の全ての提案は、ステップ2/3で抽出された具体的事実（Fact）への明示的な参照タグ（例： `[Ref: Fact 2.1]` ）、または「高品質PWA総集編Ⅲ」の項目ID（例：[Ref: VII-1-7]）を含まなければならない。
-- **Token Budget (メモリ保護)**: セッションのリソースが憲法忘却閾値（80%）を超えた場合、エージェントは自律的に「思考の要約と整理（Consolidation）」を実行し、統治精度を維持する義務を負う。
+- **P-1 Lightweight Task Classifier**: すべてのタスク着手時、最優先で入力を FAST / HEAVY に分類し、規定のフォーマット（TASK, MODE, COMPLEXITY, CONFIDENCE, REASON）を出力しなければならない。「迷ったら HEAVY」を鉄則とする。
+- **P-2 Output Order**: 出力順序は「1. 軽量タスク分類器」→「2. Self-Reflection Gate」→「3. (T3時) SDR+Risk」を標準とする。
+- **P-3 CAP v3.0 (10-Step Process)**: ティア比例型の思考ステップを義務付ける。重要な意思決定（T3）においては、[thought_rules.json](file:///governance/thought_rules.json) に定義された全10段階（要件要約〜自己レビュー）を `[CAP_TRACE]` マーカーと共に提示しなければならない。
+- **P-4 Bypass Documentation**: ガイドラインをバイパスする際は、`// gov-bypass [ID]` 形式で理由を明記せよ。AIによる理由提案を活用し、技術負債（DEBT）としての登録を義務付ける。
+- **P-5 Reasoning Budget (思考予算)**: 分解数（Min 5）、仮説案（Min 2）等の具体的数値を満たさない思考は、Sentinel 3.0 により物理的に遮断（Hard Crash）される。同タスク内での「再設計（Redesign）」回数も厳格に制限される。
+- **P-6 Evidence Binding (事実参照拘束)**: ステップ5（仮説）以降の全ての提案は、ステップ2/3で抽出された具体的事実（Fact）への明示的な参照タグ（例： `[Ref: Fact 2.1]` ）、または「高品質PWA総集編Ⅲ」の項目ID（例：[Ref: VII-1-7]）を含まなければならない。
+- **P-7 Token Budget (メモリ保護)**: セッションのリソースが憲法忘却閾値（80%）を超えた場合、エージェントは自律的に「思考の要約と整理（Consolidation）」を実行し、統治精度を維持する義務を負う。
 
 ---
 > [!IMPORTANT]
