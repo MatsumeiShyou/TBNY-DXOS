@@ -261,6 +261,28 @@
             "logic_data_mapping": {
                 "HOOK_DEPLOY": ".git/hooks/pre-push"
             }
+        },
+        {
+            "id": "CFG-RES",
+            "path": "governance/response_rules.json",
+            "link_to_agents_md": "§T",
+            "purpose": "Communication style & Response Governance SSOT",
+            "risk_score": 3,
+            "fix_required": "Correct the JSON structure",
+            "logic_data_mapping": {
+                "RESPONSE_PRINCIPLES": "INTERNAL"
+            }
+        },
+        {
+            "id": "CFG-DXO",
+            "path": "governance/dxos_integrated_rules.json",
+            "link_to_agents_md": "§Q, R, S",
+            "purpose": "TBNY DXOS technical integrated standards",
+            "risk_score": 4,
+            "fix_required": "Correct the JSON structure",
+            "logic_data_mapping": {
+                "DXOS_STANDARDS": "INTERNAL"
+            }
         }
     ],
     "protection_policy": {

@@ -71,7 +71,15 @@ function verifyUIQuality() {
     Log.info('Executing UI/UX Quality Check (Sentinel 5.3)...');
     const status = runCommand('git status --porcelain', true);
     // UI/UX related changes (Route A) detection
-    if (status.match(/\.(css|tsx|ts|jsx|html|json)$/)) {
+    // §E v7.1: Exclude governance/ and ADR/ from UI quality triggers
+    const lines = status.split('\n').filter(l => l.trim());
+    const hasUIChanges = lines.some(line => {
+        const file = line.slice(3).trim();
+        return (file.endsWith('.css') || file.endsWith('.tsx') || file.endsWith('.ts') || file.endsWith('.jsx') || file.endsWith('.html')) &&
+               !file.includes('governance/') && !file.includes('.agent/');
+    });
+
+    if (hasUIChanges) {
         try {
             runCommand('node .agent/scripts/check_ui_quality.js');
             Log.success('UI/UX Quality Verified.');

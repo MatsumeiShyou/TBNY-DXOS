@@ -1,25 +1,49 @@
 {
+    "version": "1.1",
+    "description": "Tier classification rules (SSOT) - Derived from AGENTS.md §D/E",
     "rules": [
         {
+            "id": "CONSTITUTION_CHANGE",
+            "tier": "T3",
+            "condition": "path.includes('AGENTS.md') || path.includes('governance/')",
+            "reason": "Constitutional or Governance logic change requires human approval (B-1)"
+        },
+        {
+            "id": "MASSIVE_CHANGE",
             "tier": "T3",
             "condition": "blast_radius > 20",
             "reason": "Massive file changes affect system stability"
         },
         {
+            "id": "UI_UX_CHANGE",
             "tier": "T3",
-            "condition": "path.includes('governance/')",
-            "reason": "Governance logic modification is high-risk"
+            "condition": "path.includes('apps/') && (path.endsWith('.tsx') || path.endsWith('.css'))",
+            "reason": "UI/UX changes require Preview real-device verification (Route A)",
+            "required_route": "Route A"
         },
         {
+            "id": "CORE_SCRIPT_CHANGE",
             "tier": "T3",
-            "condition": "path.includes('AGENTS.md')",
-            "reason": "Constitutional change requires human approval"
+            "condition": "path.includes('.agent/scripts/')",
+            "reason": "Modifying agent core logic is high-risk"
         },
         {
+            "id": "DOC_ONLY",
             "tier": "T1",
             "condition": "path.endsWith('.md') && !path.includes('AGENTS.md')",
-            "reason": "Documentation changes are low risk"
+            "reason": "Documentation changes are low risk",
+            "required_route": "Route C"
         }
     ],
-    "default_tier": "T2"
+    "default_tier": "T2",
+    "approval_requirements": {
+        "T1": false,
+        "T2": false,
+        "T3": true
+    },
+    "verification_requirements": {
+        "T1": "None / Manual Check",
+        "T2": "Automated Test Pass (closure_gate)",
+        "T3": "Human Approval (PW: y) + Evidence (AMPLOG)"
+    }
 }

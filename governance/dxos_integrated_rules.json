@@ -1,0 +1,30 @@
+{
+    "version": "1.0",
+    "description": "TBNY DXOS Integration Rules - Derived from AGENTS.md §Q, R, S",
+    "dom_observation": {
+        "id": "Q-1",
+        "name": "三連星報告",
+        "stages": [
+            "[Loading]",
+            "[Ready]",
+            "[Stable]"
+        ],
+        "requirement": "DOM操作時、待機アニメーションの消失と要素の完全描画を報告すること。"
+    },
+    "database_sync": {
+        "id": "R",
+        "name": "Strict SQL Sync",
+        "requirements": [
+            "スキーマ変更時は npx supabase db diff を実行",
+            "SCHEMA_HISTORY.md に即時記録"
+        ]
+    },
+    "debt_management": {
+        "id": "S",
+        "name": "SDR & Loan",
+        "principles": [
+            "SDR は追記（Append-only）を原則とする",
+            "DEBT は「借金」として扱い、完済まで関連モジュールの新規機能を制限する"
+        ]
+    }
+}

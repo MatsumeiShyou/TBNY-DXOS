@@ -13,58 +13,58 @@
     "thinking_steps": [
         {
             "id": 1,
-            "name": "隕∽ｻｶ隕∫ｴ・,
-            "mode": "謨ｴ逅・・
+            "name": "要件要約",
+            "mode": "整理者"
         },
         {
             "id": 2,
-            "name": "蜑肴署謚ｽ蜃ｺ",
-            "mode": "謨ｴ逅・・
+            "name": "前提抽出",
+            "mode": "整理者"
         },
         {
             "id": 3,
-            "name": "荳咲｢ｺ螳滓ｧ隧穂ｾ｡",
-            "mode": "謨ｴ逅・・
+            "name": "不確実性評価",
+            "mode": "整理者"
         },
         {
             "id": 4,
-            "name": "蝠城｡悟・隗｣",
-            "mode": "險ｭ險郁・
+            "name": "問題分解",
+            "mode": "設計者"
         },
         {
             "id": 5,
-            "name": "莉ｮ隱ｬ逕滓・",
-            "mode": "險ｭ險郁・,
+            "name": "仮説生成",
+            "mode": "設計者",
             "requirements": [
-                "Evidence Mapping"
+                "Evidence Mapping (Fact 参照拘束: P-6)"
             ]
         },
         {
             "id": 6,
-            "name": "謚陦捺､懆ｨｼ",
-            "mode": "螳溯｣・晁・
+            "name": "技術検証",
+            "mode": "実装・検証者"
         },
         {
             "id": 7,
-            "name": "蜀・Κ逶｣譟ｻ",
-            "mode": "逶｣譟ｻ閠・
+            "name": "内部監査",
+            "mode": "監査者"
         },
         {
             "id": 8,
-            "name": "謗ｨ螂ｨ豎ｺ螳・,
-            "mode": "逶｣譟ｻ閠・
+            "name": "推奨決定",
+            "mode": "監査者"
         },
         {
             "id": 9,
-            "name": "讀懈渊繝ｭ繧ｰ",
-            "mode": "逶｣譟ｻ閠・
+            "name": "監査ログ",
+            "mode": "監査者"
         },
         {
             "id": 10,
-            "name": "閾ｪ蟾ｱ繝ｬ繝薙Η繝ｼ",
-            "mode": "逶｣譟ｻ閠・,
+            "name": "自己レビュー",
+            "mode": "監査者",
             "requirements": [
-                "AGENTS.md ﾂｧG [TASK_CLOSED] 蠖｢蠑上・譛邨ら｢ｺ隱・
+                "AGENTS.md §G [TASK_CLOSED] 形式の最終確認"
             ]
         }
     ],
@@ -111,9 +111,9 @@
         "talk_only": true
     },
     "classification_protocol": {
-        "version": "1.0",
-        "role": "軽量タスク分類器",
-        "objective": "入力をFAST / HEAVYに分類する",
+        "version": "1.1",
+        "role": "軽量タスク分類器 (P-1 準拠)",
+        "objective": "入力を FAST / HEAVY に分類し、思考リソースを最適化する",
         "modes": {
             "FAST": {
                 "criteria": "明確な処理、変換・要約・テンプレ作業、ドラフト生成",
@@ -122,7 +122,7 @@
                 ]
             },
             "HEAVY": {
-                "criteria": "曖昧な意図、複数判断が必要、破壊的・重要な設計判断",
+                "criteria": "曖昧な意図、複数判断が必要、破壊的・重要な設計判断（実装を伴う場合は HEAVY 固定）",
                 "risk_tier_affinity": [
                     "T2",
                     "T3"
@@ -135,7 +135,7 @@
             "HIGH"
         ],
         "principles": [
-            "迷ったらHEAVY"
+            "迷ったら HEAVY (P-1 厳守)"
         ],
         "output_format": {
             "TASK": "string",
@@ -147,17 +147,17 @@
     },
     "constitutional_guard": {
         "forbidden_intent_keywords": [
-            "繝ｫ繝ｼ繝ｫ邱ｩ蜥・,
-            "諞ｲ豕穂ｿｮ豁｣",
-            "諞ｲ豕輔ｒ菫ｮ豁｣",
-            "繧ｬ繝舌リ繝ｳ繧ｹ繧定ｪｿ謨ｴ",
+            "ルール緩和",
+            "憲法修正",
+            "憲法を修正",
+            "ガバナンスを調整",
             "AGENTS.md",
             "governance/",
             "bypass",
-            "繝舌う繝代せ",
-            "萓句､悶ｒ驕ｩ逕ｨ",
-            "邱ｩ蜥・,
-            "驕ｩ豁｣蛹・
+            "バイパス",
+            "例外を適用",
+            "緩和",
+            "適正化"
         ],
         "legislation_mode_required": [
             "AGENTS.md",
