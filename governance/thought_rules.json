@@ -163,6 +163,11 @@
             "AGENTS.md",
             "governance/",
             ".agent/scripts/"
-        ]
+        ],
+        "deep_impact_assessment_protocol": {
+            "trigger_conditions": "統治構造やコードの再構築、または修正・削除を伴うタスクの実行前",
+            "mandatory_action": "実装前に必ず、削除・変更しては不都合なものがないか、関連項目を含めて深部（依存関係・全体影響）まで精査すること。",
+            "on_anomaly_detected": "不都合な項目や予期せぬ依存関係が発見された場合は、推測での実行を即時停止しユーザーへ報告の上、計画を見直すプロトコル（Plan Review Protocol）を強制発動せよ。"
+        }
     }
 }

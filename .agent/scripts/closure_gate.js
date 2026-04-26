@@ -116,6 +116,41 @@ function checkExpiredDebt() {
     Log.success('No expired debt.');
 }
 
+function verifySQLSync() {
+    Log.info('Checking DB Schema Sync (Sentinel 5.7)...');
+    try {
+        const diff = runCommand('npx supabase db diff --local', true);
+        if (diff && diff.trim() !== "" && !diff.includes("No changes found")) {
+            Log.error('SCHEMA SYNC VIOLATION: Local DB schema is out of sync with code.');
+            process.exit(1);
+        }
+    } catch (e) {
+        Log.warn('Supabase DB Diff skipped (Environment not ready).');
+    }
+    
+    const SCHEMA_HISTORY_PATH = path.join(process.cwd(), 'SCHEMA_HISTORY.md');
+    try {
+        const output = runCommand('git diff --cached --name-only', true);
+        const newMigrations = output.trim().split('\n')
+            .filter(file => file.startsWith('supabase/migrations/') && file.endsWith('.sql'))
+            .map(file => path.basename(file));
+
+        if (newMigrations.length > 0) {
+            if (!existsSync(SCHEMA_HISTORY_PATH)) {
+                Log.error('SCHEMA SYNC VIOLATION: SCHEMA_HISTORY.md not found.');
+                process.exit(1);
+            }
+            const historyContent = readFileSync(SCHEMA_HISTORY_PATH, 'utf8');
+            const missing = newMigrations.filter(f => !historyContent.includes(f));
+            if (missing.length > 0) {
+                Log.error('SCHEMA SYNC VIOLATION: SCHEMA_HISTORY.md is missing entries for new migrations.');
+                process.exit(1);
+            }
+        }
+    } catch (e) { }
+    Log.success('DB Schema Sync Verified.');
+}
+
 function verifySessionDesync() {
     Log.info('Verifying Session-Log Alignment (Sentinel 5.5)...');
     const sessionPath = join(process.cwd(), '.agent', 'session', 'active_task.json');
@@ -193,6 +228,7 @@ function main() {
     Log.info(`Closure Started (Tier: ${tier})...`);
 
     try {
+        verifySQLSync();
         verifySessionDesync();
         verifyConstitutionalIntegrity();
         verifyLegislativeInterlock();

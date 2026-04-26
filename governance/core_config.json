@@ -1,0 +1,185 @@
+{
+  "risk_matrix": {
+    "version": "1.1",
+    "description": "Tier classification rules (SSOT) - Derived from AGENTS.md §D/E",
+    "rules": [
+      {
+        "id": "CONSTITUTION_CHANGE",
+        "tier": "T3",
+        "condition": "path.includes('AGENTS.md') || path.includes('governance/')",
+        "reason": "Constitutional or Governance logic change requires human approval (B-1)"
+      },
+      {
+        "id": "MASSIVE_CHANGE",
+        "tier": "T3",
+        "condition": "blast_radius > 20",
+        "reason": "Massive file changes affect system stability"
+      },
+      {
+        "id": "UI_UX_CHANGE",
+        "tier": "T3",
+        "condition": "path.includes('apps/') && (path.endsWith('.tsx') || path.endsWith('.css'))",
+        "reason": "UI/UX changes require Preview real-device verification (Route A)",
+        "required_route": "Route A"
+      },
+      {
+        "id": "CORE_SCRIPT_CHANGE",
+        "tier": "T3",
+        "condition": "path.includes('.agent/scripts/')",
+        "reason": "Modifying agent core logic is high-risk"
+      },
+      {
+        "id": "DOC_ONLY",
+        "tier": "T1",
+        "condition": "path.endsWith('.md') && !path.includes('AGENTS.md')",
+        "reason": "Documentation changes are low risk",
+        "required_route": "Route C"
+      }
+    ],
+    "default_tier": "T2",
+    "approval_requirements": {
+      "T1": false,
+      "T2": false,
+      "T3": true
+    },
+    "verification_requirements": {
+      "T1": "None / Manual Check",
+      "T2": "Automated Test Pass (closure_gate)",
+      "T3": "Human Approval (PW: y) + Evidence (AMPLOG)"
+    }
+  },
+  "compliance": {
+    "risk_tiers": {
+      "T1": {
+        "description": "Low risk, fast path",
+        "require_approval": false,
+        "requires_sdr": false,
+        "verification": "legacy_tests"
+      },
+      "T2": {
+        "description": "Medium risk, autonomous loop",
+        "require_approval": false,
+        "requires_sdr": false,
+        "verification": "test_pass"
+      },
+      "T3": {
+        "description": "High risk, human approval",
+        "require_approval": true,
+        "requires_sdr": true,
+        "verification": "human_verify"
+      }
+    },
+    "limits": {
+      "max_files_per_scan": 20,
+      "max_tokens_per_research": 100000,
+      "pre_flight_block_threshold": 30
+    },
+    "audit_rules": {
+      "days_to_check": 7,
+      "protected_patterns": [
+        ".env",
+        "node_modules",
+        ".local",
+        ".agent/workflows",
+        "global_workflows"
+      ],
+      "temporary_file_patterns": [
+        ".bak",
+        "debug_",
+        ".diag_test",
+        "_output.*\\.txt$"
+      ]
+    }
+  },
+  "closure_conditions": {
+    "T3_seal_protocol": {
+      "steps": [
+        "npm run done"
+      ],
+      "required_artifacts": [
+        "walkthrough.md"
+      ],
+      "approval_token": "(PW: ｙ)"
+    },
+    "bypass_rules": {
+      "extensions": [
+        ".md",
+        ".json",
+        ".vscode",
+        ".agent/"
+      ],
+      "files": [
+        "AMPLOG.md"
+      ]
+    },
+    "governance_paths": [
+      "AGENTS.md",
+      "governance/",
+      ".agent/scripts/"
+    ],
+    "design_intent": {
+      "keywords": [
+        "設計",
+        "再設計",
+        "再考",
+        "構築",
+        "修正案",
+        "plan",
+        "design",
+        "refactor",
+        "architect"
+      ],
+      "artifacts": [
+        "governance/ADR",
+        "implementation_plan.md",
+        "task.md"
+      ]
+    }
+  },
+  "seal_rules": {
+    "SEAL_PATTERNS": [
+      "(PW: ｙ)",
+      "ｙ",
+      "y"
+    ],
+    "DEBT_CRITICAL_LABELS": [
+      "#severity: critical",
+      "#severity: high"
+    ]
+  },
+  "environment": {
+    "platform": "windows",
+    "shell": "powershell",
+    "encoding": "utf-8",
+    "commands": {
+      "tail": "[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; Get-Content -Tail",
+      "cat": "[Console]::OutputEncoding = [System.Text.Encoding]::UTF8; Get-Content",
+      "ls": "dir"
+    },
+    "script_runtime": "node"
+  },
+  "analyzer_config": {
+    "analyzer": {
+      "max_problem_decomposition": 5,
+      "min_hypothesis_count": 2,
+      "max_hypothesis_count": 3,
+      "min_audit_risk_patterns": 2,
+      "mode_sequence": [
+        "整理",
+        "設計",
+        "実装",
+        "監査"
+      ],
+      "confidence_threshold": {
+        "low": 40,
+        "medium": 70,
+        "high": 90
+      }
+    },
+    "executor": {
+      "require_design_ref": true,
+      "allow_unapproved_execution": false,
+      "strict_mode": true
+    }
+  }
+}
