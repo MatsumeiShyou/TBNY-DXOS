@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { ExceptionReasonMaster } from '../../../types';
 
 interface ExceptionChangeModalProps {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import Modal from '../../../components/Modal';
 import { BoardJob, BoardDriver } from '../../../types';
 import { MapPin, AlertTriangle, Plus } from 'lucide-react';

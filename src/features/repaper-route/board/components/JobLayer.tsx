@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { BoardJob, BoardDriver, BoardSplit } from '../../../types';
 import { Lock, AlertTriangle, Ban } from 'lucide-react';
 import { timeToMinutes } from '../logic/timeUtils';

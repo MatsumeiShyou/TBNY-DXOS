@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Shield, Loader2, LogIn, AlertCircle } from 'lucide-react';
 import { supabase } from '../lib/supabase/client';
 import { useAuth } from '../../../../../../../../AuthAdapterPort';

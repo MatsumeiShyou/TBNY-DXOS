@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import { supabase } from '../../../lib/supabase/client';
 import { nativeSupabaseFetch } from '../../../lib/supabase/nativeFetch';
 import { useMasterData } from './useMasterData';
-import { useNotification } from '../../../contexts/NotificationContext';
+import { useNotification } from '../../../../../../../../../NotificationAdapterPort';
 import { isPastDayJST } from '../utils/dateUtils';
 import { useDataSync } from './useDataSync';
 import {

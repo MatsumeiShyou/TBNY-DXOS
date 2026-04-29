@@ -1,4 +1,3 @@
-import React from 'react';
 import { History, User, Clock, AlertCircle } from 'lucide-react';
 import { BoardJob } from '../../../types';
 

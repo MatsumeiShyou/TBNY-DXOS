@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Calendar } from 'lucide-react';
 import { formatFullDateWithNthDay } from '../utils/dateUtils';
 import { CalendarPicker } from './CalendarPicker';

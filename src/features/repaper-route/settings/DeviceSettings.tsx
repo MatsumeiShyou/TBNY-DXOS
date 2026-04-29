@@ -1,5 +1,5 @@
-import React from 'react';
-import { useInteraction, DeviceMode } from '../../contexts/InteractionContext';
+import { useInteraction, DeviceMode } from '../InteractionAdapterPort';
+
 import { Monitor, Tablet, Smartphone, Settings } from 'lucide-react';
 
 export const DeviceSettings: React.FC = () => {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Save, X, AlertTriangle } from 'lucide-react';
 import { REASON_TAXONOMY } from '../logic/constants';
 

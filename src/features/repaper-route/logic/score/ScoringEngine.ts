@@ -1,4 +1,4 @@
-import { LogicJob, LogicResult } from '../types';
+import type { LogicJob, LogicResult } from '../types';
 
 interface ScoreConfig {
     distanceWeight: number; // 距離ペナルティ重み (1kmあたりの減点)

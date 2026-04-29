@@ -1,4 +1,3 @@
-import React from 'react';
 import { Layers, CheckCircle, Database, Undo2, Redo2, AlertTriangle, Clipboard, Cloud } from 'lucide-react';
 import { DateDisplay } from './DateDisplay';
 import { BoardJob } from '../../../types';

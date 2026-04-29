@@ -1,4 +1,5 @@
-import { useAuth as useDXAuth } from '../../hooks/useAuth';
+import { useAuth as useDXAuth } from '../hooks/useAuth';
+
 
 /**
  * RePaper Route 向け Auth Adapter

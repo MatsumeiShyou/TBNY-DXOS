@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { BoardJob } from '../../../types';
 import { Database, Clock, AlertTriangle, X } from 'lucide-react';
 import { getPendingJobColor } from '../../core/config/theme';

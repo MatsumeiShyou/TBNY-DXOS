@@ -1,8 +1,8 @@
-import { describe, it, expect } from 'vitest';
-import { checkConstraints } from './ConstraintEngine';
-import { LogicVehicle, LogicJob } from '../types';
-import { StaffPermissions } from '../../../os/auth/types';
-import { resolveVehicleSpec } from './VehicleSpecManifest';
+import type { describe, it, expect } from 'vitest';
+import type { checkConstraints } from './ConstraintEngine';
+import type { LogicVehicle, LogicJob } from '../types';
+import type { StaffPermissions } from '../../../os/auth/types';
+import type { resolveVehicleSpec } from './VehicleSpecManifest';
 
 describe('ConstraintEngine V2 (Logic Deep Edition)', () => {
     const mockAdminPerms: StaffPermissions = {

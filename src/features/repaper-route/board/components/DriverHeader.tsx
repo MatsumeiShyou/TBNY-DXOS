@@ -1,4 +1,3 @@
-import React from 'react';
 import { BoardDriver } from '../../../types';
 import { PlusCircle } from 'lucide-react';
 

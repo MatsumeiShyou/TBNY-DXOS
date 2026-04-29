@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useAuth } from './AuthAdapterPort';
 import { AdminLayout } from './components/AdminLayout';
 import BoardCanvas from './board/BoardCanvas';
 // 他の画面も必要に応じてインポート
 
 export const RePaperRouteApp = () => {
-  const { currentUser, isLoading } = useAuth();
+  const { isLoading } = useAuth();
+
   const [activeView, setActiveView] = useState('board');
 
   if (isLoading) {
