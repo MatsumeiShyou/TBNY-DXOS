@@ -1,6 +1,6 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect } from 'vite';
 import { TemplateDiffCalculator } from './TemplateDiffCalculator';
-import { BoardJob as Job } from '../../../types';
+import { BoardJob as Job } from '../../../../../../../../../types';
 
 describe('TemplateDiffCalculator', () => {
   const baseJob: Partial<Job> = {

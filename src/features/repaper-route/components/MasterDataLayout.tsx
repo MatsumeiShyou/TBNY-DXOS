@@ -15,7 +15,7 @@ import {
     AlertTriangle,
     Clock
 } from 'lucide-react';
-import { supabase } from '../lib/supabase/client';
+import { supabase } from '../../../../../../../../../../shared/lib/supabase/client';
 import { nativeSupabaseFetch } from '../lib/supabase/nativeFetch';
 import useMasterCRUD from '../hooks/useMasterCRUD';
 import { Modal } from './Modal';

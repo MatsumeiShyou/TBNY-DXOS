@@ -1,9 +1,9 @@
 import { useState, useEffect, useCallback } from 'react';
-import { supabase } from '../../../lib/supabase/client';
+import { supabase } from '../../../../../../../../../../../shared/lib/supabase/client';
 import { nativeSupabaseFetch } from '../../../lib/supabase/nativeFetch';
 
 import { BoardState } from './useBoardData';
-import { BoardJob, BoardDriver, BoardSplit } from '../../../types';
+import { BoardJob, BoardDriver, BoardSplit } from '../../../../../../../../../types';
 import { boardStore } from '../../../lib/idb/boardStore';
 import { PeriodicJobImporter } from '../../../lib/PeriodicJobImporter';
 import { JobAdapter } from '../logic/JobAdapter';

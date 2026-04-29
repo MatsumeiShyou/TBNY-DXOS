@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import Modal from '../../../components/Modal';
-import { BoardDriver } from '../../../types';
+import { BoardDriver } from '../../../../../../../../../types';
 
 interface HeaderEditModalProps {
     isOpen: boolean;

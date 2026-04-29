@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { BoardJob, BoardDriver, BoardSplit } from '../../../types';
+import { BoardJob, BoardDriver, BoardSplit } from '../../../../../../../../../types';
 import { Lock, AlertTriangle, Ban } from 'lucide-react';
 import { timeToMinutes } from '../logic/timeUtils';
 import { generateJobColorMap } from '../../core/config/theme';

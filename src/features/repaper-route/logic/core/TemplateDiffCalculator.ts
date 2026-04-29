@@ -1,4 +1,4 @@
-import { BoardJob as Job } from '../../../types';
+import { BoardJob as Job } from '../../../../../../../../../types';
 
 export type DiffType = 'added' | 'removed' | 'modified' | 'unchanged';
 

@@ -4,8 +4,8 @@ import {
     CheckCircle2, History, ArrowRightLeft, ShieldAlert,
     Save, Maximize2, Minimize2, MapPin, Tag, Info, Box, Truck
 } from 'lucide-react';
-import { BoardJob, BoardDriver } from '../../../types';
-import { Staff } from '../../../os/auth/types';
+import { BoardJob, BoardDriver } from '../../../../../../../../../types';
+import { Staff } from '../../../../../../../../../types';
 
 interface JobDetailPanelProps {
     job: BoardJob;

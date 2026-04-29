@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import { supabase } from '../../../lib/supabase/client';
+import { supabase } from '../../../../../../../../../../../shared/lib/supabase/client';
 import { nativeSupabaseFetch } from '../../../lib/supabase/nativeFetch';
 import { useMasterData } from './useMasterData';
 import { useNotification } from '../../../../../../../../../NotificationAdapterPort';
@@ -8,8 +8,8 @@ import { useDataSync } from './useDataSync';
 import {
     BoardJob, BoardDriver, BoardSplit, BoardHistory, ExceptionReasonMaster,
     BoardAction
-} from '../../../types';
-import { Staff } from '../../../os/auth/types';
+} from '../../../../../../../../../types';
+import { Staff } from '../../../../../../../../../types';
 
 // --- Types ---
 export interface BoardState {

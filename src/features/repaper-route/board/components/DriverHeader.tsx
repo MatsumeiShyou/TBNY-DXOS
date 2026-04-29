@@ -1,4 +1,4 @@
-import { BoardDriver } from '../../../types';
+import { BoardDriver } from '../../../../../../../../../types';
 import { PlusCircle } from 'lucide-react';
 
 interface DriverHeaderProps {

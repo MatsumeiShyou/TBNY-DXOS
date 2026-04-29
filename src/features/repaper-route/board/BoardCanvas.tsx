@@ -11,7 +11,7 @@ import type { BoardSkeleton } from './components/BoardSkeleton';
 import type { TimeGrid } from './components/TimeGrid';
 import type { JobLayer } from './components/JobLayer';
 import type { PendingJobSidebar } from './components/PendingJobSidebar';
-import type { BoardJob, BoardDriver } from '../../types';
+import type { BoardJob, BoardDriver } from '../../../../../../../../types';
 
 import type { AuditTrailPanel } from './components/AuditTrailPanel';
 import HeaderEditModal from './components/HeaderEditModal';

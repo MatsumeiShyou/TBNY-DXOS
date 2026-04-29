@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { supabase } from '../../../lib/supabase/client';
+import { supabase } from '../../../../../../../../../../../shared/lib/supabase/client';
 
 export const useSharedReasons = (isOpen: boolean) => {
     const [savedReasons, setSavedReasons] = useState<string[]>([]);

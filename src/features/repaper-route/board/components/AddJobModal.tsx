@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import Modal from '../../../components/Modal';
-import { BoardJob, BoardDriver } from '../../../types';
+import { BoardJob, BoardDriver } from '../../../../../../../../../types';
 import { MapPin, AlertTriangle, Plus } from 'lucide-react';
 import { useSharedReasons } from '../hooks/useSharedReasons';
-import { supabase } from '../../../lib/supabase/client';
+import { supabase } from '../../../../../../../../../../../shared/lib/supabase/client';
 import { invalidateMasterCache } from '../hooks/useMasterData';
 
 interface AddJobModalProps {

@@ -1,4 +1,5 @@
-import { useInteraction, DeviceMode } from '../InteractionAdapterPort';
+import { useInteraction, type DeviceMode } from '../InteractionAdapterPort';
+
 
 import { Monitor, Tablet, Smartphone, Settings } from 'lucide-react';
 
