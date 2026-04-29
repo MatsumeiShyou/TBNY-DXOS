@@ -1,12 +1,13 @@
 import { useState } from 'react';
-import { AuthProvider, useAuth } from './contexts/AuthContext';
-import { NotificationProvider } from './contexts/NotificationContext';
-import { DXOSPortal } from './components/DXOSPortal';
-import { DXGlobalNavigation } from './components/DXGlobalNavigation';
-import { LoginGate } from './components/LoginGate';
-import { APP_COMPONENTS } from './config/appComponents';
-import { APPS_REGISTRY } from './config/appsRegistry';
-import './styles/design-tokens.css';
+import { AuthProvider } from '../features/contexts/AuthContext';
+import { useAuth } from '../features/hooks/useAuth';
+import { NotificationProvider } from '../features/contexts/NotificationContext';
+import { DXOSPortal } from './DXOSPortal';
+import { DXGlobalNavigation } from '../features/components/DXGlobalNavigation';
+import { LoginGate } from '../features/components/LoginGate';
+import { APP_COMPONENTS } from '../features/config/appComponents';
+import { APPS_REGISTRY } from '../features/config/appsRegistry';
+import '../shared/styles/design-tokens.css';
 
 /**
  * AppContent — 認証後のメインコンテンツ

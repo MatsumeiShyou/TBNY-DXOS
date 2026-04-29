@@ -1,6 +1,6 @@
 import { type ReactNode } from 'react';
 import { X } from 'lucide-react';
-import '../styles/modal.css';
+import '../../shared/styles/modal.css';
 
 interface ModalProps {
     isOpen: boolean;

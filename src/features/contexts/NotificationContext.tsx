@@ -1,6 +1,5 @@
-import { createContext, useContext, useState, useCallback, type ReactNode } from 'react';
-
-type NotificationType = 'info' | 'success' | 'warning' | 'error';
+import { useState, useCallback, type ReactNode } from 'react';
+import { NotificationContext, type NotificationType } from '../hooks/useNotification';
 
 interface Notification {
     message: string;
@@ -8,21 +7,9 @@ interface Notification {
     id: number;
 }
 
-interface NotificationContextValue {
-    showNotification: (message: string, type?: NotificationType) => void;
-}
-
-const NotificationContext = createContext<NotificationContextValue>({
-    showNotification: () => {},
-});
-
-export const useNotification = () => useContext(NotificationContext);
-
 export const NotificationProvider = ({ children }: { children: ReactNode }) => {
     const [notification, setNotification] = useState<Notification | null>(null);
 
-    // T-03 FIX: setTimeout 内で notification.id を参照する際、
-    // クロージャが古い値を掴むバグを修正。id をローカル変数にキャプチャする。
     const showNotification = useCallback((message: string, type: NotificationType = 'info') => {
         const id = Date.now();
         setNotification({ message, type, id });

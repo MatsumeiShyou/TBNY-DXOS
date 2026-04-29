@@ -1,11 +1,11 @@
 import { useState, useEffect, type FormEvent } from 'react';
 import { Plus, Edit2, Trash2, Search, Loader2, Info } from 'lucide-react';
-import { supabase } from '../lib/supabase/client';
+import { supabase } from '../../shared/lib/supabase/client';
 import { Modal } from './Modal';
 import { useMasterCRUD } from '../hooks/useMasterCRUD';
-import { useNotification } from '../contexts/NotificationContext';
+import { useNotification } from '../hooks/useNotification';
 import type { MasterSchema, MasterColumn } from '../config/masterSchema';
-import '../styles/master-data.css';
+import '../../shared/styles/master-data.css';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type DataItem = Record<string, any>;

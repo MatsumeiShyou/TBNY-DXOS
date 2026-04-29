@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import {
   LayoutDashboard,
   Truck,
@@ -10,10 +10,10 @@ import {
   Hexagon,
   type LucideIcon,
 } from 'lucide-react';
-import { useAuth } from '../contexts/AuthContext';
-import { supabase } from '../lib/supabase/client';
-import { APPS_REGISTRY, type AppConfig } from '../config/appsRegistry';
-import '../styles/portal.css';
+import { useAuth } from '../features/hooks/useAuth';
+import { supabase } from '../shared/lib/supabase/client';
+import { APPS_REGISTRY, type AppConfig } from '../features/config/appsRegistry';
+import '../shared/styles/portal.css';
 
 /**
  * アイコン名と Lucide コンポーネントの対応マップ。
@@ -49,13 +49,21 @@ export const DXOSPortal = ({ onAppSelect }: DXOSPortalProps) => {
     if (!currentStaff?.allowed_apps) return [];
 
     return currentStaff.allowed_apps
-      .filter((appId) => APPS_REGISTRY[appId])
-      .map((appId) => ({
+      .filter((appId: string) => APPS_REGISTRY[appId])
+      .map((appId: string) => ({
         id: appId,
         ...APPS_REGISTRY[appId],
       }))
-      .sort((a, b) => a.order - b.order);
+      .sort((a: AuthorizedTile, b: AuthorizedTile) => a.order - b.order);
   }, [currentStaff]);
+
+  const [redirectUrl, setRedirectUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (redirectUrl) {
+      window.location.href = redirectUrl;
+    }
+  }, [redirectUrl]);
 
   // ログアウト処理
   const handleLogout = async () => {
@@ -63,12 +71,12 @@ export const DXOSPortal = ({ onAppSelect }: DXOSPortalProps) => {
   };
 
   // タイルクリック処理
-  const handleTileClick = async (appId: string) => {
+  const handleTileClick = (appId: string) => {
     const appConfig = APPS_REGISTRY[appId];
     
-    // 外部URLが設定されている場合は、そのままリダイレクト（Vite Proxyにより同一オリジンとしてルーティングされる）
+    // 外部URLが設定されている場合は、リダイレクト
     if (appConfig?.url) {
-      window.location.href = appConfig.url;
+      setRedirectUrl(appConfig.url);
       return;
     }
 

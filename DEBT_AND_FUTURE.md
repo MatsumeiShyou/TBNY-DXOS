@@ -6,6 +6,8 @@
 - [ ] **[UI_QUALITY_DEBT]**: ウィジェットの不整合による DXOS Portal 関連 UI の目視確認。プッシュ前は環境 Route A 経由でチェック。
 - [x] **[DB_RPC_DEBT]**: `useMasterCRUD.ts` で使用する RPC `rpc_execute_master_update` の DB 側実装を完了（`is_active` カラムの標準化を含む）。
 - [ ] **[PWA_ASSET_DEBT]**: `public/manifest.json` で使用しているアイコンが `vite.svg` の暫定流用。正式なアセット生成と差し替えが必要。
+- [ ] **[UI_STYLE_DEBT]**: `LoginGate.tsx` 等に残存するインラインスタイルの `portal.css` への完全移行。ad-hoc なスタイル指定を排除し、デザインの一貫性を確保する。
+- [ ] **[COMPONENT_MODULAR_DEBT]**: `src/features/` 内の UI コンポーネントを機能ドメイン（Auth, MasterData等）単位でモジュール化し、ディレクトリ構造を整理する。
 
 ## Future Roadmap (将来構想)
 *未実装の機能、将来的な拡張計画*

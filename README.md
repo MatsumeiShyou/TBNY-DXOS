@@ -64,17 +64,15 @@ tbny-dxos/
 ├── .agent/                          # AI開発エージェント関連
 │   └── scripts/
 │       └── check_seal.js            # ガバナンス検証スクリプト
-├── src/                             # フロントエンドソースコード
-│   ├── App.tsx                      # メインアプリケーション
-│   ├── main.tsx                     # エントリーポイント
-│   ├── index.css                    # グローバルスタイル
-│   ├── styles/                      # スタイルシート
-│   └── assets/                      # 静的アセット
+├── src/                             # フロントエンドソースコード (Boundary Enforcement)
+│   ├── apps/                        # エントリーポイント・ポータル層
+│   ├── features/                    # 機能ドメイン層 (components, hooks, contexts)
+│   └── shared/                      # 共通基盤層 (lib, styles, types, assets)
 ├── supabase/                        # Supabase設定
 │   └── migrations/
 │       └── 20260210_initial_schema.sql  # 初期スキーマ（SDRモデル）
 ├── public/                          # 公開静的ファイル
-├── AGENTS.md                        # AI開発エージェント憲法（v2.2）
+├── AGENTS.md                        # AI開発エージェント憲法（v8.0）
 ├── AMPLOG.md                        # 資産変更申請記録
 ├── DEBT_AND_FUTURE.md               # 技術的負債・将来構想
 ├── SCHEMA_HISTORY.md                # スキーマ変更履歴

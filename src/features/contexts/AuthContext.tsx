@@ -1,22 +1,9 @@
-import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
-import { supabase } from '../lib/supabase/client';
+import { useState, useEffect, type ReactNode } from 'react';
+import { supabase } from '../../shared/lib/supabase/client';
 import type { User } from '@supabase/supabase-js';
-import { AuthAdapter } from '../lib/auth/AuthAdapter';
-import type { Staff } from '../types/staff';
-
-interface AuthContextValue {
-    currentUser: User | null;
-    currentStaff: Staff | null;
-    isLoading: boolean;
-}
-
-const AuthContext = createContext<AuthContextValue>({ 
-    currentUser: null, 
-    currentStaff: null,
-    isLoading: true 
-});
-
-export const useAuth = () => useContext(AuthContext);
+import { AuthAdapter } from '../../shared/lib/auth/AuthAdapter';
+import type { Staff } from '../../shared/types/staff';
+import { AuthContext, type AuthContextValue } from '../hooks/useAuth';
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [currentUser, setCurrentUser] = useState<User | null>(null);
@@ -40,7 +27,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
         initializeAuth();
 
-        // Listen for changes
         const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
             const user = session?.user ?? null;
             setCurrentUser(user);

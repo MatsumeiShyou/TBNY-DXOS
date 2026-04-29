@@ -1,5 +1,5 @@
 import { ArrowLeft, Hexagon } from 'lucide-react';
-import '../styles/navigation.css';
+import '../../shared/styles/navigation.css';
 
 interface DXGlobalNavigationProps {
     currentAppLabel: string;

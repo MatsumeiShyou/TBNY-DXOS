@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { useAuth } from '../contexts/AuthContext';
-import { supabase } from '../lib/supabase/client';
+import { useAuth } from '../hooks/useAuth';
+import { supabase } from '../../shared/lib/supabase/client';
+import '../../shared/styles/portal.css';
 
 /**
  * LoginGate — 未認証ユーザーにサインイン画面を表示
@@ -43,14 +44,32 @@ export function LoginGate() {
   };
 
   return (
-    <div className="dxos-portal" style={{ justifyContent: 'center', minHeight: '100vh' }}>
-      <div style={{ width: '100%', maxWidth: '380px' }}>
+    <div className="dxos-portal" style={{ 
+      justifyContent: 'center', 
+      minHeight: '100vh',
+      background: 'radial-gradient(circle at top right, #1e293b 0%, #0f172a 100%)',
+      position: 'relative',
+      overflow: 'hidden'
+    }}>
+      {/* 装飾用背景要素 */}
+      <div style={{
+        position: 'absolute',
+        top: '-10%',
+        right: '-10%',
+        width: '40%',
+        height: '40%',
+        background: 'radial-gradient(circle, rgba(99, 102, 241, 0.08) 0%, transparent 70%)',
+        zIndex: 0
+      }} />
+
+      <div style={{ width: '100%', maxWidth: '380px', position: 'relative', zIndex: 1 }}>
         {/* ヘッダー */}
-        <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+        <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
           <h1 style={{
-            fontSize: '1.75rem',
-            fontWeight: 800,
-            background: 'linear-gradient(135deg, #e2e8f0 30%, #94a3b8)',
+            fontSize: '2.25rem',
+            fontWeight: 900,
+            letterSpacing: '-0.025em',
+            background: 'linear-gradient(135deg, #f8fafc 30%, #94a3b8)',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
             backgroundClip: 'text',
@@ -58,18 +77,25 @@ export function LoginGate() {
           }}>
             TBNY DXOS
           </h1>
-          <p style={{ color: '#64748b', fontSize: '0.875rem', margin: 0 }}>
-            坪野谷紙業 厚木事業所 業務基盤OS
+          <p style={{ 
+            color: '#94a3b8', 
+            fontSize: '0.875rem', 
+            fontWeight: 500,
+            letterSpacing: '0.05em',
+            margin: 0 
+          }}>
+            PRECISION OPERATING SYSTEM
           </p>
         </div>
 
         {/* メール/パスワード ログインフォーム */}
         <form onSubmit={handleEmailLogin} style={{
-          background: 'rgba(255, 255, 255, 0.03)',
-          border: '1px solid rgba(255, 255, 255, 0.06)',
-          borderRadius: '20px',
-          padding: '2rem 1.75rem',
-          backdropFilter: 'blur(12px)',
+          background: 'rgba(30, 41, 59, 0.4)',
+          border: '1px solid rgba(255, 255, 255, 0.08)',
+          borderRadius: '24px',
+          padding: '2.5rem 2rem',
+          backdropFilter: 'blur(16px)',
+          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
         }}>
           <h2 style={{
             fontSize: '0.9375rem',
@@ -126,10 +152,8 @@ export function LoginGate() {
                 boxSizing: 'border-box',
                 transition: 'border-color 0.2s',
               }}
-              // @ts-ignore - style overrides for focus/blur will be moved to module.css later
-              onFocus={(e) => e.target.style.borderColor = 'rgba(99, 102, 241, 0.5)'}
-              // @ts-ignore
-              onBlur={(e) => e.target.style.borderColor = 'rgba(255, 255, 255, 0.08)'}
+              onFocus={(e) => (e.target as HTMLInputElement).style.borderColor = 'rgba(99, 102, 241, 0.5)'}
+              onBlur={(e) => (e.target as HTMLInputElement).style.borderColor = 'rgba(255, 255, 255, 0.08)'}
             />
           </div>
 
@@ -163,10 +187,8 @@ export function LoginGate() {
                 boxSizing: 'border-box',
                 transition: 'border-color 0.2s',
               }}
-              // @ts-ignore
-              onFocus={(e) => e.target.style.borderColor = 'rgba(99, 102, 241, 0.5)'}
-              // @ts-ignore
-              onBlur={(e) => e.target.style.borderColor = 'rgba(255, 255, 255, 0.08)'}
+              onFocus={(e) => (e.target as HTMLInputElement).style.borderColor = 'rgba(99, 102, 241, 0.5)'}
+              onBlur={(e) => (e.target as HTMLInputElement).style.borderColor = 'rgba(255, 255, 255, 0.08)'}
             />
           </div>
 

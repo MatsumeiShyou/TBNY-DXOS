@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
-import { supabase } from '../lib/supabase/client';
-import { useAuth } from '../contexts/AuthContext';
-import { useNotification } from '../contexts/NotificationContext';
+import { supabase } from '../../shared/lib/supabase/client';
+import { useAuth } from './useAuth';
+import { useNotification } from './useNotification';
 
 interface SortConfig {
     column: string;

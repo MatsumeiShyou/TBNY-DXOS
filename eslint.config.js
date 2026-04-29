@@ -21,9 +21,11 @@ export default defineConfig([
     },
     rules: {
       'react-refresh/only-export-components': [
-        'warn',
+        'error',
         { allowConstantExport: true },
       ],
+      '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+      '@typescript-eslint/ban-ts-comment': 'error',
     },
   },
 ])
