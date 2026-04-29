@@ -50,7 +50,7 @@ async function runScan() {
  * ディレクトリを再帰的にスキャン（node_modules, .git は除外）
  */
 function scanDirectory(dir, depth = 0) {
-    if (depth > 3) return []; // 深度制限
+    if (depth > 8) return []; // 深度制限を拡張 (3 -> 8)
 
     const items = fs.readdirSync(dir);
     const result = [];

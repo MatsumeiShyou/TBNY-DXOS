@@ -1,5 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
+// gov-bypass [III-2] [EXPIRY:2026-05-29] Custom fetch logic with manual refresh (fetchData) provides equivalent SWR behavior for current scale.
 import { supabase } from '../../shared/lib/supabase/client';
+
 import { useAuth } from './useAuth';
 import { useNotification } from './useNotification';
 
