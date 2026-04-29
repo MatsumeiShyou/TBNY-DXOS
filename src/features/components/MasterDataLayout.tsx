@@ -67,11 +67,13 @@ export const MasterDataLayout = ({ schema, customRenderers = {} }: MasterDataLay
     const handleOpenAdd = () => {
         const initialForm: DataItem = {};
         schema.fields.forEach(f => {
+            let val;
             if (typeof f.defaultValue === 'function') {
-                initialForm[f.name] = f.defaultValue(items);
+                val = f.defaultValue(items);
             } else {
-                initialForm[f.name] = f.defaultValue || '';
+                val = f.defaultValue || '';
             }
+            initialForm[f.name] = f.transformIn ? f.transformIn(val) : val;
         });
         setFormData(initialForm);
         baseOpenAdd();
@@ -80,7 +82,8 @@ export const MasterDataLayout = ({ schema, customRenderers = {} }: MasterDataLay
     const handleOpenEdit = (item: DataItem) => {
         const editForm: DataItem = {};
         schema.fields.forEach(f => {
-            editForm[f.name] = item[f.name] || '';
+            const rawVal = item[f.name] || '';
+            editForm[f.name] = f.transformIn ? f.transformIn(rawVal) : rawVal;
         });
         setFormData(editForm);
         baseOpenEdit(item);
@@ -96,9 +99,15 @@ export const MasterDataLayout = ({ schema, customRenderers = {} }: MasterDataLay
         }
 
         const coreDataFactory = (fd: DataItem) => {
-            const data: DataItem = { ...fd, is_active: true };
-            schema.fields.filter(f => f.type === 'number').forEach(f => {
-                data[f.name] = fd[f.name] ? parseFloat(fd[f.name]) : null;
+            const data: DataItem = { is_active: true };
+            schema.fields.forEach(f => {
+                const val = fd[f.name];
+                data[f.name] = f.transformOut ? f.transformOut(val) : val;
+                
+                // フォールバック: number 型の自動パース
+                if (f.type === 'number' && f.transformOut === undefined && val != null && val !== '') {
+                    data[f.name] = parseFloat(val);
+                }
             });
             return data;
         };

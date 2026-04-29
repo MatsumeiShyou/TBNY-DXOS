@@ -1,41 +1,38 @@
 /**
- * Physical Constraints Validation Engine
+ * Physical Constraints — 物理層・業務ドメインにおける不変の制約定義
  * 
- * 坪野谷紙業厚木事業所の業務OSにおける、物理的な整合性制約を定義します。
- * 詳細設計書 Section 6 (10kg制約) に基づく。
+ * TBNY DXOS 全体で共有され、マスタ入力、配車計画、計量実績の
+ * すべてのバリデーションの SSOT (Single Source of Truth) となる。
  */
 
-/**
- * 10kg単位制約の検証
- * 入力値が 10 の倍数でない場合にエラーを返します。
- * @param value 検証する数値
- * @returns 検証結果（成功時は null, 失敗時はエラーメッセージ）
- */
-export function validate10kgStep(value: number | string | null | undefined): string | null {
-    if (value === null || value === undefined || value === '') return null;
-    
-    const numValue = typeof value === 'string' ? parseFloat(value) : value;
-    
-    if (isNaN(numValue)) return '数値を入力してください。';
-    
-    if (numValue % 10 !== 0) {
-        return `入力値（${numValue}kg）が正しくありません。10kg単位で入力してください。`;
-    }
-    
-    return null;
-}
+export const PHYSICAL_CONSTRAINTS = {
+  WEIGHING: {
+    MIN_UNIT_KG: 10, // 計量器の最小単位 (10kg)
+    MAX_WEIGHT_KG: 50000, // システムで許容する最大重量 (50t)
+  },
+  VEHICLE: {
+    MAX_CAPACITY_KG: 20000, // 一般的な大型車両の最大積載量 (20t)
+    LICENSE_PLATE_PATTERN: /^[0-9A-Za-z- ]+$/, // ナンバープレートの基本文字制約
+  },
+} as const;
 
 /**
- * 総重量整合性の検証
- * @param total 総重量
- * @param empty 空車重量
- * @param items 品目合計重量
- * @returns 誤差がある場合は警告メッセージ
+ * 重量が物理的な計量単位（10kg）に従っているか検証する
  */
-export function validateWeightConsistency(total: number, empty: number, items: number): string | null {
-    const diff = total - empty - items;
-    if (diff !== 0) {
-        return `重量不一致を検出しました（誤差: ${diff}kg）。理由（SDR）を入力してください。`;
-    }
-    return null;
-}
+export const isValidWeighingUnit = (weightKg: number): boolean => {
+  return weightKg % PHYSICAL_CONSTRAINTS.WEIGHING.MIN_UNIT_KG === 0;
+};
+
+/**
+ * 10kg単位に切り捨てる（正規化）
+ */
+export const normalizeToWeighingUnit = (weightKg: number): number => {
+  return Math.floor(weightKg / PHYSICAL_CONSTRAINTS.WEIGHING.MIN_UNIT_KG) * PHYSICAL_CONSTRAINTS.WEIGHING.MIN_UNIT_KG;
+};
+
+/**
+ * 車両積載量の妥当性検証
+ */
+export const isWithinCapacity = (payload: number, capacity: number): boolean => {
+  return payload <= capacity;
+};

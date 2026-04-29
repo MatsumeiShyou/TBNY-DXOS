@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
-// gov-bypass [III-2] [EXPIRY:2026-05-29] Custom fetch logic with manual refresh (fetchData) provides equivalent SWR behavior for current scale.
+import useSWR from 'swr';
+// gov-bypass [III-2] [EXPIRY:2026-05-29] Custom fetch logic replaced with SWR for robust offline resilience.
 import { supabase } from '../../shared/lib/supabase/client';
 
 import { useAuth } from './useAuth';
@@ -30,8 +31,6 @@ export function useMasterCRUD({
 }: UseMasterCRUDOptions) {
     const { currentUser } = useAuth();
     const { showNotification } = useNotification();
-    const [data, setData] = useState<DataItem[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -39,29 +38,29 @@ export function useMasterCRUD({
     const [reason, setReason] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const fetchData = useCallback(async () => {
-        setIsLoading(true);
-        try {
-            let query = supabase.from(viewName).select('*');
+    // TASK-003: SWR Fetcher & Hook
+    const fetcher = useCallback(async () => {
+        let query = supabase.from(viewName).select('*').eq('is_active', true);
+        if (initialSort) query = query.order(initialSort.column, { ascending: initialSort.ascending });
+        const { data, error } = await query;
+        if (error) throw error;
+        return data || [];
+    }, [viewName, initialSort]);
 
-            // T-05 FIX: 防御的な try-catch を削除し、スキーマの不整合を開発時に検出可能にする。
-            // すべてのマスタービューは SDR 準拠のため is_active カラムを持つ必要がある。
-            query = query.eq('is_active', true);
-
-            if (initialSort) query = query.order(initialSort.column, { ascending: initialSort.ascending });
-
-            const { data: result, error } = await query;
-            if (error) throw error;
-            setData(result || []);
-        } catch (e) {
-            console.error(`Fetch Error [${viewName}]:`, e);
-            showNotification(`データの取得に失敗しました [${viewName}]`, 'error');
-        } finally {
-            setIsLoading(false);
+    const { data: rawData, error: fetchError, isLoading, mutate: refresh } = useSWR(
+        currentUser ? `master/${viewName}` : null,
+        fetcher,
+        {
+            revalidateOnFocus: false,
+            dedupingInterval: 5000,
+            onError: (err) => {
+                console.error(`Fetch Error [${viewName}]:`, err);
+                showNotification(`データの取得に失敗しました [${viewName}]`, 'error');
+            }
         }
-    }, [viewName, initialSort, showNotification]);
+    );
 
-    useEffect(() => { fetchData(); }, [fetchData]);
+    const data = rawData || [];
 
     const handleOpenAdd = () => { setSelectedItem(null); setReason(''); setIsModalOpen(true); };
     const handleOpenEdit = (item: DataItem) => { setSelectedItem(item); setReason(''); setIsModalOpen(true); };
@@ -130,7 +129,7 @@ export function useMasterCRUD({
             });
 
             if (error) throw error;
-            await fetchData();
+            await refresh();
             setIsDeleteModalOpen(false);
             showNotification("データをアーカイブしました", "success");
         } catch (e) {
@@ -157,6 +156,6 @@ export function useMasterCRUD({
             return searchFields.some(field => String(item[field]).toLowerCase().includes(searchTerm.toLowerCase()));
         }),
         isLoading, searchTerm, setSearchTerm, isModalOpen, setIsModalOpen, isDeleteModalOpen, setIsDeleteModalOpen,
-        selectedItem, reason, setReason, isSubmitting, handleOpenAdd, handleOpenEdit, handleOpenDelete, handleSave, handleArchive, refresh: fetchData
+        selectedItem, reason, setReason, isSubmitting, handleOpenAdd, handleOpenEdit, handleOpenDelete, handleSave, handleArchive, refresh
     };
 }

@@ -15,6 +15,8 @@ export interface MasterField {
     options?: string[];
     optionsSource?: string;
     defaultValue?: string | ((items: unknown[]) => string);
+    transformIn?: (val: any) => any;
+    transformOut?: (val: any) => any;
 }
 
 export interface MasterColumn {
@@ -108,7 +110,15 @@ export const masterSchemas: Record<string, MasterSchema> = {
         fields: [
             { name: 'name', label: '現場名', type: 'text', required: true, placeholder: '現場名称を入力' },
             { name: 'address', label: '住所', type: 'text', placeholder: '詳細住所を入力' },
-            { name: 'weighing_allowed', label: '計量許可', type: 'select', options: ['true', 'false'], defaultValue: 'false' },
+            { 
+                name: 'weighing_allowed', 
+                label: '計量許可', 
+                type: 'select', 
+                options: ['true', 'false'], 
+                defaultValue: 'false',
+                transformIn: (v: any) => String(v === true),
+                transformOut: (v: any) => v === 'true'
+            },
         ]
     }
 };

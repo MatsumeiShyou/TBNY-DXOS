@@ -1,17 +1,15 @@
 import { createContext, useContext } from 'react';
-import type { User } from '@supabase/supabase-js';
-import type { Staff } from '../../shared/types/staff';
+import type { DXUser } from '../../shared/types/auth';
 
 export interface AuthContextValue {
-    currentUser: User | null;
-    currentStaff: Staff | null;
+    currentUser: DXUser | null;
     isLoading: boolean;
 }
 
 export const AuthContext = createContext<AuthContextValue>({ 
     currentUser: null, 
-    currentStaff: null,
     isLoading: true 
 });
+
 
 export const useAuth = () => useContext(AuthContext);

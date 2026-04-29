@@ -36,6 +36,8 @@ function placeholderStyle(_appId: string): React.CSSProperties {
 
 import { MasterDataManager } from '../components/MasterDataManager';
 
+import { RePaperRouteApp } from '../repaper-route/RePaperRouteApp';
+
 /**
  * appRegistry — app_id に基づいてコンポーネントを返す定数マップ
  */
@@ -46,29 +48,12 @@ export const APP_COMPONENTS: Record<string, React.ReactNode> = {
     </div>
   ),
   'repaper-route-admin': (
-    <div style={placeholderStyle('repaper-route-admin')}>
-      <div>
-        <p style={labelStyle}>{APPS_REGISTRY['repaper-route-admin']?.label}</p>
-        <p style={subTextStyle}>
-          このモジュールは外部アプリケーションとして稼働中です。統合後のイメージを表示しています。
-        </p>
-      </div>
-      {/* gov-bypass [II-2] Use native img for high-res mockup preview in Vite environment */}
-      <img src="/repaper-preview.png" style={previewImageStyle} alt="Preview" />
-    </div>
+    <RePaperRouteApp />
   ),
   'repaper-route-driver': (
-    <div style={placeholderStyle('repaper-route-driver')}>
-      <div>
-        <p style={labelStyle}>{APPS_REGISTRY['repaper-route-driver']?.label}</p>
-        <p style={subTextStyle}>
-          ドライバー専用ビュー。統合開発進行中。
-        </p>
-      </div>
-      {/* gov-bypass [II-2] */}
-      <img src="/repaper-preview.png" style={previewImageStyle} alt="Preview" />
-    </div>
+    <RePaperRouteApp /> // ドライバー専用ビューは RePaperRouteApp 内でロール判定
   ),
+
   'weighing-self-driver': (
     <div style={placeholderStyle('weighing-self-driver')}>
       <div>

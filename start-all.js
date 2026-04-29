@@ -15,15 +15,8 @@ const osProcess = spawn('npm', ['run', 'dev'], {
 });
 
 // RePaper Route の起動 (ポート 5174)
-// [DEBT] 現在は外部ディレクトリ参照のため一時無効化。統合後はここから直接起動、または単一Viteサーバで管理する。
-/*
-const appPath = path.resolve(__dirname, '../RePaper Route/apps/repaper-route');
-const appProcess = spawn('npm', ['run', 'dev'], {
-  cwd: appPath,
-  stdio: 'inherit',
-  shell: true
-});
-*/
+// [DONE] 統合が完了したため、DXOS 本体のビルドパイプラインに含まれています。
+
 
 const cleanup = () => {
   console.log('\x1b[31m%s\x1b[0m', '\n🛑 サーバーを終了します...');
