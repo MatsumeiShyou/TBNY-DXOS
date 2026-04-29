@@ -1,5 +1,3 @@
-import { MasterDataLayout } from '../components/MasterDataLayout';
-import { masterSchemas } from './masterSchema';
 import { APPS_REGISTRY } from './appsRegistry';
 import React from 'react';
 
@@ -12,6 +10,14 @@ const labelStyle: React.CSSProperties = {
 
 const subTextStyle: React.CSSProperties = {
   fontSize: '0.8125rem',
+};
+
+const previewImageStyle: React.CSSProperties = {
+  marginTop: '2rem',
+  maxWidth: '600px',
+  borderRadius: '8px',
+  boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)',
+  opacity: 0.8,
 };
 
 function placeholderStyle(_appId: string): React.CSSProperties {
@@ -28,45 +34,7 @@ function placeholderStyle(_appId: string): React.CSSProperties {
   };
 }
 
-import { Database, Users, CreditCard, ShoppingCart, MapPin } from 'lucide-react';
-
-/**
- * MasterDataManager — 複数のマスタスキーマを切り替えるラッパー
- */
-function MasterDataManager() {
-  const [currentKey, setCurrentKey] = React.useState('staffs');
-  
-  const getIcon = (key: string) => {
-    switch(key) {
-      case 'staffs': return <Users size={18} />;
-      case 'payers': return <CreditCard size={18} />;
-      case 'suppliers': return <ShoppingCart size={18} />;
-      case 'locations': return <MapPin size={18} />;
-      default: return <Database size={18} />;
-    }
-  };
-  
-  return (
-    <div className="master-manager">
-      <nav className="master-tabs">
-        {Object.entries(masterSchemas).map(([key, schema]) => (
-          <button 
-            key={key}
-            className={`master-tab-btn ${currentKey === key ? 'active' : ''}`}
-            onClick={() => setCurrentKey(key)}
-          >
-            {getIcon(key)}
-            {schema.title}
-          </button>
-        ))}
-      </nav>
-      <div className="master-view-content">
-        <MasterDataLayout key={currentKey} schema={masterSchemas[currentKey]} />
-      </div>
-    </div>
-  );
-}
-
+import { MasterDataManager } from '../components/MasterDataManager';
 
 /**
  * appRegistry — app_id に基づいてコンポーネントを返す定数マップ
