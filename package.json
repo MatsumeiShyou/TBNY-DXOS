@@ -10,8 +10,10 @@
     "type-check": "tsc -b --noEmit",
     "lint": "eslint .",
     "preview": "vite preview",
-    "done": "node .agent/scripts/closure_gate.js --reflect",
-    "agent:scan": "node .agent/scripts/scan.js"
+    "done": "npm run integrity && node .agent/scripts/closure_gate.js --reflect",
+    "integrity": "node .agent/scripts/integrity_check.js",
+    "agent:scan": "node .agent/scripts/scan.js",
+    "prepare": "husky || true"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.103.3",
@@ -30,6 +32,8 @@
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.4.24",
     "globals": "^16.5.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.4.0",
     "typescript": "~5.8.2",
     "typescript-eslint": "^8.48.0",
     "vite": "^7.3.1"

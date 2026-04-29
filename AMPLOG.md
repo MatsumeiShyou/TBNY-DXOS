@@ -24,3 +24,5 @@
 | 016    | 2026-04-29 | Staff Schema Standardization & AuthAdapter Integration | 承認 (PW: ｙ) | Implementation of Staff types, Adapter & Context |
 | 017    | 2026-04-29 | ADR-0012 Creation & Secure RPC Implementation | 承認 (PW: ｙ) | Schema-Validated Dynamic RPC Pattern Implementation |
 | 018    | 2026-04-29 | Debt List Sanitization & Governance Sync (v8.0) | 承認 (PW: ｙ) | Root/Gov Debt updated to AGENTS.md v8.0 |
+| 019    | 2026-04-29 | Physical Enforcement: Husky & lint-staged Deployment | 承認 (PW: ｙ) | Automated lint/type-check on commit |
+| 020    | 2026-04-29 | Governance Infrastructure Hardening | 承認 (PW: ｙ) | Context Archiving, Integrity Check Deployment, & Hook Optimization |
