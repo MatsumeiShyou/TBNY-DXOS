@@ -1,15 +1,18 @@
 # Technical Debt & Future Roadmap (TBNY DXOS)
 
-- [x] **[SCANNER_BLIND_SPOT]**: `scan.js` の深度制限（depth: 3）により、インフラ層のファイルが捕捉されていなかった問題を修正。
-- [x] **[MASTER_DATA_TRIAD]**: 設計憲法に基づく「支払先・仕入先・回収先」のマスタ定義とUI切り替え機能の実装を完了。
-- [x] **[PHYSICAL_VALIDATION_CORE]**: 10kg単位制約等の物理バリデーションエンジンを `shared/lib` に配備。
+- [x] **[SCANNER_BLIND_SPOT]**: `scan.js` の深度制限修正（完了）。
+- [x] **[MASTER_DATA_TRIAD]**: Payer/Supplier/Location 実装（完了）。
+- [x] **[PHYSICAL_VALIDATION_CORE]**: 物理バリデーションエンジン配備（完了）。
+
+## Technical Debt (残存負債)
+- [ ] **[PWA_ASSET_DEBT]**: `manifest.json` のアイコンが `vite.svg` の暫定流用。正式なアセット生成と差し替えが必要。
+- [ ] **[MODULE_INTEGRATION_DEBT]**: RePaper Route 等の外部モジュールとの物理的な統合（リンク、データ連携、SSO）の未完了。
+- [ ] **[SWR_FULL_ADOPTION]**: 全データフェッチ層への `useSWR` または `useQuery` パターンの導入（オフライン耐性の強化）。
 
 
 ## Future Roadmap (将来構想)
-*未実装の機能、将来的な拡張計画*
-
-- [ ] **TBNY DXOS Core Implementation**: ポータルサイトの基盤構築と Repaper Route とのシームレスな統合。
-- [ ] **Sentinel Governance v7.1 Enforcement**: 憲法第5層【現場統治】の各項目を技術的に強制するフックの配備。
+- [ ] **TBNY DXOS Core Implementation**: ポータル基盤と各モジュールのシームレスな統合。
+- [ ] **Sentinel Governance v8.x Protocol Enforcement**: `Seal/Purge Protocol` の完全自動監視および物理証跡の 100% 保証。
 
 ---
 > [!NOTE]
