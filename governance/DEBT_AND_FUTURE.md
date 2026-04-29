@@ -5,7 +5,7 @@
 
 - [x] **[Path Fragility] 統治ツールのパス解決**: `gov_loader.js` の強化と各スクリプトの `PROJECT_ROOT` SSOT化により解決。
 - [ ] **[Supabase Sync] インフラ統治統合**: ルートと `apps/repaper-route` の `supabase/` フォルダの完全な一本化と環境変数の同期。
-- [ ] **[AuthAdapter Integration] 全社標準 Staff スキーマ準拠**: `AuthAdapter.ts` を介し、旧 profile 形式から Staff スキーマへ完全移行。これをもって全社標準への準拠を完了とする。
+- [x] **[AuthAdapter Integration] 全社標準 Staff スキーマ準拠**: `AuthAdapter.ts` を介し、旧 profile 形式から Staff スキーマへ完全移行。これをもって全社標準への準拠を完了とする。
 - [ ] **[Git Hooks Sync]**: `husky` がモノレポ構造を正しく認識し、各ワークスペースの `lint-staged` をトリガーできているかの検証。
 
 ## 2. Future Roadmap (将来構想)

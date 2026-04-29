@@ -10,13 +10,13 @@
     "type-check": "tsc -b --noEmit",
     "lint": "eslint .",
     "preview": "vite preview",
-    "done": "node .agent/scripts/closure_gate.js --reflect"
+    "done": "node .agent/scripts/closure_gate.js --reflect",
+    "agent:scan": "node .agent/scripts/scan.js"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.103.3",
     "framer-motion": "^12.38.0",
     "lucide-react": "^1.8.0",
-    "pg": "^8.20.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0"
   },
@@ -30,7 +30,7 @@
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.4.24",
     "globals": "^16.5.0",
-    "typescript": "~5.9.3",
+    "typescript": "~5.8.2",
     "typescript-eslint": "^8.48.0",
     "vite": "^7.3.1"
   }

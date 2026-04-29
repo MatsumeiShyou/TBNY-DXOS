@@ -21,3 +21,5 @@
 | 013    | 2026-04-19 | AGENTS.md #1 に Root-Cause First (条項5) + Hotfix Route (条項6) を追加 | 承認 (PW: ｙ) | Governance Enhancement: A+C案採用 |
 | 014    | 2026-04-19 | AGENTS.md #3 に CLI-First Mandate (条項4) を追加 — SQLエディタ禁止・CLI優先義務化 | 承認 (PW: ｙ) | Governance Enhancement: DB操作のCLI強制 |
 | 015    | 2026-04-19 | AGENTS.md に第8層【過去知性同期】(TGS) を追加。高リスクタスクでの過去ログ走査を義務化 | 承認 (PW: ｙ) | Governance Enhancement: 過去知性の構造的活用 |
+| 016    | 2026-04-29 | Staff Schema Standardization & AuthAdapter Integration | 承認 (PW: ｙ) | Implementation of Staff types, Adapter & Context |
+| 017    | 2026-04-29 | ADR-0012 Creation & Secure RPC Implementation | 承認 (PW: ｙ) | Schema-Validated Dynamic RPC Pattern Implementation |

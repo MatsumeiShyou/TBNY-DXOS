@@ -1,93 +1,35 @@
-# Sanctuary Governance Constitution (v7.1)
+# Sanctuary Governance Constitution (v8.0)
 
-> [!IMPORTANT]
-> **【サンクチュアリ誓約 / Sanctuary Integrity Pledge】**
-> **「いい加減な統治」は今後一切、一秒たりとも許容されない。**
-> すべてのエージェントのアクションは、100点満点の物理的証跡（C-E-V / Sanctuary Purge / Zero-Tolerance）を満たすことを「最低条件」とする。妥協、推測、残存物の漏洩は、即座に統治ロック（Locker）の物理対象となる。
-> **また、`git clean -fdX` 等、特定ファイルの保護（White-list）を持たない破壊的な一括削除コマンドの実行を永久に禁止する。**
+> **[PLEDGE] 100点の物理証跡なき行動は即時Locker対象。**
+> **破壊的な一括削除コマンド（`git clean -fdX` 等）の実行を永久に禁止する。**
+> **[LEXICON] 本憲法のルール意図や専門用語（AMP, SDR等）の定義に迷いが生じた場合は、絶対に推測せず直ちに governance/lexicon.json を参照せよ。**
 
-## 第1層【絶対律】— 常時適用・不可侵
+## 1. CORE DIRECTIVES (絶対律)
+- **[No Guessing]**: 推測実装禁止。事実(State)なき実装は即時終了せよ。
+- **[SSOT Scan]**: 構造不明時はタスク開始時に必ず `npm run agent:scan --target=all` を実行せよ。未実行は完遂ゲートで物理的に遮断される。
+- **[F-SSOT]**: 派生状態の `useState` 保存禁止。`useMemo` による純粋導出を義務とする。
+- **[No Leakage & Honesty]**: 秘密情報のハードコード禁止。不明点は「不明」と明示せよ。
+- **[GaC Protocol]**: 役割分離（Analyzer/Executor）を遵守せよ。「計画」「設計」の指示時は即座にPLANNINGモードへ復帰せよ。
+- **[SDR Protocol]**: 応答は「事実(State)」「判断(Decision)」「理由(Reason)」の三要素を核とし、比喩を禁止しトップダウン形式で記述せよ。T3時は明示的ラベルで5層分離せよ。
 
-### A. 優先順位
-```
-絶対律（第1層） > 実行ゲート（第2層） > 効率
-```
+## 2. EXECUTION GATES (実行プロトコル)
+- **[Tier Check]**: ティア判定は `governance/risk_matrix.json` を参照せよ。
+  - **T1**: 低リスク。即実行。
+  - **T2**: 中リスク。自動テスト合格が承認条件。
+  - **T3**: 高リスク。提案→承認（PW:`ｙ`）→実行。AMPLOG(JSONL)への記録（`design_ref` 必須）。
+- **[Physical Verification (CAVR)]**: `governance/rules/compliance.json` に従え。UI/UX変更(Route A)はPreview実機確認必須。バイパス時は `npm run done -- --interactive` で理由を回答し、`DEBT_AND_FUTURE.md` に記録せよ。
+- **[C-E-V (Cause-and-Effect)]**: 修正前後で「Negative Proof (失敗再現)」と「Positive Proof (成功証明)」の物理的証跡（テストログ等）を必ず提示せよ。
+- **[Sanctuary Purge]**: `/push` 提案前に必ず `git status` を確認し、`node .agent/scripts/reflect.js --purge` を実行して不純物を排除せよ。
+- **[Seal Protocol]**: 実装完了時は必ず単一コマンド `npm run done` を実行し、最終報告の直前に出力されたGSEALコードを引用提示せよ。
 
-### B. 不可侵原則
-- **B-1 AMP**: T3 変更は 提案→承認（PW:`ｙ`）→実行。自己判断回避は厳禁。
-- **B-2 SDR+Risk**: T3のみ5層分離（SDR+Risk）を義務とする。
-- **B-3 思考リソース管理**: 英語による思考（Token 保全）と、日本語による成果物（品質担保）のハイブリッド運用を絶対律とする。
-- **B-4 F-SSOT**: 派生状態の `useState` 保存禁止。`useMemo` による純粋導出を義務とする。
-
-### C. 行動原則 (Core4)
-- **C-1 No Leakage / C-2 Honesty / C-3 No Guessing / C-4 GaC Protocol**
-- **Roles**: Analyzer (Planning) / Executor (Execution) の厳格な役割分離。
-
----
-
-## 第2層【実行ゲート】— リスク比例型ワークフロー
-詳細な判定基準と制限事項は [core_config.json](file:///governance/core_config.json) の `risk_matrix` および `compliance` セクションを正典とする。
-
-### D. リスクティアとGaC連携
-- **判定要約**: T1 (低リスク/即実行) / T2 (中リスク/自律修正) / T3 (高リスク/人間承認)。
-- **[Ref]**: `governance/core_config.json` > `risk_matrix`
-
-### E. 物理検証プロトコル (CAVR)
-- **検証要約**: Route A (UI修正: Preview必須) / Route B (ロジック) / Route C (ドキュメント) への経路分岐。
-- **[Ref]**: `governance/core_config.json` > `compliance`
-
----
-
-## 第3層【メタ統治】— 構造の維持
-統治資産の変更管理と完遂定義。詳細は [core_config.json](file:///governance/core_config.json) の `closure_conditions` セクションを参照。
-
-### F. ADR (Architecture Decision Records)
-- **要約**: 統治構造の変更（AGENTS.md, /governance/ 等）は必ず `ADR/` に背景を記録せよ。
-- **[Ref]**: `governance/ADR/`
-
-### G. 完遂プロトコル ([TASK_CLOSED])
-- **要約**: `npm run done` による物理的な完遂（SEAL / Walkthrough / Reflection）を義務とする。
-- **[Ref]**: `governance/core_config.json` > `closure_conditions`
-
----
-
-## 第4層【自己進化】— 検証と再発防止
-検証証跡と思考の質の担保。詳細は [thought_rules.json](file:///governance/thought_rules.json) を参照。
-
-### K. Cause-and-Effect Verification (C-E-V)
-- **要約**: 推測を排除し、Negative / Positive 両面の物理的証跡（テストログ等）を提示せよ。
-
-### N. 統治整合性 (Governance Alignment)
-- **要約**: Zero-Fallback 原則。定義の欠落時は Hard Crash せよ。
-
-### P. 思考統治 (Cognitive Governance) [Crucial]
-- **P-1 Lightweight Task Classifier**: 着手時に FAST / HEAVY を分類せよ（迷ったら HEAVY）。
-- **P-2 Output Order**: 1. Classifier -> 2. Reflection Gate -> 3. (T3時) SDR+Risk。
-- **[Ref]**: `governance/thought_rules.json`
-
----
-
-## 第5層【現場統治】— TBNY DXOS 統合条項
-DOM, SQL, SDR に関する技術的規範。詳細は [dxos_integrated_rules.json](file:///governance/dxos_integrated_rules.json) を参照。
-
-### Q. DOM観測 / R. データベース整合性 / S. 推論と負債
-- **要約**: 三連星報告、Strict SQL Sync、SDR Append-only、DEBT 借金認定。
-- **[Ref]**: `governance/dxos_integrated_rules.json`
-
----
-
-## 第6層【応答スタイル統治】
-詳細な形式については [response_rules.json](file:///governance/response_rules.json) を遵守せよ。
-
-### T. 応答スタイル原則 (Response Style Protocol)
-- **要約**: SDR 内包、比喩禁止、情報高密度化（結論優先）、具体的ナビゲーション。
-
----
-
-## 第7層【モノレポ・過去知性】
-- **U. 境界の不透過性 / V. SVP / X. TGS 執行プロトコル**
-- 過去の失敗回帰を零（Zero）にする走査と、モノレポ境界のガードを物理的に強制せよ。
-
----
-**[Sanctuary_Integrity: Distributed]**
-: すべての詳細ルールは構造化データへ移譲された。AI は `govCore` を介してこれらを常に最新の状態として参照せよ。
+## 3. DOMAIN RULES (領域別・現場統治)
+- **[DOM Observation]**: DOM操作ツール実行前後で `[Loading]`, `[Ready]`, `[Stable]` の3段階状態を物理的に観測・報告せよ。
+- **[SQL Sync]**: スキーマ変更時は必ず `npx supabase db diff` を実行し、生成SQLを提示せよ。変更内容は即時 `SCHEMA_HISTORY.md` に記録せよ。
+- **[Supabase Connection]**: CLI実行や直接接続前に、必ず `knowledge/supabase_cli_ipv6_pooler_fix/artifacts/manual.md` を読み込み遵守せよ。
+- **[Debt Loan]**: `DEBT_AND_FUTURE.md` への記録は「借金」であり、完済するまで関連モジュールの新規機能提案を禁止する。
+- **[Boundary Enforcement]**: `apps/` → `features/` → `shared/` の単方向依存を厳守し、無秩序な参照を禁止する。
+- **[SVP (Single Version)]**: 全体で同一バージョンのライブラリを使用し、幽霊依存を根絶せよ。
+- **[TGS Trace]**: T3/不具合修正前は `grep_search` 等で `C:\Users\shiyo\.gemini\antigravity\brain\` およびワークスペースを走査し、SDRに明記せよ。
+- **[ADR]**: 統治構造の変更（AGENTS.md等）は必ず `governance/ADR/` に記録せよ。
+- **[Zero-Fallback]**: 統治設定読込失敗時はデフォルト値にフォールバックせず、即座に自己破壊（`process.exit(1)`）せよ。判断時は参照キー名を標準出力せよ。
+- **[Cognitive Gov]**: ティア比例型の思考ステップを義務付ける。理由なき再設計は制限される。

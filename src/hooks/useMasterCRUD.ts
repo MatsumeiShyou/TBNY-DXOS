@@ -42,13 +42,9 @@ export function useMasterCRUD({
         try {
             let query = supabase.from(viewName).select('*');
 
-            // T-09 FIX: 空catchを警告ログに置換。is_activeカラムが存在しないビューでの
-            // サイレント全件返却を防止し、デバッグ可能にする。
-            try {
-                query = query.eq('is_active', true);
-            } catch (e) {
-                console.warn(`[useMasterCRUD] is_active filter skipped for ${viewName}:`, e);
-            }
+            // T-05 FIX: 防御的な try-catch を削除し、スキーマの不整合を開発時に検出可能にする。
+            // すべてのマスタービューは SDR 準拠のため is_active カラムを持つ必要がある。
+            query = query.eq('is_active', true);
 
             if (initialSort) query = query.order(initialSort.column, { ascending: initialSort.ascending });
 
@@ -99,7 +95,20 @@ export function useMasterCRUD({
             showNotification(isEdit ? "マスタを更新しました" : "マスタを新規登録しました", "success");
         } catch (e) {
             const message = e instanceof Error ? e.message : String(e);
-            showNotification("保存エラー: " + message, "error");
+            let displayMessage = "保存エラー: " + message;
+            
+            // DXOS_VAL_ エラーのパースと日本語化
+            if (message.includes('DXOS_VAL_01')) {
+                displayMessage = "システムエラー: 許可されていないテーブルへのアクセスです。";
+            } else if (message.includes('DXOS_VAL_02')) {
+                const match = message.match(/\[(.*?)\]/);
+                const colName = match ? match[1] : "不明";
+                displayMessage = `入力エラー: カラム名「${colName}」が正しくありません。`;
+            } else if (message.includes('DXOS_AUTH_01')) {
+                displayMessage = "認証エラー: スタッフレコードが見つかりません。";
+            }
+
+            showNotification(displayMessage, "error");
         } finally { setIsSubmitting(false); }
     };
 
@@ -124,7 +133,19 @@ export function useMasterCRUD({
             showNotification("データをアーカイブしました", "success");
         } catch (e) {
             const message = e instanceof Error ? e.message : String(e);
-            showNotification("アーカイブエラー: " + message, "error");
+            let displayMessage = "アーカイブエラー: " + message;
+
+            if (message.includes('DXOS_VAL_01')) {
+                displayMessage = "システムエラー: 許可されていないテーブルへのアクセスです。";
+            } else if (message.includes('DXOS_VAL_02')) {
+                const match = message.match(/\[(.*?)\]/);
+                const colName = match ? match[1] : "不明";
+                displayMessage = `入力エラー: カラム名「${colName}」が正しくありません。`;
+            } else if (message.includes('DXOS_AUTH_01')) {
+                displayMessage = "認証エラー: スタッフレコードが見つかりません。";
+            }
+
+            showNotification(displayMessage, "error");
         } finally { setIsSubmitting(false); }
     };
 

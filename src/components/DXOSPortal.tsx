@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import {
   LayoutDashboard,
   Truck,
@@ -27,13 +27,6 @@ const ICON_MAP: Record<string, LucideIcon> = {
   BarChart3,
 };
 
-interface StaffData {
-  id: string;
-  name: string;
-  role: string;
-  allowed_apps: string[];
-}
-
 interface AuthorizedTile extends AppConfig {
   id: string;
 }
@@ -49,50 +42,20 @@ interface DXOSPortalProps {
  * 認証済みユーザーのみが到達する。
  */
 export const DXOSPortal = ({ onAppSelect }: DXOSPortalProps) => {
-  const { currentUser } = useAuth();
-  const [staffData, setStaffData] = useState<StaffData | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-
-  // staffs テーブルからログインユーザーの権限情報を取得
-  useEffect(() => {
-    const fetchStaffData = async () => {
-      if (!currentUser) {
-        setIsLoading(false);
-        return;
-      }
-      try {
-        const { data, error } = await supabase
-          .from('staffs')
-          .select('id, name, role, allowed_apps')
-          .eq('auth_uid', currentUser.id)
-          .single();
-
-        if (error) {
-          console.error('❌ スタッフ情報の取得に失敗:', error.message);
-        }
-        setStaffData(data as StaffData | null);
-      } catch (e) {
-        console.error('❌ 予期しないエラー:', e);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchStaffData();
-  }, [currentUser]);
+  const { currentStaff, isLoading } = useAuth();
 
   // allowed_apps に基づいて表示タイルを生成（order順にソート）
   const authorizedTiles: AuthorizedTile[] = useMemo(() => {
-    if (!staffData?.allowed_apps) return [];
+    if (!currentStaff?.allowed_apps) return [];
 
-    return staffData.allowed_apps
+    return currentStaff.allowed_apps
       .filter((appId) => APPS_REGISTRY[appId])
       .map((appId) => ({
         id: appId,
         ...APPS_REGISTRY[appId],
       }))
       .sort((a, b) => a.order - b.order);
-  }, [staffData]);
+  }, [currentStaff]);
 
   // ログアウト処理
   const handleLogout = async () => {
@@ -147,16 +110,16 @@ export const DXOSPortal = ({ onAppSelect }: DXOSPortalProps) => {
       </header>
 
       {/* ユーザー情報バー */}
-      {staffData && (
+      {currentStaff && (
         <div className="dxos-portal__user-bar">
           <div className="dxos-portal__user-avatar">
-            {getInitials(staffData.name)}
+            {getInitials(currentStaff.name)}
           </div>
           <span className="dxos-portal__user-name">
-            {staffData.name || 'スタッフ'}
+            {currentStaff.name || 'スタッフ'}
           </span>
-          {staffData.role && (
-            <span className="dxos-portal__user-role">{staffData.role}</span>
+          {currentStaff.role && (
+            <span className="dxos-portal__user-role">{currentStaff.role}</span>
           )}
           <button
             className="dxos-portal__logout-btn"
