@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import {
   LayoutDashboard,
   Truck,
@@ -8,17 +8,18 @@ import {
   ShieldAlert,
   LogOut,
   Hexagon,
+  type LucideIcon,
 } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase/client';
-import { APPS_REGISTRY } from '../config/appsRegistry';
+import { APPS_REGISTRY, type AppConfig } from '../config/appsRegistry';
 import '../styles/portal.css';
 
 /**
  * アイコン名と Lucide コンポーネントの対応マップ。
- * appsRegistry.js で定義された icon 文字列をコンポーネントに解決する。
+ * appsRegistry.ts で定義された icon 文字列をコンポーネントに解決する。
  */
-const ICON_MAP = {
+const ICON_MAP: Record<string, LucideIcon> = {
   LayoutDashboard,
   Truck,
   Database,
@@ -26,18 +27,30 @@ const ICON_MAP = {
   BarChart3,
 };
 
+interface StaffData {
+  id: string;
+  name: string;
+  role: string;
+  allowed_apps: string[];
+}
+
+interface AuthorizedTile extends AppConfig {
+  id: string;
+}
+
+interface DXOSPortalProps {
+  onAppSelect: (appId: string) => void;
+}
+
 /**
  * DXOSPortal — 基盤業務OSのランチャー画面
  *
  * staffs.allowed_apps に基づき、利用可能なアプリをタイルとして表示する。
  * 認証済みユーザーのみが到達する。
- *
- * @param {Object} props
- * @param {function} props.onAppSelect - タイルクリック時に app_id を渡すコールバック
  */
-export const DXOSPortal = ({ onAppSelect }) => {
+export const DXOSPortal = ({ onAppSelect }: DXOSPortalProps) => {
   const { currentUser } = useAuth();
-  const [staffData, setStaffData] = useState(null);
+  const [staffData, setStaffData] = useState<StaffData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   // staffs テーブルからログインユーザーの権限情報を取得
@@ -57,7 +70,7 @@ export const DXOSPortal = ({ onAppSelect }) => {
         if (error) {
           console.error('❌ スタッフ情報の取得に失敗:', error.message);
         }
-        setStaffData(data);
+        setStaffData(data as StaffData | null);
       } catch (e) {
         console.error('❌ 予期しないエラー:', e);
       } finally {
@@ -69,7 +82,7 @@ export const DXOSPortal = ({ onAppSelect }) => {
   }, [currentUser]);
 
   // allowed_apps に基づいて表示タイルを生成（order順にソート）
-  const authorizedTiles = useMemo(() => {
+  const authorizedTiles: AuthorizedTile[] = useMemo(() => {
     if (!staffData?.allowed_apps) return [];
 
     return staffData.allowed_apps
@@ -87,7 +100,7 @@ export const DXOSPortal = ({ onAppSelect }) => {
   };
 
   // タイルクリック処理
-  const handleTileClick = async (appId) => {
+  const handleTileClick = async (appId: string) => {
     const appConfig = APPS_REGISTRY[appId];
     
     // 外部URLが設定されている場合は、そのままリダイレクト（Vite Proxyにより同一オリジンとしてルーティングされる）
@@ -103,7 +116,7 @@ export const DXOSPortal = ({ onAppSelect }) => {
   };
 
   // ユーザー名の頭文字を取得（アバター用）
-  const getInitials = (name) => {
+  const getInitials = (name: string | undefined) => {
     if (!name) return '?';
     return name.charAt(0);
   };
@@ -170,7 +183,7 @@ export const DXOSPortal = ({ onAppSelect }) => {
                 style={{
                   '--tile-gradient': `linear-gradient(135deg, ${app.gradientFrom}, ${app.gradientTo})`,
                   '--tile-glow': `${app.color}20`,
-                }}
+                } as React.CSSProperties}
               >
                 <div className="dxos-tile__icon-wrapper">
                   <IconComponent />

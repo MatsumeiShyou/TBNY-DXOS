@@ -7,7 +7,18 @@
  * 新しいモジュールを追加する際は、ここに1行追加するだけでよい。
  */
 
-export const APPS_REGISTRY = {
+export interface AppConfig {
+  label: string;
+  description: string;
+  icon: string;
+  color: string;
+  gradientFrom: string;
+  gradientTo: string;
+  url: string | null;
+  order: number;
+}
+
+export const APPS_REGISTRY: Record<string, AppConfig> = {
   'repaper-route-admin': {
     label: '配車管理ボード',
     description: '統合配車組み・現場管理・車両ステータス。',

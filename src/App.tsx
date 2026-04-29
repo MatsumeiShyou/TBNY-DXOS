@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { NotificationProvider } from './contexts/NotificationContext';
 import { DXOSPortal } from './components/DXOSPortal';
@@ -24,7 +24,7 @@ function LoginGate() {
 
   if (currentUser) return null;
 
-  const handleEmailLogin = async (e) => {
+  const handleEmailLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError('');
 
@@ -242,7 +242,7 @@ function LoginGate() {
  */
 function AppContent() {
   const { currentUser } = useAuth();
-  const [activeApp, setActiveApp] = useState(null);
+  const [activeApp, setActiveApp] = useState<string | null>(null);
 
   // 未認証：ログイン画面
   if (!currentUser) {
@@ -274,7 +274,7 @@ function AppContent() {
  *
  * 新しいモジュールが増えた場合はここに case を追加する。
  */
-function renderApp(appId) {
+function renderApp(appId: string) {
   switch (appId) {
     case 'master-data':
       return (

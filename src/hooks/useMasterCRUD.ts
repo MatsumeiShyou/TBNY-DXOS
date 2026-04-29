@@ -3,21 +3,37 @@ import { supabase } from '../lib/supabase/client';
 import { useAuth } from '../contexts/AuthContext';
 import { useNotification } from '../contexts/NotificationContext';
 
+interface SortConfig {
+    column: string;
+    ascending: boolean;
+}
+
+interface UseMasterCRUDOptions {
+    viewName: string;
+    rpcTableName: string;
+    rpcName?: string;
+    searchFields?: string[];
+    initialSort?: SortConfig;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type DataItem = Record<string, any>;
+
 export function useMasterCRUD({
     viewName,
     rpcTableName,
     rpcName = 'rpc_execute_master_update',
     searchFields = [],
     initialSort = { column: 'name', ascending: true }
-}) {
+}: UseMasterCRUDOptions) {
     const { currentUser } = useAuth();
     const { showNotification } = useNotification();
-    const [data, setData] = useState([]);
+    const [data, setData] = useState<DataItem[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-    const [selectedItem, setSelectedItem] = useState(null);
+    const [selectedItem, setSelectedItem] = useState<DataItem | null>(null);
     const [reason, setReason] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -25,7 +41,14 @@ export function useMasterCRUD({
         setIsLoading(true);
         try {
             let query = supabase.from(viewName).select('*');
-            try { query = query.eq('is_active', true); } catch (e) { }
+
+            // T-09 FIX: 空catchを警告ログに置換。is_activeカラムが存在しないビューでの
+            // サイレント全件返却を防止し、デバッグ可能にする。
+            try {
+                query = query.eq('is_active', true);
+            } catch (e) {
+                console.warn(`[useMasterCRUD] is_active filter skipped for ${viewName}:`, e);
+            }
 
             if (initialSort) query = query.order(initialSort.column, { ascending: initialSort.ascending });
 
@@ -43,11 +66,17 @@ export function useMasterCRUD({
     useEffect(() => { fetchData(); }, [fetchData]);
 
     const handleOpenAdd = () => { setSelectedItem(null); setReason(''); setIsModalOpen(true); };
-    const handleOpenEdit = (item) => { setSelectedItem(item); setReason(''); setIsModalOpen(true); };
-    const handleOpenDelete = (item) => { setSelectedItem(item); setReason(''); setIsDeleteModalOpen(true); };
+    const handleOpenEdit = (item: DataItem) => { setSelectedItem(item); setReason(''); setIsModalOpen(true); };
+    const handleOpenDelete = (item: DataItem) => { setSelectedItem(item); setReason(''); setIsDeleteModalOpen(true); };
 
-    const handleSave = async (formData, coreDataFactory, extDataFactory, decisionTypeOverride = null) => {
+    const handleSave = async (
+        formData: DataItem,
+        coreDataFactory: (fd: DataItem) => DataItem,
+        extDataFactory: ((fd: DataItem) => DataItem) | null,
+        decisionTypeOverride: string | null = null
+    ) => {
         if (!reason) { showNotification("変更理由を入力してください (SDR必須)", "warning"); return; }
+        if (!currentUser) { showNotification("認証エラー: ログインしてください", "error"); return; }
         setIsSubmitting(true);
         try {
             const isEdit = !!selectedItem;
@@ -69,12 +98,14 @@ export function useMasterCRUD({
             setIsModalOpen(false);
             showNotification(isEdit ? "マスタを更新しました" : "マスタを新規登録しました", "success");
         } catch (e) {
-            showNotification("保存エラー: " + e.message, "error");
+            const message = e instanceof Error ? e.message : String(e);
+            showNotification("保存エラー: " + message, "error");
         } finally { setIsSubmitting(false); }
     };
 
     const handleArchive = async (idField = 'id') => {
         if (!reason) { showNotification("アーカイブ理由を入力してください", "warning"); return; }
+        if (!currentUser || !selectedItem) { showNotification("認証エラー", "error"); return; }
         setIsSubmitting(true);
         try {
             const { error } = await supabase.rpc(rpcName, {
@@ -91,7 +122,10 @@ export function useMasterCRUD({
             await fetchData();
             setIsDeleteModalOpen(false);
             showNotification("データをアーカイブしました", "success");
-        } catch (e) { showNotification("アーカイブエラー: " + e.message, "error"); } finally { setIsSubmitting(false); }
+        } catch (e) {
+            const message = e instanceof Error ? e.message : String(e);
+            showNotification("アーカイブエラー: " + message, "error");
+        } finally { setIsSubmitting(false); }
     };
 
     return {

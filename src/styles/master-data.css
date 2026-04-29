@@ -1,0 +1,328 @@
+/* =============================================
+ * Master Data Layout Styles
+ * Tailwind CSS 依存を完全排除。
+ * design-tokens.css のカスタムプロパティを参照。
+ * ============================================= */
+
+/* Layout */
+.master-layout {
+    padding: 2rem;
+    max-width: 64rem;
+    margin: 0 auto;
+    height: 100%;
+    overflow-y: auto;
+    font-family: var(--font-family-base);
+}
+
+/* Header */
+.master-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.master-header__title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--color-text-primary);
+    margin: 0;
+}
+
+.master-header__version {
+    font-size: 0.6875rem;
+    background: #f1f5f9;
+    color: #64748b;
+    padding: 0.25rem 0.5rem;
+    border-radius: 9999px;
+    font-family: var(--font-family-mono);
+    font-weight: 400;
+    letter-spacing: -0.05em;
+    border: 1px solid #e2e8f0;
+}
+
+.master-header__description {
+    font-size: 0.875rem;
+    color: var(--color-text-secondary);
+    margin: 0.25rem 0 0;
+}
+
+.master-header__add-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--color-info);
+    color: #fff;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    font-weight: 700;
+    font-size: 0.875rem;
+    font-family: inherit;
+}
+
+.master-header__add-btn:hover {
+    filter: brightness(1.1);
+}
+
+/* Table Container */
+.master-table-container {
+    background: var(--color-background-base);
+    border-radius: 1rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+    border: 1px solid #e2e8f0;
+    overflow: hidden;
+}
+
+/* Search */
+.master-search {
+    padding: 1rem;
+    border-bottom: 1px solid #f1f5f9;
+    background: rgba(248, 250, 252, 0.5);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.master-search__icon {
+    color: #94a3b8;
+    flex-shrink: 0;
+}
+
+.master-search__input {
+    background: transparent;
+    border: none;
+    outline: none;
+    font-size: 0.875rem;
+    width: 100%;
+    color: var(--color-text-primary);
+    font-family: inherit;
+}
+
+.master-search__input::placeholder {
+    color: #94a3b8;
+}
+
+/* Loading */
+.master-loading {
+    padding: 3rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    color: #94a3b8;
+    font-weight: 500;
+}
+
+.master-loading__spinner {
+    color: var(--color-info);
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Empty State */
+.master-empty {
+    padding: 3rem;
+    text-align: center;
+    color: #94a3b8;
+    font-style: italic;
+}
+
+/* Table */
+.master-table {
+    width: 100%;
+    text-align: left;
+    border-collapse: collapse;
+}
+
+.master-table__head {
+    background: #f8fafc;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.master-table__th {
+    padding: 1rem 1.5rem;
+    font-size: 0.625rem;
+    font-weight: 700;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.master-table__th--action {
+    text-align: right;
+}
+
+.master-table__body .master-table__row {
+    border-bottom: 1px solid #f1f5f9;
+    transition: background 0.15s;
+}
+
+.master-table__body .master-table__row:hover {
+    background: #f8fafc;
+}
+
+.master-table__td {
+    padding: 1rem 1.5rem;
+    font-size: 0.875rem;
+    color: var(--color-text-primary);
+}
+
+.master-table__td--action {
+    text-align: right;
+}
+
+/* Actions */
+.master-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.25rem;
+}
+
+.master-actions__btn {
+    padding: 0.5rem;
+    color: #94a3b8;
+    background: transparent;
+    border: none;
+    border-radius: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.master-actions__btn--edit:hover {
+    color: var(--color-info);
+    background: rgba(59, 130, 246, 0.08);
+}
+
+.master-actions__btn--delete:hover {
+    color: var(--color-error);
+    background: rgba(239, 68, 68, 0.08);
+}
+
+/* Badge */
+.master-badge {
+    display: inline-block;
+    background: rgba(59, 130, 246, 0.08);
+    color: var(--color-info);
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+/* Form */
+.master-form {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.master-form__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: 1rem;
+    row-gap: 1.5rem;
+}
+
+.master-form__field.col-span-2 {
+    grid-column: span 2;
+}
+
+.master-form__label {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.master-form__required {
+    display: inline-block;
+    width: 0.25rem;
+    height: 0.25rem;
+    background: var(--color-error);
+    border-radius: 50%;
+}
+
+.master-form__input,
+.master-form__select {
+    width: 100%;
+    padding: 1rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 1rem;
+    outline: none;
+    font-size: 0.875rem;
+    font-family: inherit;
+    transition: all 0.2s;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+    box-sizing: border-box;
+    color: var(--color-text-primary);
+    background: var(--color-background-base);
+}
+
+.master-form__input:focus,
+.master-form__select:focus {
+    border-color: var(--color-info);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Audit Section */
+.master-form__audit {
+    padding: 1.25rem;
+    background: rgba(139, 92, 246, 0.04);
+    border: 1px solid rgba(139, 92, 246, 0.12);
+    border-radius: 1rem;
+}
+
+.master-form__audit-label {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.6875rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: #7c3aed;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.master-form__audit-textarea {
+    width: 100%;
+    padding: 1rem;
+    background: var(--color-background-base);
+    border: 1px solid #e2e8f0;
+    border-radius: 0.75rem;
+    min-height: 100px;
+    outline: none;
+    font-size: 0.875rem;
+    font-family: inherit;
+    transition: all 0.2s;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.04);
+    box-sizing: border-box;
+    resize: vertical;
+    color: var(--color-text-primary);
+}
+
+.master-form__audit-textarea:focus {
+    border-color: #7c3aed;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.04), 0 0 0 3px rgba(124, 58, 237, 0.1);
+}

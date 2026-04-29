@@ -1,12 +1,17 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
 import { supabase } from '../lib/supabase/client';
+import type { User } from '@supabase/supabase-js';
 
-const AuthContext = createContext();
+interface AuthContextValue {
+    currentUser: User | null;
+}
+
+const AuthContext = createContext<AuthContextValue>({ currentUser: null });
 
 export const useAuth = () => useContext(AuthContext);
 
-export const AuthProvider = ({ children }) => {
-    const [currentUser, setCurrentUser] = useState(null);
+export const AuthProvider = ({ children }: { children: ReactNode }) => {
+    const [currentUser, setCurrentUser] = useState<User | null>(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -25,7 +30,7 @@ export const AuthProvider = ({ children }) => {
         return () => subscription.unsubscribe();
     }, []);
 
-    const value = {
+    const value: AuthContextValue = {
         currentUser
     };
 

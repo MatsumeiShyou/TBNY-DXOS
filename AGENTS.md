@@ -26,20 +26,20 @@
 ---
 
 ## 第2層【実行ゲート】— リスク比例型ワークフロー
-詳細な判定基準と制限事項は [risk_matrix.json](file:///governance/risk_matrix.json) および [compliance.json](file:///governance/rules/compliance.json) を正典とする。
+詳細な判定基準と制限事項は [core_config.json](file:///governance/core_config.json) の `risk_matrix` および `compliance` セクションを正典とする。
 
 ### D. リスクティアとGaC連携
 - **判定要約**: T1 (低リスク/即実行) / T2 (中リスク/自律修正) / T3 (高リスク/人間承認)。
-- **[Ref]**: `governance/risk_matrix.json`
+- **[Ref]**: `governance/core_config.json` > `risk_matrix`
 
 ### E. 物理検証プロトコル (CAVR)
 - **検証要約**: Route A (UI修正: Preview必須) / Route B (ロジック) / Route C (ドキュメント) への経路分岐。
-- **[Ref]**: `governance/compliance.json`
+- **[Ref]**: `governance/core_config.json` > `compliance`
 
 ---
 
 ## 第3層【メタ統治】— 構造の維持
-統治資産の変更管理と完遂定義。詳細は [closure_conditions.json](file:///governance/rules/closure_conditions.json) を参照。
+統治資産の変更管理と完遂定義。詳細は [core_config.json](file:///governance/core_config.json) の `closure_conditions` セクションを参照。
 
 ### F. ADR (Architecture Decision Records)
 - **要約**: 統治構造の変更（AGENTS.md, /governance/ 等）は必ず `ADR/` に背景を記録せよ。
@@ -47,7 +47,7 @@
 
 ### G. 完遂プロトコル ([TASK_CLOSED])
 - **要約**: `npm run done` による物理的な完遂（SEAL / Walkthrough / Reflection）を義務とする。
-- **[Ref]**: `governance/inventory.json`
+- **[Ref]**: `governance/core_config.json` > `closure_conditions`
 
 ---
 
