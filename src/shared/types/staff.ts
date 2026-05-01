@@ -9,6 +9,7 @@ export interface Staff {
   role: 'admin' | 'staff' | 'driver' | 'office';
   allowed_apps: string[];
   is_active: boolean;
+  last_event_id: string | null;
   created_at: string;
   updated_at: string;
 }

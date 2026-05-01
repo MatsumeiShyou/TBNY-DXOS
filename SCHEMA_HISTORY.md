@@ -6,4 +6,4 @@
 |------------|---------|--------------------|-----------|
 | 2026-02-10 | 0.1.0   | Initial creation   | Project initialization |
 | 2026-02-10 | 0.2.0   | Initial SDR Schema | Core tables (event_logs, masters) |
-| 2026-02-10 | 0.2.0   | Initial SDR Schema | Core tables (event_logs, masters) |
+| 2026-05-01 | 0.3.0   | Master Data Recovery | Payers, Suppliers, Locations recovery via recovery_sql.sql |

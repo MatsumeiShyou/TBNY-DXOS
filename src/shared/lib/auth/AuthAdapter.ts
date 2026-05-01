@@ -9,7 +9,21 @@ import type { Staff } from '../../types/staff';
  */
 export const AuthAdapter = {
   /**
-   * auth_uid に紐づくスタッフ情報を取得する
+   * 現在のセッションを取得
+   */
+  async getSession() {
+    return await supabase.auth.getSession();
+  },
+
+  /**
+   * 認証状態の変更を監視
+   */
+  onAuthStateChange(callback: (event: any, session: any) => void) {
+    return supabase.auth.onAuthStateChange(callback);
+  },
+
+  /**
+   * メールアドレスとパスワードによるサインイン
    * @param authUid Supabase Auth の User.id
    */
   async getStaffByAuthUid(authUid: string): Promise<Staff | null> {
@@ -31,6 +45,32 @@ export const AuthAdapter = {
     }
 
     return data as Staff;
+  },
+
+  /**
+   * メールアドレスとパスワードによるサインイン
+   */
+  async signInWithPassword(email: string, password: string) {
+    return await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+  },
+
+  /**
+   * Google OAuth によるサインイン
+   */
+  async signInWithGoogle() {
+    return await supabase.auth.signInWithOAuth({
+      provider: 'google',
+    });
+  },
+
+  /**
+   * サインアウト
+   */
+  async signOut() {
+    return await supabase.auth.signOut();
   },
 
   /**

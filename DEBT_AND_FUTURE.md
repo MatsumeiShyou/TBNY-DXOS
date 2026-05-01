@@ -6,13 +6,14 @@
 
 ## Technical Debt (残存負債)
 - [ ] **[PWA_ASSET_DEBT]**: `manifest.json` のアイコンが `vite.svg` の暫定流用。正式なアセット生成と差し替えが必要。
-- [ ] **[MODULE_INTEGRATION_DEBT]**: RePaper Route 等の外部モジュールとの物理的な統合（リンク、データ連携、SSO）の未完了。
-- [ ] **[SWR_FULL_ADOPTION]**: 全データフェッチ層への `useSWR` または `useQuery` パターンの導入（オフライン耐性の強化）。
+- [ ] **[MODULE_INTEGRATION_DEBT]**: RePaper Route 等の外部モジュールとの物理的な統合（リンク、データ連携、SSO）。現在 Portal 側からの並行起動を復旧済み。
+- [ ] **[SWR_FULL_ADOPTION]**: 全データフェッチ層への `useSWR` パターンの導入（オフライン耐性の強化）。
 
 
 ## Future Roadmap (将来構想)
-- [ ] **TBNY DXOS Core Implementation**: ポータル基盤と各モジュールのシームレスな統合。
-- [ ] **Sentinel Governance v8.x Protocol Enforcement**: `Seal/Purge Protocol` の完全自動監視および物理証跡の 100% 保証。
+- [ ] **TBNY DXOS Core Implementation**: ポータル基盤と各モジュールのシームレスな統合（SSO含む）。
+- [x] **[DEVOPS_FIX]**: 開発サーバー並行起動の復旧 (2026-05-01)。
+- [ ] **Sentinel Governance v8.x Protocol Enforcement**: `Seal/Purge Protocol` の完全自動監視。
 
 ---
 > [!NOTE]

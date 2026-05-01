@@ -10,7 +10,7 @@ export interface DXUser {
   email: string;
   role: UserRole;
   allowed_apps: string[];
-  last_event_id?: string;
+  last_event_id?: string | null;
   avatar_url?: string;
 }
 

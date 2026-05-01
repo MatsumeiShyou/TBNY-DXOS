@@ -13,7 +13,7 @@
 - **[SDR Protocol]**: 応答は「事実(State)」「判断(Decision)」「理由(Reason)」の三要素を核とし、比喩を禁止しトップダウン形式で記述せよ。T3時は明示的ラベルで5層分離せよ。
 
 ## 2. EXECUTION GATES (実行プロトコル)
-- **[Tier Check]**: ティア判定は `governance/core_config.json` を参照せよ。
+- **[Tier Check]**: ティア判定は `governance/risk_matrix.json` を参照せよ。
   - **T1**: 低リスク。即実行。
   - **T2**: 中リスク。自動テスト合格が承認条件。
   - **T3**: 高リスク。提案→承認（PW:`ｙ`）→実行。AMPLOG(JSONL)への記録（`design_ref` 必須）。

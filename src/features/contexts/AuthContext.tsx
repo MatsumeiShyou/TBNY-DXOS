@@ -1,5 +1,4 @@
 import { useState, useEffect, type ReactNode } from 'react';
-import { supabase } from '../../shared/lib/supabase/client';
 import { AuthAdapter } from '../../shared/lib/auth/AuthAdapter';
 import { AuthContext, type AuthContextValue } from '../hooks/useAuth';
 import type { DXUser } from '../../shared/types/auth';
@@ -10,7 +9,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     useEffect(() => {
         const initializeAuth = async () => {
-            const { data: { session } } = await supabase.auth.getSession();
+            const { data: { session } } = await AuthAdapter.getSession();
             const user = session?.user ?? null;
             
             if (user) {
@@ -35,7 +34,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
         initializeAuth();
 
-        const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
+        const { data: { subscription } } = AuthAdapter.onAuthStateChange(async (_event, session) => {
             const user = session?.user ?? null;
             
             if (user) {

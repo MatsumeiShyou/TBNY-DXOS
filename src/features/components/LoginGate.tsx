@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useAuth } from '../hooks/useAuth';
-import { supabase } from '../../shared/lib/supabase/client';
+import { AuthAdapter } from '../../shared/lib/auth/AuthAdapter';
 import '../../shared/styles/portal.css';
 
 /**
@@ -28,10 +28,7 @@ export function LoginGate() {
     }
 
     setIsSubmitting(true);
-    const { error: authError } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    const { error: authError } = await AuthAdapter.signInWithPassword(email, password);
     setIsSubmitting(false);
 
     if (authError) {
@@ -40,7 +37,7 @@ export function LoginGate() {
   };
 
   const handleGoogleLogin = async () => {
-    await supabase.auth.signInWithOAuth({ provider: 'google' });
+    await AuthAdapter.signInWithGoogle();
   };
 
   return (

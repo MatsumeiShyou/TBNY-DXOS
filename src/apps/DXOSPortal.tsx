@@ -11,7 +11,7 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 import { useAuth } from '../features/hooks/useAuth';
-import { supabase } from '../shared/lib/supabase/client';
+import { AuthAdapter } from '../shared/lib/auth/AuthAdapter';
 import { APPS_REGISTRY, type AppConfig } from '../features/config/appsRegistry';
 import '../shared/styles/portal.css';
 
@@ -42,20 +42,20 @@ interface DXOSPortalProps {
  * 認証済みユーザーのみが到達する。
  */
 export const DXOSPortal = ({ onAppSelect }: DXOSPortalProps) => {
-  const { currentStaff, isLoading } = useAuth();
+  const { currentUser, isLoading } = useAuth();
 
   // allowed_apps に基づいて表示タイルを生成（order順にソート）
   const authorizedTiles: AuthorizedTile[] = useMemo(() => {
-    if (!currentStaff?.allowed_apps) return [];
+    if (!currentUser?.allowed_apps) return [];
 
-    return currentStaff.allowed_apps
+    return currentUser.allowed_apps
       .filter((appId: string) => APPS_REGISTRY[appId])
       .map((appId: string) => ({
         id: appId,
         ...APPS_REGISTRY[appId],
       }))
       .sort((a: AuthorizedTile, b: AuthorizedTile) => a.order - b.order);
-  }, [currentStaff]);
+  }, [currentUser]);
 
   const [redirectUrl, setRedirectUrl] = useState<string | null>(null);
 
@@ -67,7 +67,7 @@ export const DXOSPortal = ({ onAppSelect }: DXOSPortalProps) => {
 
   // ログアウト処理
   const handleLogout = async () => {
-    await supabase.auth.signOut();
+    await AuthAdapter.signOut();
   };
 
   // タイルクリック処理
@@ -118,16 +118,16 @@ export const DXOSPortal = ({ onAppSelect }: DXOSPortalProps) => {
       </header>
 
       {/* ユーザー情報バー */}
-      {currentStaff && (
+      {currentUser && (
         <div className="dxos-portal__user-bar">
           <div className="dxos-portal__user-avatar">
-            {getInitials(currentStaff.name)}
+            {getInitials(currentUser.name)}
           </div>
           <span className="dxos-portal__user-name">
-            {currentStaff.name || 'スタッフ'}
+            {currentUser.name || 'スタッフ'}
           </span>
-          {currentStaff.role && (
-            <span className="dxos-portal__user-role">{currentStaff.role}</span>
+          {currentUser.role && (
+            <span className="dxos-portal__user-role">{currentUser.role}</span>
           )}
           <button
             className="dxos-portal__logout-btn"

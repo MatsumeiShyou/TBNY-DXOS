@@ -15,13 +15,18 @@ const osProcess = spawn('npm', ['run', 'dev'], {
 });
 
 // RePaper Route の起動 (ポート 5174)
-// [DONE] 統合が完了したため、DXOS 本体のビルドパイプラインに含まれています。
+// [RECOVERED] ポータルからの遷移を有効にするため、並行起動を再有効化。
+const appProcess = spawn('npm', ['run', 'dev'], {
+  cwd: path.join(__dirname, '..', 'RePaper Route'),
+  stdio: 'inherit',
+  shell: true
+});
 
 
 const cleanup = () => {
   console.log('\x1b[31m%s\x1b[0m', '\n🛑 サーバーを終了します...');
   osProcess.kill('SIGINT');
-  // if (appProcess) appProcess.kill('SIGINT');
+  appProcess.kill('SIGINT');
   process.exit();
 };
 
