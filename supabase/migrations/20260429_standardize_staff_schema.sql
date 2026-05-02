@@ -43,9 +43,9 @@ BEGIN
     ) 
     LIMIT 1;
 
-    IF v_invalid_col IS NOT EXISTS THEN -- jsonb_object_keys might return null if empty, but we check if any found
+    IF v_invalid_col IS NULL THEN
         -- noop
-    ELSIF v_invalid_col IS NOT NULL THEN
+    ELSE
         RAISE EXCEPTION 'DXOS_VAL_02: Invalid column [%] in table [%]', v_invalid_col, p_table_name;
     END IF;
 
