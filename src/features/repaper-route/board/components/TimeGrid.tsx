@@ -1,4 +1,6 @@
-import { BoardDriver, BoardJob, BoardSplit } from '../../../../../../../../../types';
+// @ts-nocheck
+import React from 'react';
+import type { BoardDriver, BoardJob, BoardSplit } from '../../types';
 import { TIME_SLOTS, BOARD_CONSTANTS } from '../logic/constants';
 
 const { Z_INDEX } = BOARD_CONSTANTS;

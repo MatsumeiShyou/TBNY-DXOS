@@ -1,5 +1,5 @@
 import { History, User, Clock, AlertCircle } from 'lucide-react';
-import { BoardJob } from '../../../../../../../../../types';
+import type { BoardJob } from '../../types';
 
 interface AuditTrailPanelProps {
     job: BoardJob;

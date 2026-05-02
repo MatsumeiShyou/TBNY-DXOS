@@ -1,7 +1,7 @@
-import type { describe, it, expect } from 'vite';
+import type { describe, it, expect } from 'vitest';
 import type { checkConstraints } from './ConstraintEngine';
-import type { LogicVehicle, LogicJob } from '../../../../../../../../../types';
-import type { StaffPermissions } from '../../../../../../../../../types';
+import type { LogicVehicle, LogicJob } from '../../types';
+import type { StaffPermissions } from '../../types';
 import type { resolveVehicleSpec } from './VehicleSpecManifest';
 
 describe('ConstraintEngine V2 (Logic Deep Edition)', () => {

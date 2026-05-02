@@ -1,9 +1,9 @@
 import { MasterDataLayout } from '../../components/MasterDataLayout';
-import { MASTER_SCHEMAS } from '../../config/masterSchema.ts';
+import { masterSchemas } from '../../config/masterSchema';
 
 const MasterItemList: React.FC = () => {
     return (
-        <MasterDataLayout schema={MASTER_SCHEMAS.items} />
+        <MasterDataLayout schema={masterSchemas.items} />
     );
 };
 

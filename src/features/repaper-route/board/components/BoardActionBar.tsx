@@ -1,6 +1,6 @@
 import { Layers, CheckCircle, Database, Undo2, Redo2, AlertTriangle, Clipboard, Cloud } from 'lucide-react';
 import { DateDisplay } from './DateDisplay';
-import { BoardJob } from '../../../../../../../../../types';
+import type { BoardJob } from '../../types';
 
 export type BoardMode = 'VIEW_PAST' | 'VIEW_LOCKED' | 'EDIT' | 'CONFIRM';
 

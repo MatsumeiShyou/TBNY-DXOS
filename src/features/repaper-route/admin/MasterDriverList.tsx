@@ -1,8 +1,8 @@
 import { MasterDataLayout } from '../../components/MasterDataLayout';
-import { MASTER_SCHEMAS } from '../../config/masterSchema.ts';
+import { masterSchemas } from '../../config/masterSchema';
 
 const MasterDriverList: React.FC = () => {
-    return <MasterDataLayout schema={MASTER_SCHEMAS.drivers} />;
+    return <MasterDataLayout schema={masterSchemas.drivers} />;
 };
 
 export default MasterDriverList;

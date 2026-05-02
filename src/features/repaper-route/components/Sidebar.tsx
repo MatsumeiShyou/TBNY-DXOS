@@ -2,7 +2,7 @@ import {
     LayoutDashboard, Truck, Users, Settings,
     MapPin, Box, Shield, Activity, LogOut
 } from 'lucide-react';
-import { useAuth } from '../../../../../../../../AuthAdapterPort';
+import { useAuth } from '../AuthAdapterPort';
 
 interface SidebarProps {
     activeView: string;

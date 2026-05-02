@@ -12,7 +12,20 @@ export const useMasterData = () => {
     };
 };
 
+export const useMasterDataContext = () => {
+    return {
+        customers: [],
+        vehicles: [],
+        items: [],
+        points: [],
+        drivers: [],
+        isLoading: false,
+        refresh: async () => {}
+    };
+};
+
 export const MasterDataProvider = ({ children }: { children: any }) => children;
+
 export const useMasterPoints = () => ({ points: [], isLoading: false });
 export const useMasterDrivers = () => ({ drivers: [], isLoading: false });
 export const useMasterVehicles = () => ({ vehicles: [], isLoading: false });

@@ -1,4 +1,4 @@
-import { useMasterDataContext } from '../../../../../../../../../MasterDataAdapterPort';
+import { useMasterDataContext } from '../../MasterDataAdapterPort';
 
 /**
  * useMasterData (Adapter Hook for F-SSOT)

@@ -1,4 +1,4 @@
-import { Database } from '../../../types/database.types';
+import type { Database } from '../../types/database.types';
 
 type Driver = Database['public']['Tables']['drivers']['Row'];
 

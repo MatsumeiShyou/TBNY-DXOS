@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
-import { CheckCircle, AlertCircle, X, Info, LucideIcon } from 'lucide-react';
+import { CheckCircle, AlertCircle, X, Info, type LucideIcon } from 'lucide-react';
+
 
 export type ToastType = 'success' | 'error' | 'info';
 

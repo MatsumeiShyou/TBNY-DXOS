@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vite';
+import { describe, it, expect } from 'vitest';
 import { TemplateExpander, SkeletonJob } from './TemplateExpander';
 
 /** ヘルパー: 最低限の SkeletonJob を生成 */

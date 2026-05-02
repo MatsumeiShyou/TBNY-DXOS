@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { BoardJob, BoardDriver, BoardSplit } from '../../../../../../../../../types';
+import type { BoardJob, BoardDriver, BoardSplit } from '../../types';
 import { timeToMinutes } from '../logic/timeUtils';
 
 export interface SlotViolation {

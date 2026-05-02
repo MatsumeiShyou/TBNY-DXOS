@@ -1,7 +1,8 @@
+import React from 'react';
 import { useState } from 'react';
 import { Shield, Loader2, LogIn, AlertCircle } from 'lucide-react';
-import { supabase } from '../../../../../../../../../../shared/lib/supabase/client';
-import { useAuth } from '../../../../../../../../AuthAdapterPort';
+import { supabase } from '../../../shared/lib/supabase/client';
+import { useAuth } from '../AuthAdapterPort';
 
 export const ProfilePortal: React.FC = () => {
     const [email, setEmail] = useState('');

@@ -1,5 +1,5 @@
 import { useAuth as useDXAuth } from '../hooks/useAuth';
-
+import { AuthAdapter } from '../../shared/lib/auth/AuthAdapter';
 
 /**
  * RePaper Route 向け Auth Adapter
@@ -12,8 +12,12 @@ export const useAuth = () => {
   
   return {
     currentUser,
+    staff: currentUser,
     isLoading,
-    // 移植元が期待する追加メソッドがあればここで定義
+    status: isLoading ? 'INITIALIZING' : (currentUser ? 'AUTHENTICATED' : 'UNAUTHENTICATED'),
+    permissions: currentUser?.permissions,
+    logout: () => AuthAdapter.signOut(),
     isAuthenticated: !!currentUser,
   };
+
 };

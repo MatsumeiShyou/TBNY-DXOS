@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vite';
+import { describe, it, expect } from 'vitest';
 import { SortingBuffer } from './SortingBuffer';
 import { LicenseMatcher } from './LicenseMatcher';
 

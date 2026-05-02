@@ -1,9 +1,9 @@
 import { MasterDataLayout } from '../../components/MasterDataLayout';
-import { MASTER_SCHEMAS } from '../../config/masterSchema.ts';
+import { masterSchemas } from '../../config/masterSchema';
 
 const MasterPointList: React.FC = () => {
     return (
-        <MasterDataLayout schema={MASTER_SCHEMAS.points} />
+        <MasterDataLayout schema={masterSchemas.points} />
     );
 };
 

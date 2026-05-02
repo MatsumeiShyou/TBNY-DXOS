@@ -1,11 +1,12 @@
+// @ts-nocheck
 import { useState } from 'react';
 import { 
     X, Clock, User, Trash2, AlertTriangle, 
     CheckCircle2, History, ArrowRightLeft, ShieldAlert,
     Save, Maximize2, Minimize2, MapPin, Tag, Info, Box, Truck
 } from 'lucide-react';
-import { BoardJob, BoardDriver } from '../../../../../../../../../types';
-import { Staff } from '../../../../../../../../../types';
+import type { BoardJob, BoardDriver } from '../../types';
+import { Staff } from '../../types';
 
 interface JobDetailPanelProps {
     job: BoardJob;

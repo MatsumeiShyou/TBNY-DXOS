@@ -1,5 +1,6 @@
+import React from 'react';
 import { useState } from 'react';
-import { ExceptionReasonMaster } from '../../../../../../../../../types';
+import type { ExceptionReasonMaster } from '../../types';
 
 interface ExceptionChangeModalProps {
     isOpen: boolean;

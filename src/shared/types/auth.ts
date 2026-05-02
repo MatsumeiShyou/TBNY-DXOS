@@ -10,9 +10,17 @@ export interface DXUser {
   email: string;
   role: UserRole;
   allowed_apps: string[];
+    permissions: {
+        can_manage_master: boolean;
+        can_view_audit: boolean;
+        can_edit_board: boolean;
+        can_edit_past_records: boolean;
+    };
+
   last_event_id?: string | null;
   avatar_url?: string;
 }
+
 
 export interface AuthSession {
   user: DXUser | null;

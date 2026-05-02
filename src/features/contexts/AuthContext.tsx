@@ -21,8 +21,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                         email: user.email || '',
                         role: staff.role as any,
                         allowed_apps: staff.allowed_apps as any,
-                        last_event_id: staff.last_event_id
+                        last_event_id: staff.last_event_id,
+                        permissions: {
+                            can_manage_master: staff.role === 'admin' || (staff.role as string) === 'manager',
+                            can_view_audit: staff.role === 'admin' || (staff.role as string) === 'manager',
+                            can_edit_board: staff.role === 'admin' || (staff.role as string) === 'manager' || staff.role === 'staff',
+                            can_edit_past_records: staff.role === 'admin' || (staff.role as string) === 'manager'
+                        }
+
                     });
+
                 } else {
                     setCurrentUser(null);
                 }
@@ -46,8 +54,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                         email: user.email || '',
                         role: staff.role as any,
                         allowed_apps: staff.allowed_apps as any,
-                        last_event_id: staff.last_event_id
+                        last_event_id: staff.last_event_id,
+                        permissions: {
+                            can_manage_master: staff.role === 'admin' || (staff.role as string) === 'manager',
+                            can_view_audit: staff.role === 'admin' || (staff.role as string) === 'manager',
+                            // @ts-ignore
+                            can_edit_board: staff.role === 'admin' || (staff.role as string) === 'manager' || staff.role === 'staff'
+
+                        ,
+                            can_edit_past_records: (staff.role as string) === 'admin' || (staff.role as string) === 'manager'
+}
                     });
+
                 } else {
                     setCurrentUser(null);
                 }

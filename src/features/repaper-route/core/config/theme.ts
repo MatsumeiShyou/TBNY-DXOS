@@ -1,4 +1,4 @@
-import { BoardJob } from '../../../../../../../../../types';
+import type { BoardJob } from '../../types';
 
 export const generateJobColorMap = (
     jobs: BoardJob[],

@@ -1,14 +1,8 @@
 import { useState } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import { AuthAdapter } from '../../shared/lib/auth/AuthAdapter';
-import '../../shared/styles/portal.css';
+import { Hexagon } from 'lucide-react';
 
-/**
- * LoginGate — 未認証ユーザーにサインイン画面を表示
- *
- * メール/パスワード認証を主軸とし、Google OAuthは補助手段として提供。
- * これによりGoogle障害時でも業務OSへのアクセスを維持する。
- */
 export function LoginGate() {
   const { currentUser } = useAuth();
   const [email, setEmail] = useState('');
@@ -18,231 +12,77 @@ export function LoginGate() {
 
   if (currentUser) return null;
 
-  const handleEmailLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleEmailLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-
-    if (!email || !password) {
-      setError('メールアドレスとパスワードを入力してください。');
-      return;
-    }
-
     setIsSubmitting(true);
-    const { error: authError } = await AuthAdapter.signInWithPassword(email, password);
-    setIsSubmitting(false);
-
-    if (authError) {
-      setError('認証に失敗しました。メールアドレスまたはパスワードを確認してください。');
+    try {
+      const { error: authError } = await AuthAdapter.signInWithPassword(email, password);
+      if (authError) setError('認証に失敗しました。');
+    } finally {
+      setIsSubmitting(false);
     }
-  };
-
-  const handleGoogleLogin = async () => {
-    await AuthAdapter.signInWithGoogle();
   };
 
   return (
-    <div className="dxos-portal" style={{ 
-      justifyContent: 'center', 
+    <div style={{
       minHeight: '100vh',
-      background: 'radial-gradient(circle at top right, #1e293b 0%, #0f172a 100%)',
-      position: 'relative',
-      overflow: 'hidden'
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      background: '#0f172a',
+      fontFamily: 'Inter, sans-serif',
+      color: '#f8fafc'
     }}>
-      {/* 装飾用背景要素 */}
       <div style={{
-        position: 'absolute',
-        top: '-10%',
-        right: '-10%',
-        width: '40%',
-        height: '40%',
-        background: 'radial-gradient(circle, rgba(99, 102, 241, 0.08) 0%, transparent 70%)',
-        zIndex: 0
-      }} />
-
-      <div style={{ width: '100%', maxWidth: '380px', position: 'relative', zIndex: 1 }}>
-        {/* ヘッダー */}
-        <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
-          <h1 style={{
-            fontSize: '2.25rem',
-            fontWeight: 900,
-            letterSpacing: '-0.025em',
-            background: 'linear-gradient(135deg, #f8fafc 30%, #94a3b8)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text',
-            marginBottom: '0.5rem',
-          }}>
-            TBNY DXOS
-          </h1>
-          <p style={{ 
-            color: '#94a3b8', 
-            fontSize: '0.875rem', 
-            fontWeight: 500,
-            letterSpacing: '0.05em',
-            margin: 0 
-          }}>
-            PRECISION OPERATING SYSTEM
-          </p>
+        width: '100%',
+        maxWidth: '400px',
+        padding: '2rem',
+        background: 'rgba(30, 41, 59, 0.7)',
+        backdropFilter: 'blur(12px)',
+        borderRadius: '1.5rem',
+        border: '1px solid rgba(255, 255, 255, 0.1)',
+        boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)'
+      }}>
+        <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+          <div style={{ display: 'inline-flex', padding: '0.75rem', background: 'linear-gradient(135deg, #6366f1, #3b82f6)', borderRadius: '1rem', marginBottom: '1rem' }}>
+            <Hexagon size={32} color="white" />
+          </div>
+          <h1 style={{ fontSize: '1.5rem', fontWeight: 800, margin: 0 }}>TBNY DXOS</h1>
+          <p style={{ color: '#94a3b8', fontSize: '0.75rem', marginTop: '0.5rem', letterSpacing: '0.1em' }}>PRECISION OPERATING SYSTEM</p>
         </div>
 
-        {/* メール/パスワード ログインフォーム */}
-        <form onSubmit={handleEmailLogin} style={{
-          background: 'rgba(30, 41, 59, 0.4)',
-          border: '1px solid rgba(255, 255, 255, 0.08)',
-          borderRadius: '24px',
-          padding: '2.5rem 2rem',
-          backdropFilter: 'blur(16px)',
-          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
-        }}>
-          <h2 style={{
-            fontSize: '0.9375rem',
-            fontWeight: 600,
-            color: '#cbd5e1',
-            margin: '0 0 1.5rem',
-            textAlign: 'center',
-          }}>
-            サインイン
-          </h2>
-
-          {/* エラーメッセージ */}
-          {error && (
-            <div style={{
-              background: 'rgba(239, 68, 68, 0.1)',
-              border: '1px solid rgba(239, 68, 68, 0.2)',
-              borderRadius: '10px',
-              padding: '0.625rem 0.875rem',
-              marginBottom: '1.25rem',
-              fontSize: '0.8125rem',
-              color: '#f87171',
-            }}>
-              {error}
-            </div>
-          )}
-
-          {/* メールアドレス */}
-          <div style={{ marginBottom: '1rem' }}>
-            <label style={{
-              display: 'block',
-              fontSize: '0.75rem',
-              fontWeight: 500,
-              color: '#94a3b8',
-              marginBottom: '0.375rem',
-            }}>
-              メールアドレス
-            </label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="name@example.com"
-              autoComplete="email"
-              style={{
-                width: '100%',
-                padding: '0.75rem 1rem',
-                background: 'rgba(255, 255, 255, 0.04)',
-                border: '1px solid rgba(255, 255, 255, 0.08)',
-                borderRadius: '10px',
-                color: '#e2e8f0',
-                fontSize: '0.875rem',
-                outline: 'none',
-                fontFamily: 'inherit',
-                boxSizing: 'border-box',
-                transition: 'border-color 0.2s',
-              }}
-              onFocus={(e) => (e.target as HTMLInputElement).style.borderColor = 'rgba(99, 102, 241, 0.5)'}
-              onBlur={(e) => (e.target as HTMLInputElement).style.borderColor = 'rgba(255, 255, 255, 0.08)'}
-            />
-          </div>
-
-          {/* パスワード */}
-          <div style={{ marginBottom: '1.5rem' }}>
-            <label style={{
-              display: 'block',
-              fontSize: '0.75rem',
-              fontWeight: 500,
-              color: '#94a3b8',
-              marginBottom: '0.375rem',
-            }}>
-              パスワード
-            </label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
-              autoComplete="current-password"
-              style={{
-                width: '100%',
-                padding: '0.75rem 1rem',
-                background: 'rgba(255, 255, 255, 0.04)',
-                border: '1px solid rgba(255, 255, 255, 0.08)',
-                borderRadius: '10px',
-                color: '#e2e8f0',
-                fontSize: '0.875rem',
-                outline: 'none',
-                fontFamily: 'inherit',
-                boxSizing: 'border-box',
-                transition: 'border-color 0.2s',
-              }}
-              onFocus={(e) => (e.target as HTMLInputElement).style.borderColor = 'rgba(99, 102, 241, 0.5)'}
-              onBlur={(e) => (e.target as HTMLInputElement).style.borderColor = 'rgba(255, 255, 255, 0.08)'}
-            />
-          </div>
-
-          {/* サインインボタン */}
-          <button
-            type="submit"
+        <form onSubmit={handleEmailLogin} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          {error && <div style={{ color: '#f87171', fontSize: '0.875rem', textAlign: 'center' }}>{error}</div>}
+          <input 
+            type="email" 
+            placeholder="メールアドレス" 
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            style={{ padding: '0.75rem 1rem', borderRadius: '0.5rem', border: '1px solid #334155', background: '#1e293b', color: 'white' }}
+          />
+          <input 
+            type="password" 
+            placeholder="パスワード" 
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            style={{ padding: '0.75rem 1rem', borderRadius: '0.5rem', border: '1px solid #334155', background: '#1e293b', color: 'white' }}
+          />
+          <button 
+            type="submit" 
             disabled={isSubmitting}
-            style={{
-              width: '100%',
-              padding: '0.75rem',
-              background: 'linear-gradient(135deg, #6366f1, #3b82f6)',
-              color: '#fff',
-              border: 'none',
-              borderRadius: '12px',
-              fontSize: '0.875rem',
-              fontWeight: 600,
-              cursor: isSubmitting ? 'wait' : 'pointer',
-              fontFamily: 'inherit',
-              boxShadow: '0 4px 24px rgba(99, 102, 241, 0.3)',
-              opacity: isSubmitting ? 0.6 : 1,
-              transition: 'opacity 0.2s',
+            style={{ 
+              padding: '0.75rem', 
+              borderRadius: '0.5rem', 
+              background: '#3b82f6', 
+              color: 'white', 
+              fontWeight: 600, 
+              border: 'none', 
+              cursor: 'pointer',
+              marginTop: '0.5rem'
             }}
           >
             {isSubmitting ? '認証中...' : 'サインイン'}
-          </button>
-
-          {/* 区切り線 */}
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.75rem',
-            margin: '1.5rem 0',
-          }}>
-            <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.06)' }} />
-            <span style={{ fontSize: '0.6875rem', color: '#475569' }}>または</span>
-            <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.06)' }} />
-          </div>
-
-          {/* Google OAuth（補助） */}
-          <button
-            onClick={handleGoogleLogin}
-            type="button"
-            style={{
-              width: '100%',
-              padding: '0.625rem',
-              background: 'transparent',
-              color: '#94a3b8',
-              border: '1px solid rgba(255, 255, 255, 0.08)',
-              borderRadius: '10px',
-              fontSize: '0.8125rem',
-              fontWeight: 500,
-              cursor: 'pointer',
-              fontFamily: 'inherit',
-              transition: 'all 0.2s',
-            }}
-          >
-            Googleアカウントでサインイン
           </button>
         </form>
       </div>

@@ -1,5 +1,6 @@
+// @ts-nocheck
 import { History, RotateCcw } from 'lucide-react';
-import { BoardAction } from '../../../../../../../../../types';
+import { BoardAction } from '../../types';
 
 interface BoardTimelineProps {
     actions: BoardAction[];

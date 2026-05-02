@@ -1,4 +1,4 @@
-import type { LogicVehicle } from '../../../../../../../../../types';
+import type { LogicVehicle } from '../../types';
 
 /**
  * 車種ごとの基本スペック定義

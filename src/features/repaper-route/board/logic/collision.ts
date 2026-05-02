@@ -1,9 +1,9 @@
-import { BoardJob, BoardSplit, BoardDriver } from '../../../../../../../../../types';
+import type { BoardJob, BoardSplit, BoardDriver } from '../../types';
 import { checkConstraints } from '../../logic/core/ConstraintEngine';
 import { calculateScore } from '../../logic/score/ScoringEngine';
-import { LogicJob, LogicVehicle, PointAccessPermission } from '../../../../../../../../../types';
+import type { LogicJob, LogicVehicle, PointAccessPermission } from '../../types';
 import { resolveVehicleSpec } from '../../logic/core/VehicleSpecManifest';
-import { StaffPermissions } from '../../../../../../../../../types';
+import type { StaffPermissions } from '../../types';
 import { timeToMinutes } from './timeUtils';
 
 interface CollisionCheckParams {

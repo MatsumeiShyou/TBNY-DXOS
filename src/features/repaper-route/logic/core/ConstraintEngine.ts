@@ -1,5 +1,5 @@
-import type { LogicJob, LogicVehicle, ConstraintViolation, LogicResult, PointAccessPermission } from '../../../../../../../../../types';
-import type { StaffPermissions } from '../../../../../../../../../types';
+import type { LogicJob, LogicVehicle, ConstraintViolation, LogicResult, PointAccessPermission } from '../../types';
+import type { StaffPermissions } from '../../types';
 
 /**
  * 決定論的制約エンジン V2 (Constraint Engine)
