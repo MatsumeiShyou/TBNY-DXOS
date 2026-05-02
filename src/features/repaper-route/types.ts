@@ -1,7 +1,8 @@
 export * from './types/index';
 export * from './types/master';
 export * from './logic/types';
-export type { BoardAction, BoardActionType } from './types/index';
+import type { BoardJob, BoardSplit, BoardDriver, MasterVehicle, BoardAction, BoardActionType } from './types/index';
+export type { BoardAction, BoardActionType };
 
 export interface StaffPermissions {
     can_manage_master: boolean;
