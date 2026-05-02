@@ -11,11 +11,11 @@ export interface StaffPermissions {
 }
 
 export interface BoardState { 
-    jobs: any[]; 
-    pendingJobs: any[];
-    splits: any[];
-    drivers: any[]; 
-    vehicles: any[]; 
+    jobs: BoardJob[]; 
+    pendingJobs: BoardJob[];
+    splits: BoardSplit[];
+    drivers: BoardDriver[]; 
+    vehicles: MasterVehicle[]; 
     lastSync: string; 
 }
 

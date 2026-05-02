@@ -10,7 +10,7 @@ export interface AuditLogEntry {
   action: 'CREATE' | 'UPDATE' | 'DELETE' | 'ARCHIVE';
   tableName: string;
   recordId: string | number;
-  payload?: any;
+  payload?: unknown;
   staffId?: string;
   reason?: string;
 }

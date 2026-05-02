@@ -71,9 +71,8 @@ export class TemplateExpander {
         };
     }
 
-    /** 骨格データ → 未割当 Job への純粋な変換 (driver_id等は常にnull) */
     private static toUnassignedJob(skeleton: SkeletonJob): Job {
-        const job: any = {
+        const job: Partial<Job> = {
             ...skeleton,
             id: crypto.randomUUID(), // 【重要】既存IDとの競合を避けるため新規採番
             driver_id: null,

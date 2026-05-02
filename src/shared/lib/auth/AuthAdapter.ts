@@ -1,3 +1,4 @@
+import type { AuthChangeEvent, Session } from '@supabase/supabase-js';
 import { supabase } from '../supabase/client';
 import type { Staff } from '../../types/staff';
 
@@ -18,7 +19,7 @@ export const AuthAdapter = {
   /**
    * 認証状態の変更を監視
    */
-  onAuthStateChange(callback: (event: any, session: any) => void) {
+  onAuthStateChange(callback: (event: AuthChangeEvent, session: Session | null) => void) {
     return supabase.auth.onAuthStateChange(callback);
   },
 

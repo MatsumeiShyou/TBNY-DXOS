@@ -2,6 +2,7 @@ import { useState, useEffect, type ReactNode } from 'react';
 import { AuthAdapter } from '../../shared/lib/auth/AuthAdapter';
 import { AuthContext, type AuthContextValue } from '../hooks/useAuth';
 import type { DXUser } from '../../shared/types/auth';
+import type { Session } from '@supabase/supabase-js';
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [currentUser, setCurrentUser] = useState<DXUser | null>(null);
@@ -18,10 +19,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                 );
 
                 console.log('[DECISION] AuthProvider: Fetching session...');
-                const { data: { session } } = await Promise.race([
+                const { data: { session } } = await (Promise.race([
                     AuthAdapter.getSession(),
                     timeout
-                ]) as any;
+                ]) as Promise<{ data: { session: Session | null } }>);
 
                 const user = session?.user ?? null;
                 console.log(`[STATE] AuthProvider: User session ${user ? 'found' : 'not found'}.`);
@@ -35,8 +36,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                             id: staff.id,
                             name: staff.name,
                             email: user.email || '',
-                            role: staff.role as any,
-                            allowed_apps: staff.allowed_apps as any,
+                            role: staff.role as DXUser['role'],
+                            allowed_apps: staff.allowed_apps as string[],
                             last_event_id: staff.last_event_id,
                             permissions: {
                                 can_manage_master: staff.role === 'admin' || (staff.role as string) === 'manager',
@@ -76,8 +77,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                             id: staff.id,
                             name: staff.name,
                             email: user.email || '',
-                            role: staff.role as any,
-                            allowed_apps: staff.allowed_apps as any,
+                            role: staff.role as DXUser['role'],
+                            allowed_apps: staff.allowed_apps as string[],
                             last_event_id: staff.last_event_id,
                             permissions: {
                                 can_manage_master: staff.role === 'admin' || (staff.role as string) === 'manager',

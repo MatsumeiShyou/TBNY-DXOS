@@ -100,8 +100,8 @@ export interface BoardException {
     route_date: string;
     job_id: string;
     exception_type: 'MOVE' | 'REASSIGN' | 'SWAP' | 'CANCEL' | 'ADD';
-    before_state: any;
-    after_state: any;
+    before_state: unknown;
+    after_state: unknown;
     reason_master_id?: string;
     reason_free_text?: string;
     promote_requested?: boolean;
@@ -141,7 +141,7 @@ export interface BoardAction {
         toColumnId?: string;
         newTime?: string;
         prevTime?: string;
-        data?: any; // For complex snapshots
+        data?: unknown; // For complex snapshots
         milestoneName?: string; // For CONFIRM (as named milestone)
     };
     reason?: string;
