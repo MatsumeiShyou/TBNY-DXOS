@@ -6,11 +6,11 @@ import { useMasterData } from './useMasterData';
 import { useNotification } from '../../NotificationAdapterPort';
 import { isPastDayJST } from '../utils/dateUtils';
 import { useDataSync } from './useDataSync';
-import {
+import type {
     BoardJob, BoardDriver, BoardSplit, BoardHistory, ExceptionReasonMaster,
     BoardAction
 } from '../../types';
-import { Staff } from '../../types';
+import type { Staff } from '../../types';
 
 // --- Types ---
 export interface BoardState {
