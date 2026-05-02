@@ -24,6 +24,7 @@ import { Modal } from './Modal';
 import { MasterSchema, MasterColumn, MASTER_SCHEMAS } from '../config/masterSchema';
 import { serializeMasterData, normalizeDays } from '../utils/serialization';
 import { SortConfig, universalSort } from '../utils/sortUtils';
+import { PHYSICAL_CONSTRAINTS, isValidWeighingUnit } from '../../../shared/lib/validation/physicalConstraints';
 
 interface MasterDataLayoutProps {
     schema: MasterSchema;
@@ -206,6 +207,16 @@ export const MasterDataLayout: React.FC<MasterDataLayoutProps> = ({ schema }) =>
     const handleSave = async (formData: Record<string, any>) => {
         try {
             setIsSaving(true);
+
+            // [Physical Validation] 物理制約チェック (10kg単位等)
+            const weightFields = ['capacity_kg', 'net_weight_kg', 'max_payload_kg'];
+            for (const field of weightFields) {
+                const val = formData[field];
+                if (val != null && val !== '' && !isValidWeighingUnit(Number(val))) {
+                    throw new Error(`${schema.title}の「${field}」は${PHYSICAL_CONSTRAINTS.WEIGHING.MIN_UNIT_KG}kg単位で入力してください。`);
+                }
+            }
+
             const serialized = serializeMasterData(formData, schema.fields, schema.rpcTableName as string);
             if (editingItem) {
                 await updateItem(String(editingItem[schema.primaryKey]), serialized);

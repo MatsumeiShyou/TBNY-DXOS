@@ -13,6 +13,7 @@
     "done": "npm run integrity && node .agent/scripts/closure_gate.js --reflect",
     "integrity": "node .agent/scripts/integrity_check.js",
     "agent:scan": "node .agent/scripts/scan.js",
+    "agent:check": "node .agent/scripts/reflect.js --check",
     "prepare": "husky || true"
   },
   "dependencies": {

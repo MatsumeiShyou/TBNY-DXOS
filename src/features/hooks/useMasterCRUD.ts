@@ -6,6 +6,7 @@ import { supabase } from '../../shared/lib/supabase/client';
 
 import { useAuth } from './useAuth';
 import { useNotification } from './useNotification';
+import { logAuditTrail } from '../../shared/lib/audit/auditLogger';
 
 interface SortConfig {
     column: string;
@@ -92,7 +93,19 @@ export function useMasterCRUD({
             });
 
             if (error) throw error;
-            await fetchData();
+
+            // [Audit Trail v2] 証跡の二重記録
+            await logAuditTrail({
+                timestamp: new Date().toISOString(),
+                action: isEdit ? 'UPDATE' : 'CREATE',
+                tableName: rpcTableName,
+                recordId: selectedItem?.id || 'NEW',
+                payload: coreData,
+                staffId: currentUser.id,
+                reason: reason
+            });
+
+            await refresh();
             setIsModalOpen(false);
             showNotification(isEdit ? "マスタを更新しました" : "マスタを新規登録しました", "success");
         } catch (e) {
@@ -130,6 +143,17 @@ export function useMasterCRUD({
             });
 
             if (error) throw error;
+
+            // [Audit Trail v2] 証跡の二重記録
+            await logAuditTrail({
+                timestamp: new Date().toISOString(),
+                action: 'ARCHIVE',
+                tableName: rpcTableName,
+                recordId: selectedItem[idField],
+                staffId: currentUser.id,
+                reason: reason
+            });
+
             await refresh();
             setIsDeleteModalOpen(false);
             showNotification("データをアーカイブしました", "success");

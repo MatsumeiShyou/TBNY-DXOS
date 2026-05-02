@@ -1,3 +1,6 @@
 {
-  "*.{ts,tsx,js}": "eslint --fix"
+  "*.{ts,tsx,js}": [
+    "eslint --fix",
+    "node .agent/scripts/reflect.js --check"
+  ]
 }
