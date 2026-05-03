@@ -77,15 +77,29 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                 const user = session?.user;
                 if (user) {
                     try {
-                        const staff = await AuthAdapter.getStaffByAuthUid(user.id);
+                        // リスナー内でも 5秒のタイムアウト保護を適用
+                        const timeout = new Promise<never>((_, reject) => 
+                            setTimeout(() => reject(new Error('TIMEOUT')), 5000)
+                        );
+                        
+                        const fetchPromise = AuthAdapter.getStaffByAuthUid(user.id);
+                        const staff = await Promise.race([fetchPromise, timeout]).catch(() => null);
+
                         if (staff) {
                             const dxUser = mapStaffToUser(user, staff);
                             setCurrentUser(dxUser);
                             AuthAdapter.saveCachedProfile(dxUser);
                             setAuthStatus('VERIFIED');
+                        } else {
+                            console.warn('[STATE] AuthContext: Staff profile fetch failed or timed out.');
+                            // 失敗してもサインアウトはさせず、再試行可能なように UNAUTHENTICATED へ
+                            setAuthStatus('UNAUTHENTICATED');
+                            setCurrentUser(null);
                         }
                     } catch (e) {
-                        console.error('[STATE] AuthContext: Error fetching staff profile:', e);
+                        console.error('[STATE] AuthContext: Error during sign-in sync:', e);
+                        setAuthStatus('UNAUTHENTICATED');
+                        setCurrentUser(null);
                     }
                 }
             } else if (event === 'SIGNED_OUT') {
