@@ -1,13 +1,15 @@
-import { useState } from 'react';
+import { useState, lazy, Suspense } from 'react';
 import { AuthProvider } from '../features/contexts/AuthContext';
 import { useAuth } from '../features/hooks/useAuth';
 import { NotificationProvider } from '../features/contexts/NotificationContext';
-import { DXOSPortal } from './DXOSPortal';
-import { DXGlobalNavigation } from '../features/components/DXGlobalNavigation';
 import { SplashScreen } from '../shared/components/SplashScreen';
 import { LoginGate } from '../features/components/LoginGate';
 import { APP_COMPONENTS } from '../features/config/appComponents';
 import { APPS_REGISTRY } from '../features/config/appsRegistry';
+
+// 重いコンポーネントを遅延読み込み（ログイン画面のバンドルから除外）
+const DXOSPortal = lazy(() => import('./DXOSPortal').then(m => ({ default: m.DXOSPortal })));
+const DXGlobalNavigation = lazy(() => import('../features/components/DXGlobalNavigation').then(m => ({ default: m.DXGlobalNavigation })));
 import '../shared/styles/design-tokens.css';
 
 /**
@@ -31,26 +33,29 @@ function AppContent() {
     return <LoginGate />;
   }
 
-  // アプリ選択済み：選択されたモジュールを表示
-  if (activeApp) {
-    const appConfig = APPS_REGISTRY[activeApp];
-    const appLabel = appConfig?.label || activeApp;
-
-    return (
-      <div>
-        <DXGlobalNavigation
-          currentAppLabel={appLabel}
-          onBackToPortal={() => setActiveApp(null)}
-        />
-        <div className="app-viewport">
-          {APP_COMPONENTS[activeApp] || null}
+  // ポータルまたはアプリの表示（認証済み）
+  return (
+    <Suspense fallback={<SplashScreen />}>
+      {activeApp ? (
+        <div>
+          <DXGlobalNavigation
+            currentAppLabel={APPS_REGISTRY[activeApp]?.label || activeApp}
+            onBackToPortal={() => setActiveApp(null)}
+          />
+          <div className="app-viewport">
+            {activeApp && APP_COMPONENTS[activeApp] ? (
+              (() => {
+                const ActiveAppComponent = APP_COMPONENTS[activeApp];
+                return <ActiveAppComponent />;
+              })()
+            ) : null}
+          </div>
         </div>
-      </div>
-    );
-  }
-
-  // デフォルト：DXOSポータル（ランチャー）
-  return <DXOSPortal onAppSelect={setActiveApp} />;
+      ) : (
+        <DXOSPortal onAppSelect={setActiveApp} />
+      )}
+    </Suspense>
+  );
 }
 
 function App() {
