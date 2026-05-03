@@ -46,6 +46,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                         return null;
                     });
 
+                let finalStatus: AuthStatus = 'UNAUTHENTICATED';
                 if (result) {
                     const { user, staff } = result;
                     console.log(`[STATE] AuthProvider: Staff profile verified: ${staff.name}`);
@@ -67,13 +68,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
                     setCurrentUser(verifiedUser);
                     AuthAdapter.saveCachedProfile(verifiedUser);
-                    setAuthStatus('VERIFIED');
+                    finalStatus = 'VERIFIED';
                 } else {
                     console.log('[STATE] AuthProvider: Verification failed, timed out, or no session.');
-                    setAuthStatus('UNAUTHENTICATED');
                     setCurrentUser(null);
                     AuthAdapter.clearCachedProfile();
+                    finalStatus = 'UNAUTHENTICATED';
                 }
+                setAuthStatus(finalStatus);
             } catch (error: any) {
                 console.error('[STATE] AuthProvider: Initialization error:', error);
                 if (error.message === 'INITIALIZE_TIMEOUT') {
@@ -83,7 +85,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                 setCurrentUser(null);
             } finally {
                 setIsLoading(false);
-                console.log(`[STATE] AuthProvider: Initialization complete (Status: ${authStatus}).`);
+                // Note: We use a deferred check for the log if we want the actual state, 
+                // but since we know what we set, we can log that.
+                // However, for pure evidence, let's log the intention.
+                console.log(`[STATE] AuthProvider: Initialization complete.`);
             }
         };
 
@@ -105,6 +110,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                     const staffFetch = AuthAdapter.getStaffByAuthUid(user.id);
                     const staff = await Promise.race([staffFetch, staffTimeout]);
 
+                    let finalStatus: AuthStatus = 'UNAUTHENTICATED';
                     if (staff) {
                         console.log(`[STATE] AuthProvider: Staff profile verified: ${staff.name}`);
                         const verifiedUser: DXUser = {
@@ -123,13 +129,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                         };
                         setCurrentUser(verifiedUser);
                         AuthAdapter.saveCachedProfile(verifiedUser);
-                        setAuthStatus('VERIFIED');
+                        finalStatus = 'VERIFIED';
                     } else {
                         console.warn('[STATE] AuthProvider: No active staff profile found.');
                         setCurrentUser(null);
                         AuthAdapter.clearCachedProfile();
-                        setAuthStatus('UNAUTHENTICATED');
+                        finalStatus = 'UNAUTHENTICATED';
                     }
+                    setAuthStatus(finalStatus);
                 } else {
                     console.log('[STATE] AuthProvider: No user session. Transitioning to UNAUTHENTICATED.');
                     setCurrentUser(null);
@@ -144,7 +151,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                 setAuthStatus('UNAUTHENTICATED');
             } finally {
                 setIsLoading(false);
-                console.log(`[STATE] AuthProvider: State update complete (New Status: ${authStatus}).`);
+                console.log(`[STATE] AuthProvider: State update processing complete.`);
             }
         });
 

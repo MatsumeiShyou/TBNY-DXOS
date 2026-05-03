@@ -18,8 +18,8 @@ export const VerificationGate: React.FC<VerificationGateProps> = ({
 }) => {
   const { authStatus } = useAuth();
 
-  // 認証が確定（VERIFIED）していない場合は、フォールバックを表示
-  if (authStatus !== 'VERIFIED') {
+  // 認証が確定（VERIFIED）または楽観的（OPTIMISTIC）でない場合は、フォールバックを表示
+  if (authStatus !== 'VERIFIED' && authStatus !== 'OPTIMISTIC') {
     return <>{fallback || null}</>;
   }
 
