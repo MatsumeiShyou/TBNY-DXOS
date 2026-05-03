@@ -17,6 +17,17 @@ export const AuthAdapter = {
   },
 
   /**
+   * localStorage に認証トークンが存在するかを同期的に確認する
+   */
+  hasCachedSession(): boolean {
+    if (typeof window === 'undefined') return false;
+    // sb-[project-id]-auth-token 形式のキーを探す
+    return Object.keys(localStorage).some(key => 
+      key.startsWith('sb-') && key.endsWith('-auth-token')
+    );
+  },
+
+  /**
    * 認証状態の変更を監視
    */
   onAuthStateChange(callback: (event: AuthChangeEvent, session: Session | null) => void) {

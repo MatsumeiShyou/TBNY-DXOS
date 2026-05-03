@@ -4,6 +4,7 @@ import { useAuth } from '../features/hooks/useAuth';
 import { NotificationProvider } from '../features/contexts/NotificationContext';
 import { DXOSPortal } from './DXOSPortal';
 import { DXGlobalNavigation } from '../features/components/DXGlobalNavigation';
+import { SplashScreen } from '../shared/components/SplashScreen';
 import { LoginGate } from '../features/components/LoginGate';
 import { APP_COMPONENTS } from '../features/config/appComponents';
 import { APPS_REGISTRY } from '../features/config/appsRegistry';
@@ -16,8 +17,12 @@ import '../shared/styles/design-tokens.css';
  * アプリ選択に応じてビューを動的に切り替える。
  */
 function AppContent() {
-  const { currentUser } = useAuth();
+  const { currentUser, isLoading } = useAuth();
   const [activeApp, setActiveApp] = useState<string | null>(null);
+
+  if (isLoading) {
+    return <SplashScreen />;
+  }
 
   // 未認証：ログイン画面
   if (!currentUser) {

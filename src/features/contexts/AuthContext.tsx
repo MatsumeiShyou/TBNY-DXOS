@@ -2,11 +2,13 @@ import { useState, useEffect, type ReactNode } from 'react';
 import { AuthAdapter } from '../../shared/lib/auth/AuthAdapter';
 import { AuthContext, type AuthContextValue } from '../hooks/useAuth';
 import type { DXUser } from '../../shared/types/auth';
+import type { Staff } from '../../shared/types/staff';
 import type { Session } from '@supabase/supabase-js';
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [currentUser, setCurrentUser] = useState<DXUser | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
+    // キャッシュ（トークン）がない場合は、サーバー応答を待たずに即座にログイン画面を表示する
+    const [isLoading, setIsLoading] = useState(() => AuthAdapter.hasCachedSession());
 
     useEffect(() => {
         const initializeAuth = async () => {
