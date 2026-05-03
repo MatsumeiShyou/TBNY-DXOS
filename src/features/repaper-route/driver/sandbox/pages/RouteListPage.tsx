@@ -1,8 +1,7 @@
-
 import React, { useState } from 'react';
-import { Stop, StopStatus } from '../types';
-import { Card, StatusBadge, Button, Modal } from '../components/Widgets';
-import { TRAFFIC_STATUS_OPTIONS } from '../constants';
+import type { Stop } from '../types';
+import { StopStatus } from '../types';
+import { Card, StatusBadge, Button } from '../components/Widgets';
 import { HelpTarget } from '../components/Help';
 
 interface Props {
@@ -16,8 +15,7 @@ interface Props {
   onReorderStops: (newStops: Stop[]) => void;
 }
 
-export const RouteListPage: React.FC<Props> = ({ stops, currentRouteName, onSelectStop, onStatusReport, onChangeCourse, onTransferRequest, onIntermediateUnload, onReorderStops }) => {
-  const [isStatusModalOpen, setStatusModalOpen] = useState(false);
+export const RouteListPage: React.FC<Props> = ({ stops, currentRouteName, onSelectStop, onChangeCourse, onTransferRequest, onIntermediateUnload, onReorderStops }) => {
   const [isReordering, setIsReordering] = useState(false);
 
   // Calculate progress
@@ -85,14 +83,6 @@ export const RouteListPage: React.FC<Props> = ({ stops, currentRouteName, onSele
             >
               <i className={`fa-solid ${isReordering ? 'fa-check' : 'fa-sort'} tw-mr-2`}></i>
               {isReordering ? '完了' : '並び替え'}
-            </button>
-          </HelpTarget>
-          <HelpTarget helpId="btn-status-report">
-            <button 
-              onClick={() => setStatusModalOpen(true)}
-              className="tw-h-10 tw-w-10 tw-bg-white tw-border tw-border-slate-200 tw-text-slate-700 tw-rounded-lg tw-text-sm tw-font-bold tw-shadow-sm active:tw-bg-slate-50 tw-flex tw-items-center tw-justify-center"
-            >
-              <i className="fa-solid fa-bullhorn tw-text-accent"></i>
             </button>
           </HelpTarget>
         </div>

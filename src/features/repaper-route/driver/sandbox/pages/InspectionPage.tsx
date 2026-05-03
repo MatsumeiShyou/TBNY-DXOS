@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { InspectionItem } from '../types';
+import type { InspectionItem } from '../types';
 import { Button, Card, Modal } from '../components/Widgets';
 import { INITIAL_INSPECTION_ITEMS } from '../constants';
 

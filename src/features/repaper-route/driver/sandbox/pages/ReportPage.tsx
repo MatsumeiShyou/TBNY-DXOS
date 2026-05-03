@@ -1,6 +1,7 @@
 
 import React, { useState, useMemo } from 'react';
-import { Stop, StopStatus, User } from '../types';
+import type { Stop, User } from '../types';
+import { StopStatus } from '../types';
 import { Card, Button, StatusBadge, Modal } from '../components/Widgets';
 import { HelpTarget } from '../components/Help';
 

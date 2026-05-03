@@ -1,7 +1,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { Button, Modal } from '../components/Widgets';
-import { Stop, StopStatus, Vehicle } from '../types';
+import type { Stop, Vehicle } from '../types';
+import { StopStatus } from '../types';
 import { HelpTarget } from '../components/Help';
 import { NumericKeypad, safeCalculate } from '../components/NumericKeypad';
 

@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { User, Stop } from '../types';
+import type { User, Stop } from '../types';
 import { Button, Card, StatusBadge } from '../components/Widgets';
 
 interface MenuPageProps {

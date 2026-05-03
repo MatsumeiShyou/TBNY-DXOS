@@ -1,6 +1,7 @@
 
 import React, { useState } from 'react';
-import { Stop, CargoItem, StopStatus } from '../types';
+import type { Stop, CargoItem } from '../types';
+import { StopStatus } from '../types';
 import { Button, Card, Modal } from '../components/Widgets';
 import { HelpTarget } from '../components/Help';
 import { NumericKeypad, safeCalculate } from '../components/NumericKeypad';
