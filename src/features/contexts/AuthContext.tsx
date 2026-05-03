@@ -15,39 +15,46 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             console.log(`[STATE] AuthProvider: Initialization started (Status: ${authStatus}).`);
             
             try {
-                // セッション取得（バックグラウンドまたはフォアグラウンド）
-                const { data: { session } } = await AuthAdapter.getSession();
-                const user = session?.user ?? null;
+                // [SAFETY] バックグラウンド検証でも 5秒以上かかる場合は「失敗」とみなして固着を防ぐ
+                const timeout = new Promise<never>((_, reject) => 
+                    setTimeout(() => reject(new Error('TIMEOUT')), 5000)
+                );
 
-                if (user) {
-                    console.log('[DECISION] AuthProvider: Session user found. Fetching staff profile...');
-                    // スタッフプロファイル取得
-                    const staff = await AuthAdapter.getStaffByAuthUid(user.id);
-                    
-                    if (staff) {
-                        console.log(`[STATE] AuthProvider: Staff profile verified: ${staff.name}`);
-                        setCurrentUser({
-                            id: staff.id,
-                            name: staff.name,
-                            email: user.email || '',
-                            role: staff.role as DXUser['role'],
-                            allowed_apps: staff.allowed_apps as string[],
-                            last_event_id: staff.last_event_id,
-                            permissions: {
-                                can_manage_master: staff.role === 'admin' || (staff.role as string) === 'manager',
-                                can_view_audit: staff.role === 'admin' || (staff.role as string) === 'manager',
-                                can_edit_board: staff.role === 'admin' || (staff.role as string) === 'manager' || staff.role === 'staff',
-                                can_edit_past_records: staff.role === 'admin' || (staff.role as string) === 'manager'
-                            }
-                        });
-                        setAuthStatus('VERIFIED');
-                    } else {
-                        console.warn('[STATE] AuthProvider: Staff profile not found for user.');
-                        setAuthStatus('UNAUTHENTICATED');
-                        setCurrentUser(null);
+                const verifyPromise = (async () => {
+                    const { data: { session } } = await AuthAdapter.getSession();
+                    const user = session?.user ?? null;
+
+                    if (user) {
+                        const staff = await AuthAdapter.getStaffByAuthUid(user.id);
+                        if (staff) return { user, staff };
                     }
+                    return null;
+                })();
+
+                // タイムアウトとの競争
+                const result = await Promise.race([verifyPromise, timeout])
+                    .catch(() => null);
+
+                if (result) {
+                    const { user, staff } = result;
+                    console.log(`[STATE] AuthProvider: Staff profile verified: ${staff.name}`);
+                    setCurrentUser({
+                        id: staff.id,
+                        name: staff.name,
+                        email: user.email || '',
+                        role: staff.role as DXUser['role'],
+                        allowed_apps: staff.allowed_apps as string[],
+                        last_event_id: staff.last_event_id,
+                        permissions: {
+                            can_manage_master: staff.role === 'admin' || (staff.role as string) === 'manager',
+                            can_view_audit: staff.role === 'admin' || (staff.role as string) === 'manager',
+                            can_edit_board: staff.role === 'admin' || (staff.role as string) === 'manager' || staff.role === 'staff',
+                            can_edit_past_records: staff.role === 'admin' || (staff.role as string) === 'manager'
+                        }
+                    });
+                    setAuthStatus('VERIFIED');
                 } else {
-                    console.log('[STATE] AuthProvider: No session user found.');
+                    console.log('[STATE] AuthProvider: Verification failed or timed out.');
                     setAuthStatus('UNAUTHENTICATED');
                     setCurrentUser(null);
                 }
