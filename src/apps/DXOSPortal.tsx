@@ -11,8 +11,8 @@ import {
   type LucideIcon,
 } from 'lucide-react';
 import { useAuth } from '../features/hooks/useAuth';
-import { AuthAdapter } from '../shared/lib/auth/AuthAdapter';
 import { APPS_REGISTRY, type AppConfig } from '../features/config/appsRegistry';
+import { VerificationGate, SkeletonTile } from '../shared/components/VerificationGate';
 import '../shared/styles/portal.css';
 
 /**
@@ -42,7 +42,7 @@ interface DXOSPortalProps {
  * 認証済みユーザーのみが到達する。
  */
 export const DXOSPortal = ({ onAppSelect }: DXOSPortalProps) => {
-  const { currentUser, isLoading } = useAuth();
+  const { currentUser, isLoading, authStatus } = useAuth();
 
   // allowed_apps に基づいて表示タイルを生成（order順にソート）
   const authorizedTiles: AuthorizedTile[] = useMemo(() => {
@@ -118,16 +118,19 @@ export const DXOSPortal = ({ onAppSelect }: DXOSPortalProps) => {
       </header>
 
       {/* ユーザー情報バー */}
-      {currentUser && (
+      {(currentUser || authStatus === 'OPTIMISTIC') && (
         <div className="dxos-portal__user-bar">
           <div className="dxos-portal__user-avatar">
-            {getInitials(currentUser.name)}
+            {getInitials(currentUser?.name)}
           </div>
           <span className="dxos-portal__user-name">
-            {currentUser.name || 'スタッフ'}
+            {currentUser?.name || 'スタッフ'}
           </span>
-          {currentUser.role && (
+          {currentUser?.role && (
             <span className="dxos-portal__user-role">{currentUser.role}</span>
+          )}
+          {authStatus === 'OPTIMISTIC' && (
+            <span className="dxos-portal__sync-status">同期中...</span>
           )}
           <button
             className="dxos-portal__logout-btn"
@@ -141,7 +144,13 @@ export const DXOSPortal = ({ onAppSelect }: DXOSPortalProps) => {
       )}
 
       {/* アプリタイルグリッド */}
-      {authorizedTiles.length > 0 ? (
+      {authStatus === 'OPTIMISTIC' ? (
+        <div className="dxos-portal__grid">
+          {[1, 2, 3, 4, 5, 6].map((i) => (
+            <SkeletonTile key={i} />
+          ))}
+        </div>
+      ) : authorizedTiles.length > 0 ? (
         <div className="dxos-portal__grid">
           {authorizedTiles.map((app) => {
             const IconComponent = ICON_MAP[app.icon] || LayoutDashboard;

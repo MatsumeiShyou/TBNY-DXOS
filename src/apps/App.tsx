@@ -17,15 +17,17 @@ import '../shared/styles/design-tokens.css';
  * アプリ選択に応じてビューを動的に切り替える。
  */
 function AppContent() {
-  const { currentUser, isLoading } = useAuth();
+  const { currentUser, authStatus, isLoading } = useAuth();
   const [activeApp, setActiveApp] = useState<string | null>(null);
 
   if (isLoading) {
     return <SplashScreen />;
   }
 
-  // 未認証：ログイン画面
-  if (!currentUser) {
+  // ログイン済み（確定）または暫定ログイン（楽観的）の場合、ポータルを表示
+  const isUserAuthenticated = authStatus === 'VERIFIED' || authStatus === 'OPTIMISTIC';
+
+  if (!isUserAuthenticated && !currentUser) {
     return <LoginGate />;
   }
 

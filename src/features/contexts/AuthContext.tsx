@@ -6,33 +6,27 @@ import type { Session } from '@supabase/supabase-js';
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [currentUser, setCurrentUser] = useState<DXUser | null>(null);
-    // キャッシュ（トークン）がない場合は、サーバー応答を待たずに即座にログイン画面を表示する
-    const [isLoading, setIsLoading] = useState(() => AuthAdapter.hasCachedSession());
+    const [authStatus, setAuthStatus] = useState<AuthStatus>(() => 
+        AuthAdapter.hasCachedSession() ? 'OPTIMISTIC' : 'INITIALIZING'
+    );
+    const [isLoading, setIsLoading] = useState(() => !AuthAdapter.hasCachedSession());
 
     useEffect(() => {
         const initializeAuth = async () => {
-            console.log('[STATE] AuthProvider: Initialization started.');
+            console.log(`[STATE] AuthProvider: Initialization started (Status: ${authStatus}).`);
             
             try {
-                // 5秒のタイムアウトを設定（超過時はサイレントに諦めてログイン画面を出す）
-                const timeout = new Promise((_, reject) => 
-                    setTimeout(() => reject(new Error('TIMEOUT')), 5000)
-                );
-
-                console.log('[DECISION] AuthProvider: Fetching session...');
-                const { data: { session } } = await (Promise.race([
-                    AuthAdapter.getSession(),
-                    timeout
-                ]) as Promise<{ data: { session: Session | null } }>).catch(() => ({ data: { session: null } }));
-
+                // セッション取得（バックグラウンドまたはフォアグラウンド）
+                const { data: { session } } = await AuthAdapter.getSession();
                 const user = session?.user ?? null;
-                console.log(`[STATE] AuthProvider: User session ${user ? 'found' : 'not found'}.`);
-                
+
                 if (user) {
-                    console.log('[DECISION] AuthProvider: Fetching staff profile...');
+                    console.log('[DECISION] AuthProvider: Session user found. Fetching staff profile...');
+                    // スタッフプロファイル取得
                     const staff = await AuthAdapter.getStaffByAuthUid(user.id);
+                    
                     if (staff) {
-                        console.log(`[STATE] AuthProvider: Staff profile found: ${staff.name}`);
+                        console.log(`[STATE] AuthProvider: Staff profile verified: ${staff.name}`);
                         setCurrentUser({
                             id: staff.id,
                             name: staff.name,
@@ -47,19 +41,22 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                                 can_edit_past_records: staff.role === 'admin' || (staff.role as string) === 'manager'
                             }
                         });
+                        setAuthStatus('VERIFIED');
                     } else {
-                        console.warn('[STATE] AuthProvider: No staff profile found for auth user.');
+                        console.warn('[STATE] AuthProvider: Staff profile not found for user.');
+                        setAuthStatus('UNAUTHENTICATED');
                         setCurrentUser(null);
                     }
                 } else {
+                    console.log('[STATE] AuthProvider: No session user found.');
+                    setAuthStatus('UNAUTHENTICATED');
                     setCurrentUser(null);
                 }
             } catch (error) {
-                console.error('[STATE] AuthProvider: Critical initialization error:', error);
-                // エラー時もフォールバックとして未ログイン状態にする
+                console.error('[STATE] AuthProvider: Initialization error:', error);
+                setAuthStatus('UNAUTHENTICATED');
                 setCurrentUser(null);
             } finally {
-                console.log('[DECISION] AuthProvider: Initialization complete, setting isLoading to false.');
                 setIsLoading(false);
             }
         };
@@ -106,12 +103,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     const value: AuthContextValue = {
         currentUser,
-        isLoading
+        isLoading,
+        authStatus
     };
 
     return (
         <AuthContext.Provider value={value}>
-            {!isLoading && children}
+            {children}
         </AuthContext.Provider>
     );
 };
