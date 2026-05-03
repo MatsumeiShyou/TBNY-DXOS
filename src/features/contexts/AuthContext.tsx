@@ -1,8 +1,7 @@
 import { useState, useEffect, type ReactNode } from 'react';
 import { AuthAdapter } from '../../shared/lib/auth/AuthAdapter';
-import { AuthContext, type AuthContextValue } from '../hooks/useAuth';
+import { AuthContext, type AuthContextValue, type AuthStatus } from '../hooks/useAuth';
 import type { DXUser } from '../../shared/types/auth';
-import type { Session } from '@supabase/supabase-js';
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [currentUser, setCurrentUser] = useState<DXUser | null>(null);
