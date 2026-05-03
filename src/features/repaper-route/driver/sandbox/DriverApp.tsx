@@ -50,12 +50,12 @@ const recordDecision = async (type: string, userId: string, meta: any, data?: an
 
 // --- Fuel Page (Ported) ---
 const FuelPage = () => (
-  <div className="tw-p-4 tw-space-y-4">
-    <h2 className="tw-text-xl tw-font-bold">給油報告</h2>
-    <div className="tw-bg-white tw-p-6 tw-rounded-xl tw-border tw-border-dashed tw-border-slate-300 tw-text-center tw-space-y-4">
-      <i className="fa-solid fa-camera tw-text-4xl tw-text-slate-300"></i>
-      <p className="tw-font-bold tw-text-slate-600">レシートを撮影</p>
-      <button className="tw-bg-slate-800 tw-text-white tw-px-6 tw-py-3 tw-rounded-xl tw-font-bold">カメラを起動</button>
+  <div className="p-4 space-y-4">
+    <h2 className="text-xl font-bold">給油報告</h2>
+    <div className="bg-white p-6 rounded-xl border border-dashed border-slate-300 text-center space-y-4">
+      <i className="fa-solid fa-camera text-4xl text-slate-300"></i>
+      <p className="font-bold text-slate-600">レシートを撮影</p>
+      <button className="bg-slate-800 text-white px-6 py-3 rounded-xl font-bold">カメラを起動</button>
     </div>
   </div>
 );
@@ -72,42 +72,42 @@ const SOSContent = ({
 }) => {
   if (step === 'ACCIDENT_ACTIONS') {
     return (
-      <div className="tw-space-y-4 tw-animate-fade-in tw-pb-4">
-          <div className="tw-bg-red-50 tw-border-l-4 tw-border-red-500 tw-p-4 tw-rounded-r-xl">
-              <h3 className="tw-font-bold tw-text-red-700 tw-text-lg tw-flex tw-items-center">
-                <i className="fa-solid fa-truck-medical tw-mr-2"></i>人命救助最優先
+      <div className="space-y-4 animate-fade-in pb-4">
+          <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-xl">
+              <h3 className="font-bold text-red-700 text-lg flex items-center">
+                <i className="fa-solid fa-truck-medical mr-2"></i>人命救助最優先
               </h3>
-              <p className="tw-text-sm tw-text-red-600 tw-mt-1">けが人がいる場合は、迷わず救急車を呼んでください。</p>
+              <p className="text-sm text-red-600 mt-1">けが人がいる場合は、迷わず救急車を呼んでください。</p>
           </div>
-          <div className="tw-grid tw-gap-4">
-              <a href="tel:119" className="tw-block tw-w-full tw-bg-red-600 hover:tw-bg-red-700 tw-text-white tw-rounded-xl tw-shadow-lg tw-shadow-red-900/20 tw-p-6 tw-text-center active:tw-scale-[0.98] tw-transition-transform tw-flex tw-items-center tw-justify-between tw-group">
-                  <div className="tw-text-left">
-                      <div className="tw-text-2xl tw-font-bold">119番</div>
-                      <div className="tw-text-sm tw-opacity-90 tw-font-bold">救急車・消防</div>
+          <div className="grid gap-4">
+              <a href="tel:119" className="block w-full bg-red-600 hover:bg-red-700 text-white rounded-xl shadow-lg shadow-red-900/20 p-6 text-center active:scale-[0.98] transition-transform flex items-center justify-between group">
+                  <div className="text-left">
+                      <div className="text-2xl font-bold">119番</div>
+                      <div className="text-sm opacity-90 font-bold">救急車・消防</div>
                   </div>
-                  <div className="tw-w-12 tw-h-12 tw-bg-white/20 tw-rounded-full tw-flex tw-items-center tw-justify-center group-hover:tw-bg-white/30 tw-animate-pulse">
-                      <i className="fa-solid fa-kit-medical tw-text-2xl"></i>
-                  </div>
-              </a>
-              <a href="tel:110" className="tw-block tw-w-full tw-bg-blue-600 hover:tw-bg-blue-700 tw-text-white tw-rounded-xl tw-shadow-lg tw-shadow-blue-900/20 tw-p-5 tw-text-center active:tw-scale-[0.98] tw-transition-transform tw-flex tw-items-center tw-justify-between tw-group">
-                  <div className="tw-text-left">
-                      <div className="tw-text-xl tw-font-bold">110番</div>
-                      <div className="tw-text-sm tw-opacity-90 tw-font-bold">警察への通報</div>
-                  </div>
-                  <div className="tw-w-10 tw-h-10 tw-bg-white/20 tw-rounded-full tw-flex tw-items-center tw-justify-center group-hover:tw-bg-white/30">
-                      <i className="fa-solid fa-shield-halved tw-text-xl"></i>
+                  <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center group-hover:bg-white/30 animate-pulse">
+                      <i className="fa-solid fa-kit-medical text-2xl"></i>
                   </div>
               </a>
-              <div className="tw-relative tw-flex tw-py-2 tw-items-center">
-                  <div className="tw-flex-grow tw-border-t tw-border-slate-200"></div>
-                  <span className="tw-flex-shrink-0 tw-mx-4 tw-text-slate-400 tw-text-xs tw-font-bold">報告</span>
-                  <div className="tw-flex-grow tw-border-t tw-border-slate-200"></div>
+              <a href="tel:110" className="block w-full bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-lg shadow-blue-900/20 p-5 text-center active:scale-[0.98] transition-transform flex items-center justify-between group">
+                  <div className="text-left">
+                      <div className="text-xl font-bold">110番</div>
+                      <div className="text-sm opacity-90 font-bold">警察への通報</div>
+                  </div>
+                  <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center group-hover:bg-white/30">
+                      <i className="fa-solid fa-shield-halved text-xl"></i>
+                  </div>
+              </a>
+              <div className="relative flex py-2 items-center">
+                  <div className="flex-grow border-t border-slate-200"></div>
+                  <span className="flex-shrink-0 mx-4 text-slate-400 text-xs font-bold">報告</span>
+                  <div className="flex-grow border-t border-slate-200"></div>
               </div>
-              <a href={`tel:${ADMIN_PHONE_NUMBER}`} className="tw-block tw-w-full tw-bg-white tw-border tw-border-slate-300 tw-text-slate-700 tw-rounded-xl tw-p-4 tw-text-center active:tw-bg-slate-50 tw-font-bold tw-flex tw-items-center tw-justify-center">
-                  <i className="fa-solid fa-phone tw-mr-2"></i> 管理者へ連絡
+              <a href={`tel:${ADMIN_PHONE_NUMBER}`} className="block w-full bg-white border border-slate-300 text-slate-700 rounded-xl p-4 text-center active:bg-slate-50 font-bold flex items-center justify-center">
+                  <i className="fa-solid fa-phone mr-2"></i> 管理者へ連絡
               </a>
           </div>
-          <button onClick={() => onSelectType('BACK')} className="tw-text-sm tw-text-slate-400 tw-w-full tw-py-2 tw-underline hover:tw-text-slate-600">
+          <button onClick={() => onSelectType('BACK')} className="text-sm text-slate-400 w-full py-2 underline hover:text-slate-600">
               メニューに戻る
           </button>
       </div>
@@ -116,16 +116,16 @@ const SOSContent = ({
 
   if (step === 'SEARCHING') {
     return (
-      <div className="tw-flex tw-flex-col tw-items-center tw-justify-center tw-py-12 tw-space-y-6 tw-animate-fade-in">
-        <div className="tw-relative">
-          <div className="tw-w-20 tw-h-20 tw-border-4 tw-border-blue-100 tw-border-t-primary tw-rounded-full tw-animate-spin"></div>
-          <div className="tw-absolute tw-inset-0 tw-flex tw-items-center tw-justify-center">
-             <i className="fa-solid fa-satellite-dish tw-text-2xl tw-text-primary tw-animate-pulse"></i>
+      <div className="flex flex-col items-center justify-center py-12 space-y-6 animate-fade-in">
+        <div className="relative">
+          <div className="w-20 h-20 border-4 border-blue-100 border-t-primary rounded-full animate-spin"></div>
+          <div className="absolute inset-0 flex items-center justify-center">
+             <i className="fa-solid fa-satellite-dish text-2xl text-primary animate-pulse"></i>
           </div>
         </div>
-        <div className="tw-text-center tw-space-y-2">
-          <h3 className="tw-text-xl tw-font-bold tw-text-slate-800">応援車両を検索中...</h3>
-          <p className="tw-text-sm tw-text-slate-500">現在位置から救援可能な車両を探しています。<br/>そのままお待ちください。</p>
+        <div className="text-center space-y-2">
+          <h3 className="text-xl font-bold text-slate-800">応援車両を検索中...</h3>
+          <p className="text-sm text-slate-500">現在位置から救援可能な車両を探しています。<br/>そのままお待ちください。</p>
         </div>
       </div>
     );
@@ -133,29 +133,29 @@ const SOSContent = ({
 
   if (step === 'RESULT_CALL') {
     return (
-      <div className="tw-space-y-6 tw-text-center tw-py-2 tw-animate-fade-in">
-        <div className="tw-bg-yellow-50 tw-border tw-border-yellow-200 tw-rounded-xl tw-p-4 tw-flex tw-items-start tw-text-left tw-mb-6">
-           <i className="fa-solid fa-circle-exclamation tw-text-yellow-600 tw-text-xl tw-mt-1 tw-mr-3 tw-shrink-0"></i>
+      <div className="space-y-6 text-center py-2 animate-fade-in">
+        <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 flex items-start text-left mb-6">
+           <i className="fa-solid fa-circle-exclamation text-yellow-600 text-xl mt-1 mr-3 shrink-0"></i>
            <div>
-              <h3 className="tw-font-bold tw-text-yellow-900 tw-text-lg">近くに対応可能な車両がいません</h3>
-              <p className="tw-text-sm tw-text-yellow-800 tw-mt-1 tw-leading-relaxed">
+              <h3 className="font-bold text-yellow-900 text-lg">近くに対応可能な車両がいません</h3>
+              <p className="text-sm text-yellow-800 mt-1 leading-relaxed">
                 システムによる自動調整が成立しませんでした。<br/>
                 配車担当者に直接連絡し、指示を仰いでください。
               </p>
            </div>
         </div>
-        <div className="tw-py-2">
-          <a href={`tel:${ADMIN_PHONE_NUMBER}`} className="tw-group tw-block tw-w-full tw-bg-red-600 hover:tw-bg-red-700 tw-text-white tw-rounded-xl tw-shadow-xl tw-shadow-red-900/20 active:tw-scale-[0.98] tw-transition-all tw-overflow-hidden tw-relative">
-            <div className="tw-absolute tw-inset-0 tw-bg-white/10 group-hover:tw-bg-white/20 tw-transition-colors"></div>
-            <div className="tw-p-6 tw-flex tw-flex-col tw-items-center tw-justify-center">
-               <i className="fa-solid fa-phone-volume tw-text-4xl tw-mb-2 tw-animate-pulse"></i>
-               <span className="tw-text-2xl tw-font-bold">管理者へ発信</span>
-               <span className="tw-font-mono tw-text-lg tw-opacity-90 tw-mt-1">{ADMIN_PHONE_NUMBER}</span>
+        <div className="py-2">
+          <a href={`tel:${ADMIN_PHONE_NUMBER}`} className="group block w-full bg-red-600 hover:bg-red-700 text-white rounded-xl shadow-xl shadow-red-900/20 active:scale-[0.98] transition-all overflow-hidden relative">
+            <div className="absolute inset-0 bg-white/10 group-hover:bg-white/20 transition-colors"></div>
+            <div className="p-6 flex flex-col items-center justify-center">
+               <i className="fa-solid fa-phone-volume text-4xl mb-2 animate-pulse"></i>
+               <span className="text-2xl font-bold">管理者へ発信</span>
+               <span className="font-mono text-lg opacity-90 mt-1">{ADMIN_PHONE_NUMBER}</span>
             </div>
           </a>
-          <p className="tw-text-xs tw-text-slate-400 tw-mt-3">※ワンタップで発信します</p>
+          <p className="text-xs text-slate-400 mt-3">※ワンタップで発信します</p>
         </div>
-        <button onClick={onClose} className="tw-text-sm tw-text-slate-400 tw-font-bold tw-underline tw-p-4 hover:tw-text-slate-600">
+        <button onClick={onClose} className="text-sm text-slate-400 font-bold underline p-4 hover:text-slate-600">
           閉じる
         </button>
       </div>
@@ -163,44 +163,44 @@ const SOSContent = ({
   }
 
   return (
-    <div className="tw-space-y-4 tw-animate-fade-in">
-      <div className="tw-bg-blue-50 tw-p-4 tw-rounded-xl tw-border tw-border-blue-100 tw-flex tw-items-start tw-text-blue-900 tw-mb-2">
-        <i className="fa-solid fa-circle-info tw-mt-1 tw-mr-3 tw-text-lg tw-shrink-0"></i>
-        <div className="tw-text-sm">
-          <p className="tw-font-bold">どのようなトラブルですか？</p>
+    <div className="space-y-4 animate-fade-in">
+      <div className="bg-blue-50 p-4 rounded-xl border border-blue-100 flex items-start text-blue-900 mb-2">
+        <i className="fa-solid fa-circle-info mt-1 mr-3 text-lg shrink-0"></i>
+        <div className="text-sm">
+          <p className="font-bold">どのようなトラブルですか？</p>
           <p>状況に応じて、システムが最適な対応方法を案内します。</p>
         </div>
       </div>
-      <div className="tw-grid tw-grid-cols-1 tw-gap-3">
-        <button onClick={() => onSelectType('DELAY')} className="tw-bg-white tw-border-2 tw-border-slate-200 hover:tw-border-orange-400 hover:tw-bg-orange-50 tw-p-5 tw-rounded-xl tw-text-left tw-flex tw-items-center tw-transition-all tw-group active:tw-scale-[0.99] tw-touch-manipulation">
-          <div className="tw-w-14 tw-h-14 tw-bg-orange-100 tw-text-orange-600 tw-rounded-full tw-flex tw-items-center tw-justify-center tw-mr-4 group-hover:tw-bg-orange-600 group-hover:tw-text-white tw-transition-colors tw-shrink-0">
-            <i className="fa-solid fa-clock-rotate-left tw-text-2xl"></i>
+      <div className="grid grid-cols-1 gap-3">
+        <button onClick={() => onSelectType('DELAY')} className="bg-white border-2 border-slate-200 hover:border-orange-400 hover:bg-orange-50 p-5 rounded-xl text-left flex items-center transition-all group active:scale-[0.99] touch-manipulation">
+          <div className="w-14 h-14 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center mr-4 group-hover:bg-orange-600 group-hover:text-white transition-colors shrink-0">
+            <i className="fa-solid fa-clock-rotate-left text-2xl"></i>
           </div>
-          <div className="tw-flex-1">
-            <div className="tw-font-bold tw-text-slate-800 tw-text-lg">遅延・荷量オーバー</div>
-            <div className="tw-text-xs tw-text-slate-500 tw-mt-0.5">時間に間に合わない、積みきれない等</div>
+          <div className="flex-1">
+            <div className="font-bold text-slate-800 text-lg">遅延・荷量オーバー</div>
+            <div className="text-xs text-slate-500 mt-0.5">時間に間に合わない、積みきれない等</div>
           </div>
-          <i className="fa-solid fa-chevron-right tw-ml-2 tw-text-slate-300"></i>
+          <i className="fa-solid fa-chevron-right ml-2 text-slate-300"></i>
         </button>
-        <button onClick={() => onSelectType('TROUBLE')} className="tw-bg-white tw-border-2 tw-border-slate-200 hover:tw-border-slate-500 hover:tw-bg-slate-50 tw-p-5 tw-rounded-xl tw-text-left tw-flex tw-items-center tw-transition-all tw-group active:tw-scale-[0.99] tw-touch-manipulation">
-          <div className="tw-w-14 tw-h-14 tw-bg-slate-100 tw-text-slate-600 tw-rounded-full tw-flex tw-items-center tw-justify-center tw-mr-4 group-hover:tw-bg-slate-600 group-hover:tw-text-white tw-transition-colors tw-shrink-0">
-            <i className="fa-solid fa-wrench tw-text-2xl"></i>
+        <button onClick={() => onSelectType('TROUBLE')} className="bg-white border-2 border-slate-200 hover:border-slate-500 hover:bg-slate-50 p-5 rounded-xl text-left flex items-center transition-all group active:scale-[0.99] touch-manipulation">
+          <div className="w-14 h-14 bg-slate-100 text-slate-600 rounded-full flex items-center justify-center mr-4 group-hover:bg-slate-600 group-hover:text-white transition-colors shrink-0">
+            <i className="fa-solid fa-wrench text-2xl"></i>
           </div>
-          <div className="tw-flex-1">
-            <div className="tw-font-bold tw-text-slate-800 tw-text-lg">車両故障・トラブル</div>
-            <div className="tw-text-xs tw-text-slate-500 tw-mt-0.5">パンク、バッテリー上がり、事故以外</div>
+          <div className="flex-1">
+            <div className="font-bold text-slate-800 text-lg">車両故障・トラブル</div>
+            <div className="text-xs text-slate-500 mt-0.5">パンク、バッテリー上がり、事故以外</div>
           </div>
-          <i className="fa-solid fa-chevron-right tw-ml-2 tw-text-slate-300"></i>
+          <i className="fa-solid fa-chevron-right ml-2 text-slate-300"></i>
         </button>
-        <button onClick={() => onSelectType('ACCIDENT')} className="tw-bg-red-50 tw-border-2 tw-border-red-100 hover:tw-bg-red-100 tw-p-5 tw-rounded-xl tw-text-left tw-flex tw-items-center tw-transition-all tw-mt-4 active:tw-scale-[0.99] tw-touch-manipulation tw-group tw-w-full">
-          <div className="tw-w-14 tw-h-14 tw-bg-red-600 tw-text-white tw-rounded-full tw-flex tw-items-center tw-justify-center tw-mr-4 tw-animate-pulse tw-shrink-0">
-            <i className="fa-solid fa-car-burst tw-text-2xl"></i>
+        <button onClick={() => onSelectType('ACCIDENT')} className="bg-red-50 border-2 border-red-100 hover:bg-red-100 p-5 rounded-xl text-left flex items-center transition-all mt-4 active:scale-[0.99] touch-manipulation group w-full">
+          <div className="w-14 h-14 bg-red-600 text-white rounded-full flex items-center justify-center mr-4 animate-pulse shrink-0">
+            <i className="fa-solid fa-car-burst text-2xl"></i>
           </div>
-          <div className="tw-flex-1">
-            <div className="tw-font-bold tw-text-red-700 tw-text-lg">交通事故・人身事故</div>
-            <div className="tw-text-xs tw-text-red-600 tw-font-bold tw-mt-0.5">救急・警察への連絡はこちら</div>
+          <div className="flex-1">
+            <div className="font-bold text-red-700 text-lg">交通事故・人身事故</div>
+            <div className="text-xs text-red-600 font-bold mt-0.5">救急・警察への連絡はこちら</div>
           </div>
-          <i className="fa-solid fa-chevron-right tw-ml-2 tw-text-red-300"></i>
+          <i className="fa-solid fa-chevron-right ml-2 text-red-300"></i>
         </button>
       </div>
     </div>
@@ -501,20 +501,20 @@ export default function DriverApp() {
         />
 
         <Modal isOpen={isCourseModalOpen} onClose={() => setIsCourseModalOpen(false)} title="担当コース変更">
-          <div className="tw-space-y-4">
-            <p className="tw-text-sm tw-text-slate-500">交換可能なコース一覧</p>
-            <div className="tw-space-y-2">
+          <div className="space-y-4">
+            <p className="text-sm text-slate-500">交換可能なコース一覧</p>
+            <div className="space-y-2">
               {swappableCourses.length === 0 ? (
-                <div className="tw-text-center tw-py-4 tw-text-slate-400 tw-text-sm">交換可能なコースはありません</div>
+                <div className="text-center py-4 text-slate-400 text-sm">交換可能なコースはありません</div>
               ) : (
                 swappableCourses.map(course => (
-                  <button key={course.id} onClick={() => handleChangeCourse(course.id)} className="tw-w-full tw-bg-white tw-border tw-border-slate-200 hover:tw-bg-slate-50 tw-p-4 tw-rounded-xl tw-text-left tw-shadow-sm active:tw-scale-[0.99] tw-transition-all">
-                    <div className="tw-flex tw-justify-between tw-items-center">
+                  <button key={course.id} onClick={() => handleChangeCourse(course.id)} className="w-full bg-white border border-slate-200 hover:bg-slate-50 p-4 rounded-xl text-left shadow-sm active:scale-[0.99] transition-all">
+                    <div className="flex justify-between items-center">
                       <div>
-                        <div className="tw-font-bold tw-text-slate-800">{course.name}</div>
-                        <div className="tw-text-xs tw-text-slate-500 tw-mt-1">{course.area}</div>
+                        <div className="font-bold text-slate-800">{course.name}</div>
+                        <div className="text-xs text-slate-500 mt-1">{course.area}</div>
                       </div>
-                      <i className="fa-solid fa-arrow-right-arrow-left tw-text-slate-300"></i>
+                      <i className="fa-solid fa-arrow-right-arrow-left text-slate-300"></i>
                     </div>
                   </button>
                 ))
@@ -524,26 +524,26 @@ export default function DriverApp() {
         </Modal>
 
         <Modal isOpen={isVehicleModalOpen} onClose={() => setVehicleModalOpen(false)} title="車両乗り換え">
-          <div className="tw-space-y-4">
-            <p className="tw-text-sm tw-text-slate-500 tw-font-bold">現在乗車中: <span className="tw-text-primary">{user.vehicleName}</span></p>
-            <div className="tw-bg-blue-50 tw-text-blue-800 tw-p-3 tw-rounded-lg tw-text-xs tw-leading-relaxed tw-border tw-border-blue-100">
-              <i className="fa-solid fa-circle-info tw-mr-2"></i>
+          <div className="space-y-4">
+            <p className="text-sm text-slate-500 font-bold">現在乗車中: <span className="text-primary">{user.vehicleName}</span></p>
+            <div className="bg-blue-50 text-blue-800 p-3 rounded-lg text-xs leading-relaxed border border-blue-100">
+              <i className="fa-solid fa-circle-info mr-2"></i>
               未使用車両への交換に申請は不要です。選択すると即座に配車が変更されます。
             </div>
-            <div className="tw-space-y-2 tw-max-h-[50vh] tw-overflow-y-auto">
+            <div className="space-y-2 max-h-[50vh] overflow-y-auto">
               {availableVehicles.length === 0 ? (
-                  <div className="tw-bg-yellow-50 tw-p-4 tw-rounded-lg tw-text-yellow-800 tw-text-sm">空き車両はありません。</div>
+                  <div className="bg-yellow-50 p-4 rounded-lg text-yellow-800 text-sm">空き車両はありません。</div>
               ) : (
                   availableVehicles.map(vehicle => (
-                    <button key={vehicle.id} onClick={() => handleVehicleChange(vehicle)} className="tw-w-full tw-bg-white tw-border tw-border-slate-200 hover:tw-bg-slate-50 tw-p-4 tw-rounded-xl tw-text-left tw-shadow-sm active:tw-scale-[0.99] tw-transition-all">
-                      <div className="tw-flex tw-justify-between tw-items-center">
+                    <button key={vehicle.id} onClick={() => handleVehicleChange(vehicle)} className="w-full bg-white border border-slate-200 hover:bg-slate-50 p-4 rounded-xl text-left shadow-sm active:scale-[0.99] transition-all">
+                      <div className="flex justify-between items-center">
                           <div>
-                            <div className="tw-font-bold tw-text-slate-800 tw-flex tw-items-center">
-                              <i className="fa-solid fa-truck tw-text-slate-400 tw-mr-2"></i>{vehicle.name}
+                            <div className="font-bold text-slate-800 flex items-center">
+                              <i className="fa-solid fa-truck text-slate-400 mr-2"></i>{vehicle.name}
                             </div>
-                            <div className="tw-text-xs tw-text-slate-500 tw-mt-1 tw-font-mono tw-bg-slate-100 tw-inline-block tw-px-2 tw-py-0.5 tw-rounded">{vehicle.plateNumber}</div>
+                            <div className="text-xs text-slate-500 mt-1 font-mono bg-slate-100 inline-block px-2 py-0.5 rounded">{vehicle.plateNumber}</div>
                           </div>
-                          <i className="fa-solid fa-arrow-right-arrow-left tw-text-slate-300"></i>
+                          <i className="fa-solid fa-arrow-right-arrow-left text-slate-300"></i>
                       </div>
                     </button>
                   ))
@@ -559,26 +559,26 @@ export default function DriverApp() {
 
         <Modal isOpen={isTransferModalOpen} onClose={() => { setIsTransferModalOpen(false); setTransferStep('SELECT'); }} title={transferStep === 'SELECT' ? "案件の譲渡・交換" : "連絡と申請"}>
           {transferStep === 'SELECT' && (
-             <div className="tw-space-y-4">
-               <div className="tw-bg-slate-50 tw-p-3 tw-rounded-lg tw-border tw-border-slate-200">
-                   <span className="tw-text-xs tw-font-bold tw-text-slate-400 tw-block tw-mb-1">対象案件</span>
-                   <div className="tw-font-bold tw-text-slate-800">{selectedStopForTransfer?.customerName}</div>
+             <div className="space-y-4">
+               <div className="bg-slate-50 p-3 rounded-lg border border-slate-200">
+                   <span className="text-xs font-bold text-slate-400 block mb-1">対象案件</span>
+                   <div className="font-bold text-slate-800">{selectedStopForTransfer?.customerName}</div>
                </div>
                <div>
-                   <p className="tw-text-sm tw-font-bold tw-text-slate-500 tw-mb-2">依頼先の同僚</p>
-                   <div className="tw-space-y-2">
+                   <p className="text-sm font-bold text-slate-500 mb-2">依頼先の同僚</p>
+                   <div className="space-y-2">
                      {MOCK_COLLEAGUES.map(colleague => (
-                         <button key={colleague.id} onClick={() => handleSelectColleague(colleague)} className="tw-w-full tw-bg-white tw-border tw-border-slate-200 hover:tw-bg-slate-50 tw-p-3 tw-rounded-xl tw-flex tw-items-center tw-justify-between tw-transition-colors tw-group">
-                           <div className="tw-flex tw-items-center">
-                               <div className={`tw-w-10 tw-h-10 tw-rounded-full tw-flex tw-items-center tw-justify-center tw-text-xs tw-font-bold tw-mr-3 ${colleague.status === DriverStatus.IDLE ? 'tw-bg-green-100 tw-text-green-600' : 'tw-bg-slate-100 tw-text-slate-600'}`}>
+                         <button key={colleague.id} onClick={() => handleSelectColleague(colleague)} className="w-full bg-white border border-slate-200 hover:bg-slate-50 p-3 rounded-xl flex items-center justify-between transition-colors group">
+                           <div className="flex items-center">
+                               <div className={`w-10 h-10 rounded-full flex items-center justify-center text-xs font-bold mr-3 ${colleague.status === DriverStatus.IDLE ? 'bg-green-100 text-green-600' : 'bg-slate-100 text-slate-600'}`}>
                                  {colleague.name.slice(0,1)}
                                </div>
-                               <div className="tw-text-left">
-                                 <div className="tw-font-bold tw-text-sm tw-text-slate-800">{colleague.name}</div>
-                                 <div className="tw-text-xs tw-text-slate-400">{colleague.distance} - {colleague.status}</div>
+                               <div className="text-left">
+                                 <div className="font-bold text-sm text-slate-800">{colleague.name}</div>
+                                 <div className="text-xs text-slate-400">{colleague.distance} - {colleague.status}</div>
                                </div>
                            </div>
-                           <i className="fa-solid fa-chevron-right tw-text-slate-300 group-hover:tw-text-primary"></i>
+                           <i className="fa-solid fa-chevron-right text-slate-300 group-hover:text-primary"></i>
                          </button>
                      ))}
                    </div>
@@ -586,19 +586,19 @@ export default function DriverApp() {
              </div>
           )}
           {transferStep === 'CONFIRM' && selectedColleagueForTransfer && (
-             <div className="tw-space-y-6 tw-text-center tw-pt-2">
-                <div className="tw-w-20 tw-h-20 tw-bg-primary tw-text-white tw-rounded-full tw-flex tw-items-center tw-justify-center tw-mx-auto tw-shadow-lg">
-                   <i className="fa-solid fa-phone tw-text-3xl tw-animate-pulse"></i>
+             <div className="space-y-6 text-center pt-2">
+                <div className="w-20 h-20 bg-primary text-white rounded-full flex items-center justify-center mx-auto shadow-lg">
+                   <i className="fa-solid fa-phone text-3xl animate-pulse"></i>
                 </div>
-                <div className="tw-space-y-2">
-                   <h3 className="tw-font-bold tw-text-lg tw-text-slate-800">{selectedColleagueForTransfer.name} さんに連絡</h3>
-                   <p className="tw-text-sm tw-text-slate-500">必ず電話で状況を説明してから申請してください。</p>
+                <div className="space-y-2">
+                   <h3 className="font-bold text-lg text-slate-800">{selectedColleagueForTransfer.name} さんに連絡</h3>
+                   <p className="text-sm text-slate-500">必ず電話で状況を説明してから申請してください。</p>
                 </div>
-                <div className="tw-flex tw-grid tw-gap-3">
-                   <Button onClick={handleExecuteTransfer} className="tw-bg-green-600 hover:tw-bg-green-700">
-                      <i className="fa-solid fa-phone tw-mr-2"></i>電話発信して申請
+                <div className="flex grid gap-3">
+                   <Button onClick={handleExecuteTransfer} className="bg-green-600 hover:bg-green-700">
+                      <i className="fa-solid fa-phone mr-2"></i>電話発信して申請
                    </Button>
-                   <button onClick={() => setTransferStep('SELECT')} className="tw-text-sm tw-text-slate-400 tw-font-bold tw-underline tw-py-2">同僚選択に戻る</button>
+                   <button onClick={() => setTransferStep('SELECT')} className="text-sm text-slate-400 font-bold underline py-2">同僚選択に戻る</button>
                 </div>
              </div>
           )}
@@ -606,18 +606,18 @@ export default function DriverApp() {
 
         <Modal isOpen={isIncomingRequestModalOpen} onClose={() => setIsIncomingRequestModalOpen(false)} title="交換依頼が届いています">
           {incomingRequest && (
-            <div className="tw-space-y-6">
-                <div className="tw-flex tw-flex-col tw-items-center tw-py-4">
-                  <div className="tw-w-16 tw-h-16 tw-rounded-full tw-bg-blue-100 tw-text-primary tw-flex tw-items-center tw-justify-center tw-mb-2 tw-animate-bounce">
-                      <i className="fa-solid fa-bell tw-text-2xl"></i>
+            <div className="space-y-6">
+                <div className="flex flex-col items-center py-4">
+                  <div className="w-16 h-16 rounded-full bg-blue-100 text-primary flex items-center justify-center mb-2 animate-bounce">
+                      <i className="fa-solid fa-bell text-2xl"></i>
                   </div>
-                  <div className="tw-font-bold tw-text-lg tw-text-slate-800">{incomingRequest.colleagueName}</div>
+                  <div className="font-bold text-lg text-slate-800">{incomingRequest.colleagueName}</div>
                 </div>
-                <Card className="tw-bg-blue-50 tw-border-blue-200">
-                  <div className="tw-text-xs tw-font-bold tw-text-blue-400 tw-mb-1">依頼案件</div>
-                  <div className="tw-font-bold tw-text-blue-900 tw-text-lg">{incomingRequest.stopName}</div>
+                <Card className="bg-blue-50 border-blue-200">
+                  <div className="text-xs font-bold text-blue-400 mb-1">依頼案件</div>
+                  <div className="font-bold text-blue-900 text-lg">{incomingRequest.stopName}</div>
                 </Card>
-                <div className="tw-flex tw-space-x-3">
+                <div className="flex space-x-3">
                   <Button variant="secondary" onClick={handleRejectIncoming}>却下</Button>
                   <Button onClick={handleApproveIncoming}>承認して追加</Button>
                 </div>

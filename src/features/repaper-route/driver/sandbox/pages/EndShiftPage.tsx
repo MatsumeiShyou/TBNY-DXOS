@@ -121,37 +121,37 @@ export const EndShiftPage: React.FC<Props> = ({ stops, currentVehicle, mode, onC
   const canProceedToStep2 = isValidGross && hasItems && !isKeypadOpen;
 
   return (
-    <div className="tw-p-4 tw-space-y-6 tw-pb-24">
+    <div className="p-4 space-y-6 pb-24">
       {/* Wizard Header */}
-      <div className="tw-flex tw-items-center tw-justify-between tw-mb-4 tw-px-2">
-        <button onClick={onCancel} className="tw-text-slate-400 hover:tw-text-slate-600">
-           <i className="fa-solid fa-xmark tw-text-xl"></i>
+      <div className="flex items-center justify-between mb-4 px-2">
+        <button onClick={onCancel} className="text-slate-400 hover:text-slate-600">
+           <i className="fa-solid fa-xmark text-xl"></i>
         </button>
-        <span className="tw-font-bold tw-text-slate-500">{titleText}</span>
-        <div className="tw-w-6"></div>
+        <span className="font-bold text-slate-500">{titleText}</span>
+        <div className="w-6"></div>
       </div>
 
       <HelpTarget helpId="step-indicator">
-        <div className="tw-flex tw-items-center tw-justify-center tw-mb-6 tw-px-2">
+        <div className="flex items-center justify-center mb-6 px-2">
           {[1, 2].map(i => {
              return (
-              <div key={i} className={`tw-flex tw-items-center ${i < 2 ? 'tw-flex-1' : ''}`}>
-                 <div className={`tw-w-8 tw-h-8 tw-rounded-full tw-flex tw-items-center tw-justify-center tw-font-bold tw-text-sm tw-transition-colors ${step >= i ? 'tw-bg-primary tw-text-white' : 'tw-bg-slate-200 tw-text-slate-500'}`}>
+              <div key={i} className={`flex items-center ${i < 2 ? 'flex-1' : ''}`}>
+                 <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm transition-colors ${step >= i ? 'bg-primary text-white' : 'bg-slate-200 text-slate-500'}`}>
                    {i}
                  </div>
-                 {i < 2 && <div className={`tw-h-1 tw-flex-1 tw-mx-2 tw-rounded ${step > i ? 'tw-bg-primary' : 'tw-bg-slate-200'}`}></div>}
+                 {i < 2 && <div className={`h-1 flex-1 mx-2 rounded ${step > i ? 'bg-primary' : 'bg-slate-200'}`}></div>}
               </div>
              );
           })}
         </div>
       </HelpTarget>
       
-      <div className="tw-text-center tw-mb-6">
-         <h2 className="tw-text-xl tw-font-bold tw-text-slate-800">
+      <div className="text-center mb-6">
+         <h2 className="text-xl font-bold text-slate-800">
            {step === 1 && '総重量の報告'}
            {step === 2 && '重量の割り振り'}
          </h2>
-         <p className="tw-text-xs tw-text-slate-500">
+         <p className="text-xs text-slate-500">
            {step === 1 && 'トラックスケールで計測した値を入力'}
            {step === 2 && (mode === 'INTERMEDIATE' ? '荷下ろしした分の重量を配分します' : '正味重量を各案件に配分します')}
          </p>
@@ -159,51 +159,51 @@ export const EndShiftPage: React.FC<Props> = ({ stops, currentVehicle, mode, onC
 
       {/* STEP 1: Gross Weight Input */}
       {step === 1 && (
-        <div className="tw-space-y-6 tw-animate-fade-in">
+        <div className="space-y-6 animate-fade-in">
            <HelpTarget helpId="input-gross-weight">
-             <div className={`tw-bg-white tw-p-6 tw-rounded-xl tw-shadow-lg tw-border-2 tw-text-center tw-transition-colors tw-relative ${!isValidGross && displayGross > 0 ? 'tw-border-red-200 tw-bg-red-50' : 'tw-border-primary'}`}>
-                <label className="tw-block tw-text-slate-500 tw-font-bold tw-mb-2">総重量 (Kg)</label>
+             <div className={`bg-white p-6 rounded-xl shadow-lg border-2 text-center transition-colors relative ${!isValidGross && displayGross > 0 ? 'border-red-200 bg-red-50' : 'border-primary'}`}>
+                <label className="block text-slate-500 font-bold mb-2">総重量 (Kg)</label>
                 <input 
                   type="text" 
                   readOnly
                   value={grossWeightStr}
                   onClick={() => setIsKeypadOpen(true)}
-                  className={`tw-w-full tw-text-center tw-text-4xl tw-font-mono tw-font-bold focus:tw-outline-none tw-bg-transparent tw-caret-transparent ${isKeypadOpen ? 'tw-text-primary' : 'tw-text-slate-800'}`}
+                  className={`w-full text-center text-4xl font-mono font-bold focus:outline-none bg-transparent caret-transparent ${isKeypadOpen ? 'text-primary' : 'text-slate-800'}`}
                   placeholder="0"
                 />
-                <div className="tw-w-full tw-h-0.5 tw-bg-slate-200 tw-mt-2"></div>
+                <div className="w-full h-0.5 bg-slate-200 mt-2"></div>
                 {isKeypadOpen && (
-                  <div className="tw-absolute tw-right-4 tw-top-1/2 -tw-translate-y-1/2 tw-animate-pulse tw-text-primary tw-pointer-events-none">
-                    <i className="fa-solid fa-calculator tw-text-xl"></i>
+                  <div className="absolute right-4 top-1/2 -translate-y-1/2 animate-pulse text-primary pointer-events-none">
+                    <i className="fa-solid fa-calculator text-xl"></i>
                   </div>
                 )}
              </div>
            </HelpTarget>
 
-           <div className="tw-grid tw-grid-cols-2 tw-gap-4">
-              <div className="tw-bg-slate-50 tw-p-4 tw-rounded-xl tw-text-center">
-                 <div className="tw-text-xs tw-text-slate-500 tw-font-bold tw-mb-1">空車重量</div>
-                 <div className="tw-text-xl tw-font-bold tw-text-slate-700">{tare.toLocaleString()} <span className="tw-text-xs">kg</span></div>
+           <div className="grid grid-cols-2 gap-4">
+              <div className="bg-slate-50 p-4 rounded-xl text-center">
+                 <div className="text-xs text-slate-500 font-bold mb-1">空車重量</div>
+                 <div className="text-xl font-bold text-slate-700">{tare.toLocaleString()} <span className="text-xs">kg</span></div>
               </div>
-              <div className="tw-bg-slate-800 tw-p-4 tw-rounded-xl tw-text-center tw-text-white">
-                 <div className="tw-text-xs tw-text-slate-400 tw-font-bold tw-mb-1">正味重量 (Net)</div>
-                 <div className={`tw-text-xl tw-font-bold ${net > 0 ? 'tw-text-green-400' : 'tw-text-slate-500'}`}>{net.toLocaleString()} <span className="tw-text-xs">kg</span></div>
+              <div className="bg-slate-800 p-4 rounded-xl text-center text-white">
+                 <div className="text-xs text-slate-400 font-bold mb-1">正味重量 (Net)</div>
+                 <div className={`text-xl font-bold ${net > 0 ? 'text-green-400' : 'text-slate-500'}`}>{net.toLocaleString()} <span className="text-xs">kg</span></div>
               </div>
            </div>
            
-           <div className="tw-space-y-2">
-             <p className="tw-text-xs tw-text-center tw-text-slate-400">
+           <div className="space-y-2">
+             <p className="text-xs text-center text-slate-400">
                ※ 正味重量 = 総重量 - 空車重量
              </p>
              {!isValidGross && displayGross > 0 && (
-                <p className="tw-text-sm tw-text-center tw-red-500 tw-font-bold tw-bg-red-50 tw-p-2 tw-rounded tw-animate-pulse">
-                  <i className="fa-solid fa-triangle-exclamation tw-mr-1"></i>
+                <p className="text-sm text-center red-500 font-bold bg-red-50 p-2 rounded animate-pulse">
+                  <i className="fa-solid fa-triangle-exclamation mr-1"></i>
                   空車重量（{tare}kg）より大きい値を入力してください
                 </p>
              )}
              {!hasItems && (
-               <div className="tw-text-sm tw-text-center tw-text-red-500 tw-font-bold tw-bg-red-50 tw-p-2 tw-rounded">
-                 <i className="fa-solid fa-circle-exclamation tw-mr-1"></i>
+               <div className="text-sm text-center text-red-500 font-bold bg-red-50 p-2 rounded">
+                 <i className="fa-solid fa-circle-exclamation mr-1"></i>
                  {mode === 'INTERMEDIATE' ? '荷下ろし対象の荷物がありません' : '回収した荷物がありません'}
                </div>
              )}
@@ -213,36 +213,36 @@ export const EndShiftPage: React.FC<Props> = ({ stops, currentVehicle, mode, onC
 
       {/* STEP 2: Weight Distribution */}
       {step === 2 && (
-        <div className="tw-space-y-4 tw-animate-fade-in">
-           <div className="tw-sticky tw-top-0 tw-bg-white/95 tw-backdrop-blur tw-z-10 tw-p-4 tw-rounded-xl tw-border tw-border-slate-200 tw-shadow-sm tw-flex tw-justify-between tw-items-center">
+        <div className="space-y-4 animate-fade-in">
+           <div className="sticky top-0 bg-white/95 backdrop-blur z-10 p-4 rounded-xl border border-slate-200 shadow-sm flex justify-between items-center">
               <div>
-                 <div className="tw-text-xs tw-text-slate-500 tw-font-bold">正味重量ターゲット</div>
-                 <div className="tw-text-2xl tw-font-bold tw-text-slate-800">{net.toLocaleString()} <span className="tw-text-sm">kg</span></div>
+                 <div className="text-xs text-slate-500 font-bold">正味重量ターゲット</div>
+                 <div className="text-2xl font-bold text-slate-800">{net.toLocaleString()} <span className="text-sm">kg</span></div>
               </div>
-              <div className="tw-text-right">
-                 <div className="tw-text-xs tw-text-slate-500 tw-font-bold">残り調整</div>
-                 <div className={`tw-text-xl tw-font-bold ${diff === 0 ? 'tw-text-green-500' : 'tw-text-red-500 tw-animate-pulse'}`}>
+              <div className="text-right">
+                 <div className="text-xs text-slate-500 font-bold">残り調整</div>
+                 <div className={`text-xl font-bold ${diff === 0 ? 'text-green-500' : 'text-red-500 animate-pulse'}`}>
                     {diff > 0 ? '+' : ''}{diff} kg
                  </div>
               </div>
            </div>
            
-           <div className="tw-space-y-2">
+           <div className="space-y-2">
              {collectedItems.map((item, idx) => {
                const stop = stops.find(s => s.id === item.stopId);
                const key = `${item.stopId}_${item.id}`;
                const val = adjustedWeights[key] || 0;
                return (
-                 <div key={idx} className="tw-bg-white tw-p-3 tw-rounded-xl tw-border tw-border-slate-100 tw-shadow-sm tw-flex tw-justify-between tw-items-center">
-                    <div className="tw-flex-1 tw-overflow-hidden tw-mr-2">
-                       <div className="tw-text-[10px] tw-text-slate-400 tw-truncate">{stop?.customerName}</div>
-                       <div className="tw-font-bold tw-text-slate-700 tw-truncate">{item.name}</div>
-                       <div className="tw-text-xs tw-text-slate-400">概算: {item.actualWeight}kg</div>
+                 <div key={idx} className="bg-white p-3 rounded-xl border border-slate-100 shadow-sm flex justify-between items-center">
+                    <div className="flex-1 overflow-hidden mr-2">
+                       <div className="text-[10px] text-slate-400 truncate">{stop?.customerName}</div>
+                       <div className="font-bold text-slate-700 truncate">{item.name}</div>
+                       <div className="text-xs text-slate-400">概算: {item.actualWeight}kg</div>
                     </div>
-                    <div className="tw-flex tw-items-center tw-space-x-2 tw-shrink-0">
-                       <button onClick={() => adjustItemWeight(key, -10)} className="tw-w-8 tw-h-8 tw-rounded-lg tw-bg-slate-100 tw-text-slate-600 tw-font-bold active:tw-bg-slate-200 tw-flex tw-items-center tw-justify-center">-</button>
-                       <div className="tw-w-16 tw-text-center tw-font-mono tw-font-bold tw-text-lg">{val}</div>
-                       <button onClick={() => adjustItemWeight(key, 10)} className="tw-w-8 tw-h-8 tw-rounded-lg tw-bg-slate-100 tw-text-slate-600 tw-font-bold active:tw-bg-slate-200 tw-flex tw-items-center tw-justify-center">+</button>
+                    <div className="flex items-center space-x-2 shrink-0">
+                       <button onClick={() => adjustItemWeight(key, -10)} className="w-8 h-8 rounded-lg bg-slate-100 text-slate-600 font-bold active:bg-slate-200 flex items-center justify-center">-</button>
+                       <div className="w-16 text-center font-mono font-bold text-lg">{val}</div>
+                       <button onClick={() => adjustItemWeight(key, 10)} className="w-8 h-8 rounded-lg bg-slate-100 text-slate-600 font-bold active:bg-slate-200 flex items-center justify-center">+</button>
                     </div>
                  </div>
                );
@@ -252,21 +252,21 @@ export const EndShiftPage: React.FC<Props> = ({ stops, currentVehicle, mode, onC
       )}
 
       {/* Navigation Buttons */}
-      <div className={`tw-fixed tw-bottom-0 tw-left-0 tw-w-full tw-bg-white tw-border-t tw-border-slate-200 tw-p-4 tw-pb-safe tw-shadow-[0_-4px_10px_rgba(0,0,0,0.05)] tw-z-20 tw-flex tw-space-x-3 tw-transition-transform ${isKeypadOpen ? 'tw-translate-y-full' : ''}`}>
+      <div className={`fixed bottom-0 left-0 w-full bg-white border-t border-slate-200 p-4 pb-safe shadow-[0_-4px_10px_rgba(0,0,0,0.05)] z-20 flex space-x-3 transition-transform ${isKeypadOpen ? 'translate-y-full' : ''}`}>
          {step > 1 && (
-           <Button variant="secondary" onClick={() => setStep(prev => prev - 1 as any)} className="tw-flex-1">
+           <Button variant="secondary" onClick={() => setStep(prev => prev - 1 as any)} className="flex-1">
              戻る
            </Button>
          )}
          {step < 2 ? (
-           <Button onClick={() => setStep(prev => prev + 1 as any)} disabled={!canProceedToStep2} className="tw-flex-2 tw-w-full">
+           <Button onClick={() => setStep(prev => prev + 1 as any)} disabled={!canProceedToStep2} className="flex-2 w-full">
              次へ
            </Button>
          ) : (
            <Button 
              onClick={handleFinishClick} 
              disabled={diff !== 0 || collectedItems.length === 0} 
-             className="tw-flex-2 tw-w-full"
+             className="flex-2 w-full"
            >
              {mode === 'INTERMEDIATE' ? '荷下ろし完了・休憩' : '確定して業務終了'}
            </Button>
@@ -283,21 +283,21 @@ export const EndShiftPage: React.FC<Props> = ({ stops, currentVehicle, mode, onC
       />
 
       <Modal isOpen={isConfirmOpen} onClose={() => setConfirmOpen(false)} title="最終確認">
-        <div className="tw-space-y-6">
-           <div className="tw-bg-yellow-50 tw-p-4 tw-rounded-xl tw-border tw-border-yellow-200 tw-flex tw-items-start tw-text-yellow-900">
-              <i className="fa-solid fa-circle-info tw-mt-1 tw-mr-3 tw-text-lg tw-shrink-0"></i>
+        <div className="space-y-6">
+           <div className="bg-yellow-50 p-4 rounded-xl border border-yellow-200 flex items-start text-yellow-900">
+              <i className="fa-solid fa-circle-info mt-1 mr-3 text-lg shrink-0"></i>
               <div>
-                 <p className="tw-font-bold tw-mb-1">
+                 <p className="font-bold mb-1">
                     {mode === 'INTERMEDIATE' ? '中間荷下ろしを完了しますか？' : '業務日報を提出しますか？'}
                  </p>
-                 <p className="tw-text-sm">
+                 <p className="text-sm">
                     {mode === 'INTERMEDIATE' 
                        ? '対象の荷物は「荷下ろし済み」となり、休憩ステータスに移行します。' 
                        : '一度提出すると修正できません。入力内容に間違いがないか確認してください。'}
                  </p>
               </div>
            </div>
-           <div className="tw-flex tw-space-x-3">
+           <div className="flex space-x-3">
               <Button variant="secondary" onClick={() => setConfirmOpen(false)}>キャンセル</Button>
               <Button onClick={executeFinish}>確定する</Button>
            </div>
