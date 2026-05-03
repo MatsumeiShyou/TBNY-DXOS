@@ -1,5 +1,30 @@
 import { APPS_REGISTRY } from './appsRegistry';
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
+import { MasterDataManager } from '../components/MasterDataManager';
+
+// RePaper Route は巨大なため、lazy インポートで分離。
+// インスタンスをトップレベルで固定し、再レンダリング時の再マウントを防止する。
+const RePaperRouteAppLazy = lazy(() => import('../repaper-route/RePaperRouteApp').then(m => ({ default: m.RePaperRouteApp })));
+
+/**
+ * LazyWrapper - ホワイトアウト防止用の Suspense 境界
+ */
+const LazyWrapper = ({ children }: { children: React.ReactNode }) => (
+  <Suspense fallback={
+    <div style={{ 
+      display: 'flex', 
+      alignItems: 'center', 
+      justifyContent: 'center', 
+      height: '100%', 
+      background: '#0b0d14',
+      color: '#3b82f6'
+    }}>
+      <div className="animate-pulse font-black text-xs tracking-widest">LOADING MODULE...</div>
+    </div>
+  }>
+    {children}
+  </Suspense>
+);
 
 const labelStyle: React.CSSProperties = {
   fontSize: '1.125rem',
@@ -34,10 +59,6 @@ function placeholderStyle(_appId: string): React.CSSProperties {
   };
 }
 
-import { MasterDataManager } from '../components/MasterDataManager';
-
-import { RePaperRouteApp } from '../repaper-route/RePaperRouteApp';
-
 /**
  * appRegistry — app_id に基づいてコンポーネントを返す定数マップ
  */
@@ -48,10 +69,14 @@ export const APP_COMPONENTS: Record<string, React.ReactNode> = {
     </div>
   ),
   'repaper-route-admin': (
-    <RePaperRouteApp />
+    <LazyWrapper>
+      <RePaperRouteAppLazy />
+    </LazyWrapper>
   ),
   'repaper-route-driver': (
-    <RePaperRouteApp /> // ドライバー専用ビューは RePaperRouteApp 内でロール判定
+    <LazyWrapper>
+      <RePaperRouteAppLazy />
+    </LazyWrapper>
   ),
 
   'weighing-self-driver': (
