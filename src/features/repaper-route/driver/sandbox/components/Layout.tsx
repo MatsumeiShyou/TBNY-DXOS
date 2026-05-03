@@ -1,6 +1,7 @@
 
 import React from 'react';
-import { User, DriverStatus } from '../types';
+import type { User } from '../types';
+import { DriverStatus } from '../types';
 import { Toast } from './Widgets';
 import { useHelp, HelpTarget } from './Help';
 

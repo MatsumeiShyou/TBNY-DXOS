@@ -3,6 +3,7 @@ import React, { lazy, Suspense } from 'react';
 // 各業務アプリの lazy インポート定義
 const RePaperRouteAppLazy = lazy(() => import('../repaper-route/RePaperRouteApp').then(m => ({ default: m.RePaperRouteApp })));
 const MasterDataManagerLazy = lazy(() => import('../components/MasterDataManager').then(m => ({ default: m.MasterDataManager })));
+const DriverOSAppLazy = lazy(() => import('../repaper-route/driver/DriverOSApp').then(m => ({ default: m.default })));
 
 /**
  * LazyWrapper - ホワイトアウト防止用の Suspense 境界
