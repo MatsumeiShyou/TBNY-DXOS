@@ -9,8 +9,8 @@ import { useDriverOSBridge } from './bridge/useDriverOSBridge';
  * TBNY DXOS におけるドライバーアプリのエントリポイント。
  */
 const DriverOSApp: React.FC = () => {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { user } = useDriverOSBridge();
+  // Bridge hook can be used here for future global OS synchronization
+  useDriverOSBridge();
 
   return (
     <div className="tw-w-full tw-h-full tw-bg-slate-50 tw-overflow-hidden tw-relative">
