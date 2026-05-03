@@ -36,7 +36,7 @@ export const APPS_REGISTRY: Record<string, AppConfig> = {
     color: '#3b82f6',
     gradientFrom: '#1d4ed8',
     gradientTo: '#3b82f6',
-    url: '/repaper-route/?activeView=board',
+    url: null,
     order: 2,
   },
   'master-data': {
