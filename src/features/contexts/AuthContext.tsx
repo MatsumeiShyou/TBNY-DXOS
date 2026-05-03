@@ -82,13 +82,23 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         initializeAuth();
 
         const { data: { subscription } } = AuthAdapter.onAuthStateChange(async (_event, session) => {
-            console.log(`[STATE] AuthProvider: Auth state changed: ${_event}`);
+            console.log(`[STATE] AuthProvider: Auth state changed: ${_event} (Session: ${session ? 'Active' : 'None'})`);
             const user = session?.user ?? null;
             
             try {
                 if (user) {
-                    const staff = await AuthAdapter.getStaffByAuthUid(user.id);
+                    console.log(`[STATE] AuthProvider: Fetching staff profile for UID: ${user.id}...`);
+                    
+                    // [SAFETY] スタッフ情報取得にもタイムアウトを設ける（8秒）
+                    const staffTimeout = new Promise<never>((_, reject) => 
+                        setTimeout(() => reject(new Error('STAFF_FETCH_TIMEOUT')), 8000)
+                    );
+                    
+                    const staffFetch = AuthAdapter.getStaffByAuthUid(user.id);
+                    const staff = await Promise.race([staffFetch, staffTimeout]);
+
                     if (staff) {
+                        console.log(`[STATE] AuthProvider: Staff profile verified: ${staff.name}`);
                         const verifiedUser: DXUser = {
                             id: staff.id,
                             name: staff.name,
@@ -107,20 +117,26 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                         AuthAdapter.saveCachedProfile(verifiedUser);
                         setAuthStatus('VERIFIED');
                     } else {
+                        console.warn('[STATE] AuthProvider: No active staff profile found.');
                         setCurrentUser(null);
                         AuthAdapter.clearCachedProfile();
                         setAuthStatus('UNAUTHENTICATED');
                     }
                 } else {
+                    console.log('[STATE] AuthProvider: No user session. Transitioning to UNAUTHENTICATED.');
                     setCurrentUser(null);
                     AuthAdapter.clearCachedProfile();
                     setAuthStatus('UNAUTHENTICATED');
                 }
-            } catch (error) {
+            } catch (error: any) {
                 console.error('[STATE] AuthProvider: Error handling auth state change:', error);
+                if (error.message === 'STAFF_FETCH_TIMEOUT') {
+                    console.error('[CRITICAL] AuthProvider: Staff fetch timed out. UI may be stuck.');
+                }
                 setAuthStatus('UNAUTHENTICATED');
             } finally {
                 setIsLoading(false);
+                console.log(`[STATE] AuthProvider: State update complete (New Status: ${authStatus}).`);
             }
         });
 
