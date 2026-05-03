@@ -9,6 +9,8 @@
 - [ ] **Structural Validation**: 10kg単位制約、合計重量要件等の厳格なバリデーション実装。
 - [ ] **Audit Trail v2**: 変更履歴を追記型台帳（JSONL + DB）への二重記録。
 - [x] **[Git Hooks Sync]**: `husky` & `lint-staged` 導入による自動化強制力の配備完了。
+- [ ] **[DriverApp Bridge] Supabase 実装**: 現在、`useDriverOSBridge` はスタブ。実績記録等の実 DB 同期が必要。
+- [ ] **[DriverApp Assets] アイコン資産の Lucide 移行**: FontAwesome への残存依存を解消し、Lucide へ完全移行することを推奨。
 
 ## 2. Future Roadmap (将来構想)
 - [ ] **OAuth2 Transition**: Staff 認証基盤の標準プロトコルへの移行。
