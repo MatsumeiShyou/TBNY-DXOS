@@ -82,7 +82,39 @@ export const AuthAdapter = {
    * サインアウト
    */
   async signOut() {
+    this.clearCachedProfile();
     return await supabase.auth.signOut();
+  },
+
+  /**
+   * プロフィール情報を localStorage にキャッシュする
+   */
+  saveCachedProfile(profile: any) {
+    if (typeof window === 'undefined') return;
+    localStorage.setItem('dxos_cached_profile', JSON.stringify(profile));
+  },
+
+  /**
+   * キャッシュされたプロフィール情報を取得する
+   */
+  getCachedProfile(): any | null {
+    if (typeof window === 'undefined') return null;
+    const cached = localStorage.getItem('dxos_cached_profile');
+    if (!cached) return null;
+    try {
+      return JSON.parse(cached);
+    } catch (e) {
+      console.error('[AuthAdapter] Failed to parse cached profile:', e);
+      return null;
+    }
+  },
+
+  /**
+   * キャッシュされたプロフィール情報を削除する
+   */
+  clearCachedProfile() {
+    if (typeof window === 'undefined') return;
+    localStorage.removeItem('dxos_cached_profile');
   },
 
   /**

@@ -59,6 +59,17 @@ export const DXOSPortal = ({ onAppSelect }: DXOSPortalProps) => {
   }, [currentUser]);
 
   const [redirectUrl, setRedirectUrl] = useState<string | null>(null);
+  const [pendingAppId, setPendingAppId] = useState<string | null>(null);
+
+  // 認証が確定した際に、保留中のアプリがあれば起動する
+  useEffect(() => {
+    if (authStatus === 'VERIFIED' && pendingAppId) {
+      console.log(`[DECISION] DXOSPortal: Verification complete. Launching pending app: ${pendingAppId}`);
+      const appId = pendingAppId;
+      setPendingAppId(null);
+      handleTileClick(appId);
+    }
+  }, [authStatus, pendingAppId]);
 
   useEffect(() => {
     if (redirectUrl) {
@@ -73,6 +84,13 @@ export const DXOSPortal = ({ onAppSelect }: DXOSPortalProps) => {
 
   // タイルクリック処理
   const handleTileClick = (appId: string) => {
+    // 同期中（OPTIMISTIC）の場合は、確認が取れるまで起動を保留する
+    if (authStatus === 'OPTIMISTIC') {
+      console.log(`[DECISION] DXOSPortal: Launch guarded. Waiting for verification of ${appId}...`);
+      setPendingAppId(appId);
+      return;
+    }
+
     const appConfig = APPS_REGISTRY[appId];
     
     // 外部URLが設定されている場合は、リダイレクト
@@ -158,8 +176,9 @@ export const DXOSPortal = ({ onAppSelect }: DXOSPortalProps) => {
             return (
               <button
                 key={app.id}
-                className="dxos-tile"
+                className={`dxos-tile ${pendingAppId === app.id ? 'pending' : ''}`}
                 onClick={() => handleTileClick(app.id)}
+                disabled={pendingAppId !== null && pendingAppId !== app.id}
                 type="button"
                 style={{
                   '--tile-gradient': `linear-gradient(135deg, ${app.gradientFrom}, ${app.gradientTo})`,
@@ -167,10 +186,18 @@ export const DXOSPortal = ({ onAppSelect }: DXOSPortalProps) => {
                 } as React.CSSProperties}
               >
                 <div className="dxos-tile__icon-wrapper">
-                  <IconComponent />
+                  {pendingAppId === app.id ? (
+                    <div className="dxos-tile__loader"></div>
+                  ) : (
+                    <IconComponent />
+                  )}
                 </div>
-                <h2 className="dxos-tile__label">{app.label}</h2>
-                <p className="dxos-tile__description">{app.description}</p>
+                <h2 className="dxos-tile__label">
+                  {pendingAppId === app.id ? '確認中...' : app.label}
+                </h2>
+                <p className="dxos-tile__description">
+                  {pendingAppId === app.id ? '権限を最終確認しています' : app.description}
+                </p>
               </button>
             );
           })}

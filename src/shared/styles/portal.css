@@ -226,6 +226,27 @@
   background: rgba(255, 255, 255, 0.05);
 }
 
+.dxos-tile.pending {
+  cursor: wait;
+  background: rgba(255, 255, 255, 0.02);
+  border-style: dashed;
+  transform: none;
+  box-shadow: none;
+}
+
+.dxos-tile__loader {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
 .dxos-tile:hover::before {
   opacity: 1;
 }

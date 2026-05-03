@@ -4,7 +4,9 @@ import { AuthContext, type AuthContextValue, type AuthStatus } from '../hooks/us
 import type { DXUser } from '../../shared/types/auth';
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-    const [currentUser, setCurrentUser] = useState<DXUser | null>(null);
+    const [currentUser, setCurrentUser] = useState<DXUser | null>(() => 
+        AuthAdapter.getCachedProfile()
+    );
     const [authStatus, setAuthStatus] = useState<AuthStatus>(() => 
         AuthAdapter.hasCachedSession() ? 'OPTIMISTIC' : 'INITIALIZING'
     );
@@ -38,7 +40,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                 if (result) {
                     const { user, staff } = result;
                     console.log(`[STATE] AuthProvider: Staff profile verified: ${staff.name}`);
-                    setCurrentUser({
+                    
+                    const verifiedUser: DXUser = {
                         id: staff.id,
                         name: staff.name,
                         email: user.email || '',
@@ -51,12 +54,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                             can_edit_board: staff.role === 'admin' || (staff.role as string) === 'manager' || staff.role === 'staff',
                             can_edit_past_records: staff.role === 'admin' || (staff.role as string) === 'manager'
                         }
-                    });
+                    };
+
+                    setCurrentUser(verifiedUser);
+                    AuthAdapter.saveCachedProfile(verifiedUser); // 最新情報をキャッシュに保存
                     setAuthStatus('VERIFIED');
                 } else {
                     console.log('[STATE] AuthProvider: Verification failed or timed out.');
                     setAuthStatus('UNAUTHENTICATED');
                     setCurrentUser(null);
+                    AuthAdapter.clearCachedProfile(); // 不整合時はキャッシュも消去
                 }
             } catch (error) {
                 console.error('[STATE] AuthProvider: Initialization error:', error);
