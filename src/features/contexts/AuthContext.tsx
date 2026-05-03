@@ -98,7 +98,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                     setAuthStatus('UNAUTHENTICATED');
                     setCurrentUser(null);
                 }
-            } else if (event === 'SIGNED_OUT' || event === 'USER_DELETED') {
+            } else if (event === 'SIGNED_OUT' || (event as any) === 'USER_DELETED') {
                 setCurrentUser(null);
                 setAuthStatus('UNAUTHENTICATED');
                 AuthAdapter.clearCachedProfile();
