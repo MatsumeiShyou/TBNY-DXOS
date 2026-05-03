@@ -2,7 +2,6 @@ import { useState, useEffect, type ReactNode } from 'react';
 import { AuthAdapter } from '../../shared/lib/auth/AuthAdapter';
 import { AuthContext, type AuthContextValue } from '../hooks/useAuth';
 import type { DXUser } from '../../shared/types/auth';
-import type { Staff } from '../../shared/types/staff';
 import type { Session } from '@supabase/supabase-js';
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
