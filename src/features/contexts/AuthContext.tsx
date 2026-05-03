@@ -14,16 +14,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             console.log('[STATE] AuthProvider: Initialization started.');
             
             try {
-                // 15秒のタイムアウトを設定
+                // 5秒のタイムアウトを設定（超過時はサイレントに諦めてログイン画面を出す）
                 const timeout = new Promise((_, reject) => 
-                    setTimeout(() => reject(new Error('Auth Initialization Timeout (15s)')), 15000)
+                    setTimeout(() => reject(new Error('TIMEOUT')), 5000)
                 );
 
                 console.log('[DECISION] AuthProvider: Fetching session...');
                 const { data: { session } } = await (Promise.race([
                     AuthAdapter.getSession(),
                     timeout
-                ]) as Promise<{ data: { session: Session | null } }>);
+                ]) as Promise<{ data: { session: Session | null } }>).catch(() => ({ data: { session: null } }));
 
                 const user = session?.user ?? null;
                 console.log(`[STATE] AuthProvider: User session ${user ? 'found' : 'not found'}.`);
