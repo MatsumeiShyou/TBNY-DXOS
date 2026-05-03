@@ -14,6 +14,7 @@
     "integrity": "node .agent/scripts/integrity_check.js",
     "agent:scan": "node .agent/scripts/scan.js",
     "agent:check": "node .agent/scripts/reflect.js --check",
+    "test": "vitest run",
     "prepare": "husky || true"
   },
   "dependencies": {
@@ -45,6 +46,7 @@
     "tailwindcss": "^4.2.4",
     "typescript": "~5.8.2",
     "typescript-eslint": "^8.48.0",
-    "vite": "^7.3.1"
+    "vite": "^7.3.1",
+    "vitest": "^4.1.5"
   }
 }

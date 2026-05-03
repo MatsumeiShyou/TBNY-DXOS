@@ -50,7 +50,10 @@ export const DXOSPortal = ({ onAppSelect }: DXOSPortalProps) => {
     if (!currentUser?.allowed_apps) return [];
 
     return currentUser.allowed_apps
-      .filter((appId: string) => APPS_REGISTRY[appId])
+      .filter((appId: string) => {
+        const config = APPS_REGISTRY[appId];
+        return config && config.isEnabled !== false;
+      })
       .map((appId: string) => ({
         id: appId,
         ...APPS_REGISTRY[appId],

@@ -16,6 +16,7 @@ export interface AppConfig {
   gradientTo: string;
   url: string | null;
   order: number;
+  isEnabled?: boolean; // キルスイッチ
 }
 
 export const APPS_REGISTRY: Record<string, AppConfig> = {
@@ -38,6 +39,7 @@ export const APPS_REGISTRY: Record<string, AppConfig> = {
     gradientTo: '#3b82f6',
     url: null,
     order: 2,
+    isEnabled: true, // 統合完了につき有効化
   },
   'master-data': {
     label: 'マスタデータ管理',

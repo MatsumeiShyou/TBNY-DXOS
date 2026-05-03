@@ -72,15 +72,9 @@ export const APP_COMPONENTS: Record<string, React.ReactNode> = {
     </LazyWrapper>
   ),
   'repaper-route-driver': (
-    <div style={placeholderStyle('repaper-route-driver')}>
-      <div>
-        <p style={labelStyle}>{APPS_REGISTRY['repaper-route-driver']?.label}</p>
-        <p style={subTextStyle}>現場実行ユニット（Execution Unit）。配車盤からの指示を受け取る専用画面を準備中です。</p>
-      </div>
-      <div style={{ marginTop: '2rem', padding: '2rem', border: '1px dashed #334155', borderRadius: '1rem', opacity: 0.5 }}>
-        <p style={{ fontSize: '0.75rem', color: '#475569' }}>MOBILE INTERFACE PENDING</p>
-      </div>
-    </div>
+    <LazyWrapper>
+      <DriverOSAppLazy />
+    </LazyWrapper>
   ),
 
   'weighing-self-driver': (
