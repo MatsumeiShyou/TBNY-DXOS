@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Layout } from './components/Layout';
 import { InspectionPage } from './pages/InspectionPage';
 import { RouteListPage } from './pages/RouteListPage';
@@ -7,7 +7,7 @@ import { EndShiftPage } from './pages/EndShiftPage';
 import { ReportPage } from './pages/ReportPage';
 import { MenuPage } from './pages/MenuPage';
 import { CURRENT_USER, ADMIN_PHONE_NUMBER, MOCK_COLLEAGUES, MOCK_VEHICLES } from './constants'; 
-import type { Stop, User, Vehicle, RouteInfo, Colleague, CargoItem } from './types';
+import type { Stop, User, Vehicle, RouteInfo, Colleague } from './types';
 import { StopStatus, DriverStatus } from './types';
 import { Modal, Button, Card } from './components/Widgets';
 import { HelpProvider } from './components/Help';

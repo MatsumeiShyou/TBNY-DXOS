@@ -8,7 +8,7 @@ import { NumericKeypad, safeCalculate } from '../components/NumericKeypad';
 interface Props {
   stops: Stop[];
   currentVehicle: Vehicle;
-  workStartTime: Date | null;
+  workStartTime?: Date | null;
   mode: 'FINAL' | 'INTERMEDIATE';
   onComplete: (adjustedWeights?: Record<string, number>) => void;
   onCancel: () => void;
