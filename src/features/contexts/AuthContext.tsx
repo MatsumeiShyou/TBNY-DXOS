@@ -73,36 +73,32 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         const { data: { subscription } } = AuthAdapter.onAuthStateChange(async (event, session) => {
             console.log(`[STATE] AuthContext: Event detected: ${event}`);
             
-            if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
+            // 認証成功・セッション確立・トークン更新時
+            if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED' || event === 'INITIAL_SESSION') {
                 const user = session?.user;
                 if (user) {
                     try {
-                        // リスナー内でも 5秒のタイムアウト保護を適用
-                        const timeout = new Promise<never>((_, reject) => 
-                            setTimeout(() => reject(new Error('TIMEOUT')), 5000)
-                        );
-                        
-                        const fetchPromise = AuthAdapter.getStaffByAuthUid(user.id);
-                        const staff = await Promise.race([fetchPromise, timeout]).catch(() => null);
-
+                        const staff = await AuthAdapter.getStaffByAuthUid(user.id);
                         if (staff) {
                             const dxUser = mapStaffToUser(user, staff);
                             setCurrentUser(dxUser);
                             AuthAdapter.saveCachedProfile(dxUser);
                             setAuthStatus('VERIFIED');
                         } else {
-                            console.warn('[STATE] AuthContext: Staff profile fetch failed or timed out.');
-                            // 失敗してもサインアウトはさせず、再試行可能なように UNAUTHENTICATED へ
+                            // ユーザーはいるがスタッフマスタにない場合
                             setAuthStatus('UNAUTHENTICATED');
                             setCurrentUser(null);
                         }
                     } catch (e) {
-                        console.error('[STATE] AuthContext: Error during sign-in sync:', e);
-                        setAuthStatus('UNAUTHENTICATED');
-                        setCurrentUser(null);
+                        console.error('[STATE] AuthContext: Error fetching staff profile:', e);
+                        // エラー時は安全のために未認証へ（または現在のキャッシュを維持）
                     }
+                } else if (event !== 'INITIAL_SESSION') {
+                    // セッションがない場合は未認証
+                    setAuthStatus('UNAUTHENTICATED');
+                    setCurrentUser(null);
                 }
-            } else if (event === 'SIGNED_OUT') {
+            } else if (event === 'SIGNED_OUT' || event === 'USER_DELETED') {
                 setCurrentUser(null);
                 setAuthStatus('UNAUTHENTICATED');
                 AuthAdapter.clearCachedProfile();

@@ -140,6 +140,24 @@
   animation: pulse 1.5s infinite;
 }
 
+.dxos-portal__error-banner {
+  grid-column: 1 / -1;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  color: #f87171;
+  padding: 0.875rem 1.25rem;
+  border-radius: 12px;
+  font-size: 0.8125rem;
+  text-align: center;
+  margin-bottom: 0.5rem;
+  cursor: pointer;
+  animation: fadeInDown 0.4s ease-out;
+}
+
+.dxos-portal__error-banner:hover {
+  background: rgba(239, 68, 68, 0.15);
+}
+
 @keyframes pulse {
   0% { opacity: 0.4; }
   50% { opacity: 1; }
