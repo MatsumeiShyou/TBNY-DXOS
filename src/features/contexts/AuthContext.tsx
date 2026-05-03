@@ -11,7 +11,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         if (AuthAdapter.hasCachedSession()) return 'OPTIMISTIC';
         return 'UNAUTHENTICATED';
     });
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading] = useState(false);
 
     /**
      * スタッフ情報を DXUser 型に変換する共通ロジック
