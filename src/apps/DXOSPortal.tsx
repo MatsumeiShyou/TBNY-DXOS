@@ -84,24 +84,24 @@ export const DXOSPortal = ({ onAppSelect }: DXOSPortalProps) => {
 
   // タイルクリック処理
   const handleTileClick = (appId: string) => {
-    // 同期中（OPTIMISTIC）の場合は、確認が取れるまで起動を保留する
-    if (authStatus === 'OPTIMISTIC') {
-      console.log(`[DECISION] DXOSPortal: Launch guarded. Waiting for verification of ${appId}...`);
-      setPendingAppId(appId);
+    const appConfig = APPS_REGISTRY[appId];
+    
+    // [OPTIMISTIC 起動許可] 
+    // キャッシュがある状態（OPTIMISTIC）でも、ユーザー体験を優先して即時起動を許可する。
+    // もし後続の検証で失敗した場合は、親コンポーネント（App.tsx）の authStatus 変更により
+    // 自動的にログアウト画面へ戻される。
+
+    // 内部モジュール（APP_COMPONENTS に定義あり）かつ URL が null または相対パスの場合は
+    // ステートベースの遷移（onAppSelect）を優先する
+    if (onAppSelect) {
+      onAppSelect(appId);
       return;
     }
 
-    const appConfig = APPS_REGISTRY[appId];
-    
-    // 外部URLが設定されている場合は、リダイレクト
+    // 外部URLが設定されている場合の予備ルート
     if (appConfig?.url) {
       setRedirectUrl(appConfig.url);
       return;
-    }
-
-    // 内部モジュールの場合はコールバックを実行
-    if (onAppSelect) {
-      onAppSelect(appId);
     }
   };
 

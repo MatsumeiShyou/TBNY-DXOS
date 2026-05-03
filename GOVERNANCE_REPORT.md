@@ -1,5 +1,5 @@
 # Governance Report
 
-Generated: 2026-05-03T03:12:08.845Z
+Generated: 2026-05-03T03:24:35.029Z
 
 ## ✅ COMPLIANT
