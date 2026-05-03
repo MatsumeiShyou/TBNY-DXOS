@@ -7,10 +7,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [currentUser, setCurrentUser] = useState<DXUser | null>(() => 
         AuthAdapter.getCachedProfile()
     );
-    const [authStatus, setAuthStatus] = useState<AuthStatus>(() => 
-        AuthAdapter.hasCachedSession() ? 'OPTIMISTIC' : 'INITIALIZING'
-    );
-    const [isLoading, setIsLoading] = useState(() => !AuthAdapter.hasCachedSession());
+    const [authStatus, setAuthStatus] = useState<AuthStatus>(() => {
+        if (AuthAdapter.hasCachedSession()) return 'OPTIMISTIC';
+        return 'UNAUTHENTICATED'; // キャッシュがなければ即座に未ログイン確定
+    });
+    const [isLoading, setIsLoading] = useState(() => {
+        // キャッシュがあれば検証のためにスプラッシュは出さない（OPTIMISTIC表示）
+        // キャッシュがなければ即座にログイン画面を出すためスプラッシュは出さない
+        return false; 
+    });
 
     useEffect(() => {
         const initializeAuth = async () => {
