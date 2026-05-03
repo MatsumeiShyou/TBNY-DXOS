@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button, Modal } from '../components/Widgets';
 import type { Stop, Vehicle } from '../types';
@@ -15,7 +14,7 @@ interface Props {
   onCancel: () => void;
 }
 
-export const EndShiftPage: React.FC<Props> = ({ stops, currentVehicle, workStartTime, mode, onComplete, onCancel }) => {
+export const EndShiftPage: React.FC<Props> = ({ stops, currentVehicle, mode, onComplete, onCancel }) => {
   const [step, setStep] = useState<1 | 2>(1);
   const [grossWeightStr, setGrossWeightStr] = useState<string>('');
   const [isKeypadOpen, setIsKeypadOpen] = useState(false);

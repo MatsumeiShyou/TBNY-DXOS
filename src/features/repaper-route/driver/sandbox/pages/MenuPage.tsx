@@ -1,7 +1,7 @@
 
 import React from 'react';
 import type { User, Stop } from '../types';
-import { Button, Card, StatusBadge } from '../components/Widgets';
+import { Card } from '../components/Widgets';
 
 interface MenuPageProps {
   isOpen: boolean;

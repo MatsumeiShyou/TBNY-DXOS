@@ -15,9 +15,9 @@ import { HelpProvider } from './components/Help';
 // Dummy stubs for Supabase logic (to be linked to Bridge later)
 const fetchAllRoutes = async (): Promise<RouteInfo[]> => {
   return [
-    { id: 'r-1', name: '東京エリア通常', area: '東京都心部' },
-    { id: 'r-2', name: '埼玉ルートB', area: 'さいたま市' },
-    { id: 'r-3', name: '横浜・川崎定期便', area: '神奈川県' },
+    { id: 'r-1', name: '東京エリア通常', area: '東京都心部', stops: [] },
+    { id: 'r-2', name: '埼玉ルートB', area: 'さいたま市', stops: [] },
+    { id: 'r-3', name: '横浜・川崎定期便', area: '神奈川県', stops: [] },
   ];
 };
 
@@ -454,7 +454,7 @@ export default function DriverApp() {
         return <StopDetailPage stop={stop} onUpdateStop={handleUpdateStop} onBack={() => setView('route')} />;
       case 'fuel': return <FuelPage />;
       case 'report': return <ReportPage stops={stops} user={user} workStartTime={workStartTime} reportComment={reportComment} onCommentChange={setReportComment} onEditStop={(id) => { setSelectedStopId(id); setView('stop'); }} />;
-      case 'end': return <EndShiftPage stops={stops} currentVehicle={currentVehicleObj} workStartTime={workStartTime} mode={endShiftMode} onComplete={handleEndShiftComplete} onCancel={() => setView(endShiftMode === 'INTERMEDIATE' ? 'route' : 'report')} />;
+      case 'end': return <EndShiftPage stops={stops} currentVehicle={currentVehicleObj} mode={endShiftMode} onComplete={handleEndShiftComplete} onCancel={() => setView(endShiftMode === 'INTERMEDIATE' ? 'route' : 'report')} />;
       default: return <div>Unknown View</div>;
     }
   };
