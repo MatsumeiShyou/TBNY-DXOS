@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import { AuthAdapter } from '../../shared/lib/auth/AuthAdapter';
-import { Hexagon } from 'lucide-react';
 
 export function LoginGate() {
   const { currentUser } = useAuth();
@@ -46,7 +45,9 @@ export function LoginGate() {
       }}>
         <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
           <div style={{ display: 'inline-flex', padding: '0.75rem', background: 'linear-gradient(135deg, #6366f1, #3b82f6)', borderRadius: '1rem', marginBottom: '1rem' }}>
-            <Hexagon size={32} color="white" />
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+            </svg>
           </div>
           <h1 style={{ fontSize: '1.5rem', fontWeight: 800, margin: 0 }}>TBNY DXOS</h1>
           <p style={{ color: '#94a3b8', fontSize: '0.75rem', marginTop: '0.5rem', letterSpacing: '0.1em' }}>PRECISION OPERATING SYSTEM</p>

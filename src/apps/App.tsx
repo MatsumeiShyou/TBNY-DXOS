@@ -6,11 +6,11 @@ import { SplashScreen } from '../shared/components/SplashScreen';
 import { LoginGate } from '../features/components/LoginGate';
 import { APP_COMPONENTS } from '../features/config/appComponents';
 import { APPS_REGISTRY } from '../features/config/appsRegistry';
+import '../shared/styles/design-tokens.css';
 
-// 重いコンポーネントを遅延読み込み（ログイン画面のバンドルから除外）
+// 重いコンポーネントを lazy インポートで分離し、ログイン画面の表示を最速化する
 const DXOSPortal = lazy(() => import('./DXOSPortal').then(m => ({ default: m.DXOSPortal })));
 const DXGlobalNavigation = lazy(() => import('../features/components/DXGlobalNavigation').then(m => ({ default: m.DXGlobalNavigation })));
-import '../shared/styles/design-tokens.css';
 
 /**
  * AppContent — 認証後のメインコンテンツ
@@ -33,27 +33,30 @@ function AppContent() {
     return <LoginGate />;
   }
 
-  // ポータルまたはアプリの表示（認証済み）
-  return (
-    <Suspense fallback={<SplashScreen />}>
-      {activeApp ? (
+  // アプリ選択済み：選択されたモジュールを表示
+  if (activeApp) {
+    const appConfig = APPS_REGISTRY[activeApp];
+    const appLabel = appConfig?.label || activeApp;
+
+    return (
+      <Suspense fallback={<SplashScreen />}>
         <div>
           <DXGlobalNavigation
-            currentAppLabel={APPS_REGISTRY[activeApp]?.label || activeApp}
+            currentAppLabel={appLabel}
             onBackToPortal={() => setActiveApp(null)}
           />
           <div className="app-viewport">
-            {activeApp && APP_COMPONENTS[activeApp] ? (
-              (() => {
-                const ActiveAppComponent = APP_COMPONENTS[activeApp];
-                return <ActiveAppComponent />;
-              })()
-            ) : null}
+            {APP_COMPONENTS[activeApp] || null}
           </div>
         </div>
-      ) : (
-        <DXOSPortal onAppSelect={setActiveApp} />
-      )}
+      </Suspense>
+    );
+  }
+
+  // デフォルト：DXOSポータル（ランチャー）
+  return (
+    <Suspense fallback={<SplashScreen />}>
+      <DXOSPortal onAppSelect={setActiveApp} />
     </Suspense>
   );
 }
@@ -62,7 +65,9 @@ function App() {
   return (
     <AuthProvider>
       <NotificationProvider>
-        <AppContent />
+        <Suspense fallback={<SplashScreen />}>
+          <AppContent />
+        </Suspense>
       </NotificationProvider>
     </AuthProvider>
   );

@@ -9,33 +9,20 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     );
     const [authStatus, setAuthStatus] = useState<AuthStatus>(() => {
         if (AuthAdapter.hasCachedSession()) return 'OPTIMISTIC';
-        return 'UNAUTHENTICATED';
+        return 'UNAUTHENTICATED'; // キャッシュがなければ即座に未ログイン確定
     });
-    const [isLoading] = useState(false);
-
-    /**
-     * スタッフ情報を DXUser 型に変換する共通ロジック
-     */
-    const mapStaffToUser = (user: any, staff: any): DXUser => ({
-        id: staff.id,
-        name: staff.name,
-        email: user.email || '',
-        role: staff.role as DXUser['role'],
-        allowed_apps: staff.allowed_apps as string[],
-        last_event_id: staff.last_event_id,
-        permissions: {
-            can_manage_master: staff.role === 'admin' || staff.role === 'manager',
-            can_view_audit: staff.role === 'admin' || staff.role === 'manager',
-            can_edit_board: staff.role === 'admin' || staff.role === 'manager' || staff.role === 'staff',
-            can_edit_past_records: staff.role === 'admin' || staff.role === 'manager'
-        }
+    const [isLoading, setIsLoading] = useState(() => {
+        // キャッシュがあれば検証のためにスプラッシュは出さない（OPTIMISTIC表示）
+        // キャッシュがなければ即座にログイン画面を出すためスプラッシュは出さない
+        return false; 
     });
 
     useEffect(() => {
         const initializeAuth = async () => {
-            if (!AuthAdapter.hasCachedSession()) return;
+            console.log(`[STATE] AuthProvider: Initialization started (Status: ${authStatus}).`);
             
             try {
+                // [SAFETY] バックグラウンド検証でも 5秒以上かかる場合は「失敗」とみなして固着を防ぐ
                 const timeout = new Promise<never>((_, reject) => 
                     setTimeout(() => reject(new Error('TIMEOUT')), 5000)
                 );
@@ -43,6 +30,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                 const verifyPromise = (async () => {
                     const { data: { session } } = await AuthAdapter.getSession();
                     const user = session?.user ?? null;
+
                     if (user) {
                         const staff = await AuthAdapter.getStaffByAuthUid(user.id);
                         if (staff) return { user, staff };
@@ -50,58 +38,89 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                     return null;
                 })();
 
-                const result = await Promise.race([verifyPromise, timeout]).catch(() => null);
+                // タイムアウトとの競争
+                const result = await Promise.race([verifyPromise, timeout])
+                    .catch(() => null);
 
                 if (result) {
-                    const verifiedUser = mapStaffToUser(result.user, result.staff);
+                    const { user, staff } = result;
+                    console.log(`[STATE] AuthProvider: Staff profile verified: ${staff.name}`);
+                    
+                    const verifiedUser: DXUser = {
+                        id: staff.id,
+                        name: staff.name,
+                        email: user.email || '',
+                        role: staff.role as DXUser['role'],
+                        allowed_apps: staff.allowed_apps as string[],
+                        last_event_id: staff.last_event_id,
+                        permissions: {
+                            can_manage_master: staff.role === 'admin' || (staff.role as string) === 'manager',
+                            can_view_audit: staff.role === 'admin' || (staff.role as string) === 'manager',
+                            can_edit_board: staff.role === 'admin' || (staff.role as string) === 'manager' || staff.role === 'staff',
+                            can_edit_past_records: staff.role === 'admin' || (staff.role as string) === 'manager'
+                        }
+                    };
+
                     setCurrentUser(verifiedUser);
-                    AuthAdapter.saveCachedProfile(verifiedUser);
+                    AuthAdapter.saveCachedProfile(verifiedUser); // 最新情報をキャッシュに保存
                     setAuthStatus('VERIFIED');
                 } else {
+                    console.log('[STATE] AuthProvider: Verification failed or timed out.');
                     setAuthStatus('UNAUTHENTICATED');
                     setCurrentUser(null);
-                    AuthAdapter.clearCachedProfile();
+                    AuthAdapter.clearCachedProfile(); // 不整合時はキャッシュも消去
                 }
             } catch (error) {
-                console.error('[STATE] AuthContext: Initialization error:', error);
+                console.error('[STATE] AuthProvider: Initialization error:', error);
                 setAuthStatus('UNAUTHENTICATED');
+                setCurrentUser(null);
+            } finally {
+                setIsLoading(false);
             }
         };
 
         initializeAuth();
 
-        const { data: { subscription } } = AuthAdapter.onAuthStateChange(async (event, session) => {
-            console.log(`[STATE] AuthContext: Event detected: ${event}`);
+        const { data: { subscription } } = AuthAdapter.onAuthStateChange(async (_event, session) => {
+            console.log(`[STATE] AuthProvider: Auth state changed: ${_event}`);
+            const user = session?.user ?? null;
             
-            // 認証成功・セッション確立・トークン更新時
-            if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED' || event === 'INITIAL_SESSION') {
-                const user = session?.user;
+            try {
                 if (user) {
-                    try {
-                        const staff = await AuthAdapter.getStaffByAuthUid(user.id);
-                        if (staff) {
-                            const dxUser = mapStaffToUser(user, staff);
-                            setCurrentUser(dxUser);
-                            AuthAdapter.saveCachedProfile(dxUser);
-                            setAuthStatus('VERIFIED');
-                        } else {
-                            // ユーザーはいるがスタッフマスタにない場合
-                            setAuthStatus('UNAUTHENTICATED');
-                            setCurrentUser(null);
-                        }
-                    } catch (e) {
-                        console.error('[STATE] AuthContext: Error fetching staff profile:', e);
-                        // エラー時は安全のために未認証へ（または現在のキャッシュを維持）
+                    const staff = await AuthAdapter.getStaffByAuthUid(user.id);
+                    if (staff) {
+                        const verifiedUser: DXUser = {
+                            id: staff.id,
+                            name: staff.name,
+                            email: user.email || '',
+                            role: staff.role as DXUser['role'],
+                            allowed_apps: staff.allowed_apps as string[],
+                            last_event_id: staff.last_event_id,
+                            permissions: {
+                                can_manage_master: staff.role === 'admin' || (staff.role as string) === 'manager',
+                                can_view_audit: staff.role === 'admin' || (staff.role as string) === 'manager',
+                                can_edit_board: staff.role === 'admin' || (staff.role as string) === 'manager' || staff.role === 'staff',
+                                can_edit_past_records: staff.role === 'admin' || (staff.role as string) === 'manager'
+                            }
+                        };
+                        setCurrentUser(verifiedUser);
+                        AuthAdapter.saveCachedProfile(verifiedUser);
+                        setAuthStatus('VERIFIED');
+                    } else {
+                        setCurrentUser(null);
+                        AuthAdapter.clearCachedProfile();
+                        setAuthStatus('UNAUTHENTICATED');
                     }
-                } else if (event !== 'INITIAL_SESSION') {
-                    // セッションがない場合は未認証
-                    setAuthStatus('UNAUTHENTICATED');
+                } else {
                     setCurrentUser(null);
+                    AuthAdapter.clearCachedProfile();
+                    setAuthStatus('UNAUTHENTICATED');
                 }
-            } else if (event === 'SIGNED_OUT' || (event as any) === 'USER_DELETED') {
-                setCurrentUser(null);
+            } catch (error) {
+                console.error('[STATE] AuthProvider: Error handling auth state change:', error);
                 setAuthStatus('UNAUTHENTICATED');
-                AuthAdapter.clearCachedProfile();
+            } finally {
+                setIsLoading(false);
             }
         });
 

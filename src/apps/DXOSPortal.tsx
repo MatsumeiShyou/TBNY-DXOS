@@ -60,7 +60,6 @@ export const DXOSPortal = ({ onAppSelect }: DXOSPortalProps) => {
 
   const [redirectUrl, setRedirectUrl] = useState<string | null>(null);
   const [pendingAppId, setPendingAppId] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
 
   // 認証が確定した際に、保留中のアプリがあれば起動する
   useEffect(() => {
@@ -68,23 +67,9 @@ export const DXOSPortal = ({ onAppSelect }: DXOSPortalProps) => {
       console.log(`[DECISION] DXOSPortal: Verification complete. Launching pending app: ${pendingAppId}`);
       const appId = pendingAppId;
       setPendingAppId(null);
-      setError(null);
       handleTileClick(appId);
     }
   }, [authStatus, pendingAppId]);
-
-  // [SAFETY] 5秒経っても検証が終わらない場合は、保留を解除してエラーを表示
-  useEffect(() => {
-    let timer: number;
-    if (pendingAppId && authStatus === 'OPTIMISTIC') {
-      timer = window.setTimeout(() => {
-        console.warn('[STATE] DXOSPortal: Verification timeout.');
-        setPendingAppId(null);
-        setError('認証サーバーとの同期に時間がかかっています。もう一度お試しください。');
-      }, 5000);
-    }
-    return () => clearTimeout(timer);
-  }, [pendingAppId, authStatus]);
 
   useEffect(() => {
     if (redirectUrl) {
@@ -177,21 +162,15 @@ export const DXOSPortal = ({ onAppSelect }: DXOSPortalProps) => {
         </div>
       )}
 
-      {/* アプリタイルグリッド (キャッシュがあれば即座に表示、なければスケルトン) */}
-      {(authStatus === 'OPTIMISTIC' && !currentUser) ? (
+      {/* アプリタイルグリッド */}
+      {authStatus === 'OPTIMISTIC' ? (
         <div className="dxos-portal__grid">
           {[1, 2, 3, 4, 5, 6].map((i) => (
             <SkeletonTile key={i} />
           ))}
         </div>
-      ) : (authorizedTiles.length > 0 || authStatus === 'OPTIMISTIC') ? (
+      ) : authorizedTiles.length > 0 ? (
         <div className="dxos-portal__grid">
-          {/* ローカルエラー表示 */}
-          {error && (
-            <div className="dxos-portal__error-banner" onClick={() => setError(null)}>
-              {error} (タップで閉じる)
-            </div>
-          )}
           {authorizedTiles.map((app) => {
             const IconComponent = ICON_MAP[app.icon] || LayoutDashboard;
             return (

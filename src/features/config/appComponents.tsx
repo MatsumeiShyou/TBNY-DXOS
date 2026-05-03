@@ -1,11 +1,29 @@
-import React, { lazy } from 'react';
 import { APPS_REGISTRY } from './appsRegistry';
-
-// 各サブアプリを lazy インポートで完全に分離。
-const MasterDataManagerLazy = lazy(() => import('../components/MasterDataManager').then(m => ({ default: m.MasterDataManager })));
+import React, { lazy, Suspense } from 'react';
+// 各業務アプリの lazy インポート定義
 const RePaperRouteAppLazy = lazy(() => import('../repaper-route/RePaperRouteApp').then(m => ({ default: m.RePaperRouteApp })));
+const MasterDataManagerLazy = lazy(() => import('../components/MasterDataManager').then(m => ({ default: m.MasterDataManager })));
 
-// プレビュー表示用スタイル
+/**
+ * LazyWrapper - ホワイトアウト防止用の Suspense 境界
+ */
+const LazyWrapper = ({ children }: { children: React.ReactNode }) => (
+  <Suspense fallback={
+    <div style={{ 
+      display: 'flex', 
+      alignItems: 'center', 
+      justifyContent: 'center', 
+      height: '100%', 
+      background: '#0b0d14',
+      color: '#3b82f6'
+    }}>
+      <div className="animate-pulse font-black text-xs tracking-widest">LOADING MODULE...</div>
+    </div>
+  }>
+    {children}
+  </Suspense>
+);
+
 const labelStyle: React.CSSProperties = {
   fontSize: '1.125rem',
   fontWeight: 600,
@@ -40,31 +58,42 @@ function placeholderStyle(_appId: string): React.CSSProperties {
 }
 
 /**
- * APP_COMPONENTS - app_id に基づいて遅延読み込みコンポーネントを返す
+ * appRegistry — app_id に基づいてコンポーネントを返す定数マップ
  */
-export const APP_COMPONENTS: Record<string, React.ComponentType<any>> = {
-  'master-data': () => (
-    <div className="app-container">
+export const APP_COMPONENTS: Record<string, React.ReactNode> = {
+  'master-data': (
+    <LazyWrapper>
       <MasterDataManagerLazy />
-    </div>
+    </LazyWrapper>
   ),
-  'repaper-route-admin': RePaperRouteAppLazy,
-  'repaper-route-driver': RePaperRouteAppLazy,
-  'weighing-self-driver': () => (
+  'repaper-route-admin': (
+    <LazyWrapper>
+      <RePaperRouteAppLazy />
+    </LazyWrapper>
+  ),
+  'repaper-route-driver': (
+    <LazyWrapper>
+      <RePaperRouteAppLazy />
+    </LazyWrapper>
+  ),
+
+  'weighing-self-driver': (
     <div style={placeholderStyle('weighing-self-driver')}>
       <div>
         <p style={labelStyle}>{APPS_REGISTRY['weighing-self-driver']?.label}</p>
         <p style={subTextStyle}>計量OSの中枢モジュール。統合プロトタイプを先行公開。</p>
       </div>
+      {/* gov-bypass [II-2] */}
       <img src="/weighing-preview.png" style={previewImageStyle} alt="Preview" />
     </div>
   ),
-  'weighing-admin': () => (
+  'weighing-admin': (
     <div style={placeholderStyle('weighing-admin')}>
       <div>
         <p style={labelStyle}>{APPS_REGISTRY['weighing-admin']?.label}</p>
         <p style={subTextStyle}>管理者向け計量分析。データ集計基盤の構築中。</p>
       </div>
+      {/* gov-bypass [II-2] */}
       <img src="/weighing-preview.png" style={previewImageStyle} alt="Preview" />
     </div>
   ),
