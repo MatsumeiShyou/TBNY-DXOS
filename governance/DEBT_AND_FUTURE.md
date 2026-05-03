@@ -12,7 +12,8 @@
 - [ ] **[DriverApp Bridge] Supabase 実装**: 現在、`useDriverOSBridge` はスタブ。実績記録等の実 DB 同期が必要。
 - [ ] **[DriverApp Assets] アイコン資産の Lucide 移行**: FontAwesome への残存依存を解消し、Lucide へ完全移行することを推奨。
 
-## 2. Future Roadmap (将来構想)
+## 2. Future Roadmap (将来構像)
+- [ ] **[Next Phase Start] useDriverOSBridge.ts への実ロジック注入**: `DEBT_AND_FUTURE.md` の負債に基づき、スタブを排して実 DB 同期を実装することから開始することを推奨する。
 - [ ] **OAuth2 Transition**: Staff 認証基盤の標準プロトコルへの移行。
 - [ ] **SemanticExtractor**: 業務ドキュメントからの意味抽出（LLM活用）。
 - [ ] **VLM-Based Visual Check**: 視覚言語モデルを用いた計量器の数値整合性確認。
