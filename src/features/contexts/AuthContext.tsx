@@ -22,9 +22,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             console.log(`[STATE] AuthProvider: Initialization started (Status: ${authStatus}).`);
             
             try {
-                // [SAFETY] バックグラウンド検証でも 5秒以上かかる場合は「失敗」とみなして固着を防ぐ
+                // [SAFETY] 初期検証が 8秒以上かかる場合は強制中断
                 const timeout = new Promise<never>((_, reject) => 
-                    setTimeout(() => reject(new Error('TIMEOUT')), 5000)
+                    setTimeout(() => reject(new Error('INITIALIZE_TIMEOUT')), 8000)
                 );
 
                 const verifyPromise = (async () => {
@@ -32,15 +32,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                     const user = session?.user ?? null;
 
                     if (user) {
+                        console.log(`[STATE] AuthProvider: Session found. Fetching staff profile for UID: ${user.id}...`);
                         const staff = await AuthAdapter.getStaffByAuthUid(user.id);
                         if (staff) return { user, staff };
+                        console.warn('[STATE] AuthProvider: No active staff profile found for current session.');
                     }
                     return null;
                 })();
 
-                // タイムアウトとの競争
                 const result = await Promise.race([verifyPromise, timeout])
-                    .catch(() => null);
+                    .catch((err) => {
+                        console.error('[STATE] AuthProvider: Verification promise failed:', err);
+                        return null;
+                    });
 
                 if (result) {
                     const { user, staff } = result;
@@ -62,20 +66,24 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                     };
 
                     setCurrentUser(verifiedUser);
-                    AuthAdapter.saveCachedProfile(verifiedUser); // 最新情報をキャッシュに保存
+                    AuthAdapter.saveCachedProfile(verifiedUser);
                     setAuthStatus('VERIFIED');
                 } else {
-                    console.log('[STATE] AuthProvider: Verification failed or timed out.');
+                    console.log('[STATE] AuthProvider: Verification failed, timed out, or no session.');
                     setAuthStatus('UNAUTHENTICATED');
                     setCurrentUser(null);
-                    AuthAdapter.clearCachedProfile(); // 不整合時はキャッシュも消去
+                    AuthAdapter.clearCachedProfile();
                 }
-            } catch (error) {
+            } catch (error: any) {
                 console.error('[STATE] AuthProvider: Initialization error:', error);
+                if (error.message === 'INITIALIZE_TIMEOUT') {
+                    console.error('[CRITICAL] AuthProvider: Initialization timed out.');
+                }
                 setAuthStatus('UNAUTHENTICATED');
                 setCurrentUser(null);
             } finally {
                 setIsLoading(false);
+                console.log(`[STATE] AuthProvider: Initialization complete (Status: ${authStatus}).`);
             }
         };
 
