@@ -13,9 +13,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             console.log('[STATE] AuthProvider: Initialization started.');
             
             try {
-                // 5秒のタイムアウトを設定
+                // 15秒のタイムアウトを設定
                 const timeout = new Promise((_, reject) => 
-                    setTimeout(() => reject(new Error('Auth Initialization Timeout (5s)')), 5000)
+                    setTimeout(() => reject(new Error('Auth Initialization Timeout (15s)')), 15000)
                 );
 
                 console.log('[DECISION] AuthProvider: Fetching session...');

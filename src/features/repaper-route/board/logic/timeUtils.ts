@@ -8,8 +8,10 @@ export const timeToMinutes = (timeStr: string): number => {
     if (!timeStr || typeof timeStr !== 'string') return 360; // 06:00 Default
     
     // 「要確認」などの非数値が含まれる場合のガード
-    if (!timeStr.includes(':')) {
-        console.warn(`[timeUtils] Invalid time format: "${timeStr}". Falling back to 06:00.`);
+    if (typeof timeStr !== 'string' || !timeStr.includes(':')) {
+        console.warn('[timeUtils] Invalid time format. Falling back to 06:00.', { 
+            received: typeof timeStr === 'symbol' ? 'Symbol' : timeStr 
+        });
         return 360;
     }
 
