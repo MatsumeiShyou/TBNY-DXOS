@@ -1,5 +1,6 @@
 
-import { InspectionItem, Stop, StopStatus, DriverStatus, User, Vehicle, RouteInfo, BaseTask, Colleague } from './types';
+import type { InspectionItem, Stop, User, Vehicle, RouteInfo, BaseTask, Colleague } from './types';
+import { StopStatus, DriverStatus } from './types';
 
 export const CURRENT_USER: User = {
   id: 'd-001',
