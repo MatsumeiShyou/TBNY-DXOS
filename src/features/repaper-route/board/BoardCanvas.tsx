@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { useState, useEffect, useMemo, useRef } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useAuth } from '../AuthAdapterPort';
 import { useBoardData } from './hooks/useBoardData';
 import { useBoardDragDrop } from './hooks/useBoardDragDrop';

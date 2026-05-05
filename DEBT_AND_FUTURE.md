@@ -18,3 +18,12 @@
 ---
 > [!NOTE]
 > 本書は TBNY DXOS 全体の負債とロードマップを管理します。個別のアプリ内負債は `governance/DEBT_AND_FUTURE.md` を参照してください。
+
+## 2026-05-05: 構造的防護と静的解析の強化
+- **対策**: `ErrorBoundary` の導入（LazyWrapper 単位）と `consistent-type-imports` ルールの強制。
+- **目的**: インターフェースの値インポートに起因する SyntaxError（ホワイトアウト）の根絶。
+- **リスク管理プロトコル**:
+    - **[差分制御]**: 全ファイルへの一括適用（auto-fix）は禁止する。修正・追加したファイルから順次適用することで、Git 履歴の健全性を保つ。
+    - **[観測維持]**: `ErrorBoundary` は `console.error` にスタックトレースを排出し続ける。将来的に SWR/Supabase 経由でのサーバーサイドログ出力を検討。
+    - **[ビルド摩擦]**: `tsconfig.app.json` の `incremental: true` を維持し、型チェックによる待ち時間を最小化する。
+    - **[React インポート]**: `verbatimModuleSyntax: true` 環境下では、JSX を使用し `React.FC` 等を参照する場合、`import React from 'react'` の明示的なインポートが必須となる（React 19 以降でもランタイムエラーを避けるため）。

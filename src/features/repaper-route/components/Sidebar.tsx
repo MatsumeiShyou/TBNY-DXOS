@@ -2,6 +2,7 @@ import {
     LayoutDashboard, Truck, Users, Settings,
     MapPin, Box, Shield, Activity, LogOut
 } from 'lucide-react';
+import React from 'react';
 import { useAuth } from '../AuthAdapterPort';
 
 interface SidebarProps {
