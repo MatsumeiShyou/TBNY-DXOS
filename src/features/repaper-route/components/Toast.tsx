@@ -11,6 +11,7 @@ export interface ToastItem {
     action?: React.ReactNode;
 }
 
+
 interface ToastProps extends Omit<ToastItem, 'id'> {
     onClose: () => void;
 }
