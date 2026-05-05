@@ -1,7 +1,7 @@
 
 import React from 'react';
 import DriverApp from './sandbox/DriverApp';
-import { useDriverOSBridge } from './bridge/useDriverOSBridge';
+
 
 /**
  * DriverOSApp
@@ -9,9 +9,6 @@ import { useDriverOSBridge } from './bridge/useDriverOSBridge';
  * TBNY DXOS におけるドライバーアプリのエントリポイント。
  */
 const DriverOSApp: React.FC = () => {
-  // Bridge hook can be used here for future global OS synchronization
-  useDriverOSBridge();
-
   return (
     <div className="tw-w-full tw-h-full tw-bg-slate-50 tw-overflow-hidden tw-relative">
       <DriverApp />
