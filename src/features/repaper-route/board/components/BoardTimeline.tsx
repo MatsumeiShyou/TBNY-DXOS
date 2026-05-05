@@ -25,7 +25,7 @@ export const BoardTimeline: React.FC<BoardTimelineProps> = ({
             <div className="tw-max-w-7xl tw-mx-auto tw-flex tw-items-center tw-gap-6">
                 {/* Status Indicator */}
                 <div className="tw-flex tw-items-center tw-gap-3 tw-min-w-[140px]">
-                    <div className={`p-2 rounded-full ${isPreviewing ? 'bg-amber-100 text-amber-600 animate-pulse' : 'bg-blue-100 text-blue-600'}`}>
+                    <div className={`tw-p-2 tw-rounded-full ${isPreviewing ? 'bg-amber-100 tw-text-amber-600 animate-pulse' : 'bg-blue-100 text-blue-600'}`}>
                         <History size={18} />
                     </div>
                     <div>

@@ -147,10 +147,10 @@ export const AddJobModal: React.FC<AddJobModalProps> = ({
                             <button
                                 key={group}
                                 onClick={() => setSearchGroup(group)}
-                                className={`h-8 text-xs font-bold rounded border transition-all
+                                className={`tw-h-8 tw-text-xs tw-font-bold tw-rounded tw-border tw-transition-all
                                     ${searchGroup === group
-                                        ? 'bg-blue-600 border-blue-600 text-white shadow-sm'
-                                        : 'bg-white border-slate-200 text-slate-600 hover:border-blue-300 hover:bg-blue-50'}
+                                        ? 'tw-bg-blue-600 tw-border-blue-600 tw-text-white tw-shadow-sm'
+                                        : 'tw-bg-white tw-border-slate-200 tw-text-slate-600 tw-hover:border-blue-300 tw-hover:bg-blue-50'}
                                 `}
                             >
                                 {group}
@@ -164,11 +164,11 @@ export const AddJobModal: React.FC<AddJobModalProps> = ({
                         <button
                             key={p.id}
                             onClick={() => setSelectedPointId(p.id)}
-                            className={`w-full text-left p-3 text-sm transition-colors flex items-center gap-3
-                                ${selectedPointId === p.id ? 'bg-blue-50 border-l-4 border-l-blue-500' : 'hover:bg-white'}
+                            className={`tw-w-full tw-text-left tw-p-3 tw-text-sm tw-transition-colors tw-flex tw-items-center tw-gap-3
+                                ${selectedPointId === p.id ? 'tw-bg-blue-50 tw-border-l-4 tw-border-l-blue-500' : 'tw-hover:bg-white'}
                             `}
                         >
-                            <MapPin size={14} className={selectedPointId === p.id ? 'text-blue-500' : 'text-slate-300'} />
+                            <MapPin size={14} className={selectedPointId === p.id ? 'tw-text-blue-500' : 'tw-text-slate-300'} />
                             <div>
                                 <div className="tw-font-bold tw-text-slate-700">{p.display_name}</div>
                                 <div className="tw-flex tw-items-center tw-gap-2 tw-text-[10px]">
@@ -269,8 +269,8 @@ export const AddJobModal: React.FC<AddJobModalProps> = ({
                                     }
                                 }}
                                 disabled={isRegistering || !newPointName.trim()}
-                                className={`flex-1 px-3 py-1.5 text-xs font-bold text-white rounded transition-all
-                                    ${isRegistering || !newPointName.trim() ? 'bg-slate-300 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'}
+                                className={`tw-flex-1 tw-px-3 tw-py-1.5 tw-text-xs tw-font-bold tw-text-white tw-rounded tw-transition-all
+                                    ${isRegistering || !newPointName.trim() ? 'tw-bg-slate-300 tw-cursor-not-allowed' : 'tw-bg-blue-600 tw-hover:bg-blue-700'}
                                 `}
                             >
                                 {isRegistering ? '登録中...' : '登録して選択'}
@@ -291,10 +291,10 @@ export const AddJobModal: React.FC<AddJobModalProps> = ({
                                 <button
                                     key={mode.id}
                                     onClick={() => setReasonMode(mode.id as any)}
-                                    className={`px-3 py-1 text-[10px] font-bold rounded-md transition-all
+                                    className={`tw-px-3 tw-py-1 tw-text-[10px] tw-font-bold tw-rounded-md tw-transition-all
                                         ${reasonMode === mode.id
-                                            ? 'bg-white text-blue-600 shadow-sm'
-                                            : 'text-slate-500 hover:text-slate-700'}
+                                            ? 'tw-bg-white tw-text-blue-600 tw-shadow-sm'
+                                            : 'tw-text-slate-500 tw-hover:text-slate-700'}
                                     `}
                                 >
                                     {mode.label}
@@ -344,8 +344,8 @@ export const AddJobModal: React.FC<AddJobModalProps> = ({
                     <button
                         onClick={handleAdd}
                         disabled={!selectedPointId || !reason || isSubmitting}
-                        className={`px-6 py-2 text-sm font-bold text-white rounded-md transition-all
-                            ${!selectedPointId || !reason || isSubmitting ? 'bg-slate-300 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700 shadow-md shadow-blue-200'}
+                        className={`tw-px-6 tw-py-2 tw-text-sm tw-font-bold tw-text-white tw-rounded-md tw-transition-all
+                            ${!selectedPointId || !reason || isSubmitting ? 'tw-bg-slate-300 tw-cursor-not-allowed' : 'tw-bg-blue-600 tw-hover:bg-blue-700 tw-shadow-md tw-shadow-blue-200'}
                         `}
                     >
                         {isSubmitting ? '処理中...' : '案件を追加'}

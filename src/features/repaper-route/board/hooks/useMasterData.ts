@@ -5,17 +5,20 @@ import { useMasterDataContext } from '../../MasterDataAdapterPort';
  * 個別の useState + useEffect を廃止し、MasterDataProvider からの
  * 派生値を直接返すようにリファクタリング。
  */
+const EMPTY_ARRAY: any[] = [];
+const NOOP = async () => {};
+
 export const useMasterData = () => {
     if (typeof useMasterDataContext !== 'function') {
         console.warn('[WARNING] useMasterDataContext is not available. Using fallback dummy data.');
         return {
-            customers: [],
-            vehicles: [],
-            items: [],
-            points: [],
-            drivers: [],
+            customers: EMPTY_ARRAY,
+            vehicles: EMPTY_ARRAY,
+            items: EMPTY_ARRAY,
+            points: EMPTY_ARRAY,
+            drivers: EMPTY_ARRAY,
             isLoading: false,
-            refresh: async () => {}
+            refresh: NOOP
         };
     }
     return useMasterDataContext();

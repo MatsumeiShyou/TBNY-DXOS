@@ -18,7 +18,7 @@ export const DriverHeader: React.FC<DriverHeaderProps> = ({
     stickyTop = 'top-0'
 }) => {
     return (
-        <div className={`flex border-b border-white bg-black text-white sticky ${stickyTop} z-40 shadow-sm min-w-max`}>
+        <div className={`tw-flex tw-border-b tw-border-white tw-bg-black tw-text-white tw-sticky ${stickyTop} tw-z-40 tw-shadow-sm tw-min-w-max`}>
             {/* 時間軸ラベル - 64px 固定 */}
             <div
                 style={{ width: '64px', minWidth: '64px', flexShrink: 0 }}

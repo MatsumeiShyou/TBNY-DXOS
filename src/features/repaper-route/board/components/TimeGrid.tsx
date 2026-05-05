@@ -40,7 +40,7 @@ const MemoizedColumn = React.memo(({ driver, selectedTime, onCellClick, onCellDo
                             cursor: 'pointer',
                             transition: 'all 0.1s ease-out'
                         }}
-                        className={isSelected ? 'ring-2 ring-blue-500 ring-inset z-10' : ''}
+                        className={isSelected ? 'tw-ring-2 tw-ring-blue-500 tw-ring-inset tw-z-10' : ''}
                     />
                 );
             })}

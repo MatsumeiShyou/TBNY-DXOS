@@ -74,7 +74,7 @@ export const PendingJobSidebar: React.FC<PendingJobSidebarProps> = ({
                         <button
                             key={f}
                             onClick={() => setPendingFilter(f)}
-                            className={`flex-1 h-11 text-xs font-bold rounded-md transition-all ${pendingFilter === f ? 'bg-white text-blue-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+                            className={`tw-flex-1 tw-h-11 tw-text-xs tw-font-bold tw-rounded-md tw-transition-all ${pendingFilter === f ? 'tw-bg-white tw-text-blue-600 tw-shadow-sm' : 'tw-text-gray-500 tw-hover:text-gray-700'}`}
                         >
                             {f}
                         </button>
@@ -91,17 +91,17 @@ export const PendingJobSidebar: React.FC<PendingJobSidebarProps> = ({
                     return (
                         <div
                             key={job.id}
-                            className={`group relative bg-white border ${colorTheme.border} rounded-lg p-3 shadow-sm hover:shadow-md transition-all cursor-pointer select-none active:scale-[0.98]
-                                ${isSelected ? 'hover:ring-2 hover:ring-blue-400 hover:ring-offset-1' : ''}
+                            className={`tw-group tw-relative tw-bg-white tw-border ${colorTheme.border} tw-rounded-lg tw-p-3 tw-shadow-sm tw-hover:shadow-md tw-transition-all tw-cursor-pointer tw-select-none tw-active:scale-[0.98]
+                                ${isSelected ? 'tw-hover:ring-2 tw-hover:ring-blue-400 tw-hover:ring-offset-1' : ''}
                             `}
                             onClick={() => isSelected && onAddJob(job)}
                         >
                             {/* Left Color Strip */}
-                            <div className={`absolute top-0 bottom-0 left-0 w-1.5 rounded-l-lg ${colorTheme.bg?.replace('bg-', 'bg-').replace('100', '400') || 'bg-gray-400'}`} />
+                            <div className={`tw-absolute tw-top-0 tw-bottom-0 tw-left-0 tw-w-1.5 tw-rounded-l-lg ${colorTheme.bg?.replace('bg-', 'tw-bg-').replace('100', '400') || 'tw-bg-gray-400'}`} />
                             <div className="tw-pl-3">
                                 <div className="tw-flex tw-justify-between tw-items-start tw-mb-1">
                                     <h3 className="tw-font-bold tw-text-gray-800 tw-text-sm">{job.title}</h3>
-                                    <span className={`text-[10px] px-1.5 py-0.5 rounded font-bold ${job.bucket === 'AM' ? 'bg-orange-100 text-orange-700' : job.bucket === 'PM' ? 'bg-indigo-100 text-indigo-700' : 'bg-gray-100 text-gray-600'}`}>
+                                    <span className={`tw-text-[10px] tw-px-1.5 tw-py-0.5 tw-rounded tw-font-bold ${job.bucket === 'AM' ? 'tw-bg-orange-100 tw-text-orange-700' : job.bucket === 'PM' ? 'tw-bg-indigo-100 tw-text-indigo-700' : 'tw-bg-gray-100 tw-text-gray-600'}`}>
                                         {job.bucket}
                                     </span>
                                 </div>

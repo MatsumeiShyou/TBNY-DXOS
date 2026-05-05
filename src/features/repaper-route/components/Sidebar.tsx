@@ -84,10 +84,10 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeView, onViewChange }) =>
                                         key={item.id}
                                         onClick={() => onViewChange(item.id)}
                                         className={`
-                                            group w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-xs font-bold transition-all relative
+                                            group tw-w-full tw-flex tw-items-center tw-gap-3 tw-px-4 tw-py-2.5 tw-rounded-xl tw-text-xs tw-font-bold tw-transition-all tw-relative
                                             ${isActive
-                                                ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/20'
-                                                : 'text-slate-400 hover:bg-slate-800 hover:text-slate-200'
+                                                ? 'tw-bg-blue-600 tw-text-white tw-shadow-lg tw-shadow-blue-500/20'
+                                                : 'tw-text-slate-400 hover:tw-bg-slate-800 hover:tw-text-slate-200'
                                             }
                                         `}
                                     >
@@ -97,7 +97,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeView, onViewChange }) =>
 
                                         <item.icon
                                             size={16}
-                                            className={`${isActive ? 'text-white' : 'text-slate-500 group-hover:text-slate-300'}`}
+                                            className={`${isActive ? 'tw-text-white' : 'tw-text-slate-500 group-hover:tw-text-slate-300'}`}
                                         />
                                         <span className="tw-tracking-tight">{item.label}</span>
 

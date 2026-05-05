@@ -48,9 +48,9 @@ export const JobDetailPanel: React.FC<JobDetailPanelProps> = ({
     };
 
     return (
-        <div className={`flex flex-col h-full bg-white shadow-2xl transition-all duration-300 ease-in-out overflow-hidden ${isExpanded ? 'w-[750px]' : 'w-80'}`}>
+        <div className={`tw-flex tw-flex-col tw-h-full tw-bg-white tw-shadow-2xl tw-transition-all tw-duration-300 tw-ease-in-out tw-overflow-hidden ${isExpanded ? 'w-[750px]' : 'w-80'}`}>
             {/* Header */}
-            <div className={`p-4 flex justify-between items-center border-b ${isConfirmed ? 'bg-amber-50 border-amber-100' : 'bg-slate-50 border-slate-200'}`}>
+            <div className={`tw-p-4 tw-flex tw-justify-between tw-items-center tw-border-b ${isConfirmed ? 'tw-bg-amber-50 tw-border-amber-100' : 'tw-bg-slate-50 tw-border-slate-200'}`}>
                 <div className="tw-flex tw-items-center tw-gap-3">
                     <button 
                         onClick={() => setIsExpanded(!isExpanded)}
@@ -88,8 +88,8 @@ export const JobDetailPanel: React.FC<JobDetailPanelProps> = ({
             </div>
 
             {/* Content Area */}
-            <div className={`flex-1 overflow-y-auto p-5 transition-colors duration-300 ${isExpanded ? 'bg-slate-50/50' : 'bg-white'}`}>
-                <div className={`${isExpanded ? 'grid grid-cols-2 gap-8 items-start' : 'space-y-6'}`}>
+            <div className={`tw-flex-1 tw-overflow-y-auto tw-p-5 tw-transition-colors tw-duration-300 ${isExpanded ? 'tw-bg-slate-50/50' : 'tw-bg-white'}`}>
+                <div className={`${isExpanded ? 'tw-grid tw-grid-cols-2 tw-gap-8 tw-items-start' : 'tw-space-y-6'}`}>
                     {/* Left Column / Information Column */}
                     <div className="tw-space-y-6">
                         {/* Title & Core Overview */}
@@ -106,7 +106,7 @@ export const JobDetailPanel: React.FC<JobDetailPanelProps> = ({
 
                             <div className="tw-grid tw-grid-cols-2 tw-gap-3">
                                 <div className="tw-p-2.5 tw-rounded-xl tw-bg-white tw-border tw-border-slate-200 tw-shadow-sm tw-flex tw-items-center tw-gap-3">
-                                    <div className={`p-2 rounded-lg ${job.bucket === 'AM' ? 'bg-orange-100 text-orange-600' : 'bg-indigo-100 text-indigo-600'}`}>
+                                    <div className={`tw-p-2 tw-rounded-lg ${job.bucket === 'AM' ? 'tw-bg-orange-100 tw-text-orange-600' : 'tw-bg-indigo-100 tw-text-indigo-600'}`}>
                                         <Clock size={16} />
                                     </div>
                                     <div>
@@ -116,7 +116,7 @@ export const JobDetailPanel: React.FC<JobDetailPanelProps> = ({
                                 </div>
 
                                 <div className="tw-p-2.5 tw-rounded-xl tw-bg-white tw-border tw-border-slate-200 tw-shadow-sm tw-flex tw-items-center tw-gap-3">
-                                    <div className={`p-2 rounded-lg ${job.isSpot ? 'bg-rose-100 text-rose-600' : 'bg-emerald-100 text-emerald-600'}`}>
+                                    <div className={`tw-p-2 tw-rounded-lg ${job.isSpot ? 'tw-bg-rose-100 tw-text-rose-600' : 'tw-bg-emerald-100 tw-text-emerald-600'}`}>
                                         <Tag size={16} />
                                     </div>
                                     <div>
@@ -376,7 +376,7 @@ export const JobDetailPanel: React.FC<JobDetailPanelProps> = ({
                                 ) : (
                                     <button
                                         onClick={() => setIsConfirmingUnassign(true)}
-                                        className={`w-full flex items-center justify-between p-3 bg-white border border-rose-100 rounded-xl text-xs font-black text-rose-600 hover:bg-rose-50 hover:border-rose-300 transition-all group shadow-sm ${(isConfirmed || !canEdit) ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                        className={`tw-w-full tw-flex tw-items-center tw-justify-between tw-p-3 tw-bg-white tw-border tw-border-rose-100 tw-rounded-xl tw-text-xs tw-font-black tw-text-rose-600 tw-hover:bg-rose-50 tw-hover:border-rose-300 tw-transition-all tw-group tw-shadow-sm ${(isConfirmed || !canEdit) ? 'tw-opacity-50 tw-cursor-not-allowed' : ''}`}
                                         disabled={isConfirmed || !canEdit}
                                         title={isConfirmed ? "確定済み案件は戻せません" : (!canEdit ? "編集権限がありません" : "")}
                                     >

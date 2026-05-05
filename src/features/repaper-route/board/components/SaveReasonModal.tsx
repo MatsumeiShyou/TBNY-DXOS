@@ -91,8 +91,8 @@ export const SaveReasonModal: React.FC<SaveReasonModalProps> = ({ isOpen, onClos
                             onChange={(e) => setReasonText(e.target.value)}
                             placeholder={isTextRequired ? "この理由カテゴリでは詳細の入力が必須です" : "補足事項があれば入力してください"}
                             rows={4}
-                            className={`border rounded px-3 py-2 text-sm outline-none resize-none w-full
-                                ${isTextRequired && !reasonText.trim() ? 'border-red-300 focus:ring-red-500 focus:border-red-500 bg-red-50/30' : 'border-gray-300 focus:ring-blue-500 focus:border-blue-500 bg-gray-50'}
+                            className={`tw-border tw-rounded tw-px-3 tw-py-2 tw-text-sm tw-outline-none tw-resize-none tw-w-full
+                                ${isTextRequired && !reasonText.trim() ? 'tw-border-red-300 tw-focus:ring-red-500 tw-focus:border-red-500 tw-bg-red-50/30' : 'tw-border-gray-300 tw-focus:ring-blue-500 tw-focus:border-blue-500 tw-bg-gray-50'}
                             `}
                         />
                     </div>
@@ -109,10 +109,10 @@ export const SaveReasonModal: React.FC<SaveReasonModalProps> = ({ isOpen, onClos
                     <button
                         onClick={handleSubmit}
                         disabled={isSubmitDisabled}
-                        className={`px-6 py-2 rounded text-sm font-bold flex items-center gap-2 transition-colors
+                        className={`tw-px-6 tw-py-2 tw-rounded tw-text-sm tw-font-bold tw-flex tw-items-center tw-gap-2 tw-transition-colors
                             ${isSubmitDisabled
-                                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                                : 'bg-blue-600 text-white hover:bg-blue-700 shadow-sm'}
+                                ? 'tw-bg-gray-300 tw-text-gray-500 tw-cursor-not-allowed'
+                                : 'tw-bg-blue-600 tw-text-white tw-hover:bg-blue-700 tw-shadow-sm'}
                         `}
                     >
                         <Save size={16} />

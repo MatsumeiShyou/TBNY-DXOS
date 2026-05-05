@@ -73,10 +73,10 @@ export const JobLayer: React.FC<JobLayerProps> = ({
                         {/* 100 Point Spec: Drop Target Shadow (Destination VIS) */}
                         {dropPreview && dropPreview.driverId === driver.id && (
                             <div
-                                className={`absolute w-[94%] left-[3%] rounded-md border-2 border-dashed pointer-events-none z-10 transition-all duration-150
-                                    ${dropPreview.isPending ? 'opacity-30 bg-gray-400 border-gray-400' :
-                                        (dropPreview.isOverlapError || dropPreview.isVehicleError) ? 'bg-red-500/10 border-red-400' : 
-                                        dropPreview.isWarning ? 'bg-orange-500/10 border-orange-400' : 'bg-emerald-500/10 border-emerald-400'
+                                className={`tw-absolute tw-w-[94%] tw-left-[3%] tw-rounded-md tw-border-2 tw-border-dashed pointer-events-none tw-z-10 tw-transition-all tw-duration-150
+                                    ${dropPreview.isPending ? 'tw-opacity-30 tw-bg-gray-400 tw-border-gray-400' :
+                                        (dropPreview.isOverlapError || dropPreview.isVehicleError) ? 'tw-bg-red-500/10 tw-border-red-400' : 
+                                        dropPreview.isWarning ? 'tw-bg-orange-500/10 tw-border-orange-400' : 'tw-bg-emerald-500/10 tw-border-emerald-400'
                                     }
 `}
                                 style={{
@@ -84,10 +84,10 @@ export const JobLayer: React.FC<JobLayerProps> = ({
                                     height: `${(dropPreview.duration / 15) * SLOT_HEIGHT_PX}px`,
                                 }}
                             >
-                                <div className={`text-[10px] font-black px-1.5 py-0.5 rounded-sm m-1 inline-block
-                                    ${dropPreview.isPending ? 'bg-gray-200 text-gray-500' :
-                                        (dropPreview.isOverlapError || dropPreview.isVehicleError) ? 'bg-red-100 text-red-800' : 
-                                        dropPreview.isWarning ? 'bg-orange-100 text-orange-800' : 'bg-emerald-100 text-emerald-800'
+                                <div className={`tw-text-[10px] tw-font-black tw-px-1.5 tw-py-0.5 tw-rounded-sm tw-m-1 tw-inline-block
+                                    ${dropPreview.isPending ? 'tw-bg-gray-200 tw-text-gray-500' :
+                                        (dropPreview.isOverlapError || dropPreview.isVehicleError) ? 'tw-bg-red-100 tw-text-red-800' : 
+                                        dropPreview.isWarning ? 'tw-bg-orange-100 tw-text-orange-800' : 'tw-bg-emerald-100 tw-text-emerald-800'
                                     }
 `}>
                                     {dropPreview.startTime} {dropPreview.isPending ? '...' : (dropPreview.isOverlapError || dropPreview.isVehicleError) ? '×' : dropPreview.isWarning ? '⚠' : '➡'}
@@ -135,30 +135,30 @@ export const JobLayer: React.FC<JobLayerProps> = ({
                             let zIndex: number = isLocked ? Z_INDEX.LOCK : Z_INDEX.DEFAULT;
 
                             if (isSelected) {
-                                borderClass = 'border-blue-500 ring-2 ring-blue-500';
+                                borderClass = 'tw-border-blue-500 tw-ring-2 tw-ring-blue-500';
                                 zIndex = Z_INDEX.SELECTED;
                             } else if (isConfirmed && !isDragging) {
-                                borderClass = 'border-amber-400 border-2 border-dashed shadow-[0_0_8px_rgba(251,191,36,0.3)]';
+                                borderClass = 'tw-border-amber-400 tw-border-2 tw-border-dashed tw-shadow-[0_0_8px_rgba(251,191,36,0.3)]';
                             } else if (hasWarning) {
-                                borderClass = 'border-rose-500 border-2 shadow-[0_0_10px_rgba(244,63,94,0.4)] animate-pulse-subtle';
+                                borderClass = 'tw-border-rose-500 tw-border-2 tw-shadow-[0_0_10px_rgba(244,63,94,0.4)] tw-animate-pulse-subtle';
                             } else if (hasError) {
-                                borderClass = 'border-red-600 border-2 ring-1 ring-red-400';
+                                borderClass = 'tw-border-red-600 tw-border-2 tw-ring-1 tw-ring-red-400';
                             } else if (isLocked) {
-                                borderClass = 'border-gray-400';
+                                borderClass = 'tw-border-gray-400';
                             }
 
                             // 確定済み案件は通常色を保持しつつ視覚的アフォーダンス（黄色破線）を持たせる
-                            const bgClass = isLocked ? 'bg-gray-200 text-gray-500 italic' :
-                                hasError ? 'bg-red-50 text-red-900' : colorTheme.bg;
+                            const bgClass = isLocked ? 'tw-bg-gray-200 tw-text-gray-500 tw-italic' :
+                                hasError ? 'tw-bg-red-50 tw-text-red-900' : colorTheme.bg;
 
                             return (
                                 <div
                                     key={job.id}
                                     data-job-id={job.id}
-                                    className={`absolute w-[94%] left-[3%] rounded-md border text-xs font-bold leading-tight shadow-sm overflow-hidden pointer-events-auto transition-[filter,transform] duration-75 flex flex-col justify-center
+                                    className={`tw-absolute tw-w-[94%] tw-left-[3%] tw-rounded-md tw-border tw-text-xs tw-font-bold tw-leading-tight tw-shadow-sm tw-overflow-hidden tw-pointer-events-auto tw-transition-[filter,transform] tw-duration-75 tw-flex tw-flex-col tw-justify-center
                                         ${bgClass} 
                                         ${borderClass} ${hasError ? '' : colorTheme.text}
-                                        ${isDragging ? 'opacity-40 shadow-none ring-0' : 'hover:brightness-95'}
+                                        ${isDragging ? 'tw-opacity-40 tw-shadow-none tw-ring-0' : 'tw-hover:brightness-95'}
 `}
                                     style={{
                                         top: `${topPx}px`,

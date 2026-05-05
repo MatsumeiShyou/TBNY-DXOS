@@ -39,13 +39,13 @@ export const AuditTrailPanel: React.FC<AuditTrailPanelProps> = ({ job, history, 
                         )}
 
                         {/* Timeline Dot */}
-                        <div className={`absolute left-0 top-1.5 w-3.5 h-3.5 rounded-full border-2 bg-white
-                            ${idx === 0 ? 'border-blue-500 ring-2 ring-blue-100' : 'border-gray-300'}
+                        <div className={`tw-absolute tw-left-0 top-1.5 w-3.5 h-3.5 tw-rounded-full tw-border-2 tw-bg-white
+                            ${idx === 0 ? 'border-blue-500 tw-ring-2 ring-blue-100' : 'border-gray-300'}
                         `} />
 
                         <div className="tw-space-y-1">
                             <div className="tw-flex tw-justify-between tw-items-center">
-                                <span className={`text-xs font-black ${idx === 0 ? 'text-blue-600' : 'text-gray-500'}`}>
+                                <span className={`tw-text-xs tw-font-black ${idx === 0 ? 'text-blue-600' : 'text-gray-500'}`}>
                                     Ver. {entry.version} {idx === 0 && '(最新)'}
                                 </span>
                                 <span className="tw-text-[10px] tw-text-gray-400 tw-flex tw-items-center tw-gap-1">

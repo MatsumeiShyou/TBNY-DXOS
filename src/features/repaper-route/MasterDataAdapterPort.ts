@@ -12,15 +12,18 @@ export const useMasterData = () => {
     };
 };
 
+const EMPTY_ARRAY: any[] = [];
+const NOOP = async () => {};
+
 export const useMasterDataContext = () => {
     return {
-        customers: [],
-        vehicles: [],
-        items: [],
-        points: [],
-        drivers: [],
+        customers: EMPTY_ARRAY,
+        vehicles: EMPTY_ARRAY,
+        items: EMPTY_ARRAY,
+        points: EMPTY_ARRAY,
+        drivers: EMPTY_ARRAY,
         isLoading: false,
-        refresh: async () => {}
+        refresh: NOOP
     };
 };
 

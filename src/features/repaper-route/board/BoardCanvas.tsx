@@ -59,10 +59,13 @@ export default function BoardCanvas() {
     // 【100pt 統治】自動還還 (Auto-Reset) ロジック
     useEffect(() => {
         if (isDataLoaded && isOutOfRange && currentUser?.role !== 'admin') {
-            showNotification("計画は確定されていません（本日の盤面に戻ります）", "info");
-            setSelectedDate(getJSTNow());
+            const now = getJSTNow();
+            if (formatDateKey(selectedDate) !== formatDateKey(now)) {
+                showNotification("計画は確定されていません（本日の盤面に戻ります）", "info");
+                setSelectedDate(now);
+            }
         }
-    }, [isDataLoaded, isOutOfRange, currentUser?.role, showNotification]);
+    }, [isDataLoaded, isOutOfRange, currentUser?.role, showNotification, selectedDate]);
 
     // 2. Drag & Drop Hook
     const driverColRefs = useRef<Record<string, HTMLElement | null>>({});
@@ -354,8 +357,8 @@ export default function BoardCanvas() {
 
                 <div
                     className={`
-                        absolute top-0 right-0 h-full w-80 bg-white shadow-2xl z-40 transform transition-transform duration-300 ease-in-out border-l border-gray-200
-                        ${isSidebarOpen ? 'translate-x-0' : 'translate-x-full'}
+                        tw-absolute tw-top-0 tw-right-0 tw-h-full tw-w-80 tw-bg-white tw-shadow-2xl tw-z-40 tw-transform tw-transition-transform tw-duration-300 tw-ease-in-out tw-border-l tw-border-gray-200
+                        ${isSidebarOpen ? 'tw-translate-x-0' : 'tw-translate-x-full'}
                     `}
                     onClick={(e) => e.stopPropagation()}
                 >
@@ -371,8 +374,8 @@ export default function BoardCanvas() {
 
                 <div
                     className={`
-                        absolute top-0 right-0 h-full bg-white shadow-2xl z-[60] transform transition-transform duration-300 ease-in-out border-l border-gray-200
-                        ${selectedJobId && selectedJob ? 'translate-x-0' : 'translate-x-full'}
+                        tw-absolute tw-top-0 tw-right-0 tw-h-full tw-bg-white tw-shadow-2xl tw-z-[60] tw-transform tw-transition-transform tw-duration-300 tw-ease-in-out tw-border-l tw-border-gray-200
+                        ${selectedJobId && selectedJob ? 'tw-translate-x-0' : 'tw-translate-x-full'}
                     `}
                     onClick={(e) => e.stopPropagation()}
                 >
@@ -393,7 +396,7 @@ export default function BoardCanvas() {
 
             <div className="tw-h-7 tw-px-4 tw-bg-slate-100 tw-border-t tw-border-slate-200 tw-text-[10px] tw-font-bold tw-flex tw-items-center tw-gap-4 tw-text-slate-500">
                 <span className="tw-flex tw-items-center tw-gap-2">
-                    <div className={`w-1.5 h-1.5 rounded-full ${editMode ? 'bg-emerald-500' : 'bg-slate-400'} `} />
+                    <div className={`tw-w-1.5 tw-h-1.5 tw-rounded-full ${editMode ? 'tw-bg-emerald-500' : 'tw-bg-slate-400'} `} />
                     {editMode ? '編集可能' : '読み取り専用'}
                 </span>
                 <span className="tw-ml-auto">

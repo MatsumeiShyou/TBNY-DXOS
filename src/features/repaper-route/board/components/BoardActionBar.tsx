@@ -43,14 +43,14 @@ export const BoardActionBar: React.FC<BoardActionBarProps> = ({
         <div className="tw-h-14 tw-flex tw-justify-between tw-items-center tw-px-4 tw-bg-white tw-border-b tw-border-gray-200 tw-shadow-sm tw-z-30">
             <div className="tw-flex tw-items-center tw-gap-4 tw-flex-shrink-0">
                 {/* Mode Display Badge (Finite State Machine rendering) */}
-                <div className={`px-3 py-1.5 rounded-md border text-sm font-bold flex items-center gap-2 flex-shrink-0
+                <div className={`tw-px-3 tw-py-1.5 tw-rounded-md tw-border tw-text-sm tw-font-bold tw-flex tw-items-center tw-gap-2 tw-flex-shrink-0
                     ${boardMode === 'VIEW_PAST'
-                        ? 'bg-slate-100 border-slate-300 text-slate-500'
+                        ? 'tw-bg-slate-100 tw-border-slate-300 tw-text-slate-500'
                         : boardMode === 'CONFIRM'
-                            ? 'bg-amber-50 border-amber-200 text-amber-700'
+                            ? 'tw-bg-amber-50 tw-border-amber-200 tw-text-amber-700'
                             : boardMode === 'VIEW_LOCKED'
-                                ? 'bg-slate-50 border-slate-200 text-slate-500'
-                                : 'bg-blue-50 border-blue-200 text-blue-700'
+                                ? 'tw-bg-slate-50 tw-border-slate-200 tw-text-slate-500'
+                                : 'tw-bg-blue-50 tw-border-blue-200 tw-text-blue-700'
                     }
                 `}>
                     {boardMode === 'VIEW_PAST' ? (
@@ -106,8 +106,8 @@ export const BoardActionBar: React.FC<BoardActionBarProps> = ({
                     <button
                         onClick={() => handleConfirmAll()}
                         disabled={isSyncing}
-                        className={`px-3 h-11 rounded-lg flex items-center gap-2 text-sm font-bold transition-all mr-2
-                            ${isSyncing ? 'bg-slate-100 text-slate-400' : 'bg-amber-50 text-amber-600 hover:bg-amber-100 shadow-sm'}
+                        className={`tw-px-3 tw-h-11 tw-rounded-lg tw-flex tw-items-center tw-gap-2 tw-text-sm tw-font-bold tw-transition-all tw-mr-2
+                            ${isSyncing ? 'tw-bg-slate-100 tw-text-slate-400' : 'tw-bg-amber-50 tw-text-amber-600 tw-hover:bg-amber-100 tw-shadow-sm'}
                         `}
                         title="この内容で決定し、ロックします。後からの変更には例外操作が必要になります。"
                     >
@@ -118,10 +118,10 @@ export const BoardActionBar: React.FC<BoardActionBarProps> = ({
 
                 {hasEditRights && (
                     <div
-                        className={`px-4 h-11 rounded-lg flex items-center gap-2 text-sm font-bold transition-all border
+                        className={`tw-px-4 tw-h-11 tw-rounded-lg tw-flex tw-items-center tw-gap-2 tw-text-sm tw-font-bold tw-transition-all tw-border
                             ${isSyncing 
-                                ? 'bg-amber-50 border-amber-100 text-amber-600 animate-pulse' 
-                                : 'bg-emerald-50 border-emerald-100 text-emerald-600 shadow-sm'}
+                                ? 'tw-bg-amber-50 tw-border-amber-100 tw-text-amber-600 tw-animate-pulse' 
+                                : 'tw-bg-emerald-50 tw-border-emerald-100 tw-text-emerald-600 tw-shadow-sm'}
                         `}
                         title={isSyncing ? "サーバーに同期中..." : "サーバーと同期済み（自動保存）"}
                     >
@@ -135,18 +135,18 @@ export const BoardActionBar: React.FC<BoardActionBarProps> = ({
 
                 <button
                     onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                    className={`relative w-11 h-11 rounded-lg transition-all flex items-center justify-center
-                        ${isSidebarOpen ? 'bg-blue-50 text-blue-600' : 'bg-slate-50 text-slate-600 hover:bg-slate-100'}
+                    className={`tw-relative tw-w-11 tw-h-11 tw-rounded-lg tw-transition-all tw-flex tw-items-center tw-justify-center
+                        ${isSidebarOpen ? 'tw-bg-blue-50 tw-text-blue-600' : 'tw-bg-slate-50 tw-text-slate-600 tw-hover:bg-slate-100'}
                     `}
                     title={isSidebarOpen ? 'リストを閉じる' : '未配車リスト（一時保存された内容を元に自動割付できます）'}
                     aria-expanded={isSidebarOpen}
                     aria-controls="pending-job-sidebar"
                 >
                     <Clipboard size={18} />
-                    <span className={`absolute -top-1.5 -right-1.5 min-w-[1.25rem] h-5 text-white text-[10px] font-black flex items-center justify-center rounded-full ring-2 ring-white shadow-md transition-all duration-300
+                    <span className={`tw-absolute -tw-top-1.5 -tw-right-1.5 tw-min-w-[1.25rem] tw-h-5 tw-text-white tw-text-[10px] tw-font-black tw-flex tw-items-center tw-justify-center tw-rounded-full tw-ring-2 tw-ring-white tw-shadow-md tw-transition-all tw-duration-300
                         ${pendingJobs.length > 0
-                            ? 'bg-gradient-to-br from-rose-500 to-pink-600'
-                            : 'bg-slate-300'
+                            ? 'tw-bg-gradient-to-br tw-from-rose-500 tw-to-pink-600'
+                            : 'tw-bg-slate-300'
                         }
                     `}>
                         {pendingJobs.length}

@@ -73,7 +73,7 @@ export const ExceptionChangeModal: React.FC<ExceptionChangeModalProps> = ({
                             {reasons.map((reason) => (
                                 <label
                                     key={reason.id}
-                                    className={`flex items-center p-3 rounded-lg border cursor-pointer transition-colors ${selectedReasonId === reason.id ? 'border-amber-500 bg-amber-50' : 'border-gray-200 hover:bg-gray-50'}`}
+                                    className={`tw-flex tw-items-center tw-p-3 tw-rounded-lg tw-border tw-cursor-pointer tw-transition-colors ${selectedReasonId === reason.id ? 'tw-border-amber-500 tw-bg-amber-50' : 'tw-border-gray-200 tw-hover:bg-gray-50'}`}
                                 >
                                     <input
                                         type="radio"
@@ -90,7 +90,7 @@ export const ExceptionChangeModal: React.FC<ExceptionChangeModalProps> = ({
                             ))}
                             {/* "Others" option explicitly clear */}
                             <label
-                                className={`flex items-center p-3 rounded-lg border cursor-pointer transition-colors ${selectedReasonId === '' ? 'border-amber-500 bg-amber-50' : 'border-gray-200 hover:bg-gray-50'}`}
+                                className={`tw-flex tw-items-center tw-p-3 tw-rounded-lg tw-border tw-cursor-pointer tw-transition-colors ${selectedReasonId === '' ? 'tw-border-amber-500 tw-bg-amber-50' : 'tw-border-gray-200 tw-hover:bg-gray-50'}`}
                             >
                                 <input
                                     type="radio"
