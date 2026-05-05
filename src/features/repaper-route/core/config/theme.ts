@@ -9,24 +9,24 @@ export const generateJobColorMap = (
 
     // Tailwind based color themes (18 colors)
     const themes = [
-        { bg: 'bg-blue-50', border: 'border-blue-200', text: 'text-blue-700' },
-        { bg: 'bg-emerald-50', border: 'border-emerald-200', text: 'text-emerald-700' },
-        { bg: 'bg-amber-50', border: 'border-amber-200', text: 'text-amber-700' },
-        { bg: 'bg-purple-50', border: 'border-purple-200', text: 'text-purple-700' },
-        { bg: 'bg-rose-50', border: 'border-rose-200', text: 'text-rose-700' },
-        { bg: 'bg-indigo-50', border: 'border-indigo-200', text: 'text-indigo-700' },
-        { bg: 'bg-teal-50', border: 'border-teal-200', text: 'text-teal-700' },
-        { bg: 'bg-sky-50', border: 'border-sky-200', text: 'text-sky-700' },
-        { bg: 'bg-orange-50', border: 'border-orange-200', text: 'text-orange-700' },
-        { bg: 'bg-cyan-50', border: 'border-cyan-200', text: 'text-cyan-700' },
-        { bg: 'bg-lime-50', border: 'border-lime-200', text: 'text-lime-700' },
-        { bg: 'bg-pink-50', border: 'border-pink-200', text: 'text-pink-700' },
-        { bg: 'bg-violet-50', border: 'border-violet-200', text: 'text-violet-700' },
-        { bg: 'bg-fuchsia-50', border: 'border-fuchsia-200', text: 'text-fuchsia-700' },
-        { bg: 'bg-yellow-50', border: 'border-yellow-200', text: 'text-yellow-700' },
-        { bg: 'bg-slate-50', border: 'border-slate-200', text: 'text-slate-700' },
-        { bg: 'bg-zinc-50', border: 'border-zinc-200', text: 'text-zinc-700' },
-        { bg: 'bg-neutral-50', border: 'border-neutral-200', text: 'text-neutral-700' },
+        { bg: 'tw-bg-blue-50', border: 'tw-border-blue-200', text: 'tw-text-blue-700' },
+        { bg: 'tw-bg-emerald-50', border: 'tw-border-emerald-200', text: 'tw-text-emerald-700' },
+        { bg: 'tw-bg-amber-50', border: 'tw-border-amber-200', text: 'tw-text-amber-700' },
+        { bg: 'tw-bg-purple-50', border: 'tw-border-purple-200', text: 'tw-text-purple-700' },
+        { bg: 'tw-bg-rose-50', border: 'tw-border-rose-200', text: 'tw-text-rose-700' },
+        { bg: 'tw-bg-indigo-50', border: 'tw-border-indigo-200', text: 'tw-text-indigo-700' },
+        { bg: 'tw-bg-teal-50', border: 'tw-border-teal-200', text: 'tw-text-teal-700' },
+        { bg: 'tw-bg-sky-50', border: 'tw-border-sky-200', text: 'tw-text-sky-700' },
+        { bg: 'tw-bg-orange-50', border: 'tw-border-orange-200', text: 'tw-text-orange-700' },
+        { bg: 'tw-bg-cyan-50', border: 'tw-border-cyan-200', text: 'tw-text-cyan-700' },
+        { bg: 'tw-bg-lime-50', border: 'tw-border-lime-200', text: 'tw-text-lime-700' },
+        { bg: 'tw-bg-pink-50', border: 'tw-border-pink-200', text: 'tw-text-pink-700' },
+        { bg: 'tw-bg-violet-50', border: 'tw-border-violet-200', text: 'tw-text-violet-700' },
+        { bg: 'tw-bg-fuchsia-50', border: 'tw-border-fuchsia-200', text: 'tw-text-fuchsia-700' },
+        { bg: 'tw-bg-yellow-50', border: 'tw-border-yellow-200', text: 'tw-text-yellow-700' },
+        { bg: 'tw-bg-slate-50', border: 'tw-border-slate-200', text: 'tw-text-slate-700' },
+        { bg: 'tw-bg-zinc-50', border: 'tw-border-zinc-200', text: 'tw-text-zinc-700' },
+        { bg: 'tw-bg-neutral-50', border: 'tw-border-neutral-200', text: 'tw-text-neutral-700' },
     ];
 
     const PALETTE_SIZE = themes.length;
@@ -39,7 +39,7 @@ export const generateJobColorMap = (
         jobs.forEach((job, i) => {
             colorMap[job.id] = themes[i % PALETTE_SIZE];
             if (job.bucket === '特殊') {
-                colorMap[job.id] = { bg: 'bg-slate-100', border: 'border-slate-300', text: 'text-slate-600' };
+                colorMap[job.id] = { bg: 'tw-bg-slate-100', border: 'tw-border-slate-300', text: 'tw-text-slate-600' };
             }
         });
         return colorMap;
@@ -76,7 +76,7 @@ export const generateJobColorMap = (
     for (const job of sortedJobs) {
         // 「特殊」バケットは固定色（衝突回避の対象外）
         if (job.bucket === '特殊') {
-            colorMap[job.id] = { bg: 'bg-slate-100', border: 'border-slate-300', text: 'text-slate-600' };
+            colorMap[job.id] = { bg: 'tw-bg-slate-100', border: 'tw-border-slate-300', text: 'tw-text-slate-600' };
             // 特殊案件は衝突検知の参照として登録するが、colorIndex は -1（パレット外）
             const list = assignedByDriver.get(job.driverId || '');
             if (list) list.push({ job, colorIndex: -1 });
@@ -137,7 +137,7 @@ export const generateJobColorMap = (
 };
 
 export const getPendingJobColor = (bucket?: string) => {
-    if (bucket === '特殊') return { bg: 'bg-slate-100', text: 'text-slate-600', border: 'border-slate-300' };
-    if (bucket === 'スポット') return { bg: 'bg-amber-50', text: 'text-amber-600', border: 'border-amber-200' };
-    return { bg: 'bg-blue-50', text: 'text-blue-600', border: 'border-blue-200' };
+    if (bucket === '特殊') return { bg: 'tw-bg-slate-100', text: 'tw-text-slate-600', border: 'tw-border-slate-300' };
+    if (bucket === 'スポット') return { bg: 'tw-bg-amber-50', text: 'tw-text-amber-600', border: 'tw-border-amber-200' };
+    return { bg: 'tw-bg-blue-50', text: 'tw-text-blue-600', border: 'tw-border-blue-200' };
 };

@@ -111,7 +111,7 @@ export default function BoardCanvas() {
     const [selectedCell, setSelectedCell] = useState<{ driverId: string, time: string } | null>(null);
     const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-    const [pendingFilter, setPendingFilter] = useState('すべて');
+    const [pendingFilter, setPendingFilter] = useState('全て');
     const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
     const [isHeaderEditModalOpen, setIsHeaderEditModalOpen] = useState(false);
     const [isAddJobModalOpen, setIsAddJobModalOpen] = useState(false);

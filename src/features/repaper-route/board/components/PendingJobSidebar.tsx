@@ -97,7 +97,7 @@ export const PendingJobSidebar: React.FC<PendingJobSidebarProps> = ({
                             onClick={() => isSelected && onAddJob(job)}
                         >
                             {/* Left Color Strip */}
-                            <div className={`tw-absolute tw-top-0 tw-bottom-0 tw-left-0 tw-w-1.5 tw-rounded-l-lg ${colorTheme.bg?.replace('bg-', 'tw-bg-').replace('100', '400') || 'tw-bg-gray-400'}`} />
+                            <div className={`tw-absolute tw-top-0 tw-bottom-0 tw-left-0 tw-w-1.5 tw-rounded-l-lg ${colorTheme.bg?.replace('50', '400') || 'tw-bg-gray-400'}`} />
                             <div className="tw-pl-3">
                                 <div className="tw-flex tw-justify-between tw-items-start tw-mb-1">
                                     <h3 className="tw-font-bold tw-text-gray-800 tw-text-sm">{job.title}</h3>

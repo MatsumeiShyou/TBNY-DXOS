@@ -1,32 +1,57 @@
 {
-  "version": "1.0.0",
+  "version": "1.2.0",
   "guidelines_ref": "PWAにおける高品質なアプリケーション構築とユーザビリティチェックリスト総集編III.md",
   "thresholds": {
     "VII-5-3": {
       "key": "min_tap_target_size",
       "value": 44,
       "unit": "px",
-      "description": "タップ/クリック可能なエリア（padding含む）の最小サイズ"
+      "scope": "driver_app",
+      "description": "タップ/クリック可能なエリア（padding含む）の最小サイズ。ドライバー向けUIのみ適用"
     },
-    "II-2": {
-      "key": "required_next_image",
+    "IV-4-1": {
+      "key": "min_margin_between_buttons",
+      "value": 12,
+      "unit": "px",
+      "scope": "driver_app",
+      "description": "隣接するボタン間の最小マージン。ドライバー向けUIのみ適用"
+    },
+    "IV-4-1-font": {
+      "key": "min_font_size_critical",
+      "value": 18,
+      "unit": "px",
+      "scope": "driver_app",
+      "description": "重要情報の最小フォントサイズ（視認性確保）。ドライバー向けUIのみ適用"
+    },
+    "I-1": {
+      "key": "image_optimization_strategy",
+      "value": "vite-plugin-image-optimizer",
+      "scope": "global",
+      "description": "オフライン稼働を前提としたビルド時画像最適化の強制"
+    },
+    "II-2.2": {
+      "key": "enforce_insert_only_logs",
       "value": true,
-      "description": "画像表示における next/image コンポーネントの使用義務"
+      "scope": "global",
+      "description": "SDRログのINSERT型保持。管理者/ドライバー共通"
     },
     "III-2": {
-      "key": "offline_fallback_enabled",
+      "key": "offline_first_idb_sync",
       "value": true,
-      "description": "ネットワークエラー時のカスタムオフラインページ表示"
+      "scope": "global",
+      "description": "IndexedDBを起点とした不揮発性同期。管理者/ドライバー共通"
     },
     "V-1": {
       "key": "semantic_elements_enforced",
       "value": true,
-      "description": "header, nav, main 等のセマンティックタグの使用義務"
+      "scope": "global",
+      "description": "セマンティックタグの使用義務。管理者/ドライバー共通"
     },
     "VII-8-8": {
       "key": "min_contrast_ratio",
       "value": 4.5,
-      "description": "テキストと背景の最小コントラスト比（WCAG AA）"
+      "scope": "global",
+      "description": "最小コントラスト比（WCAG AA）。アクセシビリティ共通基準"
     }
   },
   "enforcement": {

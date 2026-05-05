@@ -123,7 +123,7 @@ export const JobLayer: React.FC<JobLayerProps> = ({
                             
 
                             const isSelected = selectedJobId === job.id;
-                            const colorTheme = jobColorMap[job.id] || { bg: 'bg-gray-100', border: 'border-gray-300', text: 'text-gray-700' };
+                            const colorTheme = jobColorMap[job.id] || { bg: 'tw-bg-gray-100', border: 'tw-border-gray-300', text: 'tw-text-gray-700' };
 
                             // ガードレール状態の判別
                             const isLocked = (job as any).isLocked;
