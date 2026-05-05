@@ -6,6 +6,18 @@ import { useMasterDataContext } from '../../MasterDataAdapterPort';
  * 派生値を直接返すようにリファクタリング。
  */
 export const useMasterData = () => {
+    if (typeof useMasterDataContext !== 'function') {
+        console.warn('[WARNING] useMasterDataContext is not available. Using fallback dummy data.');
+        return {
+            customers: [],
+            vehicles: [],
+            items: [],
+            points: [],
+            drivers: [],
+            isLoading: false,
+            refresh: async () => {}
+        };
+    }
     return useMasterDataContext();
 };
 

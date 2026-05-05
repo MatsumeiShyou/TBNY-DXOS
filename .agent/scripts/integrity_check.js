@@ -14,7 +14,8 @@ const ROOT = path.resolve(__dirname, '../../');
 const FORBIDDEN_PATTERNS = [
   { pattern: /\.\.\/RePaper Route/g, label: 'EXTERNAL_PATH_DEPENDENCY', message: 'リポジトリ外への相対パス参照が検出されました。' },
   { pattern: /Sentinel Governance v7\.1/gi, label: 'OUTDATED_GOVERNANCE_VERSION', message: '旧バージョンの統治憲法への参照が残っています。' },
-  { pattern: /外部アプリケーションとして稼働中です/g, label: 'PLACEHOLDER_DEBT', message: '未統合のプレースホルダーが残存しています。' }
+  { pattern: /外部アプリケーションとして稼働中です/g, label: 'PLACEHOLDER_DEBT', message: '未統合のプレースホルダーが残存しています。' },
+  { pattern: /agentId=["'](dummy|test|todo|fixme)["']/gi, label: 'INVALID_AGENT_ID', message: '無意味な agentId (dummy/test/todo/fixme) が検出されました。具体的な命名を行ってください。' }
 ];
 
 const IGNORE_DIRS = ['.git', 'node_modules', 'dist', '.agent', 'governance/history'];

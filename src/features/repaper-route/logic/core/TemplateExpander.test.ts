@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { TemplateExpander, SkeletonJob } from './TemplateExpander';
+import { TemplateExpander } from './TemplateExpander';
+import type { SkeletonJob } from './TemplateExpander';
 
 /** ヘルパー: 最低限の SkeletonJob を生成 */
 const makeSkeleton = (overrides: Partial<SkeletonJob> = {}): SkeletonJob => ({

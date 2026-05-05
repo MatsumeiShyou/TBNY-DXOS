@@ -1,5 +1,5 @@
-import React from 'react';
 import type { User } from '../types';
+import { useAgentId } from '../components/AgentContext';
 
 interface MenuPageProps {
   isOpen: boolean;
@@ -36,6 +36,7 @@ export const MenuPage: React.FC<MenuPageProps> = ({
            <button 
              onClick={onClose}
              className="absolute top-safe right-4 w-10 h-10 flex items-center justify-center bg-white/20 rounded-full active:bg-white/30"
+             data-agent-id={useAgentId("close-button")}
            >
              <i className="fa-solid fa-xmark"></i>
            </button>
@@ -63,6 +64,7 @@ export const MenuPage: React.FC<MenuPageProps> = ({
                  <button 
                    onClick={onVehicleChange}
                    className="w-full flex items-center p-4 border-b border-slate-100 active:bg-slate-50 transition-colors text-left"
+                   data-agent-id={useAgentId("action:vehicle-change")}
                  >
                     <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center mr-3 text-slate-500">
                       <i className="fa-solid fa-truck"></i>
@@ -77,6 +79,7 @@ export const MenuPage: React.FC<MenuPageProps> = ({
                  <button 
                    onClick={onCourseChange}
                    className="w-full flex items-center p-4 border-b border-slate-100 active:bg-slate-50 transition-colors text-left"
+                   data-agent-id={useAgentId("action:course-change")}
                  >
                     <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center mr-3 text-slate-500">
                       <i className="fa-solid fa-route"></i>
@@ -91,6 +94,7 @@ export const MenuPage: React.FC<MenuPageProps> = ({
                  <button 
                    onClick={onFuelReport}
                    className="w-full flex items-center p-4 active:bg-slate-50 transition-colors text-left"
+                   data-agent-id={useAgentId("action:fuel-report")}
                  >
                     <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center mr-3 text-slate-500">
                       <i className="fa-solid fa-gas-pump"></i>
@@ -109,6 +113,7 @@ export const MenuPage: React.FC<MenuPageProps> = ({
               <button 
                 onClick={onLogout}
                 className="w-full bg-white border border-slate-200 text-red-600 p-4 rounded-xl font-bold flex items-center justify-center active:bg-red-50 transition-colors"
+                data-agent-id={useAgentId("action:logout")}
               >
                 <i className="fa-solid fa-right-from-bracket mr-2"></i> ログアウト
               </button>

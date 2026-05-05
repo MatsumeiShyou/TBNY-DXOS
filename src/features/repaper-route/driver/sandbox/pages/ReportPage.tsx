@@ -73,7 +73,7 @@ export const ReportPage: React.FC<Props> = ({ stops, user, workStartTime, report
           <p className="text-slate-500 mt-2">本日の業務は全て終了です。<br/>お疲れ様でした！</p>
         </div>
         <div className="w-full pt-8 space-y-4">
-           <Button variant="outline" onClick={handleLogout}>
+           <Button variant="outline" onClick={handleLogout} agentId="action:logout-button">
              業務を終了してログアウト
            </Button>
            <p className="text-xs text-slate-400 mt-4">
@@ -102,7 +102,7 @@ export const ReportPage: React.FC<Props> = ({ stops, user, workStartTime, report
           </div>
       </div>
 
-      <Card className="space-y-4">
+      <Card className="space-y-4" agentId="breakdown-card">
         <h3 className="font-bold text-slate-700 flex items-center">
           <i className="fa-solid fa-chart-simple mr-2 text-primary"></i>
           品目別回収実績
@@ -130,7 +130,7 @@ export const ReportPage: React.FC<Props> = ({ stops, user, workStartTime, report
         </div>
       </Card>
 
-      <Card>
+      <Card agentId="comment-card">
         <h3 className="font-bold text-slate-700 mb-2">日報コメント・特記事項</h3>
         <textarea
           className="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 text-sm focus:ring-2 focus:ring-primary focus:outline-none"
@@ -145,6 +145,7 @@ export const ReportPage: React.FC<Props> = ({ stops, user, workStartTime, report
         <Card 
           className={`transition-colors border-2 ${checks.summary ? 'bg-primary/5 border-primary' : 'bg-red-50 border-red-200 animate-pulse'}`}
           onClick={() => setChecks(prev => ({...prev, summary: !prev.summary}))}
+          agentId="check:summary-card"
         >
            <label className="flex items-center space-x-3 cursor-pointer p-1 w-full pointer-events-none">
               <div className={`w-6 h-6 shrink-0 rounded border-2 flex items-center justify-center transition-colors ${checks.summary ? 'bg-primary border-primary' : 'border-red-300 bg-white'}`}>
@@ -173,7 +174,7 @@ export const ReportPage: React.FC<Props> = ({ stops, user, workStartTime, report
         stops.map((stop) => {
           const isCompleted = stop.status === StopStatus.COMPLETED;
           return (
-              <Card key={stop.id} className={`p-3 border-l-4 ${isCompleted ? 'border-l-primary' : 'border-l-slate-200 opacity-60'}`}>
+              <Card key={stop.id} className={`p-3 border-l-4 ${isCompleted ? 'border-l-primary' : 'border-l-slate-200 opacity-60'}`} agentId={`stop-card:${stop.id}`}>
                   <div className="flex items-start">
                       <div className="w-16 pt-0.5 shrink-0">
                           <div className="text-sm font-bold text-slate-700 font-mono">{stop.arrivalTime || '--:--'}</div>
@@ -205,7 +206,7 @@ export const ReportPage: React.FC<Props> = ({ stops, user, workStartTime, report
       )}
       <div className="mt-6">
           <h4 className="text-xs font-bold text-slate-500 mb-2 px-2">その他業務記録</h4>
-          <Card className="p-0 overflow-hidden">
+          <Card className="p-0 overflow-hidden" agentId="other-work-card">
              <div className="flex justify-between items-center p-3 border-b border-slate-100">
                 <div className="flex items-center space-x-3">
                    <div className="w-8 h-8 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center">
@@ -230,6 +231,7 @@ export const ReportPage: React.FC<Props> = ({ stops, user, workStartTime, report
         <Card 
           className={`mt-6 transition-colors border-2 ${checks.list ? 'bg-primary/5 border-primary' : 'bg-red-50 border-red-200 animate-pulse'}`}
           onClick={() => setChecks(prev => ({...prev, list: !prev.list}))}
+          agentId="check:list-card"
         >
            <label className="flex items-center space-x-3 cursor-pointer p-1 w-full pointer-events-none">
               <div className={`w-6 h-6 shrink-0 rounded border-2 flex items-center justify-center transition-colors ${checks.list ? 'bg-primary border-primary' : 'border-red-300 bg-white'}`}>
@@ -276,12 +278,12 @@ export const ReportPage: React.FC<Props> = ({ stops, user, workStartTime, report
       </div>
       {isReadyToSubmit && (
         <div className="fixed bottom-0 left-0 w-full bg-white border-t border-slate-200 p-4 pb-safe shadow-[0_-4px_20px_rgba(0,0,0,0.15)] z-40 rounded-t-2xl animate-slide-up">
-           <Button onClick={() => setSubmitModalOpen(true)} className="bg-primary text-white shadow-lg shadow-blue-900/20">
+           <Button onClick={() => setSubmitModalOpen(true)} className="bg-primary text-white shadow-lg shadow-blue-900/20" agentId="action:submit-button">
              <i className="fa-solid fa-paper-plane mr-2"></i>日報を提出する
            </Button>
         </div>
       )}
-      <Modal isOpen={isInstructionModalOpen} onClose={() => setInstructionModalOpen(false)} title="日報提出の手順">
+      <Modal isOpen={isInstructionModalOpen} onClose={() => setInstructionModalOpen(false)} title="日報提出の手順" agentId="instruction-modal">
         <div className="space-y-6 text-center">
            <div className="w-16 h-16 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto">
               <i className="fa-solid fa-list-check text-3xl"></i>
@@ -294,10 +296,10 @@ export const ReportPage: React.FC<Props> = ({ stops, user, workStartTime, report
                 <li><i className="fa-regular fa-square-check mr-2 text-primary"></i>明細タブの入力漏れ</li>
               </ul>
            </div>
-           <Button onClick={() => setInstructionModalOpen(false)}>確認しました</Button>
+           <Button onClick={() => setInstructionModalOpen(false)} agentId="instruction-modal:confirm-button">確認しました</Button>
         </div>
       </Modal>
-      <Modal isOpen={isSubmitModalOpen} onClose={() => setSubmitModalOpen(false)} title="日報提出の確認">
+      <Modal isOpen={isSubmitModalOpen} onClose={() => setSubmitModalOpen(false)} title="日報提出の確認" agentId="submit-confirm-modal">
         <div className="space-y-4">
            <div className="bg-blue-50 p-4 rounded-xl border border-blue-100 flex items-start space-x-3 text-blue-900">
               <i className="fa-solid fa-circle-info mt-1 text-lg"></i>
@@ -307,8 +309,8 @@ export const ReportPage: React.FC<Props> = ({ stops, user, workStartTime, report
               </div>
            </div>
            <div className="flex space-x-3">
-             <Button variant="secondary" onClick={() => setSubmitModalOpen(false)}>キャンセル</Button>
-             <Button onClick={handleSubmit}>提出して終了</Button>
+             <Button variant="secondary" onClick={() => setSubmitModalOpen(false)} agentId="submit-confirm-modal:cancel-button">キャンセル</Button>
+             <Button onClick={handleSubmit} agentId="submit-confirm-modal:execute-button">提出して終了</Button>
            </div>
         </div>
       </Modal>

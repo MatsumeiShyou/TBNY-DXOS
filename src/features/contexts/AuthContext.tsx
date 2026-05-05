@@ -1,4 +1,4 @@
-import { useState, useEffect, type ReactNode } from 'react';
+import { useState, useEffect, useRef, type ReactNode } from 'react';
 import { AuthAdapter } from '../../shared/lib/auth/AuthAdapter';
 import { AuthContext, type AuthContextValue, type AuthStatus } from '../hooks/useAuth';
 import type { DXUser } from '../../shared/types/auth';
@@ -17,26 +17,39 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         return false; 
     });
 
+    const isVerifying = useRef(false);
+
     useEffect(() => {
+        const verifyProfile = async (uid: string) => {
+            if (isVerifying.current) return null;
+            isVerifying.current = true;
+            try {
+                const staffTimeout = new Promise<never>((_, reject) => 
+                    setTimeout(() => reject(new Error('STAFF_FETCH_TIMEOUT')), 15000)
+                );
+                const staffFetch = AuthAdapter.getStaffByAuthUid(uid);
+                return await Promise.race([staffFetch, staffTimeout]);
+            } catch (err) {
+                console.error('[STATE] AuthProvider: Profile verification failed:', err);
+                return null;
+            } finally {
+                isVerifying.current = false;
+            }
+        };
+
         const initializeAuth = async () => {
             console.log(`[STATE] AuthProvider: Initialization started (Status: ${authStatus}).`);
             
             try {
                 // [SAFETY] 初期検証が 8秒以上かかる場合は強制中断
                 const timeout = new Promise<never>((_, reject) => 
-                    setTimeout(() => reject(new Error('INITIALIZE_TIMEOUT')), 8000)
+                    setTimeout(() => reject(new Error('INITIALIZE_TIMEOUT')), 30000)
                 );
 
                 const verifyPromise = (async () => {
                     const { data: { session } } = await AuthAdapter.getSession();
                     const user = session?.user ?? null;
-
-                    if (user) {
-                        console.log(`[STATE] AuthProvider: Session found. Fetching staff profile for UID: ${user.id}...`);
-                        const staff = await AuthAdapter.getStaffByAuthUid(user.id);
-                        if (staff) return { user, staff };
-                        console.warn('[STATE] AuthProvider: No active staff profile found for current session.');
-                    }
+                    if (user) return { user, staff: await verifyProfile(user.id) };
                     return null;
                 })();
 
@@ -47,7 +60,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                     });
 
                 let finalStatus: AuthStatus = 'UNAUTHENTICATED';
-                if (result) {
+                if (result && result.staff) {
                     const { user, staff } = result;
                     console.log(`[STATE] AuthProvider: Staff profile verified: ${staff.name}`);
                     
@@ -100,15 +113,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             
             try {
                 if (user) {
-                    console.log(`[STATE] AuthProvider: Fetching staff profile for UID: ${user.id}...`);
-                    
-                    // [SAFETY] スタッフ情報取得にもタイムアウトを設ける（8秒）
-                    const staffTimeout = new Promise<never>((_, reject) => 
-                        setTimeout(() => reject(new Error('STAFF_FETCH_TIMEOUT')), 8000)
-                    );
-                    
-                    const staffFetch = AuthAdapter.getStaffByAuthUid(user.id);
-                    const staff = await Promise.race([staffFetch, staffTimeout]);
+                    console.log(`[STATE] AuthProvider: Session found via AuthStateChange. Verifying...`);
+                    const staff = await verifyProfile(user.id);
 
                     let finalStatus: AuthStatus = 'UNAUTHENTICATED';
                     if (staff) {

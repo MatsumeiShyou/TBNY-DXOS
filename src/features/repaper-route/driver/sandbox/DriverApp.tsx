@@ -12,6 +12,7 @@ import { StopStatus, DriverStatus } from './types';
 import { Modal, Button, Card } from './components/Widgets';
 import { HelpProvider } from './components/Help';
 import { SOSContent } from './components/SOSContent';
+import { AgentNamespace } from './components/AgentContext';
 
 /**
  * DriverApp (Production Mode)
@@ -159,146 +160,168 @@ export default function DriverApp() {
 
   return (
     <HelpProvider>
-      <Layout 
-        user={user} 
-        title="本日の案件リスト"
-        currentView={view} 
-        onNavigate={setView}
-        onMenuClick={() => setIsMenuOpen(!isMenuOpen)}
-        onVehicleClick={() => setVehicleModalOpen(true)}
-        onEmergencyClick={() => { setSosStep('MENU'); setIsSOSModalOpen(true); }}
-        toastMessage={toast?.message}
-        toastType={toast?.type}
-        onToastClose={() => setToast(null)}
-      >
-        {view === 'inspection' && <InspectionPage onComplete={handleInspectionComplete} />}
-        {view === 'route' && (
-          <RouteListPage 
-            stops={stops} 
-            currentRouteName="コースA-1" 
-            onSelectStop={handleSelectStop} 
-            onStatusReport={() => {}}
-            onChangeCourse={() => showToast('コース変更は管理者へ連絡してください', 'info')}
-            onTransferRequest={handleTransferRequestTrigger}
-            onIntermediateUnload={() => { setEndShiftMode('INTERMEDIATE'); setView('end'); }}
-            onReorderStops={setStops}
-          />
-        )}
-        {view === 'stop' && selectedStopId && (
-          <StopDetailPage 
-            stop={stops.find(s => s.id === selectedStopId)!} 
-            onUpdateStop={handleUpdateStop}
-            onBack={() => setView('route')}
-          />
-        )}
-        {view === 'end' && (
-          <EndShiftPage 
-            stops={stops} 
-            currentVehicle={bridge.availableVehicles.find(v => v.id === user.vehicleId) || { id: 'default', name: '不明', plateNumber: '-', tareWeight: 2500, isInspected: true }}
-            mode={endShiftMode}
-            onComplete={handleEndShiftComplete} 
-            onCancel={() => setView('route')} 
-          />
-        )}
-        {view === 'report' && (
-          <ReportPage 
-            stops={stops}
-            user={user}
-            workStartTime={null}
-            reportComment={reportComment} 
-            onCommentChange={setReportComment} 
-            onEditStop={(id) => {
-              setSelectedStopId(id);
-              setView('stop-detail');
-            }}
-          />
-        )}
-        {view === 'fuel' && <div className="p-4"><h2 className="text-xl font-bold">給油報告（準備中）</h2></div>}
-      </Layout>
+      <AgentNamespace ns="layout">
+        <Layout 
+          user={user} 
+          title="本日の案件リスト"
+          currentView={view} 
+          onNavigate={setView}
+          onMenuClick={() => setIsMenuOpen(!isMenuOpen)}
+          onVehicleClick={() => setVehicleModalOpen(true)}
+          onEmergencyClick={() => { setSosStep('MENU'); setIsSOSModalOpen(true); }}
+          toastMessage={toast?.message}
+          toastType={toast?.type}
+          onToastClose={() => setToast(null)}
+        >
+          <AgentNamespace ns="pages">
+            {view === 'inspection' && <AgentNamespace ns="inspection"><InspectionPage onComplete={handleInspectionComplete} /></AgentNamespace>}
+            {view === 'route' && (
+              <AgentNamespace ns="route">
+                <RouteListPage 
+                  stops={stops} 
+                  currentRouteName="コースA-1" 
+                  onSelectStop={handleSelectStop} 
+                  onStatusReport={() => {}}
+                  onChangeCourse={() => showToast('コース変更は管理者へ連絡してください', 'info')}
+                  onTransferRequest={handleTransferRequestTrigger}
+                  onIntermediateUnload={() => { setEndShiftMode('INTERMEDIATE'); setView('end'); }}
+                  onReorderStops={setStops}
+                />
+              </AgentNamespace>
+            )}
+            {view === 'stop' && selectedStopId && (
+              <AgentNamespace ns="stop">
+                <StopDetailPage 
+                  stop={stops.find(s => s.id === selectedStopId)!} 
+                  onUpdateStop={handleUpdateStop}
+                  onBack={() => setView('route')}
+                />
+              </AgentNamespace>
+            )}
+            {view === 'end' && (
+              <AgentNamespace ns="end-shift">
+                <EndShiftPage 
+                  stops={stops} 
+                  currentVehicle={bridge.availableVehicles.find(v => v.id === user.vehicleId) || { id: 'default', name: '不明', plateNumber: '-', tareWeight: 2500, isInspected: true }}
+                  mode={endShiftMode}
+                  onComplete={handleEndShiftComplete} 
+                  onCancel={() => setView('route')} 
+                />
+              </AgentNamespace>
+            )}
+            {view === 'report' && (
+              <AgentNamespace ns="report">
+                <ReportPage 
+                  stops={stops}
+                  user={user}
+                  workStartTime={null}
+                  reportComment={reportComment} 
+                  onCommentChange={setReportComment} 
+                  onEditStop={(id) => {
+                    setSelectedStopId(id);
+                    setView('stop-detail');
+                  }}
+                />
+              </AgentNamespace>
+            )}
+            {view === 'fuel' && <div className="p-4"><h2 className="text-xl font-bold">給油報告（準備中）</h2></div>}
+          </AgentNamespace>
+        </Layout>
+      </AgentNamespace>
 
       {/* Menu Overlay */}
       {isMenuOpen && (
-        <MenuPage 
-          isOpen={true}
-          onClose={() => setIsMenuOpen(false)}
-          user={user}
-          onVehicleChange={() => { setVehicleModalOpen(true); setIsMenuOpen(false); }}
-          onCourseChange={() => { showToast('コース変更は管理者へ連絡してください', 'info'); }}
-          onFuelReport={() => { setView('fuel'); setIsMenuOpen(false); }}
-          onLogout={() => window.location.reload()}
-        />
+        <AgentNamespace ns="menu">
+          <MenuPage 
+            isOpen={true}
+            onClose={() => setIsMenuOpen(false)}
+            user={user}
+            onVehicleChange={() => { setVehicleModalOpen(true); setIsMenuOpen(false); }}
+            onCourseChange={() => { showToast('コース変更は管理者へ連絡してください', 'info'); }}
+            onFuelReport={() => { setView('fuel'); setIsMenuOpen(false); }}
+            onLogout={() => window.location.reload()}
+          />
+        </AgentNamespace>
       )}
 
       {/* Vehicle Modal */}
       {isVehicleModalOpen && (
-        <Modal isOpen={true} title="車両乗り換え" onClose={() => setVehicleModalOpen(false)}>
-          <div className="grid gap-3">
-            {bridge.availableVehicles.map(v => (
-              <Card key={v.id} onClick={() => handleVehicleChange(v)} className="p-4 active:bg-slate-50 transition-colors">
-                <div className="flex justify-between items-center">
-                  <div>
-                    <div className="font-bold text-lg">{v.name}</div>
-                    <div className="text-sm text-slate-500">{v.plateNumber}</div>
-                  </div>
-                  <i className="fa-solid fa-chevron-right text-slate-300"></i>
-                </div>
-              </Card>
-            ))}
-          </div>
-        </Modal>
-      )}
-
-      {/* SOS Modal */}
-      {isSOSModalOpen && (
-        <Modal isOpen={true} title="緊急事態報告" onClose={() => setIsSOSModalOpen(false)}>
-          <SOSContent 
-            step={sosStep} 
-            onSelectType={handleSOSTypeSelect} 
-            onClose={() => setIsSOSModalOpen(false)} 
-          />
-        </Modal>
-      )}
-
-      {/* Transfer Modal */}
-      {isTransferModalOpen && (
-        <Modal 
-          isOpen={true}
-          title={transferStep === 'SELECT' ? "譲渡先を選択" : "譲渡の確認"} 
-          onClose={() => setIsTransferModalOpen(false)}
-        >
-          {transferStep === 'SELECT' ? (
+        <AgentNamespace ns="vehicle-swap">
+          <Modal isOpen={true} title="車両乗り換え" onClose={() => setVehicleModalOpen(false)} agentId="modal">
             <div className="grid gap-3">
-              {bridge.availableColleagues.map(c => (
-                <Card key={c.id} onClick={() => { setSelectedColleagueForTransfer(c); setTransferStep('CONFIRM'); }} className="p-4">
+              {bridge.availableVehicles.map(v => (
+                <Card key={v.id} onClick={() => handleVehicleChange(v)} className="p-4 active:bg-slate-50 transition-colors" agentId={`card:${v.id}`}>
                   <div className="flex justify-between items-center">
                     <div>
-                      <div className="font-bold">{c.name}</div>
-                      <div className="text-sm text-slate-500">{c.distance} 付近</div>
+                      <div className="font-bold text-lg">{v.name}</div>
+                      <div className="text-sm text-slate-500">{v.plateNumber}</div>
                     </div>
-                    <i className="fa-solid fa-truck-fast text-blue-500"></i>
+                    <i className="fa-solid fa-chevron-right text-slate-300"></i>
                   </div>
                 </Card>
               ))}
             </div>
-          ) : (
-            <div className="space-y-6 text-center">
-              <div className="p-6 bg-blue-50 rounded-2xl">
-                <p className="text-slate-600 mb-2">譲渡する案件</p>
-                <h3 className="text-xl font-bold">{selectedStopForTransfer?.customerName}</h3>
-                <div className="my-4 text-2xl text-blue-600"><i className="fa-solid fa-arrow-down"></i></div>
-                <p className="text-slate-600 mb-2">譲渡先ドライバー</p>
-                <h3 className="text-xl font-bold">{selectedColleagueForTransfer?.name}</h3>
+          </Modal>
+        </AgentNamespace>
+      )}
+
+      {/* SOS Modal */}
+      {isSOSModalOpen && (
+        <AgentNamespace ns="sos">
+          <Modal isOpen={true} title="緊急事態報告" onClose={() => setIsSOSModalOpen(false)} agentId="modal">
+            <SOSContent 
+              step={sosStep} 
+              onSelectType={handleSOSTypeSelect} 
+              onClose={() => setIsSOSModalOpen(false)} 
+            />
+          </Modal>
+        </AgentNamespace>
+      )}
+
+      {/* Transfer Modal */}
+      {isTransferModalOpen && (
+        <AgentNamespace ns="transfer">
+          <Modal 
+            isOpen={true}
+            title={transferStep === 'SELECT' ? "譲渡先を選択" : "譲渡の確認"} 
+            onClose={() => setIsTransferModalOpen(false)}
+            agentId="modal"
+          >
+            {transferStep === 'SELECT' ? (
+              <div className="grid gap-3">
+                {bridge.availableColleagues.map(c => (
+                  <Card key={c.id} onClick={() => { setSelectedColleagueForTransfer(c); setTransferStep('CONFIRM'); }} className="p-4" agentId={`card:${c.id}`}>
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <div className="font-bold">{c.name}</div>
+                        <div className="text-sm text-slate-500">{c.distance} 付近</div>
+                      </div>
+                      <i className="fa-solid fa-truck-fast text-blue-500"></i>
+                    </div>
+                  </Card>
+                ))}
               </div>
-              <Button 
-                variant="primary" 
-                onClick={handleExecuteTransfer}
-                className="py-4 text-lg"
-              >
-                電話して依頼を確定する
-              </Button>
-            </div>
-          )}
-        </Modal>
+            ) : (
+              <div className="space-y-6 text-center">
+                <div className="p-6 bg-blue-50 rounded-2xl">
+                  <p className="text-slate-600 mb-2">譲渡する案件</p>
+                  <h3 className="text-xl font-bold">{selectedStopForTransfer?.customerName}</h3>
+                  <div className="my-4 text-2xl text-blue-600"><i className="fa-solid fa-arrow-down"></i></div>
+                  <p className="text-slate-600 mb-2">譲渡先ドライバー</p>
+                  <h3 className="text-xl font-bold">{selectedColleagueForTransfer?.name}</h3>
+                </div>
+                <Button 
+                  variant="primary" 
+                  onClick={handleExecuteTransfer}
+                  className="py-4 text-lg"
+                  agentId="confirm-button"
+                >
+                  電話して依頼を確定する
+                </Button>
+              </div>
+            )}
+          </Modal>
+        </AgentNamespace>
       )}
     </HelpProvider>
   );

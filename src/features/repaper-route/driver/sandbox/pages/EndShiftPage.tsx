@@ -252,26 +252,27 @@ export const EndShiftPage: React.FC<Props> = ({ stops, currentVehicle, mode, onC
       )}
 
       {/* Navigation Buttons */}
-      <div className={`fixed bottom-0 left-0 w-full bg-white border-t border-slate-200 p-4 pb-safe shadow-[0_-4px_10px_rgba(0,0,0,0.05)] z-20 flex space-x-3 transition-transform ${isKeypadOpen ? 'translate-y-full' : ''}`}>
-         {step > 1 && (
-           <Button variant="secondary" onClick={() => setStep(prev => prev - 1 as any)} className="flex-1">
-             戻る
-           </Button>
-         )}
-         {step < 2 ? (
-           <Button onClick={() => setStep(prev => prev + 1 as any)} disabled={!canProceedToStep2} className="flex-2 w-full">
-             次へ
-           </Button>
-         ) : (
-           <Button 
-             onClick={handleFinishClick} 
-             disabled={diff !== 0 || collectedItems.length === 0} 
-             className="flex-2 w-full"
-           >
-             {mode === 'INTERMEDIATE' ? '荷下ろし完了・休憩' : '確定して業務終了'}
-           </Button>
-         )}
-      </div>
+       <div className={`fixed bottom-0 left-0 w-full bg-white border-t border-slate-200 p-4 pb-safe shadow-[0_-4px_10px_rgba(0,0,0,0.05)] z-20 flex space-x-3 transition-transform ${isKeypadOpen ? 'translate-y-full' : ''}`}>
+          {step > 1 && (
+            <Button variant="secondary" onClick={() => setStep(prev => prev - 1 as any)} className="flex-1" agentId="wizard:back-button">
+              戻る
+            </Button>
+          )}
+          {step < 2 ? (
+            <Button onClick={() => setStep(prev => prev + 1 as any)} disabled={!canProceedToStep2} className="flex-2 w-full" agentId="wizard:next-button">
+              次へ
+            </Button>
+          ) : (
+            <Button 
+              onClick={handleFinishClick} 
+              disabled={diff !== 0 || collectedItems.length === 0} 
+              className="flex-2 w-full"
+              agentId="wizard:finish-button"
+            >
+              {mode === 'INTERMEDIATE' ? '荷下ろし完了・休憩' : '確定して業務終了'}
+            </Button>
+          )}
+       </div>
 
       <NumericKeypad 
          isVisible={isKeypadOpen}
@@ -282,7 +283,7 @@ export const EndShiftPage: React.FC<Props> = ({ stops, currentVehicle, mode, onC
          onClose={handleKeypadClose}
       />
 
-      <Modal isOpen={isConfirmOpen} onClose={() => setConfirmOpen(false)} title="最終確認">
+      <Modal isOpen={isConfirmOpen} onClose={() => setConfirmOpen(false)} title="最終確認" agentId="confirm-modal">
         <div className="space-y-6">
            <div className="bg-yellow-50 p-4 rounded-xl border border-yellow-200 flex items-start text-yellow-900">
               <i className="fa-solid fa-circle-info mt-1 mr-3 text-lg shrink-0"></i>
@@ -298,8 +299,8 @@ export const EndShiftPage: React.FC<Props> = ({ stops, currentVehicle, mode, onC
               </div>
            </div>
            <div className="flex space-x-3">
-              <Button variant="secondary" onClick={() => setConfirmOpen(false)}>キャンセル</Button>
-              <Button onClick={executeFinish}>確定する</Button>
+              <Button variant="secondary" onClick={() => setConfirmOpen(false)} agentId="confirm-modal:cancel-button">キャンセル</Button>
+              <Button onClick={executeFinish} agentId="confirm-modal:execute-button">確定する</Button>
            </div>
         </div>
       </Modal>

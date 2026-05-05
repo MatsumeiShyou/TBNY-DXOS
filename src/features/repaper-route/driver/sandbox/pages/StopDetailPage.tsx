@@ -160,7 +160,7 @@ export const StopDetailPage: React.FC<Props> = ({ stop, onUpdateStop, onBack }) 
             )}
           </div>
 
-          <Card className="bg-blue-50 border-blue-200">
+          <Card className="bg-blue-50 border-blue-200" agentId="summary-card">
              <h3 className="font-bold text-primary mb-2">回収予定品目</h3>
              <ul className="list-disc list-inside text-slate-700 space-y-1">
                {stop.items.map(i => (
@@ -172,12 +172,12 @@ export const StopDetailPage: React.FC<Props> = ({ stop, onUpdateStop, onBack }) 
 
         <div className="p-4 bg-white border-t border-slate-200 space-y-3 pb-safe shadow-[0_-4px_10px_rgba(0,0,0,0.05)]">
           <HelpTarget helpId="btn-navi">
-            <Button variant="outline" onClick={openNavi}>
+            <Button variant="outline" onClick={openNavi} agentId="action:navi-button">
               <i className="fa-solid fa-location-arrow mr-2"></i> ナビを起動
             </Button>
           </HelpTarget>
           <HelpTarget helpId="btn-arrive">
-            <Button onClick={handleArrive}>
+            <Button onClick={handleArrive} agentId="action:arrive-button">
               <i className="fa-solid fa-check mr-2"></i> 現地に到着
             </Button>
           </HelpTarget>
@@ -204,7 +204,11 @@ export const StopDetailPage: React.FC<Props> = ({ stop, onUpdateStop, onBack }) 
 
           <div className="space-y-4">
             {items.map(item => (
-              <Card key={item.id} className={`${item.isCollected ? 'border-primary ring-1 ring-blue-100 shadow-md' : ''} transition-all`}>
+              <Card 
+                key={item.id} 
+                className={`${item.isCollected ? 'border-primary ring-1 ring-blue-100 shadow-md' : ''} transition-all`}
+                agentId={`item-card:${item.id}`}
+              >
                 <label className="flex items-center space-x-3 mb-1 cursor-pointer p-1">
                   <div className={`w-8 h-8 shrink-0 rounded border-2 flex items-center justify-center transition-colors ${item.isCollected ? 'bg-primary border-primary' : 'border-slate-300 bg-white'}`}>
                      {item.isCollected && <i className="fa-solid fa-check text-white"></i>}
@@ -295,13 +299,18 @@ export const StopDetailPage: React.FC<Props> = ({ stop, onUpdateStop, onBack }) 
             ))}
 
             <HelpTarget helpId="btn-add-item">
-              <Button variant="secondary" onClick={() => setAddItemModalOpen(true)} className="py-3 text-sm border-dashed border-2 w-full">
+              <Button 
+                variant="secondary" 
+                onClick={() => setAddItemModalOpen(true)} 
+                className="py-3 text-sm border-dashed border-2 w-full"
+                agentId="action:add-item-button"
+              >
                 <i className="fa-solid fa-plus mr-2"></i> リストにない品目を追加
               </Button>
             </HelpTarget>
             
             <div className="pt-4 pb-2">
-               <Button variant="secondary" onClick={onBack} className="text-sm">
+               <Button variant="secondary" onClick={onBack} className="text-sm" agentId="action:pause-button">
                   <i className="fa-solid fa-pause mr-2"></i> 作業を中断して戻る
                </Button>
             </div>
@@ -314,11 +323,11 @@ export const StopDetailPage: React.FC<Props> = ({ stop, onUpdateStop, onBack }) 
             <span className="text-2xl text-primary font-mono">{totalWeight} <span className="text-sm">kg</span></span>
           </div>
           {isEditing ? (
-            <Button onClick={handleSaveCorrection} className="bg-orange-600 shadow-orange-900/20 hover:bg-orange-700">
+            <Button onClick={handleSaveCorrection} className="bg-orange-600 shadow-orange-900/20 hover:bg-orange-700" agentId="action:save-correction-button">
               <i className="fa-solid fa-save mr-2"></i> 修正内容を保存
             </Button>
           ) : (
-            <Button onClick={handleDepart}>
+            <Button onClick={handleDepart} agentId="action:depart-button">
               <i className="fa-solid fa-flag-checkered mr-2"></i> 作業完了・出発
             </Button>
           )}
@@ -333,7 +342,7 @@ export const StopDetailPage: React.FC<Props> = ({ stop, onUpdateStop, onBack }) 
           onClose={handleKeypadClose}
         />
 
-        <Modal title="品目追加" isOpen={isAddItemModalOpen} onClose={() => setAddItemModalOpen(false)}>
+        <Modal title="品目追加" isOpen={isAddItemModalOpen} onClose={() => setAddItemModalOpen(false)} agentId="add-item-modal">
           <div className="space-y-6">
             <div>
               <label className="block text-sm font-bold text-slate-700 mb-2">品目名</label>
@@ -357,7 +366,7 @@ export const StopDetailPage: React.FC<Props> = ({ stop, onUpdateStop, onBack }) 
                 onChange={(e) => setNewItemWeight(e.target.value)}
               />
             </div>
-            <Button onClick={addNewItem} className="mt-4">追加する</Button>
+            <Button onClick={addNewItem} className="mt-4" agentId="add-item-modal:execute-button">追加する</Button>
           </div>
         </Modal>
       </div>
@@ -375,10 +384,10 @@ export const StopDetailPage: React.FC<Props> = ({ stop, onUpdateStop, onBack }) 
         <p className="text-slate-500">お疲れ様でした。<br/>次の目的地へ向かってください。</p>
       </div>
       <div className="w-full max-w-xs mt-8 space-y-3">
-        <Button variant="secondary" onClick={() => setIsEditing(true)}>
+        <Button variant="secondary" onClick={() => setIsEditing(true)} agentId="action:edit-correction-button">
            <i className="fa-solid fa-pen-to-square mr-2"></i>内容を修正する
         </Button>
-        <Button onClick={onBack}>リストに戻る</Button>
+        <Button onClick={onBack} agentId="action:back-to-list-button">リストに戻る</Button>
       </div>
     </div>
   );

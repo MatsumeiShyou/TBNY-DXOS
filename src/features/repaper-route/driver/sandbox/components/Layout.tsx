@@ -4,6 +4,7 @@ import type { User } from '../types';
 import { DriverStatus } from '../types';
 import { Toast } from './Widgets';
 import { useHelp, HelpTarget } from './Help';
+import { useAgentId } from './AgentContext';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -48,9 +49,24 @@ export const Layout: React.FC<LayoutProps> = ({
   const { isHelpMode, toggleHelpMode } = useHelp();
 
   return (
-    <div className="flex flex-col h-full bg-slate-50">
+    <div className="flex flex-col h-full bg-slate-50 relative">
+      {/* Agent Heartbeat - Hidden from users, visible to AI agent */}
+      <div 
+        id="agent-heartbeat" 
+        className="sr-only" 
+        data-state={user.currentStatus} 
+        aria-hidden="true"
+      >
+        [{user.currentStatus === DriverStatus.IDLE ? 'Ready' : 'Stable'}]
+      </div>
+
       {/* Global Toast */}
-      <Toast message={toastMessage} type={toastType} onClose={onToastClose} />
+      <Toast 
+        message={toastMessage} 
+        type={toastType} 
+        onClose={onToastClose} 
+        agentId="layout:toast"
+      />
 
       {/* Header with Safe Area Top - Height increased for touch targets */}
       <header className="flex-none bg-primary text-white shadow-md z-20 pt-safe">
@@ -61,6 +77,7 @@ export const Layout: React.FC<LayoutProps> = ({
              <button 
                onClick={onMenuClick}
                className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/10 active:bg-white/20 transition-colors"
+               data-agent-id={useAgentId("header:menu-button")}
              >
                <i className="fa-solid fa-bars text-xl"></i>
              </button>
@@ -100,6 +117,7 @@ export const Layout: React.FC<LayoutProps> = ({
               <button 
                 onClick={onEmergencyClick}
                 className="ml-2 bg-orange-600 hover:bg-orange-700 text-white px-3 h-10 rounded-lg font-bold text-sm shadow-lg shadow-orange-900/20 active:scale-95 transition-all flex items-center justify-center border-b-2 border-orange-800 min-w-[80px]"
+                data-agent-id={useAgentId("header:emergency-button")}
               >
                 <i className="fa-solid fa-triangle-exclamation mr-1.5"></i> トラブル
               </button>
@@ -123,6 +141,7 @@ export const Layout: React.FC<LayoutProps> = ({
                 label="ルート" 
                 active={currentView === 'route' || currentView === 'stop'} 
                 onClick={() => onNavigate('route')} 
+                agentId="nav:route"
               />
             </HelpTarget>
             <HelpTarget helpId="nav-fuel" wrapperClassName="w-full h-full flex-1">
@@ -131,6 +150,7 @@ export const Layout: React.FC<LayoutProps> = ({
                 label="給油" 
                 active={currentView === 'fuel'} 
                 onClick={() => onNavigate('fuel')} 
+                agentId="nav:fuel"
               />
             </HelpTarget>
             <HelpTarget helpId="nav-report" wrapperClassName="w-full h-full flex-1">
@@ -139,6 +159,7 @@ export const Layout: React.FC<LayoutProps> = ({
                 label="実績" 
                 active={currentView === 'report'} 
                 onClick={() => onNavigate('report')} 
+                agentId="nav:report"
               />
             </HelpTarget>
             <HelpTarget helpId="nav-end" wrapperClassName="w-full h-full flex-1">
@@ -147,6 +168,7 @@ export const Layout: React.FC<LayoutProps> = ({
                 label="終了" 
                 active={currentView === 'end'} 
                 onClick={() => onNavigate('end')} 
+                agentId="nav:end"
               />
             </HelpTarget>
           </div>
@@ -156,10 +178,11 @@ export const Layout: React.FC<LayoutProps> = ({
   );
 };
 
-const NavButton = ({ icon, label, active, onClick }: { icon: string, label: string, active: boolean, onClick: () => void }) => (
+const NavButton = ({ icon, label, active, onClick, agentId }: { icon: string, label: string, active: boolean, onClick: () => void, agentId: string }) => (
   <button 
     onClick={onClick}
     className={`flex flex-col items-center justify-center w-full h-full space-y-1 active:bg-slate-50 transition-colors touch-manipulation ${active ? 'text-primary' : 'text-slate-400'}`}
+    data-agent-id={useAgentId(agentId)}
   >
     <i className={`${icon} text-xl mb-0.5 ${active ? 'scale-110' : ''} transition-transform`}></i>
     <span className="text-[10px] font-bold">{label}</span>

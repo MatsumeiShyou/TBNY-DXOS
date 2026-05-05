@@ -29,6 +29,11 @@ function AppContent() {
   // ログイン済み（確定）または暫定ログイン（楽観的）の場合、ポータルを表示
   const isUserAuthenticated = authStatus === 'VERIFIED' || authStatus === 'OPTIMISTIC';
 
+  // [DEFENSIVE] プロファイルが未ロードかつ認証確定前ならスプラッシュ表示を維持
+  if (isUserAuthenticated && !currentUser && authStatus !== 'OPTIMISTIC') {
+    return <SplashScreen />;
+  }
+
   if (!isUserAuthenticated && !currentUser) {
     return <LoginGate />;
   }

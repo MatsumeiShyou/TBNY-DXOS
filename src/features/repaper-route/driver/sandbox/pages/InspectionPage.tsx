@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import type { InspectionItem } from '../types';
 import { Button, Card, Modal } from '../components/Widgets';
+import { useAgentId } from '../components/AgentContext';
 import { INITIAL_INSPECTION_ITEMS } from '../constants';
 
 interface Props {
@@ -36,6 +37,7 @@ export const InspectionPage: React.FC<Props> = ({ onComplete }) => {
       key={item.id} 
       onClick={() => toggleItem(item.id)}
       className={`flex items-center space-x-4 transition-all active:scale-[0.98] ${item.checked ? 'border-success bg-green-50' : ''}`}
+      agentId={`item-card:${item.id}`}
     >
       <div className={`w-8 h-8 shrink-0 rounded-full flex items-center justify-center border-2 ${item.checked ? 'bg-success border-success text-white' : 'border-slate-300 text-transparent'}`}>
         <i className="fa-solid fa-check text-sm"></i>
@@ -57,6 +59,7 @@ export const InspectionPage: React.FC<Props> = ({ onComplete }) => {
         <button 
           onClick={openBulkCheckConfirm}
           className="w-full bg-blue-50 text-blue-700 font-bold py-3 rounded-xl border border-blue-200 active:bg-blue-100 transition-colors flex items-center justify-center space-x-2 touch-manipulation"
+          data-agent-id={useAgentId("bulk-check-button")}
         >
           <i className="fa-solid fa-check-double"></i>
           <span>全ての項目を「異常なし」とする</span>
@@ -86,12 +89,13 @@ export const InspectionPage: React.FC<Props> = ({ onComplete }) => {
           disabled={!isAllChecked} 
           onClick={onComplete}
           className={!isAllChecked ? 'opacity-50 cursor-not-allowed bg-slate-400' : ''}
+          agentId="complete-button"
         >
           {isAllChecked ? '点検完了・業務開始' : '全ての項目を確認してください'}
         </Button>
       </div>
 
-      <Modal isOpen={isConfirmOpen} onClose={() => setConfirmOpen(false)} title="一括チェックの確認">
+      <Modal isOpen={isConfirmOpen} onClose={() => setConfirmOpen(false)} title="一括チェックの確認" agentId="bulk-confirm-modal">
         <div className="space-y-6">
           <div className="bg-yellow-50 p-4 rounded-xl border border-yellow-200 text-yellow-900 flex items-start">
              <i className="fa-solid fa-triangle-exclamation mt-1 mr-3 text-xl shrink-0"></i>
@@ -104,8 +108,8 @@ export const InspectionPage: React.FC<Props> = ({ onComplete }) => {
              </div>
           </div>
           <div className="flex space-x-3">
-            <Button variant="secondary" onClick={() => setConfirmOpen(false)}>キャンセル</Button>
-            <Button onClick={executeBulkCheck}>誓約してチェック</Button>
+            <Button variant="secondary" onClick={() => setConfirmOpen(false)} agentId="bulk-confirm-modal:cancel-button">キャンセル</Button>
+            <Button onClick={executeBulkCheck} agentId="bulk-confirm-modal:execute-button">誓約してチェック</Button>
           </div>
         </div>
       </Modal>

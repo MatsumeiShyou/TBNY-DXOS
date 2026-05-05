@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import type { Stop } from '../types';
 import { StopStatus } from '../types';
 import { Card, StatusBadge, Button } from '../components/Widgets';
+import { useAgentId } from '../components/AgentContext';
 import { HelpTarget } from '../components/Help';
 
 interface Props {
@@ -51,6 +52,7 @@ export const RouteListPage: React.FC<Props> = ({ stops, currentRouteName, onSele
           <div 
             onClick={onChangeCourse}
             className="flex-1 bg-slate-800 text-white p-4 rounded-xl shadow-lg flex justify-between items-center active:bg-slate-700 transition-colors touch-manipulation cursor-pointer min-h-[72px]"
+            data-agent-id={useAgentId("header:course-card")}
           >
             <div>
                 <div className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mb-0.5">現在の担当コース</div>
@@ -80,6 +82,7 @@ export const RouteListPage: React.FC<Props> = ({ stops, currentRouteName, onSele
              <button 
               onClick={() => setIsReordering(!isReordering)}
               className={`h-10 px-4 rounded-lg text-sm font-bold shadow-sm flex items-center transition-colors ${isReordering ? 'bg-primary text-white border-transparent' : 'bg-white border border-slate-200 text-slate-700 active:bg-slate-50'}`}
+              data-agent-id={useAgentId("header:reorder-button")}
             >
               <i className={`fa-solid ${isReordering ? 'fa-check' : 'fa-sort'} mr-2`}></i>
               {isReordering ? '完了' : '並び替え'}
@@ -128,6 +131,7 @@ export const RouteListPage: React.FC<Props> = ({ stops, currentRouteName, onSele
                       <Card 
                         className={`transition-all relative min-h-[110px] ${isNext ? 'border-l-4 border-l-primary ring-2 ring-blue-100' : 'opacity-90'} ${stop.status === StopStatus.COMPLETED ? 'bg-slate-50 opacity-60' : ''} ${isRequesting ? 'bg-slate-100 border-dashed border-2 border-slate-300' : ''}`}
                         onClick={() => !isReordering && !isRequesting && onSelectStop(stop.id)}
+                        agentId={`stop-card:${stop.id}`}
                       >
                         {isRequesting && (
                           <div className="absolute inset-0 bg-white/60 z-20 flex items-center justify-center rounded-xl backdrop-blur-[1px]">
@@ -158,6 +162,7 @@ export const RouteListPage: React.FC<Props> = ({ stops, currentRouteName, onSele
                               onTransferRequest(stop);
                             }}
                             className="absolute top-0 right-0 w-12 h-12 flex items-center justify-center rounded-bl-xl text-slate-400 hover:text-slate-700 active:bg-slate-100 active:text-primary transition-colors z-30"
+                            data-agent-id={useAgentId(`stop-card:${stop.id}:menu-button`)}
                           >
                             <i className="fa-solid fa-ellipsis-vertical text-xl"></i>
                           </button>
@@ -182,6 +187,7 @@ export const RouteListPage: React.FC<Props> = ({ stops, currentRouteName, onSele
                                 variant="primary" 
                                 className="py-2 text-sm h-10 min-h-[44px]"
                                 onClick={() => onSelectStop(stop.id)}
+                                agentId={`stop-card:${stop.id}:start-button`}
                             >
                                 <i className="fa-solid fa-arrow-right mr-2"></i> 詳細・作業開始
                             </Button>
@@ -196,6 +202,7 @@ export const RouteListPage: React.FC<Props> = ({ stops, currentRouteName, onSele
                           onClick={() => moveStop(index, 'up')}
                           disabled={index === 0}
                           className="w-12 h-12 bg-white border border-slate-200 rounded-full text-slate-600 shadow-sm flex items-center justify-center active:bg-slate-100 disabled:opacity-30 disabled:active:bg-white transition-all touch-manipulation"
+                          data-agent-id={useAgentId(`stop-card:${stop.id}:reorder-up`)}
                         >
                           <i className="fa-solid fa-arrow-up text-lg"></i>
                         </button>
@@ -203,6 +210,7 @@ export const RouteListPage: React.FC<Props> = ({ stops, currentRouteName, onSele
                           onClick={() => moveStop(index, 'down')}
                           disabled={index === stops.length - 1}
                           className="w-12 h-12 bg-white border border-slate-200 rounded-full text-slate-600 shadow-sm flex items-center justify-center active:bg-slate-100 disabled:opacity-30 disabled:active:bg-white transition-all touch-manipulation"
+                          data-agent-id={useAgentId(`stop-card:${stop.id}:reorder-down`)}
                         >
                           <i className="fa-solid fa-arrow-down text-lg"></i>
                         </button>
@@ -222,6 +230,7 @@ export const RouteListPage: React.FC<Props> = ({ stops, currentRouteName, onSele
              <button 
                onClick={onIntermediateUnload}
                className="bg-white text-slate-700 border border-slate-200 shadow-lg rounded-full px-5 py-3 font-bold flex items-center space-x-2 active:scale-95 transition-transform h-14"
+               data-agent-id={useAgentId("fab:intermediate-unload")}
              >
                <div className="bg-orange-100 text-orange-600 w-8 h-8 rounded-full flex items-center justify-center">
                   <i className="fa-solid fa-dolly"></i>

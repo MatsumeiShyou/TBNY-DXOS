@@ -1,26 +1,26 @@
 // @ts-nocheck
 import { useState, useEffect, useMemo, useRef } from 'react';
 import { useAuth } from '../AuthAdapterPort';
-import type { useBoardData } from './hooks/useBoardData';
-import type { useBoardDragDrop } from './hooks/useBoardDragDrop';
-import type { useBoardValidation } from './hooks/useBoardValidation';
-import type { useMasterData } from './hooks/useMasterData';
-import type { TIME_SLOTS } from '../board/logic/constants';
+import { useBoardData } from './hooks/useBoardData';
+import { useBoardDragDrop } from './hooks/useBoardDragDrop';
+import { useBoardValidation } from './hooks/useBoardValidation';
+import { useMasterData } from './hooks/useMasterData';
+import { TIME_SLOTS } from '../board/logic/constants';
 
 import { DriverHeader } from './components/DriverHeader';
-import type { BoardSkeleton } from './components/BoardSkeleton';
+import { BoardSkeleton } from './components/BoardSkeleton';
 import { TimeGrid } from './components/TimeGrid';
 import { JobLayer } from './components/JobLayer';
-import type { PendingJobSidebar } from './components/PendingJobSidebar';
+import { PendingJobSidebar } from './components/PendingJobSidebar';
 import type { BoardJob, BoardDriver } from '../types';
 
-import type { AuditTrailPanel } from './components/AuditTrailPanel';
+import { AuditTrailPanel } from './components/AuditTrailPanel';
 import HeaderEditModal from './components/HeaderEditModal';
-import type { SaveReasonModal } from './components/SaveReasonModal';
+import { SaveReasonModal } from './components/SaveReasonModal';
 import { AddJobModal } from './components/AddJobModal';
 import { BoardActionBar } from './components/BoardActionBar';
-import type { JobDetailPanel } from './components/JobDetailPanel';
-import type { getJSTNow, formatDateKey } from './utils/dateUtils';
+import { JobDetailPanel } from './components/JobDetailPanel';
+import { getJSTNow, formatDateKey } from './utils/dateUtils';
 import { AlertTriangle } from 'lucide-react';
 import { ExceptionChangeModal } from './components/ExceptionChangeModal';
 import { BoardTimeline } from './components/BoardTimeline';

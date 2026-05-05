@@ -37,6 +37,7 @@ export const HelpProvider: React.FC<{ children: React.ReactNode }> = ({ children
         isOpen={!!selectedHelpKey} 
         onClose={closeHelp} 
         title={selectedHelpKey ? (HELP_CONTENT[selectedHelpKey as string]?.title || '') : ''}
+        agentId="help:modal"
       >
         {selectedHelpKey && HELP_CONTENT[selectedHelpKey as string] && (
           <div className="space-y-6">

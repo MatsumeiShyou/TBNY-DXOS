@@ -13,7 +13,11 @@ export const AuthAdapter = {
    * 現在のセッションを取得
    */
   async getSession() {
-    return await supabase.auth.getSession();
+    console.log(`[TRACE] AuthAdapter.getSession: Starting...`);
+    const start = Date.now();
+    const result = await supabase.auth.getSession();
+    console.log(`[TRACE] AuthAdapter.getSession: Finished in ${Date.now() - start}ms`);
+    return result;
   },
 
   /**
@@ -39,12 +43,15 @@ export const AuthAdapter = {
    * @param authUid Supabase Auth の User.id
    */
   async getStaffByAuthUid(authUid: string): Promise<Staff | null> {
+    console.log(`[TRACE] AuthAdapter.getStaffByAuthUid: Starting for ${authUid}...`);
+    const start = Date.now();
     const { data, error } = await supabase
       .from('staffs')
       .select('*')
       .eq('auth_uid', authUid)
       .eq('is_active', true) // アクティブなスタッフのみ許可
       .single();
+    console.log(`[TRACE] AuthAdapter.getStaffByAuthUid: Finished in ${Date.now() - start}ms`);
 
     if (error) {
       if (error.code === 'PGRST116') {

@@ -1,7 +1,7 @@
 // @ts-nocheck
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { supabase } from '../../../../shared/lib/supabase/client';
-import { nativeSupabaseFetch } from '../../../lib/supabase/nativeFetch';
+import { nativeSupabaseFetch } from '../../lib/supabase/nativeFetch';
 import { useMasterData } from './useMasterData';
 import { useNotification } from '../../NotificationAdapterPort';
 import { isPastDayJST } from '../utils/dateUtils';

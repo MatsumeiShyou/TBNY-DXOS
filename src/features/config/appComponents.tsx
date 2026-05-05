@@ -1,28 +1,32 @@
 import { APPS_REGISTRY } from './appsRegistry';
 import React, { lazy, Suspense } from 'react';
+import { ErrorBoundary } from '../../shared/components/ErrorBoundary';
+
 // 各業務アプリの lazy インポート定義
 const RePaperRouteAppLazy = lazy(() => import('../repaper-route/RePaperRouteApp').then(m => ({ default: m.RePaperRouteApp })));
 const MasterDataManagerLazy = lazy(() => import('../components/MasterDataManager').then(m => ({ default: m.MasterDataManager })));
 const DriverOSAppLazy = lazy(() => import('../repaper-route/driver/DriverOSApp').then(m => ({ default: m.default })));
 
 /**
- * LazyWrapper - ホワイトアウト防止用の Suspense 境界
+ * LazyWrapper - ホワイトアウト防止用の Suspense + ErrorBoundary 境界
  */
-const LazyWrapper = ({ children }: { children: React.ReactNode }) => (
-  <Suspense fallback={
-    <div style={{ 
-      display: 'flex', 
-      alignItems: 'center', 
-      justifyContent: 'center', 
-      height: '100%', 
-      background: '#0b0d14',
-      color: '#3b82f6'
-    }}>
-      <div className="animate-pulse font-black text-xs tracking-widest">LOADING MODULE...</div>
-    </div>
-  }>
-    {children}
-  </Suspense>
+const LazyWrapper = ({ children, name }: { children: React.ReactNode, name: string }) => (
+  <ErrorBoundary name={name}>
+    <Suspense fallback={
+      <div style={{ 
+        display: 'flex', 
+        alignItems: 'center', 
+        justifyContent: 'center', 
+        height: '100%', 
+        background: '#0b0d14',
+        color: '#3b82f6'
+      }}>
+        <div className="animate-pulse font-black text-xs tracking-widest">LOADING {name.toUpperCase()}...</div>
+      </div>
+    }>
+      {children}
+    </Suspense>
+  </ErrorBoundary>
 );
 
 const labelStyle: React.CSSProperties = {
@@ -63,17 +67,17 @@ function placeholderStyle(_appId: string): React.CSSProperties {
  */
 export const APP_COMPONENTS: Record<string, React.ReactNode> = {
   'master-data': (
-    <LazyWrapper>
+    <LazyWrapper name="マスタ管理">
       <MasterDataManagerLazy />
     </LazyWrapper>
   ),
   'repaper-route-admin': (
-    <LazyWrapper>
+    <LazyWrapper name="配車パネル">
       <RePaperRouteAppLazy />
     </LazyWrapper>
   ),
   'repaper-route-driver': (
-    <LazyWrapper>
+    <LazyWrapper name="ドライバーOS">
       <DriverOSAppLazy />
     </LazyWrapper>
   ),

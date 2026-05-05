@@ -1,14 +1,20 @@
 
 import React, { useEffect } from 'react';
+import { useAgentId } from './AgentContext';
 
 // Primary Action Button
-export const Button: React.FC<React.ButtonHTMLAttributes<HTMLButtonElement> & { variant?: 'primary' | 'secondary' | 'outline' | 'danger' }> = ({ 
+export const Button: React.FC<React.ButtonHTMLAttributes<HTMLButtonElement> & { 
+  variant?: 'primary' | 'secondary' | 'outline' | 'danger';
+  agentId: string; 
+}> = ({ 
   className = '', 
   variant = 'primary', 
   children, 
   disabled,
+  agentId,
   ...props 
 }) => {
+  const fullAgentId = useAgentId(agentId);
   const baseStyles = "w-full py-4 px-6 rounded-xl font-bold text-lg transition-all active:scale-[0.98] shadow-sm flex items-center justify-center touch-manipulation min-h-[56px]";
   const variants = {
     primary: "bg-primary text-white hover:bg-blue-800 shadow-blue-900/10",
@@ -23,6 +29,7 @@ export const Button: React.FC<React.ButtonHTMLAttributes<HTMLButtonElement> & { 
     <button 
       className={`${baseStyles} ${variants[variant]} ${disabledStyles} ${className}`} 
       disabled={disabled}
+      data-agent-id={fullAgentId}
       {...props}
     >
       {children}
@@ -31,11 +38,23 @@ export const Button: React.FC<React.ButtonHTMLAttributes<HTMLButtonElement> & { 
 };
 
 // Card Container
-export const Card: React.FC<{ children: React.ReactNode, className?: string, onClick?: () => void }> = ({ children, className = '', onClick }) => (
-  <div onClick={onClick} className={`bg-white rounded-xl shadow-sm border border-slate-200 p-4 ${className}`}>
-    {children}
-  </div>
-);
+export const Card: React.FC<{ 
+  children: React.ReactNode; 
+  className?: string; 
+  onClick?: () => void;
+  agentId: string;
+}> = ({ children, className = '', onClick, agentId }) => {
+  const fullAgentId = useAgentId(agentId);
+  return (
+    <div 
+      onClick={onClick} 
+      className={`bg-white rounded-xl shadow-sm border border-slate-200 p-4 ${className}`}
+      data-agent-id={fullAgentId}
+    >
+      {children}
+    </div>
+  );
+};
 
 // Status Badge - Increased contrast for outdoor visibility
 export const StatusBadge: React.FC<{ status: string }> = ({ status }) => {
@@ -69,10 +88,20 @@ export const StatusBadge: React.FC<{ status: string }> = ({ status }) => {
 };
 
 // Modal Overlay - Improved close button hit area (44px rule)
-export const Modal: React.FC<{ isOpen: boolean; onClose: () => void; title: string; children: React.ReactNode }> = ({ isOpen, onClose, title, children }) => {
+export const Modal: React.FC<{ 
+  isOpen: boolean; 
+  onClose: () => void; 
+  title: string; 
+  children: React.ReactNode;
+  agentId: string;
+}> = ({ isOpen, onClose, title, children, agentId }) => {
+  const fullAgentId = useAgentId(agentId);
   if (!isOpen) return null;
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-sm animate-fade-in sm:p-4">
+    <div 
+      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-sm animate-fade-in sm:p-4"
+      data-agent-id={fullAgentId}
+    >
       <div className="bg-white w-full sm:max-w-md rounded-t-2xl sm:rounded-2xl shadow-2xl overflow-hidden animate-slide-up flex flex-col max-h-[90vh] pb-safe">
         <div className="bg-primary p-4 flex justify-between items-center text-white shrink-0 relative">
           <h3 className="font-bold text-lg pr-12">{title}</h3>
@@ -80,6 +109,7 @@ export const Modal: React.FC<{ isOpen: boolean; onClose: () => void; title: stri
             onClick={onClose} 
             className="absolute right-0 top-0 bottom-0 w-16 flex items-center justify-center hover:bg-white/10 active:bg-white/20 transition-colors"
             aria-label="閉じる"
+            data-agent-id={`${fullAgentId}:close`}
           >
             <i className="fa-solid fa-xmark text-2xl"></i>
           </button>
@@ -93,7 +123,13 @@ export const Modal: React.FC<{ isOpen: boolean; onClose: () => void; title: stri
 };
 
 // Toast Notification
-export const Toast: React.FC<{ message: string | null; type?: 'success' | 'error' | 'info'; onClose: () => void }> = ({ message, type = 'success', onClose }) => {
+export const Toast: React.FC<{ 
+  message: string | null; 
+  type?: 'success' | 'error' | 'info'; 
+  onClose: () => void;
+  agentId: string;
+}> = ({ message, type = 'success', onClose, agentId }) => {
+  const fullAgentId = useAgentId(agentId);
   useEffect(() => {
     if (message) {
       const timer = setTimeout(onClose, 4000); // Auto close after 4s
@@ -116,7 +152,10 @@ export const Toast: React.FC<{ message: string | null; type?: 'success' | 'error
   };
 
   return (
-    <div className="fixed top-4 left-4 right-4 z-[60] animate-slide-up">
+    <div 
+      className="fixed top-4 left-4 right-4 z-[60] animate-slide-up"
+      data-agent-id={fullAgentId}
+    >
       <div className={`${bgColors[type]} px-4 py-3 rounded-xl shadow-xl flex items-center justify-between min-h-[56px]`}>
          <div className="flex items-center space-x-3">
             <i className={`${icons[type]} text-lg`}></i>
