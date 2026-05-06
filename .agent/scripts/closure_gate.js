@@ -2,7 +2,7 @@
 
 import { execSync, spawn } from 'child_process';
 import path, { join } from 'path';
-import { existsSync, readdirSync, statSync, readFileSync, writeFileSync, mkdirSync } from 'fs';
+import { existsSync, readdirSync, statSync, readFileSync, writeFileSync, mkdirSync, copyFileSync, appendFileSync } from 'fs';
 import crypto from 'crypto';
 import { incrementRetryCount, resetRetryCount } from './session_manager.js';
 import { readJsonStrict } from './lib/gov_loader.js';
@@ -86,8 +86,10 @@ function verifyClosureStandard() {
     const walkthrough = join(process.cwd(), 'walkthrough.md');
     if (existsSync(walkthrough)) {
         const content = readFileSync(walkthrough, 'utf8');
-        if (!content.includes('成果') || !content.includes('検証') || !content.includes('[TASK_CLOSED]')) {
-            Log.error('WALKTHROUGH INVALID');
+        const hasLegacy = content.includes('成果') && content.includes('検証');
+        const hasSDR = content.includes('[State]') && content.includes('[Decision]') && content.includes('[Reason]');
+        if (!(hasLegacy || hasSDR) || !content.includes('[TASK_CLOSED]')) {
+            Log.error('WALKTHROUGH INVALID: Must contain either (成果, 検証) or SDR tags ([State], [Decision], [Reason]), and [TASK_CLOSED]');
             process.exit(1);
         }
     }
@@ -241,6 +243,60 @@ function saveSeal(code) {
     }, null, 2));
 }
 
+function vaultEvidence(evidenceCode) {
+    const draftPath = join(process.cwd(), '.agent', 'session', 'evidence_draft.md');
+    if (!existsSync(draftPath)) return;
+
+    const vaultEvidencesDir = join(process.cwd(), 'governance', 'vault', 'evidences');
+    const vaultMediaDir = join(process.cwd(), 'governance', 'vault', 'media');
+    
+    if (!existsSync(vaultEvidencesDir)) mkdirSync(vaultEvidencesDir, { recursive: true });
+    if (!existsSync(vaultMediaDir)) mkdirSync(vaultMediaDir, { recursive: true });
+
+    let raw = readFileSync(draftPath);
+    let content = raw.toString('utf8');
+    if (content.charCodeAt(0) === 0xFEFF) content = content.slice(1);
+    content = content.replace(/\r\n/g, '\n');
+    
+    const imgRegex = /!\[([^\]]*)\]\(([^)]+)\)/g;
+    content = content.replace(imgRegex, (match, caption, imgPath) => {
+        if (imgPath.startsWith('http')) return match;
+        try {
+            let srcPath = imgPath;
+            if (imgPath.startsWith('file:///')) {
+                srcPath = imgPath.replace('file:///', '');
+                if (srcPath.match(/^\/[a-zA-Z]:\//)) srcPath = srcPath.substring(1);
+            } else if (!path.isAbsolute(imgPath)) {
+                srcPath = path.resolve(process.cwd(), '.agent', 'session', imgPath);
+            }
+            srcPath = decodeURI(srcPath);
+            
+            if (existsSync(srcPath)) {
+                const ext = path.extname(srcPath);
+                const newFilename = `${evidenceCode}_${Date.now()}${ext}`;
+                const destPath = join(vaultMediaDir, newFilename);
+                copyFileSync(srcPath, destPath);
+                return `![${caption}](../media/${newFilename})`;
+            }
+        } catch (e) {
+            Log.warn(`Failed to vault image: ${imgPath} - ${e.message}`);
+        }
+        return match;
+    });
+
+    const destEvidencePath = join(vaultEvidencesDir, `${evidenceCode}.md`);
+    writeFileSync(destEvidencePath, content);
+    Log.info(`Evidence vaulted: ${evidenceCode}.md`);
+
+    const indexPath = join(process.cwd(), 'governance', 'vault', 'audit_index.jsonl');
+    const indexEntry = {
+        seal: evidenceCode,
+        timestamp: new Date().toISOString(),
+        file: `governance/vault/evidences/${evidenceCode}.md`
+    };
+    appendFileSync(indexPath, JSON.stringify(indexEntry) + '\n');
+}
+
 function clearSeal() {
     const sealPath = join(process.cwd(), '.agent', 'session', 'gate_success.json');
     if (existsSync(sealPath)) {
@@ -273,19 +329,39 @@ function main() {
 
     const evidenceCode = generateEvidenceCode();
     saveSeal(evidenceCode);
+    vaultEvidence(evidenceCode);
 
     // [MOD] Automatically update walkthrough.md with the latest SEAL
     const walkthroughPath = join(process.cwd(), 'walkthrough.md');
     if (existsSync(walkthroughPath)) {
-        let content = readFileSync(walkthroughPath, 'utf8');
-        const sealMarker = `[GATE-SEAL: ${evidenceCode}]`;
-        if (!content.includes(sealMarker)) {
-            // Remove old seals if any to keep it clean
-            content = content.replace(/\[GATE-SEAL: GSEAL-[\w-]+\]/g, '').trim();
-            content += `\n\n> [!IMPORTANT]\n> **${sealMarker}**\n`;
-            writeFileSync(walkthroughPath, content);
-            Log.info('walkthrough.md updated with latest SEAL.');
+        let wtContent = readFileSync(walkthroughPath, 'utf8');
+        const draftPath = join(process.cwd(), '.agent', 'session', 'evidence_draft.md');
+        let draftContent = '';
+        if (existsSync(draftPath)) {
+            let raw = readFileSync(draftPath);
+            draftContent = raw.toString('utf8');
+            if (draftContent.charCodeAt(0) === 0xFEFF) draftContent = draftContent.slice(1);
+            draftContent = draftContent.replace(/\r\n/g, '\n');
         }
+
+        // Remove old SEAL banners
+        wtContent = wtContent.replace(/\[GATE-SEAL: GSEAL-[\w-]+\]/g, '[ARCHIVED]').replace(/> \[!IMPORTANT\]\n> \*\*\*\*\n/g, '').trim();
+
+        const newSection = `## [${evidenceCode}] ${new Date().toISOString().split('T')[0]}\n\n${draftContent}\n\n`;
+        const parts = wtContent.split(/^## /m).filter(Boolean);
+        
+        let finalWt = '# [TASK_CLOSED]\n\n' + newSection;
+
+        // Keep up to 2 older sections (exclude preamble if any)
+        for (let i = 0; i < Math.min(2, parts.length); i++) {
+            if (!parts[i].startsWith('[TASK_CLOSED]')) {
+                finalWt += '## ' + parts[i] + '\n';
+            }
+        }
+        
+        finalWt += `\n> [!IMPORTANT]\n> **[GATE-SEAL: ${evidenceCode}]**\n`;
+        writeFileSync(walkthroughPath, finalWt.trim() + '\n');
+        Log.info('walkthrough.md rotated and updated with latest SEAL.');
     }
 
     if (REFLECT_FLAG) {

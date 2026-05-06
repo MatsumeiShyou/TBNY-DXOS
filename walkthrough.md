@@ -1,25 +1,8 @@
 # [TASK_CLOSED]
 
-## 成果: 配車ボードのUI復元と統治遵守 (2026-05-06)
-- **カラーマッピングの復旧**: `TBNY DXOS` の `tw-` プレフィックス強制ルールに合わせ、`theme.ts` の動的クラス指定にプレフィックスを付与。消失していたカードの色を復元。
-- **未割当案件リストの表示修正**: `BoardCanvas.tsx`（すべて）と `PendingJobSidebar.tsx`（全て）のフィルター文字列の不一致を解消し、初期状態で案件が表示されない問題を解決。
+## [GSEAL-LEGACY-MIGRATION] 2026-05-06
 
-## 修正履歴
-### 2026-05-06: UI表示不具合の解消
-- `TBNY DXOS` 統合環境における Tailwind プレフィックスの不整合を解消。
-- フィルター文字列の表記ゆれによるデータ表示バグを修正。
-
-### 2026-05-03: ポータル白紙画面問題の解消
-- **認証初期化の堅牢化**: `AuthContext.tsx` に 5s タイムアウトと例外捕捉を導入し、ハングアップを防止。
-- **SyntaxError 修正**: `BoardAction` 型のエクスポート/インポート不備を修正。
-
-## 検証
-- **物理的確認**: ブラウザ上で未割当案件 100 件の表示、および配置したカードに色が適用されていることを物理証跡（スクリーンショット）で確認済み。
-- **整合性チェック**: `npm run done` により、Sentinel ゲートの全項目通過を確認。
-
----
-> [!IMPORTANT]
-> ****
+> 過去の履歴は `governance/vault/evidences/GSEAL-LEGACY-MIGRATION.md` にアーカイブされました。
 
 > [!IMPORTANT]
-> **[GATE-SEAL: GSEAL-B3D3631-47ECDE17EDA3]**
+> **[GATE-SEAL: GSEAL-LEGACY-MIGRATION]**
