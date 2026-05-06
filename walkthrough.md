@@ -1,218 +1,25 @@
 # [TASK_CLOSED]
 
-## 成果: TBNY DXOS 統治進化と 77 資産の同期
-- **統治インフラ移植**: `RePaper Route` で確立された物理証跡プロトコル (PSP) および Sentinel ゲートを `TBNY DXOS` へ移植。
-- **憲法アップグレード**: `AGENTS.md` を Sanctuary Governance v7.0 へ更新。
-- **全域浄化**: 120ファイル以上の BOM 浄化およびハングル排除を執行。
-- **資産一括同期**: 滞留していた 14 件の変更に、統治スクリプト等の追加分を加えた **計 77 件の資産** を GitHub Mainbranch へプッシュ。
-- **物理ゲート自動化**: SEAL コードの自動転記およびバイパス緩和ロジックの実装。
+## 成果: 配車ボードのUI復元と統治遵守 (2026-05-06)
+- **カラーマッピングの復旧**: `TBNY DXOS` の `tw-` プレフィックス強制ルールに合わせ、`theme.ts` の動的クラス指定にプレフィックスを付与。消失していたカードの色を復元。
+- **未割当案件リストの表示修正**: `BoardCanvas.tsx`（すべて）と `PendingJobSidebar.tsx`（全て）のフィルター文字列の不一致を解消し、初期状態で案件が表示されない問題を解決。
 
-## 修正: ポータル白紙画面問題の解消 (2026-05-03)
+## 修正履歴
+### 2026-05-06: UI表示不具合の解消
+- `TBNY DXOS` 統合環境における Tailwind プレフィックスの不整合を解消。
+- フィルター文字列の表記ゆれによるデータ表示バグを修正。
+
+### 2026-05-03: ポータル白紙画面問題の解消
 - **認証初期化の堅牢化**: `AuthContext.tsx` に 5s タイムアウトと例外捕捉を導入し、ハングアップを防止。
-- **SyntaxError 修正**: `BoardAction` 型のエクスポート/インポート不備を修正し、Vite でのブートストラップ停止を解消。
-- **診断ログ注入**: `[STATE]`, `[DECISION]` 識別子による起動プロセスの可視化。
-
-## 検証 (今回の修正)
-- `http://localhost:5173/`: ログイン画面の正常描画を確認。
-- `npm run done`: 整合性チェックおよび GSEAL 再発行を確認。
+- **SyntaxError 修正**: `BoardAction` 型のエクスポート/インポート不備を修正。
 
 ## 検証
-- `npm run setup-governance`: 物理フックの配備成功。
-- `npm run done`: 100点満点の物理証跡（SEAL）発行を確認。
-- `git status`: ワークスペースの完全クリーン化を達成。
-
-## 反映
-- `git push origin main`: 全 77 資産をリモート正典へ同期完了。
+- **物理的確認**: ブラウザ上で未割当案件 100 件の表示、および配置したカードに色が適用されていることを物理証跡（スクリーンショット）で確認済み。
+- **整合性チェック**: `npm run done` により、Sentinel ゲートの全項目通過を確認。
 
 ---
 > [!IMPORTANT]
 > ****
 
 > [!IMPORTANT]
-> ****
-
-> [!IMPORTANT]
-> ****
-
-> [!IMPORTANT]
-> ****
-
-> [!IMPORTANT]
-> ****
-
-> [!IMPORTANT]
-> ****
-
-> [!IMPORTANT]
-> ****
-
-> [!IMPORTANT]
-> ****
-
-> [!IMPORTANT]
-> ****
-
-> [!IMPORTANT]
-> ****
-
-> [!IMPORTANT]
-> ****
-
-> [!IMPORTANT]
-> ****
-
-> [!IMPORTANT]
-> ****
-
-> [!IMPORTANT]
-> ****
-
-> [!IMPORTANT]
-> ****
-
-> [!IMPORTANT]
-> ****
-
-> [!IMPORTANT]
-> ****
-
-> [!IMPORTANT]
-> ****
-
-> [!IMPORTANT]
-> ****
-
-> [!IMPORTANT]
-> ****
-
-> [!IMPORTANT]
-> ****
-
-> [!IMPORTANT]
-> ****
-
-> [!IMPORTANT]
-> ****
-
-> [!IMPORTANT]
-> ****
-
-> [!IMPORTANT]
-> ****
-
-> [!IMPORTANT]
-> ****
-
-> [!IMPORTANT]
-> ****
-
-> [!IMPORTANT]
-> ****
-
-> [!IMPORTANT]
-> ****
-
-> [!IMPORTANT]
-> ****
-
-> [!IMPORTANT]
-> ****
-
-> [!IMPORTANT]
-> ****
-
-> [!IMPORTANT]
-> ****
-
-> [!IMPORTANT]
-> ****
-
-> [!IMPORTANT]
-> ****
-
-> [!IMPORTANT]
-> ****
-
-> [!IMPORTANT]
-> ****
-
-> [!IMPORTANT]
-> ****
-
-> [!IMPORTANT]
-> ****
-
-> [!IMPORTANT]
-> ****
-
-> [!IMPORTANT]
-> ****
-
-> [!IMPORTANT]
-> ****
-
-> [!IMPORTANT]
-> ****
-
-> [!IMPORTANT]
-> ****
-
-> [!IMPORTANT]
-> ****
-
-> [!IMPORTANT]
-> ****
-
-> [!IMPORTANT]
-> ****
-
-> [!IMPORTANT]
-> ****
-
-> [!IMPORTANT]
-> ****
-
-> [!IMPORTANT]
-> ****
-
-> [!IMPORTANT]
-> ****
-
-> [!IMPORTANT]
-> ****
-
-> [!IMPORTANT]
-> ****
-
-> [!IMPORTANT]
-> ****
-
-> [!IMPORTANT]
-> ****
-
-> [!IMPORTANT]
-> ****
-
-> [!IMPORTANT]
-> ****
-
-> [!IMPORTANT]
-> ****
-
-> [!IMPORTANT]
-> ****
-
-> [!IMPORTANT]
-> ****
-
-> [!IMPORTANT]
-> ****
-
-> [!IMPORTANT]
-> ****
-
-> [!IMPORTANT]
-> ****
-
-> [!IMPORTANT]
-> **[GATE-SEAL: GSEAL-95FF738-584BC13C06C3]**
+> **[GATE-SEAL: GSEAL-B3D3631-47ECDE17EDA3]**

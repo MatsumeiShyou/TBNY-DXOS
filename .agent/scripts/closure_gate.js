@@ -40,6 +40,33 @@ function verifyConstitutionalIntegrity() {
     Log.success('Integrity verified.');
 }
 
+// --------------------------------------------------------
+// 証跡ドラフト必須検証 (Critical)
+function validateEvidenceDraft() {
+    const draftPath = join(process.cwd(), '.agent', 'session', 'evidence_draft.md');
+    if (!existsSync(draftPath)) {
+        Log.error('証跡ドラフトが見つかりません (evidence_draft.md)。タスク完了には必須です。');
+        process.exit(1);
+    }
+    // 読み込み時にUTF‑8 BOM と CRLF を正規化
+    let raw = readFileSync(draftPath);
+    let content = raw.toString('utf8');
+    // BOM を除去
+    if (content.charCodeAt(0) === 0xFEFF) {
+        content = content.slice(1);
+    }
+    // CRLF → LF に統一
+    content = content.replace(/\r\n/g, '\n');
+    const required = ['[State]', '[Decision]', '[Reason]'];
+    const missing = required.filter(s => !content.includes(s));
+    if (missing.length) {
+        Log.error(`証跡ドラフトに必須セクションが不足しています: ${missing.join(', ')}`);
+        process.exit(1);
+    }
+    Log.info('証跡ドラフト検証成功。');
+}
+// --------------------------------------------------------
+
 function verifyLegislativeInterlock() {
     Log.info('Executing Legislative Interlock (Sentinel 5.1)...');
     const status = runCommand('git status --porcelain', true);
@@ -225,7 +252,9 @@ function main() {
     process.on('exit', () => { if (!completionFlag) incrementRetryCount('Aborted'); });
 
     const tier = getActiveTier();
-    Log.info(`Closure Started (Tier: ${tier})...`);
+    // ----- 追加：証跡ドラフトの必須検証 -----
+    validateEvidenceDraft();
+    // ------------------------------------------------
 
     try {
         verifySQLSync();
