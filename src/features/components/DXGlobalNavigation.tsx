@@ -1,4 +1,4 @@
-import { ArrowLeft, Hexagon } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import '../../shared/styles/navigation.css';
 
 interface DXGlobalNavigationProps {
@@ -22,7 +22,6 @@ export const DXGlobalNavigation = ({ currentAppLabel, onBackToPortal }: DXGlobal
         aria-label="DXOSポータルへ戻る"
       >
         <ArrowLeft size={16} strokeWidth={1.75} />
-        <Hexagon size={14} strokeWidth={1.75} />
         <span>DXOSへ戻る</span>
       </button>
 

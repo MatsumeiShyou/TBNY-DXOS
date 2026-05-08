@@ -7,7 +7,6 @@ import {
   BarChart3,
   ShieldAlert,
   LogOut,
-  Hexagon,
   type LucideIcon,
 } from 'lucide-react';
 import { useAuth } from '../features/hooks/useAuth';
@@ -119,9 +118,6 @@ export const DXOSPortal = ({ onAppSelect }: DXOSPortalProps) => {
     return (
       <div className="dxos-portal" style={{ justifyContent: 'center' }}>
         <div className="dxos-portal__header">
-          <div className="dxos-portal__logo-mark">
-            <Hexagon size={28} color="#fff" />
-          </div>
           <p className="dxos-portal__subtitle">読み込み中...</p>
         </div>
       </div>
@@ -132,9 +128,6 @@ export const DXOSPortal = ({ onAppSelect }: DXOSPortalProps) => {
     <div className="dxos-portal">
       {/* ヘッダー: OSロゴとタイトル */}
       <header className="dxos-portal__header">
-        <div className="dxos-portal__logo-mark">
-          <Hexagon size={28} color="#fff" />
-        </div>
         <h1 className="dxos-portal__title">TBNY DXOS</h1>
         <p className="dxos-portal__subtitle">坪野谷紙業 厚木事業所 業務基盤OS</p>
       </header>
