@@ -14,7 +14,7 @@ import { DashboardView } from './components/DashboardView';
  */
 export const RePaperRouteApp = () => {
   const { currentUser, isLoading } = useAuth();
-  const [activeView, setActiveView] = useState('dashboard');
+  const [activeView, setActiveView] = useState('board');
 
   if (isLoading || !currentUser) {
     return <div className="tw-p-8 tw-text-slate-400">Loading Module Profile...</div>;
