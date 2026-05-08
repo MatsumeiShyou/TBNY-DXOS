@@ -115,10 +115,56 @@ export const masterSchemas: Record<string, MasterSchema> = {
                 label: '計量許可', 
                 type: 'select', 
                 options: ['true', 'false'], 
-                defaultValue: 'false',
-                transformIn: (v: any) => String(v === true),
-                transformOut: (v: any) => v === 'true'
+                defaultValue: 'false'
             },
+        ]
+    },
+    drivers: {
+        viewName: 'drivers',
+        rpcTableName: 'drivers',
+        title: '運転手マスタ',
+        description: '配送を担当する運転手の情報を管理します。',
+        searchFields: ['driver_name'],
+        initialSort: { column: 'driver_name', ascending: true },
+        columns: [
+            { key: 'driver_name', label: '氏名', className: 'font-bold' },
+            { key: 'vehicle_number', label: '担当車両' }
+        ],
+        fields: [
+            { name: 'driver_name', label: '氏名', type: 'text', required: true },
+            { name: 'vehicle_number', label: '担当車両', type: 'text' }
+        ]
+    },
+    vehicles: {
+        viewName: 'master_vehicles',
+        rpcTableName: 'master_vehicles',
+        title: '車両マスタ',
+        description: '使用する車両の情報を管理します。',
+        searchFields: ['number', 'callsign'],
+        initialSort: { column: 'number', ascending: true },
+        columns: [
+            { key: 'number', label: '車両番号', className: 'font-bold' },
+            { key: 'callsign', label: 'コールサイン' }
+        ],
+        fields: [
+            { name: 'number', label: '車両番号', type: 'text', required: true },
+            { name: 'callsign', label: 'コールサイン', type: 'text' }
+        ]
+    },
+    items: {
+        viewName: 'master_items',
+        rpcTableName: 'master_items',
+        title: '品目マスタ',
+        description: '回収する品目の情報を管理します。',
+        searchFields: ['name'],
+        initialSort: { column: 'name', ascending: true },
+        columns: [
+            { key: 'name', label: '品目名', className: 'font-bold' },
+            { key: 'unit', label: '単位' }
+        ],
+        fields: [
+            { name: 'name', label: '品目名', type: 'text', required: true },
+            { name: 'unit', label: '単位', type: 'text', required: true }
         ]
     }
 };

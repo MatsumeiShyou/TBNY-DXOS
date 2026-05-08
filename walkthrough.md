@@ -1,6 +1,6 @@
 # [TASK_CLOSED]
 
-## [GSEAL-AAD3A42-FE7FB977B377] 2026-05-08
+## [GSEAL-14AF527-83C82C913DCA] 2026-05-08
 
 [State]
 証跡ドラフトの検証を実行中。UTF-8 正規化済み。
@@ -15,7 +15,7 @@ DEG プロトコルに従い、タスク完了前に必須証跡が必要であ�
 ## # [TASK_CLOSED]
 
 
-## [GSEAL-CA0BCC6-2FE178EA4240] 2026-05-08
+## [GSEAL-AAD3A42-FE7FB977B377] 2026-05-08
 
 [State]
 証跡ドラフトの検証を実行中。UTF-8 正規化済み。
@@ -30,4 +30,4 @@ DEG プロトコルに従い、タスク完了前に必須証跡が必要であ�
 
 
 > [!IMPORTANT]
-> **[GATE-SEAL: GSEAL-AAD3A42-FE7FB977B377]**
+> **[GATE-SEAL: GSEAL-14AF527-83C82C913DCA]**

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Database, Users, CreditCard, ShoppingCart, MapPin } from 'lucide-react';
+import { Database, Users, CreditCard, ShoppingCart, MapPin, Truck, Box } from 'lucide-react';
 import { MasterDataLayout } from './MasterDataLayout';
 import { masterSchemas } from '../config/masterSchema';
 
@@ -12,6 +12,9 @@ export function MasterDataManager() {
   const getIcon = (key: string) => {
     switch(key) {
       case 'staffs': return <Users size={18} />;
+      case 'drivers': return <Users size={18} />;
+      case 'vehicles': return <Truck size={18} />;
+      case 'items': return <Box size={18} />;
       case 'payers': return <CreditCard size={18} />;
       case 'suppliers': return <ShoppingCart size={18} />;
       case 'locations': return <MapPin size={18} />;

@@ -42,12 +42,23 @@ export default function useMasterCRUD({
 
     // TASK-003: SWR Fetcher & Hook
     const fetcher = useCallback(async () => {
-        let query = supabase.from(viewName).select('*').eq('is_active', true);
-        if (initialSort) query = query.order(initialSort.column, { ascending: initialSort.ascending });
+        const targetTable = viewName || rpcTableName;
+        if (!targetTable) throw new Error("Table name is not defined in schema");
+
+        // [Fix] 一律で is_active=true を要求せず、まずは全件取得を試みる（RLSにより適切なデータのみが返る）
+        let query = supabase.from(targetTable).select('*');
+        
+        if (initialSort) {
+            query = query.order(initialSort.column, { ascending: initialSort.ascending });
+        }
+        
         const { data, error } = await query;
-        if (error) throw error;
+        if (error) {
+            console.error(`Supabase Fetch Error [${targetTable}]:`, error);
+            throw error;
+        }
         return data || [];
-    }, [viewName, initialSort]);
+    }, [viewName, rpcTableName, initialSort]);
 
     const { data: rawData, error: fetchError, isLoading, mutate: refresh } = useSWR(
         currentUser ? `master/${viewName}` : null,
