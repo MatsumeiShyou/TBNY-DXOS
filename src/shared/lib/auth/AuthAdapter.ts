@@ -24,11 +24,26 @@ export const AuthAdapter = {
    * localStorage に認証トークンが存在するかを同期的に確認する
    */
   hasCachedSession(): boolean {
-    if (typeof window === 'undefined') return false;
-    // sb-[project-id]-auth-token 形式のキーを探す
-    return Object.keys(localStorage).some(key => 
+    return !!this.getCachedUserId();
+  },
+
+  /**
+   * localStorage の Supabase トークンから User ID を同期的に抽出する
+   */
+  getCachedUserId(): string | null {
+    if (typeof window === 'undefined') return null;
+    const authKey = Object.keys(localStorage).find(key => 
       key.startsWith('sb-') && key.endsWith('-auth-token')
     );
+    if (!authKey) return null;
+    
+    try {
+      const authData = JSON.parse(localStorage.getItem(authKey) || '{}');
+      return authData?.user?.id || null;
+    } catch (e) {
+      console.error('[AuthAdapter] Failed to parse auth token:', e);
+      return null;
+    }
   },
 
   /**

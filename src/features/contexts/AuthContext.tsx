@@ -47,9 +47,26 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                 );
 
                 const verifyPromise = (async () => {
-                    const { data: { session } } = await AuthAdapter.getSession();
+                    const cachedUid = AuthAdapter.getCachedUserId();
+                    
+                    // [OPTIMIZATION] 並列実行: セッション確認と (あれば) プロフィール取得
+                    const [sessionResult, preFetchedStaff] = await Promise.all([
+                        AuthAdapter.getSession(),
+                        cachedUid ? verifyProfile(cachedUid) : Promise.resolve(null)
+                    ]);
+
+                    const { data: { session } } = sessionResult;
                     const user = session?.user ?? null;
-                    if (user) return { user, staff: await verifyProfile(user.id) };
+
+                    if (user) {
+                        // セッション上の ID とキャッシュ ID が一致すれば事前取得分を使い、
+                        // 不一致（別人または初回）なら改めて取得する
+                        const staff = (cachedUid === user.id && preFetchedStaff) 
+                            ? preFetchedStaff 
+                            : await verifyProfile(user.id);
+                        
+                        return { user, staff };
+                    }
                     return null;
                 })();
 

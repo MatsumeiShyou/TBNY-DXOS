@@ -166,7 +166,7 @@ export const DXOSPortal = ({ onAppSelect }: DXOSPortalProps) => {
       )}
 
       {/* アプリタイルグリッド */}
-      {authStatus === 'OPTIMISTIC' ? (
+      {(authStatus === 'OPTIMISTIC' && authorizedTiles.length === 0) ? (
         <div className="dxos-portal__grid">
           {[1, 2, 3, 4, 5, 6].map((i) => (
             <SkeletonTile key={i} />
