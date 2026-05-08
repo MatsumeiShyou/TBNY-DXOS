@@ -16,3 +16,13 @@
 
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+@layer base {
+  button {
+    border: 1px solid #e2e8f0;
+    transition: all 0.2s ease;
+  }
+  .dark button {
+    border-color: #334155;
+  }
+}

@@ -143,7 +143,7 @@ export const AuditLogView = () => {
                         </div>
                         <button 
                             onClick={fetchLogs}
-                            className="tw-p-2 tw-bg-slate-100 tw-dark:bg-slate-800 tw-rounded-xl tw-text-slate-600 tw-hover:bg-slate-200 tw-transition-all"
+                            className="tw-p-2 tw-bg-slate-100 tw-dark:bg-slate-800 tw-border tw-border-slate-200 tw-dark:border-slate-700 tw-rounded-xl tw-text-slate-600 tw-hover:bg-slate-200 tw-transition-all"
                             title="リフレッシュ"
                         >
                             <Filter size={20} />
