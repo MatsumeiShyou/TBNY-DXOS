@@ -1,31 +1,42 @@
-import pg from 'pg';
+import { createClient } from '@supabase/supabase-js';
 
-const connectionString = 'postgresql://postgres.mjaoolcjjlxwstlpdgrg:tDwqo3iozPe12W4Q@aws-0-ap-northeast-1.pooler.supabase.com:6543/postgres?pgbouncer=true';
+const supabaseUrl = 'https://mjaoolcjjlxwstlpdgrg.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1qYW9vbGNqamx4d3N0bHBkZ3JnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk2NTk0MDQsImV4cCI6MjA4NTIzNTQwNH0.Veyu2pcnPJHK6g3wj1JsNMskCh0sxdB_JWEi0lsWoQ0';
 
-async function checkUsers() {
-    const pool = new pg.Pool({ connectionString });
+const supabase = createClient(supabaseUrl, supabaseKey);
+
+async function checkItems() {
+    console.log('--- Checking master_items ---');
     try {
-        console.log('[STATE] Connecting to Supabase Remote DB...');
-        const resUsers = await pool.query('SELECT id, email, encrypted_password FROM auth.users');
-        console.log('[STATE] auth.users found:', resUsers.rows.length);
-        resUsers.rows.forEach(user => {
-            console.log(`- Email: ${user.email}, ID: ${user.id}`);
-        });
+        const { data, error, count } = await supabase
+            .from('master_items')
+            .select('*', { count: 'exact' });
 
-        const resStaffs = await pool.query('SELECT id, name, role, auth_uid FROM staffs');
-        console.log('[STATE] public.staffs found:', resStaffs.rows.length);
-        resStaffs.rows.forEach(staff => {
-            console.log(`- Name: ${staff.name}, Role: ${staff.role}, AuthUID: ${staff.auth_uid}`);
-        });
-
-    } catch (err) {
-        console.error('[ERROR] DB Query failed:', err.message);
-        if (err.message.includes('ENOTFOUND')) {
-            console.log('[DECISION] Host not found. Checking if pgbouncer=true is causing issues or region is different.');
+        if (error) {
+            console.error('Error fetching master_items:', error);
+        } else {
+            console.log(`Count: ${count}`);
+            console.log('Sample Data:', data?.slice(0, 2));
         }
-    } finally {
-        await pool.end();
+    } catch (e) {
+        console.error('Unexpected error checkItems:', e);
+    }
+
+    console.log('\n--- Checking master_collection_points ---');
+    try {
+        const { data: points, error: pError, count: pCount } = await supabase
+            .from('master_collection_points')
+            .select('*', { count: 'exact' });
+
+        if (pError) {
+            console.error('Error fetching master_collection_points:', pError);
+        } else {
+            console.log(`Count: ${pCount}`);
+            console.log('Sample Data:', points?.slice(0, 2));
+        }
+    } catch (e) {
+        console.error('Unexpected error checkPoints:', e);
     }
 }
 
-checkUsers();
+checkItems();

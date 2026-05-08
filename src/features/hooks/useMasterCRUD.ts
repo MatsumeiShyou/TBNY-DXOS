@@ -61,7 +61,7 @@ export default function useMasterCRUD({
     }, [viewName, rpcTableName, initialSort]);
 
     const { data: rawData, error: fetchError, isLoading, mutate: refresh } = useSWR(
-        currentUser ? `master/${viewName}` : null,
+        currentUser ? `master/${viewName || rpcTableName}` : null,
         fetcher,
         {
             revalidateOnFocus: false,

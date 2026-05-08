@@ -41,6 +41,7 @@ export const MASTER_SCHEMAS: Record<string, MasterSchema> = {
     drivers: {
         title: '運転手マスタ',
         description: '配送を担当する運転手の情報を管理します。',
+        viewName: 'drivers',
         rpcTableName: 'drivers',
         primaryKey: 'id',
         searchFields: ['driver_name', 'furigana'],
@@ -61,6 +62,7 @@ export const MASTER_SCHEMAS: Record<string, MasterSchema> = {
     vehicles: {
         title: '車両マスタ',
         description: '使用する車両の情報を管理します。',
+        viewName: 'master_vehicles',
         rpcTableName: 'master_vehicles',
         primaryKey: 'id',
         searchFields: ['number', 'callsign'],
@@ -79,6 +81,7 @@ export const MASTER_SCHEMAS: Record<string, MasterSchema> = {
     items: {
         title: '品目マスタ',
         description: '回収する品目の情報を管理します。',
+        viewName: 'master_items',
         rpcTableName: 'master_items',
         primaryKey: 'id',
         searchFields: ['name'],
@@ -97,6 +100,7 @@ export const MASTER_SCHEMAS: Record<string, MasterSchema> = {
     points: {
         title: '回収地点マスタ',
         description: '定期回収を行う地点の情報を管理します。',
+        viewName: 'master_collection_points',
         rpcTableName: 'master_collection_points',
         primaryKey: 'location_id',
         searchFields: ['display_name', 'name'],
