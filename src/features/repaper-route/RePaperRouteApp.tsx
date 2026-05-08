@@ -8,6 +8,7 @@ import { MasterDataLayout } from './components/MasterDataLayout';
 import { AuditLogView } from './components/AuditLogView';
 import { DeviceSettings } from './settings/DeviceSettings';
 import { DashboardView } from './components/DashboardView';
+import { MasterDataProvider } from './MasterDataAdapterPort';
 
 /**
  * RePaper Route 統合アプリケーション
@@ -52,8 +53,10 @@ export const RePaperRouteApp = () => {
   };
 
   return (
-    <AdminLayout activeView={activeView} onViewChange={setActiveView}>
-      {renderView()}
-    </AdminLayout>
+    <MasterDataProvider>
+      <AdminLayout activeView={activeView} onViewChange={setActiveView}>
+        {renderView()}
+      </AdminLayout>
+    </MasterDataProvider>
   );
 };

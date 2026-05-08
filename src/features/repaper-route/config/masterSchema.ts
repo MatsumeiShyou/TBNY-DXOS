@@ -102,7 +102,7 @@ export const MASTER_SCHEMAS: Record<string, MasterSchema> = {
         description: '定期回収を行う地点の情報を管理します。',
         viewName: 'master_collection_points',
         rpcTableName: 'master_collection_points',
-        primaryKey: 'location_id',
+        primaryKey: 'id',
         searchFields: ['display_name', 'name'],
         columns: [
             { key: 'display_name', label: '表示名', type: 'text', sortable: true },
