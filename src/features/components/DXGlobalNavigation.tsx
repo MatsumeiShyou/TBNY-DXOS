@@ -21,8 +21,8 @@ export const DXGlobalNavigation = ({ currentAppLabel, onBackToPortal }: DXGlobal
         type="button"
         aria-label="DXOSポータルへ戻る"
       >
-        <ArrowLeft size={16} />
-        <Hexagon size={14} />
+        <ArrowLeft size={16} strokeWidth={1.75} />
+        <Hexagon size={14} strokeWidth={1.75} />
         <span>DXOSへ戻る</span>
       </button>
 

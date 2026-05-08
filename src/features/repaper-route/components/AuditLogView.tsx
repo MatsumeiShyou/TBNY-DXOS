@@ -132,7 +132,7 @@ export const AuditLogView = () => {
 
                     <div className="tw-flex tw-items-center tw-gap-3">
                         <div className="tw-relative">
-                            <Search className="tw-absolute tw-left-3 tw-top-1/2 tw--translate-y-1/2 tw-text-slate-400" size={18} />
+                            <Search className="tw-absolute tw-left-3 tw-top-1/2 tw--translate-y-1/2 tw-text-slate-400" size={18} strokeWidth={1.75} />
                             <input
                                 type="text"
                                 placeholder="対象、操作、理由、担当者で検索..."
@@ -146,7 +146,7 @@ export const AuditLogView = () => {
                             className="tw-p-2 tw-bg-slate-100 tw-dark:bg-slate-800 tw-border tw-border-slate-200 tw-dark:border-slate-700 tw-rounded-xl tw-text-slate-600 tw-hover:bg-slate-200 tw-transition-all"
                             title="リフレッシュ"
                         >
-                            <Filter size={20} />
+                            <Filter size={20} strokeWidth={1.75} />
                         </button>
                     </div>
                 </div>
@@ -191,7 +191,7 @@ export const AuditLogView = () => {
                                         <td className="tw-px-6 tw-py-4">
                                             <div className="tw-flex tw-items-center tw-gap-2">
                                                 <div className="tw-w-6 tw-h-6 tw-rounded-lg tw-bg-slate-200 tw-dark:bg-slate-800 tw-flex tw-items-center tw-justify-center tw-text-[10px] tw-font-black tw-text-slate-500">
-                                                    <User size={12} />
+                                                    <User size={12} strokeWidth={1.75} />
                                                 </div>
                                                 <span className="tw-text-xs tw-font-bold tw-text-slate-600 tw-dark:text-slate-300">
                                                     {log.actor?.name || '不明'}
