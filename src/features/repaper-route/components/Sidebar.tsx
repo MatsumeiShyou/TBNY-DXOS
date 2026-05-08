@@ -52,16 +52,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeView, onViewChange }) =>
                 className="tw-h-20 tw-flex tw-items-center tw-px-6 tw-border-b tw-border-slate-800 tw-bg-slate-950/50 tw-cursor-pointer tw-hover:bg-slate-900 tw-transition-colors"
                 onClick={() => onViewChange('board')}
             >
-                <div className="tw-mr-3">
-                    <img
-                        src="/logo.png"
-                        alt="Logo"
-                        className="tw-h-8 tw-w-auto tw-invert tw-opacity-80"
-                        onError={(e) => {
-                            (e.target as HTMLImageElement).style.display = 'none';
-                        }}
-                    />
-                </div>
                 <div>
                     <h1 className="tw-text-2xl tw-font-black tw-tracking-tighter tw-text-white tw-leading-none">
                         <span className="tw-text-emerald-600">R</span>epaper <span className="tw-text-emerald-600">R</span>oute
