@@ -149,10 +149,10 @@ export default function DriverApp() {
 
   if (bridge.isLoading || !user) {
     return (
-      <div className="h-screen flex items-center justify-center bg-slate-900 text-white">
-        <div className="text-center animate-pulse">
-          <i className="fa-solid fa-spinner fa-spin text-4xl mb-4"></i>
-          <p className="font-bold">真実を読み込み中...</p>
+      <div className="tw-h-screen tw-flex tw-items-center tw-justify-center tw-bg-slate-900 tw-text-white">
+        <div className="tw-text-center tw-animate-pulse">
+          <i className="fa-solid fa-spinner fa-spin tw-text-4xl tw-mb-4"></i>
+          <p className="tw-font-bold">真実を読み込み中...</p>
         </div>
       </div>
     );

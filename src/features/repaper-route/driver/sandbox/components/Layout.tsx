@@ -49,11 +49,11 @@ export const Layout: React.FC<LayoutProps> = ({
   const { isHelpMode, toggleHelpMode } = useHelp();
 
   return (
-    <div className="flex flex-col h-full bg-slate-50 relative">
+    <div className="tw-flex tw-flex-col tw-h-full tw-bg-slate-50 tw-relative">
       {/* Agent Heartbeat - Hidden from users, visible to AI agent */}
       <div 
         id="agent-heartbeat" 
-        className="sr-only" 
+        className="tw-sr-only" 
         data-state={user.currentStatus} 
         aria-hidden="true"
       >
@@ -69,46 +69,46 @@ export const Layout: React.FC<LayoutProps> = ({
       />
 
       {/* Header with Safe Area Top - Height increased for touch targets */}
-      <header className="flex-none bg-primary text-white shadow-md z-20 pt-safe">
-        <div className="flex justify-between items-center px-3 h-[60px]">
+      <header className="tw-flex-none tw-bg-primary tw-text-white tw-shadow-md tw-z-20 tw-pt-safe">
+        <div className="tw-flex tw-justify-between tw-items-center tw-px-3 tw-h-[60px]">
           
           {/* Left: Menu Button & Title Group */}
-          <div className="flex items-center space-x-3">
+          <div className="tw-flex tw-items-center tw-space-x-3">
              <button 
                onClick={onMenuClick}
-               className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/10 active:bg-white/20 transition-colors"
+               className="tw-w-10 tw-h-10 tw-flex tw-items-center tw-justify-center tw-rounded-full tw-hover:bg-white/10 tw-active:bg-white/20 tw-transition-colors"
                data-agent-id={useAgentId("header:menu-button")}
              >
-               <i className="fa-solid fa-bars text-xl"></i>
+               <i className="fa-solid fa-bars tw-text-xl"></i>
              </button>
              
-             <div className="flex flex-col justify-center">
-               <h1 className="text-lg font-bold leading-tight">{title}</h1>
+             <div className="tw-flex tw-flex-col tw-justify-center">
+               <h1 className="tw-text-lg tw-font-bold tw-leading-tight">{title}</h1>
                <HelpTarget helpId="vehicle-selector">
                  <button 
                    onClick={onVehicleClick}
-                   className="flex items-center space-x-1.5 text-xs text-slate-300 opacity-90 hover:opacity-100 active:opacity-70 transition-opacity text-left"
+                   className="tw-flex tw-items-center tw-space-x-1.5 tw-text-xs tw-text-slate-300 tw-opacity-90 tw-hover:opacity-100 tw-active:opacity-70 tw-transition-opacity tw-text-left"
                  >
                    <span>{user.name} | {user.vehicleName}</span>
-                   {onVehicleClick && <i className="fa-solid fa-caret-down text-[10px]"></i>}
+                   {onVehicleClick && <i className="fa-solid fa-caret-down tw-text-[10px]"></i>}
                  </button>
                </HelpTarget>
              </div>
           </div>
 
           {/* Right: Actions */}
-          <div className="flex items-center space-x-1">
+          <div className="tw-flex tw-items-center tw-space-x-1">
             
             {/* Help Toggle Button */}
              <button 
                onClick={toggleHelpMode}
-               className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg transition-all border active:scale-95 ${isHelpMode ? 'bg-white text-primary border-white ring-2 ring-white/50' : 'bg-blue-800 text-blue-200 border-blue-700'}`}
+               className={`tw-w-10 tw-h-10 tw-rounded-full tw-flex tw-items-center tw-justify-center tw-font-bold tw-text-lg tw-transition-all tw-border tw-active:scale-95 ${isHelpMode ? 'tw-bg-white tw-text-primary tw-border-white tw-ring-2 tw-ring-white/50' : 'tw-bg-blue-800 tw-text-blue-200 tw-border-blue-700'}`}
              >
                ?
              </button>
             
             <HelpTarget helpId="status-badge-header">
-               <span className="text-[10px] font-mono bg-blue-800 px-2 py-1 rounded opacity-80 block min-w-[3rem] text-center ml-1">
+               <span className="tw-text-[10px] tw-font-mono tw-bg-blue-800 tw-px-2 tw-py-1 tw-rounded tw-opacity-80 tw-block tw-min-w-[3rem] tw-text-center tw-ml-1">
                  {getStatusLabel(user.currentStatus)}
                </span>
             </HelpTarget>
@@ -116,10 +116,10 @@ export const Layout: React.FC<LayoutProps> = ({
             <HelpTarget helpId="trouble-button">
               <button 
                 onClick={onEmergencyClick}
-                className="ml-2 bg-orange-600 hover:bg-orange-700 text-white px-3 h-10 rounded-lg font-bold text-sm shadow-lg shadow-orange-900/20 active:scale-95 transition-all flex items-center justify-center border-b-2 border-orange-800 min-w-[80px]"
+                className="tw-ml-2 tw-bg-orange-600 tw-hover:bg-orange-700 tw-text-white tw-px-3 tw-h-10 tw-rounded-lg tw-font-bold tw-text-sm tw-shadow-lg tw-shadow-orange-900/20 tw-active:scale-95 tw-transition-all tw-flex tw-items-center tw-justify-center tw-border-b-2 tw-border-orange-800 tw-min-w-[80px]"
                 data-agent-id={useAgentId("header:emergency-button")}
               >
-                <i className="fa-solid fa-triangle-exclamation mr-1.5"></i> トラブル
+                <i className="fa-solid fa-triangle-exclamation tw-mr-1.5"></i> トラブル
               </button>
             </HelpTarget>
           </div>
@@ -127,15 +127,15 @@ export const Layout: React.FC<LayoutProps> = ({
       </header>
 
       {/* Main Content */}
-      <main className="flex-1 overflow-y-auto overflow-x-hidden relative no-scrollbar pb-24 overscroll-contain">
+      <main className="tw-flex-1 tw-overflow-y-auto tw-overflow-x-hidden tw-relative tw-no-scrollbar tw-pb-24 tw-overscroll-contain">
         {children}
       </main>
 
       {/* Bottom Navigation with Safe Area Bottom */}
       {showNav && (
-        <nav className="flex-none bg-white border-t border-slate-200 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] z-20 pb-safe">
-          <div className="flex justify-around items-center h-[60px]">
-            <HelpTarget helpId="nav-route" wrapperClassName="w-full h-full flex-1">
+        <nav className="tw-flex-none tw-bg-white tw-border-t tw-border-slate-200 tw-shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] tw-z-20 tw-pb-safe">
+          <div className="tw-flex tw-justify-around tw-items-center tw-h-[60px]">
+            <HelpTarget helpId="nav-route" wrapperClassName="tw-w-full tw-h-full tw-flex-1">
               <NavButton 
                 icon="fa-solid fa-list-check" 
                 label="ルート" 
@@ -144,7 +144,7 @@ export const Layout: React.FC<LayoutProps> = ({
                 agentId="nav:route"
               />
             </HelpTarget>
-            <HelpTarget helpId="nav-fuel" wrapperClassName="w-full h-full flex-1">
+            <HelpTarget helpId="nav-fuel" wrapperClassName="tw-w-full tw-h-full tw-flex-1">
               <NavButton 
                 icon="fa-solid fa-gas-pump" 
                 label="給油" 
@@ -153,7 +153,7 @@ export const Layout: React.FC<LayoutProps> = ({
                 agentId="nav:fuel"
               />
             </HelpTarget>
-            <HelpTarget helpId="nav-report" wrapperClassName="w-full h-full flex-1">
+            <HelpTarget helpId="nav-report" wrapperClassName="tw-w-full tw-h-full tw-flex-1">
               <NavButton 
                 icon="fa-solid fa-chart-line" 
                 label="実績" 
@@ -162,7 +162,7 @@ export const Layout: React.FC<LayoutProps> = ({
                 agentId="nav:report"
               />
             </HelpTarget>
-            <HelpTarget helpId="nav-end" wrapperClassName="w-full h-full flex-1">
+            <HelpTarget helpId="nav-end" wrapperClassName="tw-w-full tw-h-full tw-flex-1">
               <NavButton 
                 icon="fa-solid fa-right-from-bracket" 
                 label="終了" 
@@ -181,10 +181,10 @@ export const Layout: React.FC<LayoutProps> = ({
 const NavButton = ({ icon, label, active, onClick, agentId }: { icon: string, label: string, active: boolean, onClick: () => void, agentId: string }) => (
   <button 
     onClick={onClick}
-    className={`flex flex-col items-center justify-center w-full h-full space-y-1 active:bg-slate-50 transition-colors touch-manipulation ${active ? 'text-primary' : 'text-slate-400'}`}
+    className={`tw-flex tw-flex-col tw-items-center tw-justify-center tw-w-full tw-h-full tw-space-y-1 tw-active:bg-slate-50 tw-transition-colors tw-touch-manipulation ${active ? 'tw-text-primary' : 'tw-text-slate-400'}`}
     data-agent-id={useAgentId(agentId)}
   >
-    <i className={`${icon} text-xl mb-0.5 ${active ? 'scale-110' : ''} transition-transform`}></i>
-    <span className="text-[10px] font-bold">{label}</span>
+    <i className={`${icon} tw-text-xl tw-mb-0.5 ${active ? 'tw-scale-110' : ''} tw-transition-transform`}></i>
+    <span className="tw-text-[10px] tw-font-bold">{label}</span>
   </button>
 );
