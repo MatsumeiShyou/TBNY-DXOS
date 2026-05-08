@@ -19,11 +19,13 @@ import {
 } from 'lucide-react';
 import { supabase } from '../../../shared/lib/supabase/client';
 import { nativeSupabaseFetch } from '../lib/supabase/nativeFetch';
-import useMasterCRUD from '../hooks/useMasterCRUD';
+import useMasterCRUD from '../../hooks/useMasterCRUD';
 import { Modal } from './Modal';
-import { MasterSchema, MasterColumn, MASTER_SCHEMAS } from '../config/masterSchema';
+import type { MasterSchema, MasterColumn } from '../config/masterSchema';
+import { MASTER_SCHEMAS } from '../config/masterSchema';
 import { serializeMasterData, normalizeDays } from '../utils/serialization';
-import { SortConfig, universalSort } from '../utils/sortUtils';
+import type { SortConfig } from '../utils/sortUtils';
+import { universalSort } from '../utils/sortUtils';
 import { PHYSICAL_CONSTRAINTS, isValidWeighingUnit } from '../../../shared/lib/validation/physicalConstraints';
 
 interface MasterDataLayoutProps {
@@ -208,18 +210,39 @@ export const MasterDataLayout: React.FC<MasterDataLayoutProps> = ({ schema }) =>
         try {
             setIsSaving(true);
 
-            // [Physical Validation] 物理制約チェック (10kg単位等)
-            const weightFields = ['capacity_kg', 'net_weight_kg', 'max_payload_kg'];
-            for (const field of weightFields) {
-                const val = formData[field];
-                if (val != null && val !== '' && !isValidWeighingUnit(Number(val))) {
-                    throw new Error(`${schema.title}の「${field}」は${PHYSICAL_CONSTRAINTS.WEIGHING.MIN_UNIT_KG}kg単位で入力してください。`);
+            // [Schema-Driven Validation] スキーマ定義に基づいたバリデーション
+            for (const field of schema.fields) {
+                if (field.validate) {
+                    const result = field.validate(formData[field.name]);
+                    if (result !== true) {
+                        throw new Error(`${field.label}: ${result}`);
+                    }
+                }
+            }
+
+            // [Audit Gradient] 変更の重要度に応じた監査理由の要求
+            let auditReason = '';
+            if (editingItem) {
+                const highLevelFields = schema.fields.filter(f => f.auditLevel === 'high');
+                const isHighLevelChanged = highLevelFields.some(f => 
+                    String(formData[f.name] || '') !== String(editingItem[f.name] || '')
+                );
+
+                if (isHighLevelChanged) {
+                    const reason = window.prompt('重要な項目の変更が検知されました。変更理由を入力してください（監査ログに記録されます）:');
+                    if (reason === null) return; // キャンセル時は保存中止
+                    if (!reason.trim()) {
+                        alert('理由の入力は必須です。');
+                        return;
+                    }
+                    auditReason = reason;
                 }
             }
 
             const serialized = serializeMasterData(formData, schema.fields, schema.rpcTableName as string);
             if (editingItem) {
-                await updateItem(String(editingItem[schema.primaryKey]), serialized);
+                // オプションとして理由を渡す（useMasterCRUD側が対応している前提、または将来の拡張用）
+                await updateItem(String(editingItem[schema.primaryKey]), { ...serialized, _audit_reason: auditReason });
             } else {
                 await createItem(serialized);
             }

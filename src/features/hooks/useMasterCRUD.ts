@@ -24,7 +24,7 @@ interface UseMasterCRUDOptions {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type DataItem = Record<string, any>;
 
-export function useMasterCRUD({
+export default function useMasterCRUD({
     viewName,
     rpcTableName,
     rpcName = 'rpc_execute_master_update',

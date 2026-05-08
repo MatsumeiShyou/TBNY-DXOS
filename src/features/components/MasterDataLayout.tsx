@@ -2,7 +2,7 @@ import { useState, useEffect, type FormEvent } from 'react';
 import { Plus, Edit2, Trash2, Search, Loader2, Info } from 'lucide-react';
 import { supabase } from '../../shared/lib/supabase/client';
 import { Modal } from './Modal';
-import { useMasterCRUD } from '../hooks/useMasterCRUD';
+import useMasterCRUD from '../hooks/useMasterCRUD';
 import { useNotification } from '../hooks/useNotification';
 import type { MasterSchema, MasterColumn } from '../config/masterSchema';
 import '../../shared/styles/master-data.css';
