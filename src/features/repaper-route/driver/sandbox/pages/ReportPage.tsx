@@ -24,14 +24,16 @@ export const ReportPage: React.FC<Props> = ({ stops, user, workStartTime, report
   const isReadyToSubmit = checks.summary && checks.list;
 
   const stats = useMemo(() => {
+    if (!stops || !Array.isArray(stops)) return { completedCount: 0, progress: 0, totalWeight: 0, sortedBreakdown: [], workDuration: '0時間 0分' };
+    
     const completed = stops.filter(s => s.status === StopStatus.COMPLETED);
-    const totalStops = stops.length;
+    const totalStops = stops.length || 1;
     const totalWeight = completed.reduce((sum, stop) => {
-      return sum + stop.items.reduce((iSum, item) => iSum + (item.actualWeight || item.defaultWeight || 0), 0);
+      return sum + (stop.items || []).reduce((iSum, item) => iSum + (item.actualWeight || item.defaultWeight || 0), 0);
     }, 0);
     const itemBreakdown: Record<string, number> = {};
     completed.forEach(stop => {
-      stop.items.forEach(item => {
+      (stop.items || []).forEach(item => {
         const weight = item.actualWeight || item.defaultWeight || 0;
         itemBreakdown[item.name] = (itemBreakdown[item.name] || 0) + weight;
       });
@@ -40,8 +42,8 @@ export const ReportPage: React.FC<Props> = ({ stops, user, workStartTime, report
       .sort(([, a], [, b]) => b - a)
       .map(([name, weight]) => ({ name, weight }));
     const now = new Date();
-    const startTime = workStartTime || new Date(now.setHours(8, 0, 0));
-    const durationMs = new Date().getTime() - startTime.getTime();
+    const startTime = workStartTime || new Date(new Date(now).setHours(8, 0, 0));
+    const durationMs = Math.max(0, new Date().getTime() - startTime.getTime());
     const hours = Math.floor(durationMs / (1000 * 60 * 60));
     const minutes = Math.floor((durationMs % (1000 * 60 * 60)) / (1000 * 60));
     return {

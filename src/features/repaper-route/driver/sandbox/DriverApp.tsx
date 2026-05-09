@@ -263,7 +263,7 @@ export default function DriverApp() {
                   onCommentChange={setReportComment} 
                   onEditStop={(id) => {
                     setSelectedStopId(id);
-                    setView('stop-detail');
+                    setView('stop');
                   }}
                 />
               </AgentNamespace>
