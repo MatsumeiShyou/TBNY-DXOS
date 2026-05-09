@@ -64,19 +64,19 @@ export const ReportPage: React.FC<Props> = ({ stops, user, workStartTime, report
 
   if (isSubmitted) {
     return (
-      <div className="flex flex-col items-center justify-center h-full p-8 animate-fade-in text-center space-y-6">
-        <div className="w-32 h-32 bg-green-100 rounded-full flex items-center justify-center animate-bounce">
-          <i className="fa-solid fa-check text-6xl text-success"></i>
+      <div className="tw-flex tw-flex-col tw-items-center tw-justify-center tw-h-full tw-p-8 tw-animate-fade-in tw-text-center tw-space-y-6">
+        <div className="tw-w-32 tw-h-32 tw-bg-green-100 tw-rounded-full tw-flex tw-items-center tw-justify-center tw-animate-bounce">
+          <i className="fa-solid fa-check tw-text-6xl tw-text-success"></i>
         </div>
         <div>
-          <h2 className="text-2xl font-bold text-slate-800">日報送信完了</h2>
-          <p className="text-slate-500 mt-2">本日の業務は全て終了です。<br/>お疲れ様でした！</p>
+          <h2 className="tw-text-2xl tw-font-bold tw-text-slate-800">日報送信完了</h2>
+          <p className="tw-text-slate-500 tw-mt-2">本日の業務は全て終了です。<br/>お疲れ様でした！</p>
         </div>
-        <div className="w-full pt-8 space-y-4">
+        <div className="tw-w-full tw-pt-8 tw-space-y-4">
            <Button variant="outline" onClick={handleLogout} agentId="action:logout-button">
              業務を終了してログアウト
            </Button>
-           <p className="text-xs text-slate-400 mt-4">
+           <p className="tw-text-xs tw-text-slate-400 tw-mt-4">
              アプリを閉じる場合は、そのままホーム画面に戻るか、<br/>ブラウザのタブを閉じてください。
            </p>
         </div>
@@ -85,55 +85,55 @@ export const ReportPage: React.FC<Props> = ({ stops, user, workStartTime, report
   }
 
   const renderSummaryTab = () => (
-    <div className="space-y-4 animate-fade-in pb-32">
-      <div className="grid grid-cols-2 gap-3">
-          <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-100">
-            <div className="text-xs text-slate-400 font-bold mb-1">総回収重量</div>
-            <div className="text-2xl font-bold text-primary flex items-baseline">
-              {stats.totalWeight.toLocaleString()} <span className="text-sm ml-1 text-slate-500">kg</span>
+    <div className="tw-space-y-4 tw-animate-fade-in tw-pb-32">
+      <div className="tw-grid tw-grid-cols-2 tw-gap-3">
+          <div className="tw-bg-white tw-p-4 tw-rounded-xl tw-shadow-sm tw-border tw-border-slate-100">
+            <div className="tw-text-xs tw-text-slate-400 tw-font-bold tw-mb-1">総回収重量</div>
+            <div className="tw-text-2xl tw-font-bold tw-text-primary tw-flex tw-items-baseline">
+              {stats.totalWeight.toLocaleString()} <span className="tw-text-sm tw-ml-1 tw-text-slate-500">kg</span>
             </div>
           </div>
-          <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-100">
-            <div className="text-xs text-slate-400 font-bold mb-1">進捗率</div>
-            <div className="text-2xl font-bold text-slate-800 flex items-baseline">
-              {stats.progress}<span className="text-sm ml-1">%</span>
-              <span className="text-xs ml-2 text-slate-400">({stats.completedCount}件)</span>
+          <div className="tw-bg-white tw-p-4 tw-rounded-xl tw-shadow-sm tw-border tw-border-slate-100">
+            <div className="tw-text-xs tw-text-slate-400 tw-font-bold tw-mb-1">進捗率</div>
+            <div className="tw-text-2xl tw-font-bold tw-text-slate-800 tw-flex tw-items-baseline">
+              {stats.progress}<span className="tw-text-sm tw-ml-1">%</span>
+              <span className="tw-text-xs tw-ml-2 tw-text-slate-400">({stats.completedCount}件)</span>
             </div>
           </div>
       </div>
 
-      <Card className="space-y-4" agentId="breakdown-card">
-        <h3 className="font-bold text-slate-700 flex items-center">
-          <i className="fa-solid fa-chart-simple mr-2 text-primary"></i>
+      <Card className="tw-space-y-4" agentId="breakdown-card">
+        <h3 className="tw-font-bold tw-text-slate-700 tw-flex tw-items-center">
+          <i className="fa-solid fa-chart-simple tw-mr-2 tw-text-primary"></i>
           品目別回収実績
         </h3>
-        <div className="space-y-3">
+        <div className="tw-space-y-3">
           {stats.sortedBreakdown.length > 0 ? (
             stats.sortedBreakdown.map((item, idx) => {
               const maxVal = stats.sortedBreakdown[0].weight;
               const percentage = (item.weight / maxVal) * 100;
               return (
                 <div key={idx}>
-                  <div className="flex justify-between text-sm mb-1">
-                    <span className="font-bold text-slate-700">{item.name}</span>
-                    <span className="font-mono text-slate-500">{item.weight} kg</span>
+                  <div className="tw-flex tw-justify-between tw-text-sm tw-mb-1">
+                    <span className="tw-font-bold tw-text-slate-700">{item.name}</span>
+                    <span className="tw-font-mono tw-text-slate-500">{item.weight} kg</span>
                   </div>
-                  <div className="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
-                    <div className="bg-primary h-2.5 rounded-full" style={{ width: `${percentage}%` }}></div>
+                  <div className="tw-w-full tw-bg-slate-100 tw-rounded-full tw-h-2.5 tw-overflow-hidden">
+                    <div className="tw-bg-primary tw-h-2.5 tw-rounded-full" style={{ width: `${percentage}%` }}></div>
                   </div>
                 </div>
               );
             })
           ) : (
-            <div className="text-center text-slate-400 py-4 text-sm">データがありません</div>
+            <div className="tw-text-center tw-text-slate-400 tw-py-4 tw-text-sm">データがありません</div>
           )}
         </div>
       </Card>
 
       <Card agentId="comment-card">
-        <h3 className="font-bold text-slate-700 mb-2">日報コメント・特記事項</h3>
+        <h3 className="tw-font-bold tw-text-slate-700 tw-mb-2">日報コメント・特記事項</h3>
         <textarea
-          className="w-full bg-slate-50 border border-slate-200 rounded-lg p-3 text-sm focus:ring-2 focus:ring-primary focus:outline-none"
+          className="tw-w-full tw-bg-slate-50 tw-border tw-border-slate-200 tw-rounded-lg tw-p-3 tw-text-sm focus:tw-ring-2 focus:tw-ring-primary focus:tw-outline-none"
           rows={4}
           placeholder="道路状況、車両の気になる点、お客様からの要望などを入力してください。"
           value={reportComment}
@@ -143,17 +143,17 @@ export const ReportPage: React.FC<Props> = ({ stops, user, workStartTime, report
 
       <HelpTarget helpId="check-summary">
         <Card 
-          className={`transition-colors border-2 ${checks.summary ? 'bg-primary/5 border-primary' : 'bg-red-50 border-red-200 animate-pulse'}`}
+          className={`tw-transition-colors tw-border-2 ${checks.summary ? 'tw-bg-primary/5 tw-border-primary' : 'tw-bg-red-50 tw-border-red-200 tw-animate-pulse'}`}
           onClick={() => setChecks(prev => ({...prev, summary: !prev.summary}))}
           agentId="check:summary-card"
         >
-           <label className="flex items-center space-x-3 cursor-pointer p-1 w-full pointer-events-none">
-              <div className={`w-6 h-6 shrink-0 rounded border-2 flex items-center justify-center transition-colors ${checks.summary ? 'bg-primary border-primary' : 'border-red-300 bg-white'}`}>
-                 {checks.summary && <i className="fa-solid fa-check text-white text-xs"></i>}
+           <label className="tw-flex tw-items-center tw-space-x-3 tw-cursor-pointer tw-p-1 tw-w-full tw-pointer-events-none">
+              <div className={`tw-w-6 tw-h-6 tw-shrink-0 tw-rounded tw-border-2 tw-flex tw-items-center tw-justify-center tw-transition-colors ${checks.summary ? 'tw-bg-primary tw-border-primary' : 'tw-border-red-300 tw-bg-white'}`}>
+                 {checks.summary && <i className="fa-solid fa-check tw-text-white tw-text-xs"></i>}
               </div>
               <div>
-                 <span className={`block text-sm font-bold ${checks.summary ? 'text-primary' : 'text-slate-800'}`}>集計値を確認しました</span>
-                 <span className="text-xs text-slate-500">実績数値に間違いはありません</span>
+                 <span className={`tw-block tw-text-sm tw-font-bold ${checks.summary ? 'tw-text-primary' : 'tw-text-slate-800'}`}>集計値を確認しました</span>
+                 <span className="tw-text-xs tw-text-slate-500">実績数値に間違いはありません</span>
               </div>
            </label>
         </Card>
@@ -162,40 +162,40 @@ export const ReportPage: React.FC<Props> = ({ stops, user, workStartTime, report
   );
 
   const renderListTab = () => (
-    <div className="space-y-3 animate-fade-in pb-32">
-      <div className="flex text-xs font-bold text-slate-400 px-3">
-          <div className="w-16">時間</div>
-          <div className="flex-1">回収先 / 品目</div>
-          <div className="w-20 text-right">実績</div>
+    <div className="tw-space-y-3 tw-animate-fade-in tw-pb-32">
+      <div className="tw-flex tw-text-xs tw-font-bold tw-text-slate-400 tw-px-3">
+          <div className="tw-w-16">時間</div>
+          <div className="tw-flex-1">回収先 / 品目</div>
+          <div className="tw-w-20 tw-text-right">実績</div>
       </div>
       {stops.length === 0 ? (
-         <div className="text-center py-8 text-slate-400 text-sm">データがありません</div>
+         <div className="tw-text-center tw-py-8 tw-text-slate-400 tw-text-sm">データがありません</div>
       ) : (
         stops.map((stop) => {
           const isCompleted = stop.status === StopStatus.COMPLETED;
           return (
-              <Card key={stop.id} className={`p-3 border-l-4 ${isCompleted ? 'border-l-primary' : 'border-l-slate-200 opacity-60'}`} agentId={`stop-card:${stop.id}`}>
-                  <div className="flex items-start">
-                      <div className="w-16 pt-0.5 shrink-0">
-                          <div className="text-sm font-bold text-slate-700 font-mono">{stop.arrivalTime || '--:--'}</div>
-                          <div className="text-[10px] text-slate-400 font-mono">{stop.departureTime ? `~${stop.departureTime}` : ''}</div>
-                          {!isCompleted && <span className="text-[10px] bg-slate-100 text-slate-400 px-1 rounded">未完了</span>}
+              <Card key={stop.id} className={`tw-p-3 tw-border-l-4 ${isCompleted ? 'tw-border-l-primary' : 'tw-border-l-slate-200 tw-opacity-60'}`} agentId={`stop-card:${stop.id}`}>
+                  <div className="tw-flex tw-items-start">
+                      <div className="tw-w-16 tw-pt-0.5 tw-shrink-0">
+                          <div className="tw-text-sm tw-font-bold tw-text-slate-700 tw-font-mono">{stop.arrivalTime || '--:--'}</div>
+                          <div className="tw-text-[10px] tw-text-slate-400 tw-font-mono">{stop.departureTime ? `~${stop.departureTime}` : ''}</div>
+                          {!isCompleted && <span className="tw-text-[10px] tw-bg-slate-100 tw-text-slate-400 tw-px-1 tw-rounded">未完了</span>}
                       </div>
-                      <div className="flex-1 min-w-0">
-                          <div className="text-sm font-bold text-slate-800 truncate mb-1.5 leading-tight">{stop.customerName}</div>
-                          <div className="space-y-1">
+                      <div className="tw-flex-1 tw-min-w-0">
+                          <div className="tw-text-sm tw-font-bold tw-text-slate-800 tw-truncate tw-mb-1.5 tw-leading-tight">{stop.customerName}</div>
+                          <div className="tw-space-y-1">
                               {stop.items.map(item => (
-                                  <div key={item.id} className="flex justify-between items-center text-xs border-b border-dashed border-slate-100 last:border-0 pb-1 last:pb-0">
-                                      <span className="text-slate-600 truncate mr-2">{item.name}</span>
-                                      <span className={`font-mono font-bold ${item.isCollected ? 'text-slate-800' : 'text-slate-300'}`}>
+                                  <div key={item.id} className="tw-flex tw-justify-between tw-items-center tw-text-xs tw-border-b tw-border-dashed tw-border-slate-100 last:tw-border-0 tw-pb-1 last:tw-pb-0">
+                                      <span className="tw-text-slate-600 tw-truncate tw-mr-2">{item.name}</span>
+                                      <span className={`tw-font-mono tw-font-bold ${item.isCollected ? 'tw-text-slate-800' : 'tw-text-slate-300'}`}>
                                           {item.isCollected ? `${item.actualWeight}kg` : '-'}
                                       </span>
                                   </div>
                               ))}
                           </div>
-                          <div className="mt-3 flex justify-end border-t border-dashed border-slate-100 pt-2">
-                             <button onClick={() => onEditStop(stop.id)} className="text-xs bg-slate-100 text-slate-600 hover:bg-slate-200 border border-slate-200 px-3 py-1.5 rounded font-bold transition-colors flex items-center">
-                               <i className="fa-solid fa-pen mr-1.5"></i>修正
+                          <div className="tw-mt-3 tw-flex tw-justify-end tw-border-t tw-border-dashed tw-border-slate-100 tw-pt-2">
+                             <button onClick={() => onEditStop(stop.id)} className="tw-text-xs tw-bg-slate-100 tw-text-slate-600 hover:tw-bg-slate-200 tw-border tw-border-slate-200 tw-px-3 tw-py-1.5 tw-rounded tw-font-bold tw-transition-colors tw-flex tw-items-center">
+                               <i className="fa-solid fa-pen tw-mr-1.5"></i>修正
                              </button>
                           </div>
                       </div>
@@ -204,42 +204,42 @@ export const ReportPage: React.FC<Props> = ({ stops, user, workStartTime, report
           )
         })
       )}
-      <div className="mt-6">
-          <h4 className="text-xs font-bold text-slate-500 mb-2 px-2">その他業務記録</h4>
-          <Card className="p-0 overflow-hidden" agentId="other-work-card">
-             <div className="flex justify-between items-center p-3 border-b border-slate-100">
-                <div className="flex items-center space-x-3">
-                   <div className="w-8 h-8 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center">
-                     <i className="fa-solid fa-mug-hot text-xs"></i>
+      <div className="tw-mt-6">
+          <h4 className="tw-text-xs tw-font-bold tw-text-slate-500 tw-mb-2 tw-px-2">その他業務記録</h4>
+          <Card className="tw-p-0 tw-overflow-hidden" agentId="other-work-card">
+             <div className="tw-flex tw-justify-between tw-items-center tw-p-3 tw-border-b tw-border-slate-100">
+                <div className="tw-flex tw-items-center tw-space-x-3">
+                   <div className="tw-w-8 tw-h-8 tw-rounded-full tw-bg-orange-100 tw-text-orange-600 tw-flex tw-items-center tw-justify-center">
+                     <i className="fa-solid fa-mug-hot tw-text-xs"></i>
                    </div>
-                   <span className="text-sm font-bold text-slate-700">休憩</span>
+                   <span className="tw-text-sm tw-font-bold tw-text-slate-700">休憩</span>
                 </div>
-                <div className="text-sm font-mono font-bold text-slate-600">12:00 ~ 13:00 <span className="text-xs text-slate-400">(60分)</span></div>
+                <div className="tw-text-sm tw-font-mono tw-font-bold tw-text-slate-600">12:00 ~ 13:00 <span className="tw-text-xs tw-text-slate-400">(60分)</span></div>
              </div>
-             <div className="flex justify-between items-center p-3">
-                <div className="flex items-center space-x-3">
-                   <div className="w-8 h-8 rounded-full bg-red-100 text-red-600 flex items-center justify-center">
-                     <i className="fa-solid fa-gas-pump text-xs"></i>
+             <div className="tw-flex tw-justify-between tw-items-center tw-p-3">
+                <div className="tw-flex tw-items-center tw-space-x-3">
+                   <div className="tw-w-8 tw-h-8 tw-rounded-full tw-bg-red-100 tw-text-red-600 tw-flex tw-items-center tw-justify-center">
+                     <i className="fa-solid fa-gas-pump tw-text-xs"></i>
                    </div>
-                   <span className="text-sm font-bold text-slate-700">給油</span>
+                   <span className="tw-text-sm tw-font-bold tw-text-slate-700">給油</span>
                 </div>
-                <div className="text-sm font-mono font-bold text-slate-600">-- <span className="text-xs text-slate-400">L</span></div>
+                <div className="tw-text-sm tw-font-mono tw-font-bold tw-text-slate-600">-- <span className="tw-text-xs tw-text-slate-400">L</span></div>
              </div>
           </Card>
       </div>
       <HelpTarget helpId="check-list">
         <Card 
-          className={`mt-6 transition-colors border-2 ${checks.list ? 'bg-primary/5 border-primary' : 'bg-red-50 border-red-200 animate-pulse'}`}
+          className={`tw-mt-6 tw-transition-colors tw-border-2 ${checks.list ? 'tw-bg-primary/5 tw-border-primary' : 'tw-bg-red-50 tw-border-red-200 tw-animate-pulse'}`}
           onClick={() => setChecks(prev => ({...prev, list: !prev.list}))}
           agentId="check:list-card"
         >
-           <label className="flex items-center space-x-3 cursor-pointer p-1 w-full pointer-events-none">
-              <div className={`w-6 h-6 shrink-0 rounded border-2 flex items-center justify-center transition-colors ${checks.list ? 'bg-primary border-primary' : 'border-red-300 bg-white'}`}>
-                 {checks.list && <i className="fa-solid fa-check text-white text-xs"></i>}
+           <label className="tw-flex tw-items-center tw-space-x-3 tw-cursor-pointer tw-p-1 tw-w-full tw-pointer-events-none">
+              <div className={`tw-w-6 tw-h-6 tw-shrink-0 tw-rounded tw-border-2 tw-flex tw-items-center tw-justify-center tw-transition-colors ${checks.list ? 'tw-bg-primary tw-border-primary' : 'tw-border-red-300 tw-bg-white'}`}>
+                 {checks.list && <i className="fa-solid fa-check tw-text-white tw-text-xs"></i>}
               </div>
               <div>
-                 <span className={`block text-sm font-bold ${checks.list ? 'text-primary' : 'text-slate-800'}`}>明細内容を確認しました</span>
-                 <span className="text-xs text-slate-500">アプリ入力漏れ・訪問忘れはありません</span>
+                 <span className={`tw-block tw-text-sm tw-font-bold ${checks.list ? 'tw-text-primary' : 'tw-text-slate-800'}`}>明細内容を確認しました</span>
+                 <span className="tw-text-xs tw-text-slate-500">アプリ入力漏れ・訪問忘れはありません</span>
               </div>
            </label>
         </Card>
@@ -253,58 +253,58 @@ export const ReportPage: React.FC<Props> = ({ stops, user, workStartTime, report
   };
 
   return (
-    <div className="p-4 space-y-6">
-      <div className="flex items-center justify-between text-sm text-slate-500 bg-white p-3 rounded-xl border border-slate-100 shadow-sm">
-        <div className="flex items-center space-x-2">
+    <div className="tw-p-4 tw-space-y-6">
+      <div className="tw-flex tw-items-center tw-justify-between tw-text-sm tw-text-slate-500 tw-bg-white tw-p-3 tw-rounded-xl tw-border tw-border-slate-100 tw-shadow-sm">
+        <div className="tw-flex tw-items-center tw-space-x-2">
            <i className="fa-regular fa-calendar"></i>
-           <span className="font-bold">{new Date().toLocaleDateString('ja-JP')}</span>
+           <span className="tw-font-bold">{new Date().toLocaleDateString('ja-JP')}</span>
         </div>
-        <div className="flex items-center space-x-2">
+        <div className="tw-flex tw-items-center tw-space-x-2">
            <i className="fa-solid fa-truck"></i>
-           <span className="font-bold">{user.vehicleName}</span>
+           <span className="tw-font-bold">{user.vehicleName}</span>
         </div>
       </div>
-      <div className="bg-slate-200 p-1 rounded-xl flex shadow-inner">
-        <button onClick={() => setActiveTab('summary')} className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all relative ${activeTab === 'summary' ? 'bg-white text-primary shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}>
-          <i className="fa-solid fa-chart-pie mr-1"></i>サマリ{renderTabBadge(checks.summary)}
+      <div className="tw-bg-slate-200 tw-p-1 tw-rounded-xl tw-flex tw-shadow-inner">
+        <button onClick={() => setActiveTab('summary')} className={`tw-flex-1 tw-py-2 tw-rounded-lg tw-text-xs tw-font-bold tw-transition-all tw-relative ${activeTab === 'summary' ? 'tw-bg-white tw-text-primary tw-shadow-sm' : 'tw-text-slate-500 hover:tw-text-slate-700'}`}>
+          <i className="fa-solid fa-chart-pie tw-mr-1"></i>サマリ{renderTabBadge(checks.summary)}
         </button>
-        <button onClick={() => setActiveTab('list')} className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all relative ${activeTab === 'list' ? 'bg-white text-primary shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}>
-          <i className="fa-solid fa-list mr-1"></i>明細{renderTabBadge(checks.list)}
+        <button onClick={() => setActiveTab('list')} className={`tw-flex-1 tw-py-2 tw-rounded-lg tw-text-xs tw-font-bold tw-transition-all tw-relative ${activeTab === 'list' ? 'tw-bg-white tw-text-primary tw-shadow-sm' : 'tw-text-slate-500 hover:tw-text-slate-700'}`}>
+          <i className="fa-solid fa-list tw-mr-1"></i>明細{renderTabBadge(checks.list)}
         </button>
       </div>
-      <div className="min-h-[300px]">
+      <div className="tw-min-h-[300px]">
          {activeTab === 'summary' && renderSummaryTab()}
          {activeTab === 'list' && renderListTab()}
       </div>
       {isReadyToSubmit && (
-        <div className="fixed bottom-0 left-0 w-full bg-white border-t border-slate-200 p-4 pb-safe shadow-[0_-4px_20px_rgba(0,0,0,0.15)] z-40 rounded-t-2xl animate-slide-up">
-           <Button onClick={() => setSubmitModalOpen(true)} className="bg-primary text-white shadow-lg shadow-blue-900/20" agentId="action:submit-button">
-             <i className="fa-solid fa-paper-plane mr-2"></i>日報を提出する
+        <div className="tw-fixed tw-bottom-0 tw-left-0 tw-w-full tw-bg-white tw-border-t tw-border-slate-200 tw-p-4 tw-pb-safe tw-shadow-[0_-4px_20px_rgba(0,0,0,0.15)] tw-z-40 tw-rounded-t-2xl tw-animate-slide-up">
+           <Button onClick={() => setSubmitModalOpen(true)} className="tw-bg-primary tw-text-white tw-shadow-lg tw-shadow-blue-900/20" agentId="action:submit-button">
+             <i className="fa-solid fa-paper-plane tw-mr-2"></i>日報を提出する
            </Button>
         </div>
       )}
       <Modal isOpen={isInstructionModalOpen} onClose={() => setInstructionModalOpen(false)} title="日報提出の手順" agentId="instruction-modal">
-        <div className="space-y-6 text-center">
-           <div className="w-16 h-16 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto">
-              <i className="fa-solid fa-list-check text-3xl"></i>
+        <div className="tw-space-y-6 tw-text-center">
+           <div className="tw-w-16 tw-h-16 tw-bg-blue-50 tw-text-blue-600 tw-rounded-full tw-flex tw-items-center tw-justify-center tw-mx-auto">
+              <i className="fa-solid fa-list-check tw-text-3xl"></i>
            </div>
-           <div className="text-left bg-slate-50 p-4 rounded-xl border border-slate-200">
-              <h4 className="font-bold text-slate-700 mb-2">提出ボタンが表示されていませんか？</h4>
-              <p className="text-sm text-slate-600 leading-relaxed">誤送信防止のため、以下の2点を確認してチェックを入れると提出ボタンが現れます。</p>
-              <ul className="text-sm text-slate-600 mt-2 space-y-1 font-bold">
-                <li><i className="fa-regular fa-square-check mr-2 text-primary"></i>サマリタブの集計値</li>
-                <li><i className="fa-regular fa-square-check mr-2 text-primary"></i>明細タブの入力漏れ</li>
+           <div className="tw-text-left tw-bg-slate-50 tw-p-4 tw-rounded-xl tw-border tw-border-slate-200">
+              <h4 className="tw-font-bold tw-text-slate-700 tw-mb-2">提出ボタンが表示されていませんか？</h4>
+              <p className="tw-text-sm tw-text-slate-600 tw-leading-relaxed">誤送信防止のため、以下の2点を確認してチェックを入れると提出ボタンが現れます。</p>
+              <ul className="tw-text-sm tw-text-slate-600 tw-mt-2 tw-space-y-1 tw-font-bold">
+                <li><i className="fa-regular fa-square-check tw-mr-2 tw-text-primary"></i>サマリタブの集計値</li>
+                <li><i className="fa-regular fa-square-check tw-mr-2 tw-text-primary"></i>明細タブの入力漏れ</li>
               </ul>
            </div>
            <Button onClick={() => setInstructionModalOpen(false)} agentId="instruction-modal:confirm-button">確認しました</Button>
         </div>
       </Modal>
       <Modal isOpen={isSubmitModalOpen} onClose={() => setSubmitModalOpen(false)} title="日報提出の確認" agentId="submit-confirm-modal">
-        <div className="space-y-4">
-           <div className="bg-blue-50 p-4 rounded-xl border border-blue-100 flex items-start space-x-3 text-blue-900">
-              <i className="fa-solid fa-circle-info mt-1 text-lg"></i>
-              <div className="text-sm leading-relaxed">
-                 <p className="font-bold mb-1">本日の業務を完了します。</p>
+        <div className="tw-space-y-4">
+           <div className="tw-bg-blue-50 tw-p-4 tw-rounded-xl tw-border tw-border-blue-100 tw-flex tw-items-start tw-space-x-3 tw-text-blue-900">
+              <i className="fa-solid fa-circle-info tw-mt-1 tw-text-lg"></i>
+              <div className="tw-text-sm tw-leading-relaxed">
+                 <p className="tw-font-bold tw-mb-1">本日の業務を完了します。</p>
                  <p>提出後はデータの修正ができません。内容に間違いがないか最終確認をお願いします。</p>
               </div>
            </div>
