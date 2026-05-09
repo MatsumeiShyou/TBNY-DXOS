@@ -58,63 +58,42 @@ export const useDriverOSBridge = () => {
     if (!currentUser) return;
     setIsLoading(true);
     try {
-      // [Security-First] 結合クエリを試行
-      let { data, error } = await supabase
-        .from('jobs')
-        .select(`
-          *,
-          master_collection_points (
-            latitude,
-            longitude,
-            address,
-            display_name
-          )
-        `)
+      // Admin 側と整合させるため、routes テーブルの JSONB から取得
+      const { data: routeRows, error: rError } = await supabase
+        .from('routes')
+        .select('*')
         .eq('driver_id', currentUser.id)
-        .order('start_time', { ascending: true });
+        .order('created_at', { ascending: false })
+        .limit(1);
 
-      // もしリレーションエラー(PGRST116)や権限エラー(42501)が発生した場合は、単体テーブルで再試行
-      if (error && (error.code === 'PGRST116' || error.code === '42501')) {
-        console.warn('[BRIDGE] Join failed, retrying without master_collection_points...', error.message);
-        const retry = await supabase
-          .from('jobs')
-          .select('*')
-          .eq('driver_id', currentUser.id)
-          .order('start_time', { ascending: true });
-        data = retry.data;
-        error = retry.error;
-      }
+      if (rError) throw rError;
 
-      if (error) throw error;
+      const latestRoute = routeRows?.[0];
+      const rawJobs = Array.isArray(latestRoute?.jobs) ? latestRoute.jobs : [];
 
-      if (data) {
-        setStops(data.map((job: any) => {
-          const point = job.master_collection_points;
-          return {
-            id: job.id,
-            customerName: point?.display_name || job.customer_name || '名称不明',
-            address: point?.address || job.address || '住所不明',
-            lat: point?.latitude || 35.6,
-            lng: point?.longitude || 139.7,
-            scheduledTime: job.start_time ? job.start_time.slice(11, 16) : '00:00',
-            status: (job.status === 'confirmed' || job.weight_kg) ? StopStatus.COMPLETED : StopStatus.PENDING,
-            items: [
-              { 
-                id: `${job.id}-item-1`, 
-                name: job.item_category || '回収品', 
-                defaultWeight: job.weight_kg || 0,
-                isCollected: !!job.weight_kg
-              }
-            ],
-            isPriority: !!job.is_admin_forced,
-            notes: job.note || '',
-            arrivalTime: job.actual_time || undefined,
-            departureTime: job.actual_time || undefined
-          };
-        }));
-      }
+      setStops(rawJobs.map((job: any) => ({
+        id: job.id,
+        customerName: job.customer_name || job.display_name || '名称不明',
+        address: job.address || '住所不明',
+        lat: job.lat || 35.6,
+        lng: job.lng || 139.7,
+        scheduledTime: job.scheduled_time || '00:00',
+        status: job.status === 'confirmed' ? StopStatus.COMPLETED : StopStatus.PENDING,
+        items: Array.isArray(job.items) ? job.items : [
+          { 
+            id: `${job.id}-item-1`, 
+            name: job.item_category || '回収品', 
+            defaultWeight: job.weight_kg || 0,
+            isCollected: !!job.weight_kg
+          }
+        ],
+        isPriority: !!job.is_priority,
+        notes: job.notes || '',
+        arrivalTime: job.actual_time || undefined,
+        departureTime: job.actual_time || undefined
+      })));
     } catch (err) {
-      console.error('[BRIDGE] Failed to fetch stops:', err);
+      console.error('[BRIDGE] Failed to fetch route stops:', err);
     } finally {
       setIsLoading(false);
     }
