@@ -107,7 +107,7 @@ export const BoardActionBar: React.FC<BoardActionBarProps> = ({
                         onClick={() => handleConfirmAll()}
                         disabled={isSyncing}
                         className={`tw-px-3 tw-h-11 tw-rounded-lg tw-flex tw-items-center tw-gap-2 tw-text-sm tw-font-bold tw-transition-all tw-mr-2
-                            ${isSyncing ? 'tw-bg-slate-100 tw-text-slate-400' : 'tw-bg-amber-50 tw-text-amber-600 tw-hover:bg-amber-100 tw-shadow-sm'}
+                            ${isSyncing ? 'tw-bg-slate-100 tw-text-slate-400' : 'tw-bg-accent tw-text-white tw-hover:tw-bg-amber-700 tw-shadow-sm'}
                         `}
                         title="この内容で決定し、ロックします。後からの変更には例外操作が必要になります。"
                     >
@@ -120,8 +120,8 @@ export const BoardActionBar: React.FC<BoardActionBarProps> = ({
                     <div
                         className={`tw-px-4 tw-h-11 tw-rounded-lg tw-flex tw-items-center tw-gap-2 tw-text-sm tw-font-bold tw-transition-all tw-border
                             ${isSyncing 
-                                ? 'tw-bg-amber-50 tw-border-amber-100 tw-text-amber-600 tw-animate-pulse' 
-                                : 'tw-bg-emerald-50 tw-border-emerald-100 tw-text-emerald-600 tw-shadow-sm'}
+                                ? 'tw-bg-amber-50 tw-border-amber-200 tw-text-amber-600 tw-animate-pulse' 
+                                : 'tw-bg-emerald-50 tw-border-emerald-200 tw-text-emerald-600 tw-shadow-sm'}
                         `}
                         title={isSyncing ? "サーバーに同期中..." : "サーバーと同期済み（自動保存）"}
                     >
