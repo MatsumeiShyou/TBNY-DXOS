@@ -20,16 +20,32 @@ import { VehicleSelector } from '../../components/VehicleSelector';
  * 
  * 真実のデータ（Supabase）のみをソースとするドライバーアプリ。
  */
+
+// --- 状態永続化 (State Persistence) ---
+const PERSIST_KEY = 'TBNY_DRIVER_SESSION_V1';
+
+// 初期値の遅延取得関数
+const getInitialState = (key: string, defaultValue: any) => {
+  const saved = localStorage.getItem(PERSIST_KEY);
+  if (!saved) return defaultValue;
+  try {
+    const data = JSON.parse(saved);
+    return data[key] !== undefined ? data[key] : defaultValue;
+  } catch (e) {
+    return defaultValue;
+  }
+};
+
 export default function DriverApp() {
   const bridge = useDriverOSBridge();
-  const [view, setView] = useState('inspection'); 
-  const [user, setUser] = useState<User | null>(null);
+  const [view, setView] = useState<string>(() => getInitialState('view', 'inspection')); 
+  const [user, setUser] = useState<User | null>(() => getInitialState('user', null));
   const [stops, setStops] = useState<Stop[]>([]);
-  const [selectedStopId, setSelectedStopId] = useState<string | null>(null);
+  const [selectedStopId, setSelectedStopId] = useState<string | null>(() => getInitialState('selectedStopId', null));
 
   const [toast, setToast] = useState<{message: string, type: 'success' | 'error' | 'info'} | null>(null);
   const [endShiftMode, setEndShiftMode] = useState<'FINAL' | 'INTERMEDIATE'>('FINAL');
-  const [reportComment, setReportComment] = useState('');
+  const [reportComment, setReportComment] = useState(() => getInitialState('reportComment', ''));
   const [isVehicleModalOpen, setVehicleModalOpen] = useState(false);
   const [isSOSModalOpen, setIsSOSModalOpen] = useState(false);
   const [sosStep, setSosStep] = useState<'MENU' | 'SEARCHING' | 'RESULT_CALL' | 'ACCIDENT_ACTIONS'>('MENU');
@@ -38,6 +54,18 @@ export default function DriverApp() {
   const [selectedStopForTransfer, setSelectedStopForTransfer] = useState<Stop | null>(null);
   const [transferStep, setTransferStep] = useState<'SELECT' | 'CONFIRM'>('SELECT');
   const [selectedColleagueForTransfer, setSelectedColleagueForTransfer] = useState<Colleague | null>(null);
+
+  // 1. 保存 (Sync to Local) - 変更時のみ実行
+  useEffect(() => {
+    const sessionData = {
+      view,
+      selectedStopId,
+      reportComment,
+      user,
+      updatedAt: new Date().toISOString()
+    };
+    localStorage.setItem(PERSIST_KEY, JSON.stringify(sessionData));
+  }, [view, selectedStopId, reportComment, user]);
 
   // DB データの同期
   useEffect(() => {
@@ -97,6 +125,7 @@ export default function DriverApp() {
     } else {
       bridge.recordDecision('SHIFT_END', user.id, { code: 'NORMAL_OPERATION' }, { adjustedWeights });
       setUser(prev => prev ? { ...prev, currentStatus: DriverStatus.OFFLINE } : null);
+      localStorage.removeItem(PERSIST_KEY); // クリア
       setView('report');
     }
   };
@@ -240,7 +269,7 @@ export default function DriverApp() {
             onVehicleChange={() => { setVehicleModalOpen(true); setIsMenuOpen(false); }}
             onCourseChange={() => { showToast('コース変更は管理者へ連絡してください', 'info'); }}
             onFuelReport={() => { setView('fuel'); setIsMenuOpen(false); }}
-            onLogout={() => window.location.reload()}
+            onLogout={() => { localStorage.removeItem(PERSIST_KEY); window.location.reload(); }}
           />
         </AgentNamespace>
       )}
