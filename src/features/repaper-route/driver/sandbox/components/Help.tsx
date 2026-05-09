@@ -29,7 +29,7 @@ export const HelpProvider: React.FC<{ children: React.ReactNode }> = ({ children
       
       {/* Dimming Overlay for Help Mode */}
       {isHelpMode && (
-        <div className="fixed inset-0 bg-black/60 z-40 pointer-events-none transition-opacity duration-300 backdrop-blur-[1px]" />
+        <div className="tw-fixed tw-inset-0 tw-bg-black/60 tw-z-40 tw-pointer-events-none tw-transition-opacity tw-duration-300 tw-backdrop-blur-[1px]" />
       )}
       
       {/* Help Content Modal */}
@@ -40,32 +40,32 @@ export const HelpProvider: React.FC<{ children: React.ReactNode }> = ({ children
         agentId="help:modal"
       >
         {selectedHelpKey && HELP_CONTENT[selectedHelpKey as string] && (
-          <div className="space-y-6">
-            <div className="bg-green-50 p-4 rounded-xl border border-green-200 flex items-start">
-               <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center shrink-0 mr-3">
-                 <i className="fa-solid fa-circle-question text-green-600 text-xl"></i>
+          <div className="tw-space-y-6">
+            <div className="tw-bg-green-50 tw-p-4 tw-rounded-xl tw-border tw-border-green-200 tw-flex tw-items-start">
+               <div className="tw-w-10 tw-h-10 tw-rounded-full tw-bg-green-100 tw-flex tw-items-center tw-justify-center tw-shrink-0 tw-mr-3">
+                 <i className="fa-solid fa-circle-question tw-text-green-600 tw-text-xl"></i>
                </div>
                <div>
-                  <h4 className="font-bold text-green-900 mb-1">どんな機能？</h4>
-                  <p className="text-sm text-green-800 leading-relaxed font-medium">
+                  <h4 className="tw-font-bold tw-text-green-900 tw-mb-1">どんな機能？</h4>
+                  <p className="tw-text-sm tw-text-green-800 tw-leading-relaxed tw-font-medium">
                     {HELP_CONTENT[selectedHelpKey as string].description}
                   </p>
                </div>
             </div>
             
-             <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
-                <h4 className="font-bold text-slate-700 mb-2 flex items-center text-sm uppercase tracking-wider">
-                    <i className="fa-solid fa-hand-point-up mr-2 text-primary"></i>
+             <div className="tw-bg-white tw-p-4 tw-rounded-xl tw-border tw-border-slate-200 tw-shadow-sm">
+                <h4 className="tw-font-bold tw-text-slate-700 tw-mb-2 tw-flex tw-items-center tw-text-sm tw-uppercase tw-tracking-wider">
+                    <i className="fa-solid fa-hand-point-up tw-mr-2 tw-text-primary"></i>
                     アクション / 操作
                 </h4>
-                <p className="text-sm text-slate-600 leading-relaxed">
+                <p className="tw-text-sm tw-text-slate-600 tw-leading-relaxed">
                   {HELP_CONTENT[selectedHelpKey as string].action}
                 </p>
              </div>
              
              <button 
                onClick={closeHelp} 
-               className="w-full py-3 bg-slate-800 text-white rounded-xl font-bold active:scale-[0.98] transition-transform shadow-lg shadow-slate-900/20"
+               className="tw-w-full tw-py-3 tw-bg-slate-800 tw-text-white tw-rounded-xl tw-font-bold active:tw-scale-[0.98] tw-transition-transform tw-shadow-lg tw-shadow-slate-900/20"
              >
                  閉じる
              </button>
@@ -95,7 +95,7 @@ export const HelpTarget: React.FC<HelpTargetProps> = ({ helpId, children, classN
   if (!isHelpMode) return <>{children}</>;
 
   return (
-    <div className={`relative ${wrapperClassName}`}>
+    <div className={`tw-relative ${wrapperClassName}`}>
         {/* Overlay that intercepts clicks */}
         <div 
             onClick={(e) => {
@@ -103,14 +103,14 @@ export const HelpTarget: React.FC<HelpTargetProps> = ({ helpId, children, classN
                 e.stopPropagation();
                 selectHelp(helpId as string);
             }}
-            className={`absolute -inset-1 z-50 bg-green-400/20 ring-4 ring-green-400 rounded-xl cursor-help animate-pulse ${className}`}
+            className={`tw-absolute tw--inset-1 tw-z-50 tw-bg-green-400/20 tw-ring-4 tw-ring-green-400 tw-rounded-xl tw-cursor-help tw-animate-pulse ${className}`}
         >
-            <div className="absolute top-0 right-0 -mt-2 -mr-2 bg-green-500 text-white w-6 h-6 rounded-full flex items-center justify-center shadow-md border-2 border-white text-xs font-bold">
+            <div className="tw-absolute tw-top-0 tw-right-0 tw--mt-2 tw--mr-2 tw-bg-green-500 tw-text-white tw-w-6 tw-h-6 tw-rounded-full tw-flex tw-items-center tw-justify-center tw-shadow-md tw-border-2 tw-border-white tw-text-xs tw-font-bold">
               ?
             </div>
         </div>
         {/* Actual Content (visual only) */}
-        <div className="relative z-40 pointer-events-none">
+        <div className="tw-relative tw-z-40 tw-pointer-events-none">
             {children}
         </div>
     </div>

@@ -174,7 +174,7 @@ export const ReportPage: React.FC<Props> = ({ stops, user, workStartTime, report
         stops.map((stop) => {
           const isCompleted = stop.status === StopStatus.COMPLETED;
           return (
-              <Card key={stop.id} className={`tw-p-3 tw-border-l-4 ${isCompleted ? 'tw-border-l-primary' : 'tw-border-l-slate-200 tw-opacity-60'}`} agentId={`stop-card:${stop.id}`}>
+              <Card key={stop.id} className={`tw-p-3 tw-border-l-4 tw-relative ${isCompleted ? 'tw-border-l-primary' : 'tw-border-l-slate-200 tw-opacity-60'}`} agentId={`stop-card:${stop.id}`}>
                   <div className="tw-flex tw-items-start">
                       <div className="tw-w-16 tw-pt-0.5 tw-shrink-0">
                           <div className="tw-text-sm tw-font-bold tw-text-slate-700 tw-font-mono">{stop.arrivalTime || '--:--'}</div>
@@ -248,8 +248,8 @@ export const ReportPage: React.FC<Props> = ({ stops, user, workStartTime, report
   );
 
   const renderTabBadge = (isChecked: boolean) => {
-    if (isChecked) return <i className="fa-solid fa-check text-green-500 ml-1"></i>;
-    return <span className="ml-1 w-2 h-2 rounded-full bg-red-500 inline-block animate-pulse"></span>;
+    if (isChecked) return <i className="fa-solid fa-check tw-text-green-500 tw-ml-1"></i>;
+    return <span className="tw-ml-1 tw-w-2 tw-h-2 tw-rounded-full tw-bg-red-500 tw-inline-block tw-animate-pulse"></span>;
   };
 
   return (
@@ -308,7 +308,7 @@ export const ReportPage: React.FC<Props> = ({ stops, user, workStartTime, report
                  <p>提出後はデータの修正ができません。内容に間違いがないか最終確認をお願いします。</p>
               </div>
            </div>
-           <div className="flex space-x-3">
+           <div className="tw-flex tw-space-x-3">
              <Button variant="secondary" onClick={() => setSubmitModalOpen(false)} agentId="submit-confirm-modal:cancel-button">キャンセル</Button>
              <Button onClick={handleSubmit} agentId="submit-confirm-modal:execute-button">提出して終了</Button>
            </div>

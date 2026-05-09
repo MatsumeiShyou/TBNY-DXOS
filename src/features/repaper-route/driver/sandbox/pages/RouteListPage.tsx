@@ -92,8 +92,8 @@ export const RouteListPage: React.FC<Props> = ({ stops, currentRouteName, onSele
       </div>
 
       {isReordering && (
-        <div className="bg-blue-50 text-blue-800 text-xs p-3 rounded-lg border border-blue-100 mb-2">
-          <i className="fa-solid fa-circle-info mr-2"></i>
+        <div className="tw-bg-blue-50 tw-text-blue-800 tw-text-xs tw-p-3 tw-rounded-lg tw-border tw-border-blue-100 tw-mb-2">
+          <i className="fa-solid fa-circle-info tw-mr-2"></i>
           矢印ボタンで訪問順序を変更できます。午後の案件を午前に前倒しする場合などに利用してください。
         </div>
       )}
@@ -161,10 +161,10 @@ export const RouteListPage: React.FC<Props> = ({ stops, currentRouteName, onSele
                               e.stopPropagation();
                               onTransferRequest(stop);
                             }}
-                            className="absolute top-0 right-0 w-12 h-12 flex items-center justify-center rounded-bl-xl text-slate-400 hover:text-slate-700 active:bg-slate-100 active:text-primary transition-colors z-30"
+                            className="tw-absolute tw-top-0 tw-right-0 tw-w-12 tw-h-12 tw-flex tw-items-center tw-justify-center tw-rounded-bl-xl tw-text-slate-400 tw-hover:tw-text-slate-700 tw-active:tw-bg-slate-100 tw-active:tw-text-primary tw-transition-colors tw-z-30"
                             data-agent-id={useAgentId(`stop-card:${stop.id}:menu-button`)}
                           >
-                            <i className="fa-solid fa-ellipsis-vertical text-xl"></i>
+                            <i className="fa-solid fa-ellipsis-vertical tw-text-xl"></i>
                           </button>
                         )}
                         
@@ -182,14 +182,14 @@ export const RouteListPage: React.FC<Props> = ({ stops, currentRouteName, onSele
                         )}
 
                         {isNext && stop.status !== StopStatus.COMPLETED && !isReordering && !isRequesting && (
-                          <div className="mt-2" onClick={(e) => e.stopPropagation()}>
+                          <div className="tw-mt-2" onClick={(e) => e.stopPropagation()}>
                             <Button 
                                 variant="primary" 
-                                className="py-2 text-sm h-10 min-h-[44px]"
+                                className="tw-py-2 tw-text-sm tw-h-10 tw-min-h-[44px]"
                                 onClick={() => onSelectStop(stop.id)}
                                 agentId={`stop-card:${stop.id}:start-button`}
                             >
-                                <i className="fa-solid fa-arrow-right mr-2"></i> 詳細・作業開始
+                                <i className="fa-solid fa-arrow-right tw-mr-2"></i> 詳細・作業開始
                             </Button>
                           </div>
                         )}
@@ -197,22 +197,22 @@ export const RouteListPage: React.FC<Props> = ({ stops, currentRouteName, onSele
                     </div>
 
                     {isReordering && (
-                      <div className="flex flex-col ml-2 space-y-3 shrink-0">
+                      <div className="tw-flex tw-flex-col tw-ml-2 tw-space-y-3 tw-shrink-0">
                         <button 
                           onClick={() => moveStop(index, 'up')}
                           disabled={index === 0}
-                          className="w-12 h-12 bg-white border border-slate-200 rounded-full text-slate-600 shadow-sm flex items-center justify-center active:bg-slate-100 disabled:opacity-30 disabled:active:bg-white transition-all touch-manipulation"
+                          className="tw-w-12 tw-h-12 tw-bg-white tw-border tw-border-slate-200 tw-rounded-full tw-text-slate-600 tw-shadow-sm tw-flex tw-items-center tw-justify-center active:tw-bg-slate-100 disabled:tw-opacity-30 disabled:active:tw-bg-white tw-transition-all tw-touch-manipulation"
                           data-agent-id={useAgentId(`stop-card:${stop.id}:reorder-up`)}
                         >
-                          <i className="fa-solid fa-arrow-up text-lg"></i>
+                          <i className="fa-solid fa-arrow-up tw-text-lg"></i>
                         </button>
                         <button 
                           onClick={() => moveStop(index, 'down')}
                           disabled={index === stops.length - 1}
-                          className="w-12 h-12 bg-white border border-slate-200 rounded-full text-slate-600 shadow-sm flex items-center justify-center active:bg-slate-100 disabled:opacity-30 disabled:active:bg-white transition-all touch-manipulation"
+                          className="tw-w-12 tw-h-12 tw-bg-white tw-border tw-border-slate-200 tw-rounded-full tw-text-slate-600 tw-shadow-sm tw-flex tw-items-center tw-justify-center active:tw-bg-slate-100 disabled:tw-opacity-30 disabled:active:tw-bg-white tw-transition-all tw-touch-manipulation"
                           data-agent-id={useAgentId(`stop-card:${stop.id}:reorder-down`)}
                         >
-                          <i className="fa-solid fa-arrow-down text-lg"></i>
+                          <i className="fa-solid fa-arrow-down tw-text-lg"></i>
                         </button>
                       </div>
                     )}

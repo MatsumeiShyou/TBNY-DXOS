@@ -87,26 +87,26 @@ export const NumericKeypad: React.FC<KeypadProps> = ({ isVisible, onInput, onDel
   };
 
   return (
-    <div className="fixed inset-x-0 bottom-0 z-50 bg-slate-100 shadow-[0_-4px_20px_rgba(0,0,0,0.15)] rounded-t-2xl pb-safe animate-slide-up select-none">
+    <div className="tw-fixed tw-inset-x-0 tw-bottom-0 tw-z-50 tw-bg-slate-100 tw-shadow-[0_-4px_20px_rgba(0,0,0,0.15)] tw-rounded-t-2xl tw-pb-safe tw-animate-slide-up tw-select-none">
       {/* Header / Done Button */}
-      <div className="flex justify-between items-center bg-white p-2 px-4 border-b border-slate-200 rounded-t-2xl min-h-[50px]">
-        <div className="flex items-center space-x-2">
-           <span className="text-xs font-bold text-slate-400">電卓入力</span>
-           <button onClick={onClear} className="text-xs bg-slate-200 text-slate-600 px-3 py-1.5 rounded font-bold active:bg-slate-300">
+      <div className="tw-flex tw-justify-between tw-items-center tw-bg-white tw-p-2 tw-px-4 tw-border-b tw-border-slate-200 tw-rounded-t-2xl tw-min-h-[50px]">
+        <div className="tw-flex tw-items-center tw-space-x-2">
+           <span className="tw-text-xs tw-font-bold tw-text-slate-400">電卓入力</span>
+           <button onClick={onClear} className="tw-text-xs tw-bg-slate-200 tw-text-slate-600 tw-px-3 tw-py-1.5 tw-rounded tw-font-bold tw-active:tw-bg-slate-300">
              クリア
            </button>
         </div>
         <button 
           onClick={onClose} 
-          className="text-primary font-bold text-lg px-4 py-2 active:opacity-50 min-h-[44px]"
+          className="tw-text-primary tw-font-bold tw-text-lg tw-px-4 tw-py-2 tw-active:tw-opacity-50 tw-min-h-[44px]"
         >
           完了
         </button>
       </div>
 
       {/* Keypad Grid */}
-      <div className="p-2 bg-slate-100">
-        <div className="grid grid-cols-4 gap-2">
+      <div className="tw-p-2 tw-bg-slate-100">
+        <div className="tw-grid tw-grid-cols-4 tw-gap-2">
           {rows.map((row, rowIndex) => (
             <React.Fragment key={rowIndex}>
               {row.map((key) => (
@@ -114,14 +114,14 @@ export const NumericKeypad: React.FC<KeypadProps> = ({ isVisible, onInput, onDel
                   key={key}
                   onClick={() => handlePress(key)}
                   className={`
-                    h-16 rounded-xl text-2xl font-bold shadow-sm border-b-2 transition-all touch-manipulation flex items-center justify-center active:border-b-0 active:translate-y-[2px]
+                    tw-h-16 tw-rounded-xl tw-text-2xl tw-font-bold tw-shadow-sm tw-border-b-2 tw-transition-all tw-touch-manipulation tw-flex tw-items-center tw-justify-center tw-active:tw-border-b-0 tw-active:tw-translate-y-[2px]
                     ${isOperator(key) 
-                      ? 'bg-blue-50 text-blue-600 border-blue-200 active:bg-blue-100' 
+                      ? 'tw-bg-blue-50 tw-text-blue-600 tw-border-blue-200 tw-active:tw-bg-blue-100' 
                       : key === '=' 
-                        ? 'bg-primary text-white border-blue-800 active:bg-blue-700'
+                        ? 'tw-bg-primary tw-text-white tw-border-blue-800 tw-active:tw-bg-blue-700'
                         : key === '⌫'
-                          ? 'bg-slate-200 text-slate-600 border-slate-300 active:bg-slate-300 text-xl'
-                          : 'bg-white text-slate-800 border-slate-300 active:bg-slate-50'
+                          ? 'tw-bg-slate-200 tw-text-slate-600 tw-border-slate-300 tw-active:tw-bg-slate-300 tw-text-xl'
+                          : 'tw-bg-white tw-text-slate-800 tw-border-slate-300 tw-active:tw-bg-slate-50'
                     }
                   `}
                 >

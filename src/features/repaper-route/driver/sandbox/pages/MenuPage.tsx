@@ -35,7 +35,7 @@ export const MenuPage: React.FC<MenuPageProps> = ({
         <div className="tw-bg-primary tw-text-white tw-p-6 tw-pt-safe tw-pb-6 tw-shrink-0 tw-relative">
            <button 
              onClick={onClose}
-             className="tw-absolute tw-top-safe tw-right-4 tw-w-10 tw-h-10 tw-flex tw-items-center tw-justify-center tw-bg-white/20 tw-rounded-full active:tw-bg-white/30"
+             className="tw-absolute tw-top-safe tw-right-4 tw-w-10 tw-h-10 tw-flex tw-items-center tw-justify-center tw-bg-white/20 tw-rounded-full tw-active:tw-bg-white/30"
              data-agent-id={useAgentId("close-button")}
            >
              <i className="fa-solid fa-xmark"></i>
@@ -63,7 +63,7 @@ export const MenuPage: React.FC<MenuPageProps> = ({
               <div className="tw-bg-white tw-rounded-xl tw-border tw-border-slate-200 tw-shadow-sm tw-overflow-hidden">
                  <button 
                    onClick={onVehicleChange}
-                   className="tw-w-full tw-flex tw-items-center tw-p-4 tw-border-b tw-border-slate-100 active:tw-bg-slate-50 tw-transition-colors tw-text-left"
+                   className="tw-w-full tw-flex tw-items-center tw-p-4 tw-border-b tw-border-slate-100 tw-active:tw-bg-slate-50 tw-transition-colors tw-text-left"
                    data-agent-id={useAgentId("action:vehicle-change")}
                  >
                     <div className="tw-w-8 tw-h-8 tw-rounded-full tw-bg-slate-100 tw-flex tw-items-center tw-justify-center tw-mr-3 tw-text-slate-500">
@@ -78,7 +78,7 @@ export const MenuPage: React.FC<MenuPageProps> = ({
                  
                  <button 
                    onClick={onCourseChange}
-                   className="tw-w-full tw-flex tw-items-center tw-p-4 tw-border-b tw-border-slate-100 active:tw-bg-slate-50 tw-transition-colors tw-text-left"
+                   className="tw-w-full tw-flex tw-items-center tw-p-4 tw-border-b tw-border-slate-100 tw-active:tw-bg-slate-50 tw-transition-colors tw-text-left"
                    data-agent-id={useAgentId("action:course-change")}
                  >
                     <div className="tw-w-8 tw-h-8 tw-rounded-full tw-bg-slate-100 tw-flex tw-items-center tw-justify-center tw-mr-3 tw-text-slate-500">
@@ -93,7 +93,7 @@ export const MenuPage: React.FC<MenuPageProps> = ({
 
                  <button 
                    onClick={onFuelReport}
-                   className="tw-w-full tw-flex tw-items-center tw-p-4 active:tw-bg-slate-50 tw-transition-colors tw-text-left"
+                   className="tw-w-full tw-flex tw-items-center tw-p-4 tw-active:tw-bg-slate-50 tw-transition-colors tw-text-left"
                    data-agent-id={useAgentId("action:fuel-report")}
                  >
                     <div className="tw-w-8 tw-h-8 tw-rounded-full tw-bg-slate-100 tw-flex tw-items-center tw-justify-center tw-mr-3 tw-text-slate-500">
@@ -112,7 +112,7 @@ export const MenuPage: React.FC<MenuPageProps> = ({
            <div>
               <button 
                 onClick={onLogout}
-                className="tw-w-full tw-bg-white tw-border tw-border-slate-200 tw-text-red-600 tw-p-4 tw-rounded-xl tw-font-bold tw-flex tw-items-center tw-justify-center active:tw-bg-red-50 tw-transition-colors"
+                className="tw-w-full tw-bg-white tw-border tw-border-slate-200 tw-text-red-600 tw-p-4 tw-rounded-xl tw-font-bold tw-flex tw-items-center tw-justify-center tw-active:tw-bg-red-50 tw-transition-colors"
                 data-agent-id={useAgentId("action:logout")}
               >
                 <i className="fa-solid fa-right-from-bracket tw-mr-2"></i> ログアウト

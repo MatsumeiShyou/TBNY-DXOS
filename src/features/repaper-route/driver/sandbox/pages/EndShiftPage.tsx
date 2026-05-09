@@ -124,7 +124,7 @@ export const EndShiftPage: React.FC<Props> = ({ stops, currentVehicle, mode, onC
     <div className="tw-p-4 tw-space-y-6 tw-pb-24">
       {/* Wizard Header */}
       <div className="tw-flex tw-items-center tw-justify-between tw-mb-4 tw-px-2">
-        <button onClick={onCancel} className="tw-text-slate-400 hover:tw-text-slate-600">
+        <button onClick={onCancel} className="tw-text-slate-400 tw-hover:tw-text-slate-600">
            <i className="fa-solid fa-xmark tw-text-xl"></i>
         </button>
         <span className="tw-font-bold tw-text-slate-500">{titleText}</span>
@@ -196,7 +196,7 @@ export const EndShiftPage: React.FC<Props> = ({ stops, currentVehicle, mode, onC
                ※ 正味重量 = 総重量 - 空車重量
              </p>
              {!isValidGross && displayGross > 0 && (
-                <p className="tw-text-sm tw-text-center tw-red-500 tw-font-bold tw-bg-red-50 tw-p-2 tw-rounded tw-animate-pulse">
+                <p className="tw-text-sm tw-text-center tw-text-red-500 tw-font-bold tw-bg-red-50 tw-p-2 tw-rounded tw-animate-pulse">
                   <i className="fa-solid fa-triangle-exclamation tw-mr-1"></i>
                   空車重量（{tare}kg）より大きい値を入力してください
                 </p>

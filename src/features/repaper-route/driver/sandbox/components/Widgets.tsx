@@ -15,12 +15,12 @@ export const Button: React.FC<React.ButtonHTMLAttributes<HTMLButtonElement> & {
   ...props 
 }) => {
   const fullAgentId = useAgentId(agentId);
-  const baseStyles = "tw-w-full tw-py-4 tw-px-6 tw-rounded-xl tw-font-bold tw-text-lg tw-transition-all active:tw-scale-[0.98] tw-shadow-sm tw-flex tw-items-center tw-justify-center tw-touch-manipulation tw-min-h-[56px]";
+  const baseStyles = "tw-w-full tw-py-4 tw-px-6 tw-rounded-xl tw-font-bold tw-text-lg tw-transition-all tw-active:tw-scale-[0.98] tw-shadow-sm tw-flex tw-items-center tw-justify-center tw-touch-manipulation tw-min-h-[56px]";
   const variants = {
-    primary: "tw-bg-primary tw-text-white hover:tw-bg-blue-800 tw-shadow-blue-900/10",
-    secondary: "tw-bg-white tw-text-slate-800 tw-border tw-border-slate-300 hover:tw-bg-slate-50",
-    outline: "tw-bg-transparent tw-border-2 tw-border-primary tw-text-primary hover:tw-bg-blue-50",
-    danger: "tw-bg-danger tw-text-white hover:tw-bg-red-700 tw-shadow-red-900/10"
+    primary: "tw-bg-primary tw-text-white tw-hover:tw-bg-blue-800 tw-shadow-blue-900/10",
+    secondary: "tw-bg-white tw-text-slate-800 tw-border tw-border-slate-300 tw-hover:tw-bg-slate-50",
+    outline: "tw-bg-transparent tw-border-2 tw-border-primary tw-text-primary tw-hover:tw-bg-blue-50",
+    danger: "tw-bg-danger tw-text-white tw-hover:tw-bg-red-700 tw-shadow-red-900/10"
   };
 
   const disabledStyles = disabled ? "tw-opacity-50 tw-cursor-not-allowed tw-pointer-events-none tw-grayscale" : "";
@@ -107,7 +107,7 @@ export const Modal: React.FC<{
           <h3 className="tw-font-bold tw-text-lg tw-pr-12">{title}</h3>
           <button 
             onClick={onClose} 
-            className="tw-absolute tw-right-0 tw-top-0 tw-bottom-0 tw-w-16 tw-flex tw-items-center tw-justify-center hover:tw-bg-white/10 active:tw-bg-white/20 tw-transition-colors"
+            className="tw-absolute tw-right-0 tw-top-0 tw-bottom-0 tw-w-16 tw-flex tw-items-center tw-justify-center tw-hover:tw-bg-white/10 tw-active:tw-bg-white/20 tw-transition-colors"
             aria-label="閉じる"
             data-agent-id={`${fullAgentId}:close`}
           >
@@ -161,7 +161,7 @@ export const Toast: React.FC<{
             <i className={`${icons[type]} tw-text-lg`}></i>
             <span className="tw-font-bold tw-text-sm tw-leading-tight">{message}</span>
          </div>
-         <button onClick={onClose} className="tw-w-10 tw-h-10 tw-flex tw-items-center tw-justify-center tw-bg-white/20 tw-rounded-full tw-ml-2 active:tw-bg-white/30">
+         <button onClick={onClose} className="tw-w-10 tw-h-10 tw-flex tw-items-center tw-justify-center tw-bg-white/20 tw-rounded-full tw-ml-2 tw-active:tw-bg-white/30">
             <i className="fa-solid fa-xmark tw-text-sm"></i>
          </button>
       </div>

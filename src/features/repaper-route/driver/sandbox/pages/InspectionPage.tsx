@@ -36,10 +36,10 @@ export const InspectionPage: React.FC<Props> = ({ onComplete }) => {
     <Card 
       key={item.id} 
       onClick={() => toggleItem(item.id)}
-      className={`tw-flex tw-items-center tw-space-x-4 tw-transition-all active:tw-scale-[0.98] ${item.checked ? 'tw-border-success tw-bg-green-50' : ''}`}
+      className={`tw-flex tw-items-center tw-space-x-4 tw-transition-all active:tw-scale-[0.98] ${item.checked ? 'tw-border-green-500 tw-bg-green-50' : 'tw-border-slate-200'}`}
       agentId={`item-card:${item.id}`}
     >
-      <div className={`tw-w-8 tw-h-8 tw-shrink-0 tw-rounded-full tw-flex tw-items-center tw-justify-center tw-border-2 ${item.checked ? 'tw-bg-success tw-border-success tw-text-white' : 'tw-border-slate-300 tw-text-transparent'}`}>
+      <div className={`tw-w-8 tw-h-8 tw-shrink-0 tw-rounded-full tw-flex tw-items-center tw-justify-center tw-border-2 ${item.checked ? 'tw-bg-green-500 tw-border-green-500 tw-text-white' : 'tw-border-slate-300 tw-text-transparent'}`}>
         <i className="fa-solid fa-check tw-text-sm"></i>
       </div>
       <span className={`tw-text-lg tw-font-bold tw-flex-1 ${item.checked ? 'tw-text-green-800' : 'tw-text-slate-700'}`}>
@@ -88,7 +88,7 @@ export const InspectionPage: React.FC<Props> = ({ onComplete }) => {
         <Button 
           disabled={!isAllChecked} 
           onClick={onComplete}
-          className={!isAllChecked ? 'tw-opacity-50 tw-cursor-not-allowed tw-bg-slate-400' : ''}
+          className={`tw-w-full tw-py-4 tw-rounded-xl tw-font-bold tw-text-lg tw-transition-all tw-shadow-md tw-flex tw-items-center tw-justify-center ${!isAllChecked ? 'tw-opacity-50 tw-cursor-not-allowed tw-bg-slate-400 tw-text-white' : 'tw-bg-primary tw-text-white tw-active:tw-scale-95'}`}
           agentId="complete-button"
         >
           {isAllChecked ? '点検完了・業務開始' : '全ての項目を確認してください'}

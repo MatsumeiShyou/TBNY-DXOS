@@ -76,7 +76,7 @@ export const Layout: React.FC<LayoutProps> = ({
           <div className="tw-flex tw-items-center tw-space-x-3">
              <button 
                onClick={onMenuClick}
-               className="tw-w-10 tw-h-10 tw-flex tw-items-center tw-justify-center tw-rounded-full hover:tw-bg-white/10 active:tw-bg-white/20 tw-transition-colors"
+               className="tw-w-10 tw-h-10 tw-flex tw-items-center tw-justify-center tw-rounded-full tw-hover:tw-bg-white/10 tw-active:tw-bg-white/20 tw-transition-colors"
                data-agent-id={useAgentId("header:menu-button")}
              >
                <i className="fa-solid fa-bars tw-text-xl"></i>
@@ -84,15 +84,16 @@ export const Layout: React.FC<LayoutProps> = ({
              
              <div className="tw-flex tw-flex-col tw-justify-center">
                <h1 className="tw-text-lg tw-font-bold tw-leading-tight">{title}</h1>
-               <HelpTarget helpId="vehicle-selector">
-                 <button 
-                   onClick={onVehicleClick}
-                   className="tw-flex tw-items-center tw-space-x-1.5 tw-text-xs tw-text-slate-300 tw-opacity-90 hover:tw-opacity-100 active:tw-opacity-70 tw-transition-opacity tw-text-left"
-                 >
-                   <span>{user.name} | {user.vehicleName}</span>
-                   {onVehicleClick && <i className="fa-solid fa-caret-down tw-text-[10px]"></i>}
-                 </button>
-               </HelpTarget>
+                <HelpTarget helpId="vehicle-selector">
+                  <button 
+                    onClick={onVehicleClick}
+                    className="tw-mt-1 tw-flex tw-items-center tw-space-x-1.5 tw-text-xs tw-text-slate-300 tw-opacity-80 tw-hover:tw-opacity-100 tw-active:tw-opacity-60 tw-transition-all tw-text-left"
+                  >
+                    <i className="fa-solid fa-truck-pickup tw-text-[10px]"></i>
+                    <span>{user.name} <span className="tw-mx-0.5 tw-opacity-50">|</span> {user.vehicleName}</span>
+                    {onVehicleClick && <i className="fa-solid fa-caret-down tw-text-[10px]"></i>}
+                  </button>
+                </HelpTarget>
              </div>
           </div>
 
@@ -102,7 +103,7 @@ export const Layout: React.FC<LayoutProps> = ({
             {/* Help Toggle Button */}
              <button 
                onClick={toggleHelpMode}
-               className={`tw-w-10 tw-h-10 tw-rounded-full tw-flex tw-items-center tw-justify-center tw-font-bold tw-text-lg tw-transition-all tw-border active:tw-scale-95 ${isHelpMode ? 'tw-bg-white tw-text-primary tw-border-white tw-ring-2 tw-ring-white/50' : 'tw-bg-blue-800 tw-text-blue-200 tw-border-blue-700'}`}
+               className={`tw-w-10 tw-h-10 tw-rounded-full tw-flex tw-items-center tw-justify-center tw-font-bold tw-text-lg tw-transition-all tw-border tw-active:tw-scale-95 ${isHelpMode ? 'tw-bg-white tw-text-primary tw-border-white tw-ring-2 tw-ring-white/50' : 'tw-bg-blue-800 tw-text-blue-200 tw-border-blue-700'}`}
              >
                ?
              </button>
@@ -116,7 +117,7 @@ export const Layout: React.FC<LayoutProps> = ({
             <HelpTarget helpId="trouble-button">
                <button 
                  onClick={onEmergencyClick}
-                 className="tw-ml-2 tw-bg-orange-600 hover:tw-bg-orange-700 tw-text-white tw-px-3 tw-h-10 tw-rounded-lg tw-font-bold tw-text-sm tw-shadow-lg tw-shadow-orange-900/20 active:tw-scale-95 tw-transition-all tw-flex tw-items-center tw-justify-center tw-border-b-2 tw-border-orange-800 tw-min-w-[80px]"
+                 className="tw-ml-2 tw-bg-orange-600 tw-hover:tw-bg-orange-700 tw-text-white tw-px-3 tw-h-10 tw-rounded-lg tw-font-bold tw-text-sm tw-shadow-lg tw-shadow-orange-900/20 tw-active:tw-scale-95 tw-transition-all tw-flex tw-items-center tw-justify-center tw-border-b-2 tw-border-orange-800 tw-min-w-[80px]"
                  data-agent-id={useAgentId("header:emergency-button")}
                >
                  <i className="fa-solid fa-triangle-exclamation tw-mr-1.5"></i> トラブル
@@ -181,7 +182,7 @@ export const Layout: React.FC<LayoutProps> = ({
 const NavButton = ({ icon, label, active, onClick, agentId }: { icon: string, label: string, active: boolean, onClick: () => void, agentId: string }) => (
   <button 
     onClick={onClick}
-    className={`tw-flex tw-flex-col tw-items-center tw-justify-center tw-w-full tw-h-full tw-space-y-1 active:tw-bg-slate-50 tw-transition-colors tw-touch-manipulation ${active ? 'tw-text-primary' : 'tw-text-slate-400'}`}
+    className={`tw-flex tw-flex-col tw-items-center tw-justify-center tw-w-full tw-h-full tw-space-y-1 tw-active:tw-bg-slate-50 tw-transition-colors tw-touch-manipulation ${active ? 'tw-text-primary' : 'tw-text-slate-400'}`}
     data-agent-id={useAgentId(agentId)}
   >
     <i className={`${icon} tw-text-xl tw-mb-0.5 ${active ? 'tw-scale-110' : ''} tw-transition-transform`}></i>

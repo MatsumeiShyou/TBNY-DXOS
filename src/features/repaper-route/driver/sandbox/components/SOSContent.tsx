@@ -17,21 +17,21 @@ export const SOSContent: React.FC<SOSContentProps> = ({ step, onSelectType, onCl
               <p className="tw-text-sm tw-text-red-600 tw-mt-1">けが人がいる場合は、迷わず救急車を呼んでください。</p>
           </div>
           <div className="tw-grid tw-gap-4">
-              <a href="tel:119" className="tw-block tw-w-full tw-bg-red-600 hover:tw-bg-red-700 tw-text-white tw-rounded-xl tw-shadow-lg tw-shadow-red-900/20 tw-p-6 tw-text-center active:tw-scale-[0.98] tw-transition-transform tw-flex tw-items-center tw-justify-between tw-group">
+              <a href="tel:119" className="tw-block tw-w-full tw-bg-red-600 tw-hover:tw-bg-red-700 tw-text-white tw-rounded-xl tw-shadow-lg tw-shadow-red-900/20 tw-p-6 tw-text-center tw-active:tw-scale-[0.98] tw-transition-transform tw-flex tw-items-center tw-justify-between tw-group">
                   <div className="tw-text-left">
                       <div className="tw-text-2xl tw-font-bold">119番</div>
                       <div className="tw-text-sm tw-opacity-90 tw-font-bold">救急車・消防</div>
                   </div>
-                  <div className="tw-w-12 tw-h-12 tw-bg-white/20 tw-rounded-full tw-flex tw-items-center tw-justify-center group-hover:tw-bg-white/30 tw-animate-pulse">
+                  <div className="tw-w-12 tw-h-12 tw-bg-white/20 tw-rounded-full tw-flex tw-items-center tw-justify-center tw-group-hover:tw-bg-white/30 tw-animate-pulse">
                       <i className="fa-solid fa-kit-medical tw-text-2xl"></i>
                   </div>
               </a>
-              <a href="tel:110" className="tw-block tw-w-full tw-bg-blue-600 hover:tw-bg-blue-700 tw-text-white tw-rounded-xl tw-shadow-lg tw-shadow-blue-900/20 tw-p-5 tw-text-center active:tw-scale-[0.98] tw-transition-transform tw-flex tw-items-center tw-justify-between tw-group">
+              <a href="tel:110" className="tw-block tw-w-full tw-bg-blue-600 tw-hover:tw-bg-blue-700 tw-text-white tw-rounded-xl tw-shadow-lg tw-shadow-blue-900/20 tw-p-5 tw-text-center tw-active:tw-scale-[0.98] tw-transition-transform tw-flex tw-items-center tw-justify-between tw-group">
                   <div className="tw-text-left">
                       <div className="tw-text-xl tw-font-bold">110番</div>
                       <div className="tw-text-sm tw-opacity-90 tw-font-bold">警察への通報</div>
                   </div>
-                  <div className="tw-w-10 tw-h-10 tw-bg-white/20 tw-rounded-full tw-flex tw-items-center tw-justify-center group-hover:tw-bg-white/30">
+                  <div className="tw-w-10 tw-h-10 tw-bg-white/20 tw-rounded-full tw-flex tw-items-center tw-justify-center tw-group-hover:tw-bg-white/30">
                       <i className="fa-solid fa-shield-halved tw-text-xl"></i>
                   </div>
               </a>
@@ -87,9 +87,9 @@ export const SOSContent: React.FC<SOSContentProps> = ({ step, onSelectType, onCl
     <div className="tw-grid tw-grid-cols-2 tw-gap-4 tw-pb-6">
       <button 
         onClick={() => onSelectType('ACCIDENT')}
-        className="tw-bg-red-50 hover:tw-bg-red-100 tw-p-6 tw-rounded-2xl tw-border-2 tw-border-red-100 tw-flex tw-flex-col tw-items-center tw-group tw-transition-colors"
+        className="tw-bg-red-50 tw-hover:tw-bg-red-100 tw-p-6 tw-rounded-2xl tw-border-2 tw-border-red-100 tw-flex tw-flex-col tw-items-center tw-group tw-transition-colors"
       >
-        <div className="tw-w-16 tw-h-16 tw-bg-red-100 tw-text-red-600 tw-rounded-full tw-flex tw-items-center tw-justify-center tw-mb-3 group-hover:tw-scale-110 tw-transition-transform">
+        <div className="tw-w-16 tw-h-16 tw-bg-red-100 tw-text-red-600 tw-rounded-full tw-flex tw-items-center tw-justify-center tw-mb-3 tw-group-hover:tw-scale-110 tw-transition-transform">
            <i className="fa-solid fa-car-burst tw-text-2xl"></i>
         </div>
         <span className="tw-font-bold tw-text-red-800">事故報告</span>
@@ -97,9 +97,9 @@ export const SOSContent: React.FC<SOSContentProps> = ({ step, onSelectType, onCl
 
       <button 
         onClick={() => onSelectType('BREAKDOWN')}
-        className="tw-bg-orange-50 hover:tw-bg-orange-100 tw-p-6 tw-rounded-2xl tw-border-2 tw-border-orange-100 tw-flex tw-flex-col tw-items-center tw-group tw-transition-colors"
+        className="tw-bg-orange-50 tw-hover:tw-bg-orange-100 tw-p-6 tw-rounded-2xl tw-border-2 tw-border-orange-100 tw-flex tw-flex-col tw-items-center tw-group tw-transition-colors"
       >
-        <div className="tw-w-16 tw-h-16 tw-bg-orange-100 tw-text-orange-600 tw-rounded-full tw-flex tw-items-center tw-justify-center tw-mb-3 group-hover:tw-scale-110 tw-transition-transform">
+        <div className="tw-w-16 tw-h-16 tw-bg-orange-100 tw-text-orange-600 tw-rounded-full tw-flex tw-items-center tw-justify-center tw-mb-3 tw-group-hover:tw-scale-110 tw-transition-transform">
            <i className="fa-solid fa-screwdriver-wrench tw-text-2xl"></i>
         </div>
         <span className="tw-font-bold tw-text-orange-800">車両故障</span>
@@ -107,9 +107,9 @@ export const SOSContent: React.FC<SOSContentProps> = ({ step, onSelectType, onCl
 
       <button 
         onClick={() => onSelectType('DELAY')}
-        className="tw-bg-blue-50 hover:tw-bg-blue-100 tw-p-6 tw-rounded-2xl tw-border-2 tw-border-blue-100 tw-flex tw-flex-col tw-items-center tw-group tw-transition-colors"
+        className="tw-bg-blue-50 tw-hover:tw-bg-blue-100 tw-p-6 tw-rounded-2xl tw-border-2 tw-border-blue-100 tw-flex tw-flex-col tw-items-center tw-group tw-transition-colors"
       >
-        <div className="tw-w-16 tw-h-16 tw-bg-blue-100 tw-text-blue-600 tw-rounded-full tw-flex tw-items-center tw-justify-center tw-mb-3 group-hover:tw-scale-110 tw-transition-transform">
+        <div className="tw-w-16 tw-h-16 tw-bg-blue-100 tw-text-blue-600 tw-rounded-full tw-flex tw-items-center tw-justify-center tw-mb-3 tw-group-hover:tw-scale-110 tw-transition-transform">
            <i className="fa-solid fa-clock-rotate-left tw-text-2xl"></i>
         </div>
         <span className="tw-font-bold tw-text-blue-800">大幅な遅延</span>
@@ -117,9 +117,9 @@ export const SOSContent: React.FC<SOSContentProps> = ({ step, onSelectType, onCl
 
       <button 
         onClick={() => onSelectType('OTHER')}
-        className="tw-bg-slate-50 hover:tw-bg-slate-100 tw-p-6 tw-rounded-2xl tw-border-2 tw-border-slate-100 tw-flex tw-flex-col tw-items-center tw-group tw-transition-colors"
+        className="tw-bg-slate-50 tw-hover:tw-bg-slate-100 tw-p-6 tw-rounded-2xl tw-border-2 tw-border-slate-100 tw-flex tw-flex-col tw-items-center tw-group tw-transition-colors"
       >
-        <div className="tw-w-16 tw-h-16 tw-bg-slate-100 tw-text-slate-600 tw-rounded-full tw-flex tw-items-center tw-justify-center tw-mb-3 group-hover:tw-scale-110 tw-transition-transform">
+        <div className="tw-w-16 tw-h-16 tw-bg-slate-100 tw-text-slate-600 tw-rounded-full tw-flex tw-items-center tw-justify-center tw-mb-3 tw-group-hover:tw-scale-110 tw-transition-transform">
            <i className="fa-solid fa-ellipsis tw-text-2xl"></i>
         </div>
         <span className="tw-font-bold tw-text-slate-800">その他</span>

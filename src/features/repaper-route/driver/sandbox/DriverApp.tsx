@@ -13,6 +13,7 @@ import { Modal, Button, Card } from './components/Widgets';
 import { HelpProvider } from './components/Help';
 import { SOSContent } from './components/SOSContent';
 import { AgentNamespace } from './components/AgentContext';
+import { VehicleSelector } from '../../components/VehicleSelector';
 
 /**
  * DriverApp (Production Mode)
@@ -224,7 +225,7 @@ export default function DriverApp() {
                 />
               </AgentNamespace>
             )}
-            {view === 'fuel' && <div className="p-4"><h2 className="text-xl font-bold">給油報告（準備中）</h2></div>}
+            {view === 'fuel' && <div className="tw-p-4"><h2 className="tw-text-xl tw-font-bold">給油報告（準備中）</h2></div>}
           </AgentNamespace>
         </Layout>
       </AgentNamespace>
@@ -247,19 +248,16 @@ export default function DriverApp() {
       {/* Vehicle Modal */}
       {isVehicleModalOpen && (
         <AgentNamespace ns="vehicle-swap">
-          <Modal isOpen={true} title="車両乗り換え" onClose={() => setVehicleModalOpen(false)} agentId="modal">
-            <div className="grid gap-3">
-              {bridge.availableVehicles.map(v => (
-                <Card key={v.id} onClick={() => handleVehicleChange(v)} className="p-4 active:bg-slate-50 transition-colors" agentId={`card:${v.id}`}>
-                  <div className="flex justify-between items-center">
-                    <div>
-                      <div className="font-bold text-lg">{v.name}</div>
-                      <div className="text-sm text-slate-500">{v.plateNumber}</div>
-                    </div>
-                    <i className="fa-solid fa-chevron-right text-slate-300"></i>
-                  </div>
-                </Card>
-              ))}
+          <Modal isOpen={true} title="車両を選択" onClose={() => setVehicleModalOpen(false)} agentId="modal">
+            <div className="tw-p-1">
+              <VehicleSelector 
+                vehicles={bridge.availableVehicles}
+                selectedVehicleId={user.vehicleId}
+                onSelect={(v) => { handleVehicleChange(v as Vehicle); }}
+              />
+              <p className="tw-mt-4 tw-text-[10px] tw-text-slate-400 tw-text-center">
+                ※車両を変更すると、本日の運行実績データに紐付けられます
+              </p>
             </div>
           </Modal>
         </AgentNamespace>
@@ -288,32 +286,32 @@ export default function DriverApp() {
             agentId="modal"
           >
             {transferStep === 'SELECT' ? (
-              <div className="grid gap-3">
+              <div className="tw-grid tw-gap-3">
                 {bridge.availableColleagues.map(c => (
-                  <Card key={c.id} onClick={() => { setSelectedColleagueForTransfer(c); setTransferStep('CONFIRM'); }} className="p-4" agentId={`card:${c.id}`}>
-                    <div className="flex justify-between items-center">
+                  <Card key={c.id} onClick={() => { setSelectedColleagueForTransfer(c); setTransferStep('CONFIRM'); }} className="tw-p-4 tw-active:tw-bg-slate-50 tw-transition-colors" agentId={`card:${c.id}`}>
+                    <div className="tw-flex tw-justify-between tw-items-center">
                       <div>
-                        <div className="font-bold">{c.name}</div>
-                        <div className="text-sm text-slate-500">{c.distance} 付近</div>
+                        <div className="tw-font-bold tw-text-slate-800">{c.name}</div>
+                        <div className="tw-text-sm tw-text-slate-500">{c.distance} 付近</div>
                       </div>
-                      <i className="fa-solid fa-truck-fast text-blue-500"></i>
+                      <i className="fa-solid fa-truck-fast tw-text-blue-500"></i>
                     </div>
                   </Card>
                 ))}
               </div>
             ) : (
-              <div className="space-y-6 text-center">
-                <div className="p-6 bg-blue-50 rounded-2xl">
-                  <p className="text-slate-600 mb-2">譲渡する案件</p>
-                  <h3 className="text-xl font-bold">{selectedStopForTransfer?.customerName}</h3>
-                  <div className="my-4 text-2xl text-blue-600"><i className="fa-solid fa-arrow-down"></i></div>
-                  <p className="text-slate-600 mb-2">譲渡先ドライバー</p>
-                  <h3 className="text-xl font-bold">{selectedColleagueForTransfer?.name}</h3>
+              <div className="tw-space-y-6 tw-text-center">
+                <div className="tw-p-6 tw-bg-blue-50 tw-rounded-2xl">
+                  <p className="tw-text-slate-600 tw-mb-2">譲渡する案件</p>
+                  <h3 className="tw-text-xl tw-font-bold">{selectedStopForTransfer?.customerName}</h3>
+                  <div className="tw-my-4 tw-text-2xl tw-text-blue-600"><i className="fa-solid fa-arrow-down"></i></div>
+                  <p className="tw-text-slate-600 tw-mb-2">譲渡先ドライバー</p>
+                  <h3 className="tw-text-xl tw-font-bold">{selectedColleagueForTransfer?.name}</h3>
                 </div>
                 <Button 
                   variant="primary" 
                   onClick={handleExecuteTransfer}
-                  className="py-4 text-lg"
+                  className="tw-py-4 tw-text-lg"
                   agentId="confirm-button"
                 >
                   電話して依頼を確定する

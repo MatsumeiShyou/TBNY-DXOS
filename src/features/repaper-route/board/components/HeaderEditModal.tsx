@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import Modal from '../../../components/Modal';
 import type { BoardDriver } from '../../types';
+import { VehicleSelector } from '../../components/VehicleSelector';
 
 interface HeaderEditModalProps {
     isOpen: boolean;
@@ -82,19 +83,20 @@ export const HeaderEditModal: React.FC<HeaderEditModalProps> = ({
                 </div>
 
                 <div>
-                    <label className="tw-block tw-text-sm tw-font-medium tw-text-gray-700 tw-mb-1">使用車両（通称/番号）</label>
-                    <select
-                        value={vehicleCallsign}
-                        onChange={(e) => setVehicleCallsign(e.target.value)}
-                        className="tw-w-full tw-border tw-rounded-md tw-p-2 tw-text-sm tw-bg-white"
-                    >
-                        <option value="">（未選択）</option>
-                        {masterVehicles.map(v => (
-                            <option key={v.id} value={v.callsign || v.number || v.id}>
-                                {v.callsign ? `${v.callsign} (${v.number})` : v.number || v.id}
-                            </option>
-                        ))}
-                    </select>
+                    <label className="tw-block tw-text-[11px] tw-font-black tw-text-slate-500 tw-uppercase tw-tracking-wider tw-mb-2">使用車両の指定</label>
+                    <div className="tw-border tw-rounded-xl tw-p-3 tw-bg-slate-50/50">
+                        <VehicleSelector 
+                            vehicles={masterVehicles.map(v => ({
+                                id: v.id,
+                                name: v.callsign || v.number || v.id,
+                                plateNumber: v.number,
+                                isInspected: true // 管理者側では便宜上 true
+                            }))}
+                            selectedVehicleId={masterVehicles.find(v => (v.callsign || v.number || v.id) === vehicleCallsign)?.id}
+                            onSelect={(v) => setVehicleCallsign(v.name)}
+                        />
+                    </div>
+                    <p className="tw-mt-2 tw-text-[10px] tw-text-slate-400 tw-italic">※リストから選択すると即座に反映候補となります</p>
                 </div>
 
                 <div className="tw-flex tw-justify-between tw-items-center tw-pt-4">

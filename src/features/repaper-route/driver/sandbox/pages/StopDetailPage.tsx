@@ -138,7 +138,7 @@ export const StopDetailPage: React.FC<Props> = ({ stop, onUpdateStop, onBack }) 
       <div className="tw-flex tw-flex-col tw-h-full">
         <div className="tw-flex-1 tw-p-4 tw-space-y-6 tw-overflow-y-auto">
           <div className="tw-space-y-2">
-            <button onClick={onBack} className="tw-text-slate-500 tw-font-bold tw-mb-4 tw-flex tw-items-center tw-py-3 tw--ml-2 tw-px-2 hover:tw-bg-slate-100 tw-rounded-lg tw-transition-colors tw-touch-manipulation tw-min-h-[44px]">
+            <button onClick={onBack} className="tw-text-slate-500 tw-font-bold tw-mb-4 tw-flex tw-items-center tw-py-3 tw--ml-2 tw-px-2 tw-hover:tw-bg-slate-100 tw-rounded-lg tw-transition-colors tw-touch-manipulation tw-min-h-[44px]">
               <i className="fa-solid fa-chevron-left tw-mr-2"></i> リストに戻る
             </button>
             <h2 className="tw-text-2xl tw-font-bold tw-leading-tight">{stop.customerName}</h2>
@@ -202,7 +202,7 @@ export const StopDetailPage: React.FC<Props> = ({ stop, onUpdateStop, onBack }) 
              </span>
           </div>
 
-          <div className="space-y-4">
+          <div className="tw-space-y-4">
             {items.map(item => (
               <Card 
                 key={item.id} 
@@ -302,16 +302,16 @@ export const StopDetailPage: React.FC<Props> = ({ stop, onUpdateStop, onBack }) 
               <Button 
                 variant="secondary" 
                 onClick={() => setAddItemModalOpen(true)} 
-                className="py-3 text-sm border-dashed border-2 w-full"
+                className="tw-py-3 tw-text-sm tw-border-dashed tw-border-2 tw-w-full"
                 agentId="action:add-item-button"
               >
-                <i className="fa-solid fa-plus mr-2"></i> リストにない品目を追加
+                <i className="fa-solid fa-plus tw-mr-2"></i> リストにない品目を追加
               </Button>
             </HelpTarget>
             
-            <div className="pt-4 pb-2">
-               <Button variant="secondary" onClick={onBack} className="text-sm" agentId="action:pause-button">
-                  <i className="fa-solid fa-pause mr-2"></i> 作業を中断して戻る
+            <div className="tw-pt-4 tw-pb-2">
+               <Button variant="secondary" onClick={onBack} className="tw-text-sm" agentId="action:pause-button">
+                  <i className="fa-solid fa-pause tw-mr-2"></i> 作業を中断して戻る
                </Button>
             </div>
           </div>
