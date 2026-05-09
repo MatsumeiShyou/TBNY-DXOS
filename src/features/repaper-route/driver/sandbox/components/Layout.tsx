@@ -3,14 +3,13 @@ import React from 'react';
 import type { User } from '../types';
 import { DriverStatus } from '../types';
 import { Toast } from './Widgets';
-import { useHelp, HelpTarget } from './Help';
+import { HelpTarget } from './Help';
 import { useAgentId } from './AgentContext';
 
 interface LayoutProps {
   children: React.ReactNode;
   user: User;
   title: string;
-  onEmergencyClick: () => void;
   onMenuClick: () => void; // New Prop
   currentView: string;
   onNavigate: (view: string) => void;
@@ -22,21 +21,10 @@ interface LayoutProps {
   onToastClose?: () => void;
 }
 
-const getStatusLabel = (status: DriverStatus) => {
-  switch (status) {
-    case DriverStatus.IDLE: return '待機中';
-    case DriverStatus.DRIVING: return '移動中';
-    case DriverStatus.LOADING: return '作業中';
-    case DriverStatus.OFFLINE: return '休憩/オフライン';
-    default: return status;
-  }
-};
-
 export const Layout: React.FC<LayoutProps> = ({ 
   children, 
   user, 
   title, 
-  onEmergencyClick,
   onMenuClick, 
   currentView, 
   onNavigate,
@@ -46,7 +34,6 @@ export const Layout: React.FC<LayoutProps> = ({
   toastType = 'success',
   onToastClose = () => {}
 }) => {
-  const { isHelpMode, toggleHelpMode } = useHelp();
 
   return (
     <div className="tw-flex tw-flex-col tw-h-full tw-bg-slate-50 tw-relative">
@@ -68,61 +55,35 @@ export const Layout: React.FC<LayoutProps> = ({
         agentId="layout:toast"
       />
 
-      {/* Header with Safe Area Top - Height increased for touch targets */}
+      {/* Header with Safe Area Top */}
       <header className="tw-flex-none tw-bg-primary tw-text-white tw-shadow-md tw-z-20 tw-pt-safe">
-        <div className="tw-flex tw-justify-between tw-items-center tw-px-3 tw-h-[60px]">
+        <div className="tw-flex tw-justify-between tw-items-center tw-px-3 tw-h-[64px]">
           
-          {/* Left: Menu Button & Title Group */}
-          <div className="tw-flex tw-items-center tw-space-x-3">
+          {/* Left: Menu & Title Group */}
+          <div className="tw-flex tw-items-center tw-space-x-2">
              <button 
                onClick={onMenuClick}
-               className="tw-w-10 tw-h-10 tw-flex tw-items-center tw-justify-center tw-rounded-full tw-hover:tw-bg-white/10 tw-active:tw-bg-white/20 tw-transition-colors"
+               className="tw-w-10 tw-h-10 tw-flex tw-items-center tw-justify-center tw-hover:tw-bg-white/10 tw-active:tw-bg-white/20 tw-transition-colors tw-rounded-lg"
                data-agent-id={useAgentId("header:menu-button")}
              >
                <i className="fa-solid fa-bars tw-text-xl"></i>
              </button>
              
-             <div className="tw-flex tw-flex-col tw-justify-center">
-               <h1 className="tw-text-lg tw-font-bold tw-leading-tight">{title}</h1>
-                <HelpTarget helpId="vehicle-selector">
-                  <button 
-                    onClick={onVehicleClick}
-                    className="tw-mt-1 tw-flex tw-items-center tw-space-x-1.5 tw-text-xs tw-text-slate-300 tw-opacity-80 tw-hover:tw-opacity-100 tw-active:tw-opacity-60 tw-transition-all tw-text-left"
-                  >
-                    <i className="fa-solid fa-truck-pickup tw-text-[10px]"></i>
-                    <span>{user.name} <span className="tw-mx-0.5 tw-opacity-50">|</span> {user.vehicleName}</span>
-                    {onVehicleClick && <i className="fa-solid fa-caret-down tw-text-[10px]"></i>}
-                  </button>
-                </HelpTarget>
+             <div className="tw-flex tw-flex-col tw-justify-center tw--mt-3.5">
+               <h1 className="tw-text-xl tw-font-bold tw-leading-none">{title}</h1>
+               <button 
+                 onClick={onVehicleClick}
+                 className="tw--mt-1 tw-flex tw-items-center tw-space-x-1 tw-text-sm tw-text-slate-300 tw-opacity-90 tw-hover:tw-opacity-100 tw-active:tw-opacity-70 tw-transition-opacity tw-text-left tw-bg-transparent tw-border-none tw-outline-none"
+               >
+                 <span>{user.name} | {user.vehicleName}</span>
+                 {onVehicleClick && <i className="fa-solid fa-caret-down tw-text-[10px] tw-ml-0.5"></i>}
+               </button>
              </div>
           </div>
 
-          {/* Right: Actions */}
-          <div className="tw-flex tw-items-center tw-space-x-1">
-            
-            {/* Help Toggle Button */}
-             <button 
-               onClick={toggleHelpMode}
-               className={`tw-w-10 tw-h-10 tw-rounded-full tw-flex tw-items-center tw-justify-center tw-font-bold tw-text-lg tw-transition-all tw-border tw-active:tw-scale-95 ${isHelpMode ? 'tw-bg-white tw-text-primary tw-border-white tw-ring-2 tw-ring-white/50' : 'tw-bg-blue-800 tw-text-blue-200 tw-border-blue-700'}`}
-             >
-               ?
-             </button>
-            
-            <HelpTarget helpId="status-badge-header">
-               <span className="tw-text-[10px] tw-font-mono tw-bg-blue-800 tw-px-2 tw-py-1 tw-rounded tw-opacity-80 tw-block tw-min-w-[3rem] tw-text-center tw-ml-1">
-                 {getStatusLabel(user.currentStatus)}
-               </span>
-            </HelpTarget>
-            
-            <HelpTarget helpId="trouble-button">
-               <button 
-                 onClick={onEmergencyClick}
-                 className="tw-ml-2 tw-bg-orange-600 tw-hover:tw-bg-orange-700 tw-text-white tw-px-3 tw-h-10 tw-rounded-lg tw-font-bold tw-text-sm tw-shadow-lg tw-shadow-orange-900/20 tw-active:tw-scale-95 tw-transition-all tw-flex tw-items-center tw-justify-center tw-border-b-2 tw-border-orange-800 tw-min-w-[80px]"
-                 data-agent-id={useAgentId("header:emergency-button")}
-               >
-                 <i className="fa-solid fa-triangle-exclamation tw-mr-1.5"></i> トラブル
-               </button>
-            </HelpTarget>
+          {/* Right: Empty or Minimal (matching user screenshot) */}
+          <div className="tw-flex tw-items-center">
+             {/* ユーザー提示の「本来の姿」には右側にボタンがないため、スペースを空ける */}
           </div>
         </div>
       </header>

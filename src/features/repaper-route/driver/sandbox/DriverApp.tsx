@@ -7,6 +7,7 @@ import { StopDetailPage } from './pages/StopDetailPage';
 import { EndShiftPage } from './pages/EndShiftPage';
 import { ReportPage } from './pages/ReportPage';
 import { MenuPage } from './pages/MenuPage';
+import { FuelPage } from './pages/FuelPage';
 import type { Stop, User, Vehicle, Colleague } from './types';
 import { StopStatus, DriverStatus } from './types';
 import { Modal, Button, Card } from './components/Widgets';
@@ -25,13 +26,13 @@ import { VehicleSelector } from '../../components/VehicleSelector';
 const PERSIST_KEY = 'TBNY_DRIVER_SESSION_V1';
 
 // 初期値の遅延取得関数
-const getInitialState = (key: string, defaultValue: any) => {
+const getInitialState = (key: string, defaultValue: unknown) => {
   const saved = localStorage.getItem(PERSIST_KEY);
   if (!saved) return defaultValue;
   try {
     const data = JSON.parse(saved);
     return data[key] !== undefined ? data[key] : defaultValue;
-  } catch (e) {
+  } catch {
     return defaultValue;
   }
 };
@@ -69,12 +70,16 @@ export default function DriverApp() {
 
   // DB データの同期
   useEffect(() => {
-    if (bridge.stops) setStops(bridge.stops);
-  }, [bridge.stops]);
+    if (bridge.stops && JSON.stringify(bridge.stops) !== JSON.stringify(stops)) {
+      Promise.resolve().then(() => setStops(bridge.stops));
+    }
+  }, [bridge.stops, stops]);
 
   useEffect(() => {
-    if (bridge.user) setUser(bridge.user);
-  }, [bridge.user]);
+    if (bridge.user && JSON.stringify(bridge.user) !== JSON.stringify(user)) {
+      Promise.resolve().then(() => setUser(bridge.user));
+    }
+  }, [bridge.user, user]);
 
   const showToast = (message: string, type: 'success' | 'error' | 'info' = 'success') => {
     setToast({ message, type });
@@ -188,17 +193,26 @@ export default function DriverApp() {
     );
   }
 
+  const getPageTitle = () => {
+     if (view === 'inspection') return '始業前点検';
+     if (view === 'route') return '本日の案件リスト';
+     if (view === 'stop') return '案件詳細';
+     if (view === 'fuel') return '給油報告';
+     if (view === 'report') return '業務日報サマリ';
+     if (view === 'end') return '本日の業務終了';
+     return '本日の案件リスト';
+   };
+
   return (
     <HelpProvider>
       <AgentNamespace ns="layout">
         <Layout 
           user={user} 
-          title="本日の案件リスト"
+          title={getPageTitle()}
           currentView={view} 
           onNavigate={setView}
           onMenuClick={() => setIsMenuOpen(!isMenuOpen)}
           onVehicleClick={() => setVehicleModalOpen(true)}
-          onEmergencyClick={() => { setSosStep('MENU'); setIsSOSModalOpen(true); }}
           toastMessage={toast?.message}
           toastType={toast?.type}
           onToastClose={() => setToast(null)}
@@ -254,7 +268,11 @@ export default function DriverApp() {
                 />
               </AgentNamespace>
             )}
-            {view === 'fuel' && <div className="tw-p-4"><h2 className="tw-text-xl tw-font-bold">給油報告（準備中）</h2></div>}
+             {view === 'fuel' && (
+               <AgentNamespace ns="fuel">
+                 <FuelPage />
+               </AgentNamespace>
+             )}
           </AgentNamespace>
         </Layout>
       </AgentNamespace>
