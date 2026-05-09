@@ -15,15 +15,15 @@ export const Button: React.FC<React.ButtonHTMLAttributes<HTMLButtonElement> & {
   ...props 
 }) => {
   const fullAgentId = useAgentId(agentId);
-  const baseStyles = "tw-w-full tw-py-4 tw-px-6 tw-rounded-xl tw-font-bold tw-text-lg tw-transition-all tw-active:scale-[0.98] tw-shadow-sm tw-flex tw-items-center tw-justify-center tw-touch-manipulation tw-min-h-[56px]";
+  const baseStyles = "w-full py-4 px-6 rounded-xl font-bold text-lg transition-all active:scale-[0.98] shadow-sm flex items-center justify-center touch-manipulation min-h-[56px]";
   const variants = {
-    primary: "tw-bg-primary tw-text-white tw-hover:bg-blue-800 tw-shadow-blue-900/10",
-    secondary: "tw-bg-white tw-text-slate-800 tw-border tw-border-slate-300 tw-hover:bg-slate-50",
-    outline: "tw-bg-transparent tw-border-2 tw-border-primary tw-text-primary tw-hover:bg-blue-50",
-    danger: "tw-bg-danger tw-text-white tw-hover:bg-red-700 tw-shadow-red-900/10"
+    primary: "bg-primary text-white hover:bg-blue-800 shadow-blue-900/10",
+    secondary: "bg-white text-slate-800 border border-slate-300 hover:bg-slate-50",
+    outline: "bg-transparent border-2 border-primary text-primary hover:bg-blue-50",
+    danger: "bg-danger text-white hover:bg-red-700 shadow-red-900/10"
   };
 
-  const disabledStyles = disabled ? "tw-opacity-50 tw-cursor-not-allowed tw-pointer-events-none tw-grayscale" : "";
+  const disabledStyles = disabled ? "opacity-50 cursor-not-allowed pointer-events-none grayscale" : "";
 
   return (
     <button 
@@ -48,7 +48,7 @@ export const Card: React.FC<{
   return (
     <div 
       onClick={onClick} 
-      className={`tw-bg-white tw-rounded-xl tw-shadow-sm tw-border tw-border-slate-200 tw-p-4 ${className}`}
+      className={`bg-white rounded-xl shadow-sm border border-slate-200 p-4 ${className}`}
       data-agent-id={fullAgentId}
     >
       {children}
@@ -58,30 +58,30 @@ export const Card: React.FC<{
 
 // Status Badge - Increased contrast for outdoor visibility
 export const StatusBadge: React.FC<{ status: string }> = ({ status }) => {
-  let color = "tw-bg-slate-100 tw-text-slate-600 tw-border-slate-200";
+  let color = "bg-slate-100 text-slate-600 border-slate-200";
   let text = "未対応";
 
   switch (status) {
     case 'PENDING':
-      color = "tw-bg-blue-50 tw-text-blue-700 tw-border-blue-100";
+      color = "bg-blue-50 text-blue-700 border-blue-100";
       text = "予定";
       break;
     case 'IN_PROGRESS':
-      color = "tw-bg-orange-50 tw-text-orange-700 tw-border-orange-200 tw-animate-pulse";
+      color = "bg-orange-50 text-orange-700 border-orange-200 animate-pulse";
       text = "作業中";
       break;
     case 'COMPLETED':
-      color = "tw-bg-green-50 tw-text-green-700 tw-border-green-200";
+      color = "bg-green-50 text-green-700 border-green-200";
       text = "完了";
       break;
     case 'SKIPPED':
-      color = "tw-bg-red-50 tw-text-red-700 tw-border-red-200";
+      color = "bg-red-50 text-red-700 border-red-200";
       text = "スキップ";
       break;
   }
 
   return (
-    <span className={`tw-px-2.5 tw-py-1 tw-rounded-md tw-text-xs tw-font-bold ${color} tw-border tw-opacity-90`}>
+    <span className={`px-2.5 py-1 rounded-md text-xs font-bold ${color} border opacity-90`}>
       {text}
     </span>
   );
@@ -99,22 +99,22 @@ export const Modal: React.FC<{
   if (!isOpen) return null;
   return (
     <div 
-      className="tw-fixed tw-inset-0 tw-z-50 tw-flex tw-items-end sm:tw-items-center tw-justify-center tw-bg-black/60 tw-backdrop-blur-sm tw-animate-fade-in sm:tw-p-4"
+      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-sm animate-fade-in sm:p-4"
       data-agent-id={fullAgentId}
     >
-      <div className="tw-bg-white tw-w-full sm:tw-max-w-md tw-rounded-t-2xl sm:tw-rounded-2xl tw-shadow-2xl tw-overflow-hidden tw-animate-slide-up tw-flex tw-flex-col tw-max-h-[90vh] tw-pb-safe">
-        <div className="tw-bg-primary tw-p-4 tw-flex tw-justify-between tw-items-center tw-text-white tw-shrink-0 tw-relative">
-          <h3 className="tw-font-bold tw-text-lg tw-pr-12">{title}</h3>
+      <div className="bg-white w-full sm:max-w-md rounded-t-2xl sm:rounded-2xl shadow-2xl overflow-hidden animate-slide-up flex flex-col max-h-[90vh] pb-safe">
+        <div className="bg-primary p-4 flex justify-between items-center text-white shrink-0 relative">
+          <h3 className="font-bold text-lg pr-12">{title}</h3>
           <button 
             onClick={onClose} 
-            className="tw-absolute tw-right-0 tw-top-0 tw-bottom-0 tw-w-16 tw-flex tw-items-center tw-justify-center tw-hover:bg-white/10 tw-active:bg-white/20 tw-transition-colors"
+            className="absolute right-0 top-0 bottom-0 w-16 flex items-center justify-center hover:bg-white/10 active:bg-white/20 transition-colors"
             aria-label="閉じる"
             data-agent-id={`${fullAgentId}:close`}
           >
-            <i className="fa-solid fa-xmark tw-text-2xl"></i>
+            <i className="fa-solid fa-xmark text-2xl"></i>
           </button>
         </div>
-        <div className="tw-p-4 tw-overflow-y-auto">
+        <div className="p-4 overflow-y-auto">
           {children}
         </div>
       </div>
@@ -140,9 +140,9 @@ export const Toast: React.FC<{
   if (!message) return null;
 
   const bgColors = {
-    success: 'tw-bg-slate-800 tw-text-white tw-shadow-blue-900/20',
-    error: 'tw-bg-red-600 tw-text-white tw-shadow-red-900/20',
-    info: 'tw-bg-blue-600 tw-text-white tw-shadow-blue-900/20'
+    success: 'bg-slate-800 text-white shadow-blue-900/20',
+    error: 'bg-red-600 text-white shadow-red-900/20',
+    info: 'bg-blue-600 text-white shadow-blue-900/20'
   };
 
   const icons = {
@@ -153,16 +153,16 @@ export const Toast: React.FC<{
 
   return (
     <div 
-      className="tw-fixed tw-top-4 tw-left-4 tw-right-4 tw-z-[60] tw-animate-slide-up"
+      className="fixed top-4 left-4 right-4 z-[60] animate-slide-up"
       data-agent-id={fullAgentId}
     >
-      <div className={`${bgColors[type]} tw-px-4 tw-py-3 tw-rounded-xl tw-shadow-xl tw-flex tw-items-center tw-justify-between tw-min-h-[56px]`}>
-         <div className="tw-flex tw-items-center tw-space-x-3">
-            <i className={`${icons[type]} tw-text-lg`}></i>
-            <span className="tw-font-bold tw-text-sm tw-leading-tight">{message}</span>
+      <div className={`${bgColors[type]} px-4 py-3 rounded-xl shadow-xl flex items-center justify-between min-h-[56px]`}>
+         <div className="flex items-center space-x-3">
+            <i className={`${icons[type]} text-lg`}></i>
+            <span className="font-bold text-sm leading-tight">{message}</span>
          </div>
-         <button onClick={onClose} className="tw-w-10 tw-h-10 tw-flex tw-items-center tw-justify-center tw-bg-white/20 tw-rounded-full tw-ml-2 tw-active:bg-white/30">
-            <i className="fa-solid fa-xmark tw-text-sm"></i>
+         <button onClick={onClose} className="w-10 h-10 flex items-center justify-center bg-white/20 rounded-full ml-2 active:bg-white/30">
+            <i className="fa-solid fa-xmark text-sm"></i>
          </button>
       </div>
     </div>

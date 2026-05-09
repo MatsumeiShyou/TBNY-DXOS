@@ -36,29 +36,29 @@ export const InspectionPage: React.FC<Props> = ({ onComplete }) => {
     <Card 
       key={item.id} 
       onClick={() => toggleItem(item.id)}
-      className={`tw-flex tw-items-center tw-space-x-4 tw-transition-all tw-active:scale-[0.98] ${item.checked ? 'tw-border-success tw-bg-green-50' : ''}`}
+      className={`flex items-center space-x-4 transition-all active:scale-[0.98] ${item.checked ? 'border-success bg-green-50' : ''}`}
       agentId={`item-card:${item.id}`}
     >
-      <div className={`tw-w-8 tw-h-8 tw-shrink-0 tw-rounded-full tw-flex tw-items-center tw-justify-center tw-border-2 ${item.checked ? 'tw-bg-success tw-border-success tw-text-white' : 'tw-border-slate-300 tw-text-transparent'}`}>
-        <i className="fa-solid fa-check tw-text-sm"></i>
+      <div className={`w-8 h-8 shrink-0 rounded-full flex items-center justify-center border-2 ${item.checked ? 'bg-success border-success text-white' : 'border-slate-300 text-transparent'}`}>
+        <i className="fa-solid fa-check text-sm"></i>
       </div>
-      <span className={`tw-text-lg tw-font-bold tw-flex-1 ${item.checked ? 'tw-text-green-800' : 'tw-text-slate-700'}`}>
+      <span className={`text-lg font-bold flex-1 ${item.checked ? 'text-green-800' : 'text-slate-700'}`}>
         {item.label}
       </span>
     </Card>
   );
 
   return (
-    <div className="tw-p-4 tw-space-y-6 tw-pb-24">
-      <div className="tw-text-center tw-space-y-2">
-        <h2 className="tw-text-xl tw-font-bold tw-text-slate-800">始業前点検</h2>
-        <p className="tw-text-sm tw-text-slate-500">今日も一日安全運転でお願いします。<br/>乗務前点検および車両点検を行ってください。</p>
+    <div className="p-4 space-y-6 pb-24">
+      <div className="text-center space-y-2">
+        <h2 className="text-xl font-bold text-slate-800">始業前点検</h2>
+        <p className="text-sm text-slate-500">今日も一日安全運転でお願いします。<br/>乗務前点検および車両点検を行ってください。</p>
       </div>
 
       {!isAllChecked && (
         <button 
           onClick={openBulkCheckConfirm}
-          className="tw-w-full tw-bg-blue-50 tw-text-blue-700 tw-font-bold tw-py-3 tw-rounded-xl tw-border tw-border-blue-200 tw-active:bg-blue-100 tw-transition-colors tw-flex tw-items-center tw-justify-center tw-space-x-2 tw-touch-manipulation"
+          className="w-full bg-blue-50 text-blue-700 font-bold py-3 rounded-xl border border-blue-200 active:bg-blue-100 transition-colors flex items-center justify-center space-x-2 touch-manipulation"
           data-agent-id={useAgentId("bulk-check-button")}
         >
           <i className="fa-solid fa-check-double"></i>
@@ -66,29 +66,29 @@ export const InspectionPage: React.FC<Props> = ({ onComplete }) => {
         </button>
       )}
 
-      <div className="tw-space-y-3">
-        <h3 className="tw-text-sm tw-font-bold tw-text-slate-500 tw-uppercase tw-tracking-wider tw-flex tw-items-center">
-          <i className="fa-solid fa-user-shield tw-mr-2"></i>乗務員点検（必須）
+      <div className="space-y-3">
+        <h3 className="text-sm font-bold text-slate-500 uppercase tracking-wider flex items-center">
+          <i className="fa-solid fa-user-shield mr-2"></i>乗務員点検（必須）
         </h3>
-        <div className="tw-space-y-3">
+        <div className="space-y-3">
           {driverItems.map(renderItem)}
         </div>
       </div>
 
-      <div className="tw-space-y-3 tw-pt-2">
-        <h3 className="tw-text-sm tw-font-bold tw-text-slate-500 tw-uppercase tw-tracking-wider tw-flex tw-items-center">
-          <i className="fa-solid fa-truck tw-mr-2"></i>車両日常点検
+      <div className="space-y-3 pt-2">
+        <h3 className="text-sm font-bold text-slate-500 uppercase tracking-wider flex items-center">
+          <i className="fa-solid fa-truck mr-2"></i>車両日常点検
         </h3>
-        <div className="tw-space-y-3">
+        <div className="space-y-3">
           {vehicleItems.map(renderItem)}
         </div>
       </div>
 
-      <div className="tw-fixed tw-bottom-0 tw-left-0 tw-w-full tw-p-4 tw-bg-white tw-border-t tw-border-slate-200 tw-shadow-lg tw-pb-safe tw-z-10">
+      <div className="fixed bottom-0 left-0 w-full p-4 bg-white border-t border-slate-200 shadow-lg pb-safe z-10">
         <Button 
           disabled={!isAllChecked} 
           onClick={onComplete}
-          className={!isAllChecked ? 'tw-opacity-50 tw-cursor-not-allowed tw-bg-slate-400' : ''}
+          className={!isAllChecked ? 'opacity-50 cursor-not-allowed bg-slate-400' : ''}
           agentId="complete-button"
         >
           {isAllChecked ? '点検完了・業務開始' : '全ての項目を確認してください'}
@@ -96,18 +96,18 @@ export const InspectionPage: React.FC<Props> = ({ onComplete }) => {
       </div>
 
       <Modal isOpen={isConfirmOpen} onClose={() => setConfirmOpen(false)} title="一括チェックの確認" agentId="bulk-confirm-modal">
-        <div className="tw-space-y-6">
-          <div className="tw-bg-yellow-50 tw-p-4 tw-rounded-xl tw-border tw-border-yellow-200 tw-text-yellow-900 tw-flex tw-items-start">
-             <i className="fa-solid fa-triangle-exclamation tw-mt-1 tw-mr-3 tw-text-xl tw-shrink-0"></i>
+        <div className="space-y-6">
+          <div className="bg-yellow-50 p-4 rounded-xl border border-yellow-200 text-yellow-900 flex items-start">
+             <i className="fa-solid fa-triangle-exclamation mt-1 mr-3 text-xl shrink-0"></i>
              <div>
-               <h4 className="tw-font-bold tw-text-lg tw-mb-1">法令に基づく確認</h4>
-               <p className="tw-text-sm tw-leading-relaxed">
+               <h4 className="font-bold text-lg mb-1">法令に基づく確認</h4>
+               <p className="text-sm leading-relaxed">
                  アルコールチェックを含む全ての項目を確認し、異常がないことを誓約しますか？<br/>
-                 <span className="tw-font-bold tw-text-red-600 tw-mt-2 tw-block tw-border-t tw-border-yellow-200 tw-pt-1">※酒気帯び運転および虚偽報告は厳正に処罰されます。</span>
+                 <span className="font-bold text-red-600 mt-2 block border-t border-yellow-200 pt-1">※酒気帯び運転および虚偽報告は厳正に処罰されます。</span>
                </p>
              </div>
           </div>
-          <div className="tw-flex tw-space-x-3">
+          <div className="flex space-x-3">
             <Button variant="secondary" onClick={() => setConfirmOpen(false)} agentId="bulk-confirm-modal:cancel-button">キャンセル</Button>
             <Button onClick={executeBulkCheck} agentId="bulk-confirm-modal:execute-button">誓約してチェック</Button>
           </div>

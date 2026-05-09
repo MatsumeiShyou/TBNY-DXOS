@@ -58,7 +58,8 @@ export const useDriverOSBridge = () => {
     if (!currentUser) return;
     setIsLoading(true);
     try {
-      const { data, error } = await supabase
+      // [Security-First] 結合クエリを試行
+      let { data, error } = await supabase
         .from('jobs')
         .select(`
           *,
@@ -71,6 +72,18 @@ export const useDriverOSBridge = () => {
         `)
         .eq('driver_id', currentUser.id)
         .order('start_time', { ascending: true });
+
+      // もしリレーションエラー(PGRST116)や権限エラー(42501)が発生した場合は、単体テーブルで再試行
+      if (error && (error.code === 'PGRST116' || error.code === '42501')) {
+        console.warn('[BRIDGE] Join failed, retrying without master_collection_points...', error.message);
+        const retry = await supabase
+          .from('jobs')
+          .select('*')
+          .eq('driver_id', currentUser.id)
+          .order('start_time', { ascending: true });
+        data = retry.data;
+        error = retry.error;
+      }
 
       if (error) throw error;
 
@@ -150,14 +163,16 @@ export const useDriverOSBridge = () => {
   // 戻り値のメモ化（無限ループ防止）
   const user = useMemo(() => {
     if (!currentUser) return null;
+    
+    // staffs テーブルからの詳細があれば優先、なければ Auth の情報で最小構成を作成
     return {
       id: currentUser.id,
-      name: currentUser.name,
+      name: currentUser.name || 'Unknown Driver',
       vehicleId: '未割当',
       vehicleName: '車両未指定',
       currentStatus: DriverStatus.IDLE,
     };
-  }, [currentUser?.id, currentUser?.name]); //currentUser.vehicle への依存を削除
+  }, [currentUser?.id, currentUser?.name]);
 
   return {
     user,
