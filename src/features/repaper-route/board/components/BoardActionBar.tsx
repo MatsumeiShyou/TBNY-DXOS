@@ -92,10 +92,10 @@ export const BoardActionBar: React.FC<BoardActionBarProps> = ({
                 <div className="tw-flex tw-items-center tw-gap-1 tw-border-r tw-border-gray-200 tw-pr-2 tw-mr-1">
                     {hasEditRights && (
                         <>
-                            <button onClick={undo} className="tw-p-2 tw-text-slate-400 tw-hover:text-slate-600 tw-hover:bg-slate-100 tw-rounded-lg tw-transition-all" title="元に戻す">
+                            <button onClick={undo} className="tw-p-2 tw-text-slate-400 tw-hover:text-slate-600 tw-hover:bg-slate-100 tw-rounded-lg tw-transition-all tw-border-none" title="元に戻す">
                                 <Undo2 size={18} />
                             </button>
-                            <button onClick={redo} className="tw-p-2 tw-text-slate-400 tw-hover:text-slate-600 tw-hover:bg-slate-100 tw-rounded-lg tw-transition-all" title="やり直し">
+                            <button onClick={redo} className="tw-p-2 tw-text-slate-400 tw-hover:text-slate-600 tw-hover:bg-slate-100 tw-rounded-lg tw-transition-all tw-border-none" title="やり直し">
                                 <Redo2 size={18} />
                             </button>
                         </>
@@ -106,8 +106,8 @@ export const BoardActionBar: React.FC<BoardActionBarProps> = ({
                     <button
                         onClick={() => handleConfirmAll()}
                         disabled={isSyncing}
-                        className={`tw-px-3 tw-h-11 tw-rounded-lg tw-flex tw-items-center tw-gap-2 tw-text-sm tw-font-bold tw-transition-all tw-mr-2
-                            ${isSyncing ? 'tw-bg-slate-100 tw-text-slate-400' : 'tw-bg-accent tw-text-white tw-hover:tw-bg-amber-700 tw-shadow-sm'}
+                        className={`tw-px-3 tw-h-11 tw-rounded-lg tw-flex tw-items-center tw-gap-2 tw-text-sm tw-font-bold tw-transition-all tw-mr-2 tw-border-none
+                            ${isSyncing ? 'tw-bg-slate-100 tw-text-slate-400' : 'tw-bg-amber-50 tw-text-amber-600 tw-hover:tw-bg-amber-100 tw-shadow-sm'}
                         `}
                         title="この内容で決定し、ロックします。後からの変更には例外操作が必要になります。"
                     >
@@ -118,10 +118,10 @@ export const BoardActionBar: React.FC<BoardActionBarProps> = ({
 
                 {hasEditRights && (
                     <div
-                        className={`tw-px-4 tw-h-11 tw-rounded-lg tw-flex tw-items-center tw-gap-2 tw-text-sm tw-font-bold tw-transition-all tw-border
+                        className={`tw-px-4 tw-h-11 tw-rounded-lg tw-flex tw-items-center tw-gap-2 tw-text-sm tw-font-bold tw-transition-all tw-border-none
                             ${isSyncing 
-                                ? 'tw-bg-amber-50 tw-border-amber-200 tw-text-amber-600 tw-animate-pulse' 
-                                : 'tw-bg-emerald-50 tw-border-emerald-200 tw-text-emerald-600 tw-shadow-sm'}
+                                ? 'tw-bg-amber-50 tw-text-amber-600 tw-animate-pulse' 
+                                : 'tw-bg-emerald-50 tw-text-emerald-600 tw-shadow-sm'}
                         `}
                         title={isSyncing ? "サーバーに同期中..." : "サーバーと同期済み（自動保存）"}
                     >
@@ -135,7 +135,7 @@ export const BoardActionBar: React.FC<BoardActionBarProps> = ({
 
                 <button
                     onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                    className={`tw-relative tw-w-11 tw-h-11 tw-rounded-lg tw-transition-all tw-flex tw-items-center tw-justify-center
+                    className={`tw-relative tw-w-11 tw-h-11 tw-rounded-lg tw-transition-all tw-flex tw-items-center tw-justify-center tw-border-none
                         ${isSidebarOpen ? 'tw-bg-blue-50 tw-text-blue-600' : 'tw-bg-slate-50 tw-text-slate-600 tw-hover:bg-slate-100'}
                     `}
                     title={isSidebarOpen ? 'リストを閉じる' : '未配車リスト（一時保存された内容を元に自動割付できます）'}
