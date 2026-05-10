@@ -369,7 +369,8 @@ function main() {
         runCommand('git add -A');
         try { runCommand('git pull --rebase origin main'); } catch (e) { }
         if (runCommand('git status --porcelain')) {
-            const customMsg = process.argv.find(arg => arg.startsWith('--message='))?.split('=')[1];
+            console.log('[DEBUG] process.argv:', process.argv);
+            const customMsg = process.argv.find(arg => arg.startsWith('--message='))?.substring(10);
             const commitMsg = customMsg ? `[${tier}] ${customMsg}` : `[${tier}] Final Automated Task Closure`;
             runCommand(`git commit -m "${commitMsg.replace(/"/g, '\\"')}" --no-verify`);
             runCommand('git push origin main');
