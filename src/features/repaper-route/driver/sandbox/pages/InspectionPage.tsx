@@ -12,6 +12,7 @@ interface Props {
 export const InspectionPage: React.FC<Props> = ({ onComplete }) => {
   const [items, setItems] = useState<InspectionItem[]>(INITIAL_INSPECTION_ITEMS);
   const [isConfirmOpen, setConfirmOpen] = useState(false);
+  const bulkCheckId = useAgentId("bulk-check-button");
 
   const toggleItem = (id: string) => {
     setItems(prev => prev.map(item => 
@@ -59,7 +60,7 @@ export const InspectionPage: React.FC<Props> = ({ onComplete }) => {
         <button 
           onClick={openBulkCheckConfirm}
           className="tw-w-full tw-bg-blue-50 tw-text-blue-700 tw-font-bold tw-py-3 tw-rounded-xl tw-border tw-border-blue-200 active:tw-bg-blue-100 tw-transition-colors tw-flex tw-items-center tw-justify-center tw-space-x-2 tw-touch-manipulation"
-          data-agent-id={useAgentId("bulk-check-button")}
+          data-agent-id={bulkCheckId}
         >
           <i className="fa-solid fa-check-double"></i>
           <span>全ての項目を「異常なし」とする</span>

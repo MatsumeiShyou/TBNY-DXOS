@@ -16,7 +16,7 @@ export const safeCalculate = (expression: string): number => {
     if (!expression) return 0;
 
     // 1. Tokenize (Split by operators, keep operators)
-    const tokens = expression.match(/(\d+|[\+\-\×\÷])/g);
+    const tokens = expression.match(/(\d+|[+\-×÷])/g);
     if (!tokens) return 0;
 
     // 2. Process Multiply (×) and Divide (÷) first

@@ -108,7 +108,7 @@ export const FuelPage: React.FC = () => {
         </div>
       )}
 
-      <div className="tw-grid tw-grid-cols-2 tw-gap-4">
+      <div className="tw-grid tw-grid-cols-1 sm:tw-grid-cols-2 tw-gap-4">
         <div className="tw-space-y-1.5">
           <label className="tw-text-xs tw-font-bold tw-text-slate-500 tw-ml-1">給油量 (L)</label>
           <div className="tw-relative">
@@ -120,7 +120,7 @@ export const FuelPage: React.FC = () => {
               value={fuelAmount}
               onChange={(e) => setFuelAmount(e.target.value)}
             />
-            <span className="tw-absolute tw-right-4 tw-top-1/2 tw-translate-y-1/2 tw-text-slate-400 tw-font-bold">L</span>
+            <span className="tw-absolute tw-right-4 tw-top-1/2 tw--translate-y-1/2 tw-text-slate-400 tw-font-bold">L</span>
           </div>
         </div>
         <div className="tw-space-y-1.5">
@@ -134,7 +134,7 @@ export const FuelPage: React.FC = () => {
               value={mileage}
               onChange={(e) => setMileage(e.target.value)}
             />
-            <span className="tw-absolute tw-right-4 tw-top-1/2 tw-translate-y-1/2 tw-text-slate-400 tw-font-bold">km</span>
+            <span className="tw-absolute tw-right-4 tw-top-1/2 tw--translate-y-1/2 tw-text-slate-400 tw-font-bold">km</span>
           </div>
         </div>
       </div>
