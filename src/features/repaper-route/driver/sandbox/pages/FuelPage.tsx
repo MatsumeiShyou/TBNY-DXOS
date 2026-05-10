@@ -108,33 +108,46 @@ export const FuelPage: React.FC = () => {
         </div>
       )}
 
-      <div className="tw-grid tw-grid-cols-1 sm:tw-grid-cols-2 tw-gap-4">
-        <div className="tw-space-y-1.5">
-          <label className="tw-text-xs tw-font-bold tw-text-slate-500 tw-ml-1">給油量 (L)</label>
-          <div className="tw-relative">
+      <div className="tw-flex tw-flex-col tw-gap-6">
+        {/* Fuel Amount Section */}
+        <div className="tw-space-y-2">
+          <div className="tw-flex tw-items-center tw-space-x-2 tw-ml-1">
+            <i className="fa-solid fa-droplet tw-text-blue-500 tw-text-xs"></i>
+            <label className="tw-text-sm tw-font-bold tw-text-slate-600">今回の給油量</label>
+          </div>
+          <div className="tw-relative tw-group">
             <input 
               type="number" 
               inputMode="decimal"
-              className="tw-w-full tw-bg-white tw-border tw-border-slate-200 tw-rounded-xl tw-p-4 tw-text-lg tw-font-bold tw-shadow-sm focus:tw-ring-2 focus:tw-ring-blue-500 focus:tw-outline-none"
+              className="tw-w-full tw-bg-slate-50 tw-border-2 tw-border-slate-200 tw-rounded-2xl tw-p-5 tw-text-2xl tw-font-mono tw-font-bold tw-shadow-sm focus:tw-border-blue-500 focus:tw-bg-white focus:tw-outline-none tw-transition-all"
               placeholder="0.0"
               value={fuelAmount}
               onChange={(e) => setFuelAmount(e.target.value)}
             />
-            <span className="tw-absolute tw-right-4 tw-top-1/2 tw--translate-y-1/2 tw-text-slate-400 tw-font-bold">L</span>
+            <div className="tw-absolute tw-right-5 tw-top-1/2 tw--translate-y-1/2 tw-flex tw-items-center tw-space-x-2">
+              <span className="tw-text-slate-400 tw-font-bold tw-text-xl">L</span>
+            </div>
           </div>
         </div>
-        <div className="tw-space-y-1.5">
-          <label className="tw-text-xs tw-font-bold tw-text-slate-500 tw-ml-1">走行距離 (km)</label>
-          <div className="tw-relative">
+
+        {/* Mileage Section */}
+        <div className="tw-space-y-2">
+          <div className="tw-flex tw-items-center tw-space-x-2 tw-ml-1">
+            <i className="fa-solid fa-gauge-high tw-text-blue-500 tw-text-xs"></i>
+            <label className="tw-text-sm tw-font-bold tw-text-slate-600">現在の走行距離 (メーター値)</label>
+          </div>
+          <div className="tw-relative tw-group">
             <input 
               type="number" 
               inputMode="numeric"
-              className="tw-w-full tw-bg-white tw-border tw-border-slate-200 tw-rounded-xl tw-p-4 tw-text-lg tw-font-bold tw-shadow-sm focus:tw-ring-2 focus:tw-ring-blue-500 focus:tw-outline-none"
-              placeholder="00000"
+              className="tw-w-full tw-bg-slate-50 tw-border-2 tw-border-slate-200 tw-rounded-2xl tw-p-5 tw-text-2xl tw-font-mono tw-font-bold tw-shadow-sm focus:tw-border-blue-500 focus:tw-bg-white focus:tw-outline-none tw-transition-all"
+              placeholder="000000"
               value={mileage}
               onChange={(e) => setMileage(e.target.value)}
             />
-            <span className="tw-absolute tw-right-4 tw-top-1/2 tw--translate-y-1/2 tw-text-slate-400 tw-font-bold">km</span>
+            <div className="tw-absolute tw-right-5 tw-top-1/2 tw--translate-y-1/2 tw-flex tw-items-center tw-space-x-2">
+              <span className="tw-text-slate-400 tw-font-bold tw-text-xl">km</span>
+            </div>
           </div>
         </div>
       </div>
