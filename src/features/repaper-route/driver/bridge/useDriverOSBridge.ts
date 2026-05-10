@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect, useMemo } from 'react';
 import { useAuth } from '../../../hooks/useAuth';
 import { supabase } from '../../../../shared/lib/supabase/client';
+import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import type { Stop, Vehicle, Colleague } from '../sandbox/types';
 import { StopStatus, DriverStatus } from '../sandbox/types';
 
@@ -139,6 +140,52 @@ export const useDriverOSBridge = () => {
     }
   }, [refreshStops]);
 
+  // メディアアップロード（Cloudflare R2 準拠）
+  const uploadMedia = useCallback(async (file: Blob, folder: string): Promise<{url: string, path: string, provider: 'r2' | 'supabase'}> => {
+    const accessKeyId = import.meta.env.VITE_R2_ACCESS_KEY_ID;
+    const secretAccessKey = import.meta.env.VITE_R2_SECRET_ACCESS_KEY;
+    const endpoint = import.meta.env.VITE_R2_ENDPOINT;
+    const bucket = import.meta.env.VITE_R2_BUCKET_NAME;
+    const publicUrl = import.meta.env.VITE_R2_PUBLIC_URL || 'https://pub-your-id.r2.dev';
+
+    if (!accessKeyId || !secretAccessKey || !endpoint || !bucket) {
+      console.error('[BRIDGE] R2 Configuration missing in .env');
+      throw new Error('STORAGE_CONFIG_ERROR');
+    }
+
+    // R2 (S3互換) クライアントの初期化
+    const client = new S3Client({
+      region: "auto",
+      endpoint: endpoint,
+      credentials: {
+        accessKeyId: accessKeyId,
+        secretAccessKey: secretAccessKey,
+      },
+    });
+
+    const fileName = `${Date.now()}.jpg`;
+    const path = `${folder}/${fileName}`;
+    
+    try {
+      console.log(`[BRIDGE] Uploading ${path} to R2...`);
+      await client.send(new PutObjectCommand({
+        Bucket: bucket,
+        Key: path,
+        Body: file,
+        ContentType: "image/jpeg",
+      }));
+
+      return {
+        url: `${publicUrl}/${path}`,
+        path: path,
+        provider: 'r2'
+      };
+    } catch (err) {
+      console.error('[BRIDGE] R2 Upload failed:', err);
+      throw err;
+    }
+  }, []);
+
   // 戻り値のメモ化（無限ループ防止）
   const user = useMemo(() => {
     if (!currentUser) return null;
@@ -160,6 +207,7 @@ export const useDriverOSBridge = () => {
     availableColleagues,
     isLoading,
     recordDecision,
-    refreshStops
+    refreshStops,
+    uploadMedia
   };
 };

@@ -4,7 +4,7 @@ import type { Stop, CargoItem } from '../types';
 import { StopStatus } from '../types';
 import { Button, Card, Modal } from '../components/Widgets';
 import { HelpTarget } from '../components/Help';
-import { NumericKeypad, safeCalculate } from '../components/NumericKeypad';
+import { SmartNumericInput } from '../components/SmartNumericInput';
 
 interface Props {
   stop: Stop;
@@ -20,8 +20,6 @@ export const StopDetailPage: React.FC<Props> = ({ stop, onUpdateStop, onBack }) 
   
   const [isEditing, setIsEditing] = useState(false);
   const [step, setStep] = useState<number>(10);
-  const [activeInputId, setActiveInputId] = useState<string | null>(null);
-  const [draftValue, setDraftValue] = useState<string>('');
 
   const handleArrive = () => {
     onUpdateStop(stop.id, { 
@@ -53,9 +51,6 @@ export const StopDetailPage: React.FC<Props> = ({ stop, onUpdateStop, onBack }) 
   const updateItemWeight = (id: string, weight: number) => {
     const validWeight = Math.max(0, Math.round(weight));
     setItems(items.map(i => i.id === id ? { ...i, actualWeight: validWeight } : i));
-    if (activeInputId === id) {
-      setDraftValue(validWeight.toString());
-    }
   };
 
   const resetWeight = (id: string) => {
@@ -82,56 +77,6 @@ export const StopDetailPage: React.FC<Props> = ({ stop, onUpdateStop, onBack }) 
     window.open(`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(stop.address)}`, '_blank');
   };
   
-  const startEditing = (id: string, currentValue: number) => {
-    setActiveInputId(id);
-    setDraftValue(currentValue.toString());
-  };
-
-  const handleKeypadInput = (char: string) => {
-    if (!activeInputId) return;
-    const isOp = ['+', '-', '×', '÷'].includes(char);
-    const lastChar = draftValue.slice(-1);
-    const lastIsOp = ['+', '-', '×', '÷'].includes(lastChar);
-
-    if (isOp && lastIsOp) {
-      setDraftValue(prev => prev.slice(0, -1) + char);
-      return;
-    }
-    
-    if (draftValue === '0' && !isOp) {
-        setDraftValue(char);
-        return;
-    }
-    setDraftValue(prev => prev + char);
-  };
-
-  const handleKeypadDelete = () => {
-    if (!activeInputId) return;
-    if (draftValue.length <= 1) {
-      setDraftValue('0');
-    } else {
-      setDraftValue(prev => prev.slice(0, -1));
-    }
-  };
-
-  const handleKeypadClear = () => {
-    if (!activeInputId) return;
-    setDraftValue('0');
-  };
-
-  const handleKeypadCalculate = () => {
-    if (!activeInputId) return;
-    const result = safeCalculate(draftValue);
-    updateItemWeight(activeInputId, result);
-  };
-  
-  const handleKeypadClose = () => {
-    if (activeInputId) {
-      handleKeypadCalculate();
-    }
-    setActiveInputId(null);
-  };
-
   // RENDER: PENDING State (Travel)
   if (stop.status === StopStatus.PENDING) {
     return (
@@ -239,26 +184,16 @@ export const StopDetailPage: React.FC<Props> = ({ stop, onUpdateStop, onBack }) 
                         className="tw-w-14 tw-h-14 tw-rounded-xl tw-bg-slate-100 tw-border tw-border-slate-200 tw-font-bold tw-text-2xl tw-text-slate-600 active:tw-bg-slate-200 tw-touch-manipulation tw-flex tw-items-center tw-justify-center tw-shadow-sm tw-shrink-0"
                       >−</button>
                       
-                      <div className="tw-flex-1 tw-relative">
+                      <div className="tw-flex-1">
                         <HelpTarget helpId="input-calculator">
-                          <input 
-                            type="text" 
-                            readOnly
-                            value={activeInputId === item.id ? draftValue : (item.actualWeight ?? item.defaultWeight)}
-                            onClick={() => startEditing(item.id, item.actualWeight ?? item.defaultWeight)}
-                            className={`tw-w-full tw-text-center tw-font-mono tw-text-3xl tw-font-bold tw-p-0 tw-h-14 tw-border tw-rounded-lg tw-shadow-inner focus:tw-outline-none tw-transition-all tw-caret-transparent ${
-                              activeInputId === item.id 
-                              ? 'tw-bg-white tw-border-primary tw-ring-2 tw-ring-primary tw-text-primary' 
-                              : 'tw-bg-slate-50 tw-border-slate-300 tw-text-slate-900'
-                            }`}
+                          <SmartNumericInput 
+                            value={item.actualWeight ?? item.defaultWeight}
+                            onChange={(val) => updateItemWeight(item.id, val)}
+                            label="重量"
+                            unit="kg"
+                            agentId={`item-weight:${item.id}`}
                           />
                         </HelpTarget>
-                        {activeInputId === item.id && (
-                           <div className="tw-absolute tw-right-2 tw-top-1/2 tw--translate-y-1/2 tw-animate-pulse tw-text-primary tw-pointer-events-none">
-                             <i className="fa-solid fa-calculator tw-text-xs"></i>
-                           </div>
-                        )}
-                        <div className="tw-absolute tw-left-2 tw-top-1/2 tw--translate-y-1/2 tw-text-slate-400 tw-text-[10px] tw-font-bold tw-pointer-events-none">kg</div>
                       </div>
                       
                       <button 
@@ -317,7 +252,7 @@ export const StopDetailPage: React.FC<Props> = ({ stop, onUpdateStop, onBack }) 
           </div>
         </div>
 
-        <div className={`tw-fixed tw-bottom-0 tw-left-0 tw-w-full tw-bg-white tw-border-t tw-border-slate-200 tw-p-4 tw-pb-safe tw-shadow-[0_-4px_10px_rgba(0,0,0,0.05)] tw-z-30 tw-transition-transform ${activeInputId ? 'tw-translate-y-full' : ''}`}>
+        <div className="tw-fixed tw-bottom-0 tw-left-0 tw-w-full tw-bg-white tw-border-t tw-border-slate-200 tw-p-4 tw-pb-safe tw-shadow-[0_-4px_10px_rgba(0,0,0,0.05)] tw-z-30">
           <div className="tw-flex tw-justify-between tw-items-center tw-mb-3 tw-text-slate-600 tw-font-bold tw-px-1">
             <span>総重量（概算）:</span>
             <span className="tw-text-2xl tw-text-primary tw-font-mono">{totalWeight} <span className="tw-text-sm">kg</span></span>
@@ -332,15 +267,6 @@ export const StopDetailPage: React.FC<Props> = ({ stop, onUpdateStop, onBack }) 
             </Button>
           )}
         </div>
-
-        <NumericKeypad 
-          isVisible={activeInputId !== null}
-          onInput={handleKeypadInput}
-          onDelete={handleKeypadDelete}
-          onClear={handleKeypadClear}
-          onCalculate={handleKeypadCalculate}
-          onClose={handleKeypadClose}
-        />
 
         <Modal title="品目追加" isOpen={isAddItemModalOpen} onClose={() => setAddItemModalOpen(false)} agentId="add-item-modal">
           <div className="tw-space-y-6">

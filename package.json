@@ -18,6 +18,7 @@
     "prepare": "husky || true"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1045.0",
     "@supabase/supabase-js": "^2.103.3",
     "clsx": "^2.1.1",
     "framer-motion": "^12.38.0",

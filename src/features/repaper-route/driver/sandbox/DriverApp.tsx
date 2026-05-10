@@ -15,6 +15,8 @@ import { HelpProvider } from './components/Help';
 import { SOSContent } from './components/SOSContent';
 import { AgentNamespace } from './components/AgentContext';
 import { VehicleSelector } from '../../components/VehicleSelector';
+import { NumericKeypadProvider } from './components/NumericKeypadContext';
+import { NumericKeypad } from './components/NumericKeypad';
 
 /**
  * DriverApp (Production Mode)
@@ -187,7 +189,7 @@ export default function DriverApp() {
       <div className="tw-h-screen tw-flex tw-items-center tw-justify-center tw-bg-slate-900 tw-text-white">
         <div className="tw-text-center tw-animate-pulse">
           <i className="fa-solid fa-spinner fa-spin tw-text-4xl tw-mb-4"></i>
-          <p className="tw-font-bold">真実を読み込み中...</p>
+          <p className="tw-font-bold">Loading...</p>
         </div>
       </div>
     );
@@ -205,7 +207,8 @@ export default function DriverApp() {
 
   return (
     <HelpProvider>
-      <AgentNamespace ns="layout">
+      <NumericKeypadProvider>
+        <AgentNamespace ns="layout">
         <Layout 
           user={user} 
           title={getPageTitle()}
@@ -368,6 +371,8 @@ export default function DriverApp() {
           </Modal>
         </AgentNamespace>
       )}
-    </HelpProvider>
+      <NumericKeypad />
+    </NumericKeypadProvider>
+  </HelpProvider>
   );
 }

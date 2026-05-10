@@ -3,7 +3,7 @@ import { Button, Modal } from '../components/Widgets';
 import type { Stop, Vehicle } from '../types';
 import { StopStatus } from '../types';
 import { HelpTarget } from '../components/Help';
-import { NumericKeypad, safeCalculate } from '../components/NumericKeypad';
+import { SmartNumericInput } from '../components/SmartNumericInput';
 
 interface Props {
   stops: Stop[];
@@ -16,8 +16,7 @@ interface Props {
 
 export const EndShiftPage: React.FC<Props> = ({ stops, currentVehicle, mode, onComplete, onCancel }) => {
   const [step, setStep] = useState<1 | 2>(1);
-  const [grossWeightStr, setGrossWeightStr] = useState<string>('');
-  const [isKeypadOpen, setIsKeypadOpen] = useState(false);
+  const [grossWeight, setGrossWeight] = useState<number>(0);
   const [adjustedWeights, setAdjustedWeights] = useState<Record<string, number>>({});
   const [isConfirmOpen, setConfirmOpen] = useState(false);
   
@@ -29,8 +28,7 @@ export const EndShiftPage: React.FC<Props> = ({ stops, currentVehicle, mode, onC
   useEffect(() => {
     if (step === 2) {
       const tare = currentVehicle.tareWeight || 0;
-      const gross = parseInt(grossWeightStr) || 0;
-      const netWeight = Math.max(0, gross - tare);
+      const netWeight = Math.max(0, grossWeight - tare);
       const currentTotalRecorded = collectedItems.reduce((sum, item) => sum + (item.actualWeight || item.defaultWeight || 0), 0);
       const newWeights: Record<string, number> = {};
       
@@ -56,43 +54,6 @@ export const EndShiftPage: React.FC<Props> = ({ stops, currentVehicle, mode, onC
     }
   }, [step]);
 
-  const handleKeypadInput = (char: string) => {
-    const isOp = ['+', '-', '×', '÷'].includes(char);
-    const lastChar = grossWeightStr.slice(-1);
-    const lastIsOp = ['+', '-', '×', '÷'].includes(lastChar);
-    if (isOp && lastIsOp) {
-      setGrossWeightStr(prev => prev.slice(0, -1) + char);
-      return;
-    }
-    if (grossWeightStr === '0' && !isOp) {
-        setGrossWeightStr(char);
-        return;
-    }
-    setGrossWeightStr(prev => prev + char);
-  };
-
-  const handleKeypadDelete = () => {
-    if (grossWeightStr.length <= 1) {
-      setGrossWeightStr('0');
-    } else {
-      setGrossWeightStr(prev => prev.slice(0, -1));
-    }
-  };
-
-  const handleKeypadClear = () => {
-    setGrossWeightStr('0');
-  };
-
-  const handleKeypadCalculate = () => {
-    const result = safeCalculate(grossWeightStr);
-    setGrossWeightStr(result.toString());
-  };
-
-  const handleKeypadClose = () => {
-    handleKeypadCalculate();
-    setIsKeypadOpen(false);
-  };
-
   const adjustItemWeight = (key: string, delta: number) => {
     setAdjustedWeights(prev => {
       const current = prev[key] || 0;
@@ -111,14 +72,13 @@ export const EndShiftPage: React.FC<Props> = ({ stops, currentVehicle, mode, onC
   };
 
   const tare = currentVehicle.tareWeight || 0;
-  const displayGross = safeCalculate(grossWeightStr);
-  const net = Math.max(0, displayGross - tare);
+  const net = Math.max(0, grossWeight - tare);
   const currentDistributedSum = (Object.values(adjustedWeights) as number[]).reduce((a, b) => a + b, 0);
   const diff = net - currentDistributedSum;
   const titleText = mode === 'INTERMEDIATE' ? '中間荷下ろし・休憩' : '業務終了報告';
-  const isValidGross = displayGross > tare;
+  const isValidGross = grossWeight > tare;
   const hasItems = collectedItems.length > 0;
-  const canProceedToStep2 = isValidGross && hasItems && !isKeypadOpen;
+  const canProceedToStep2 = isValidGross && hasItems;
 
   return (
     <div className="tw-p-4 tw-space-y-6 tw-pb-24">
@@ -161,23 +121,13 @@ export const EndShiftPage: React.FC<Props> = ({ stops, currentVehicle, mode, onC
       {step === 1 && (
         <div className="tw-space-y-6 tw-animate-fade-in">
            <HelpTarget helpId="input-gross-weight">
-             <div className={`tw-bg-white tw-p-6 tw-rounded-xl tw-shadow-lg tw-border-2 tw-text-center tw-transition-colors tw-relative ${!isValidGross && displayGross > 0 ? 'tw-border-red-200 tw-bg-red-50' : 'tw-border-primary'}`}>
-                <label className="tw-block tw-text-slate-500 tw-font-bold tw-mb-2">総重量 (Kg)</label>
-                <input 
-                  type="text" 
-                  readOnly
-                  value={grossWeightStr}
-                  onClick={() => setIsKeypadOpen(true)}
-                  className={`tw-w-full tw-text-center tw-text-4xl tw-font-mono tw-font-bold focus:tw-outline-none tw-bg-transparent tw-caret-transparent ${isKeypadOpen ? 'tw-text-primary' : 'tw-text-slate-800'}`}
-                  placeholder="0"
-                />
-                <div className="tw-w-full tw-h-0.5 tw-bg-slate-200 tw-mt-2"></div>
-                {isKeypadOpen && (
-                  <div className="tw-absolute tw-right-4 tw-top-1/2 tw--translate-y-1/2 tw-animate-pulse tw-text-primary tw-pointer-events-none">
-                    <i className="fa-solid fa-calculator tw-text-xl"></i>
-                  </div>
-                )}
-             </div>
+              <SmartNumericInput 
+                value={grossWeight}
+                onChange={setGrossWeight}
+                label="総重量"
+                unit="kg"
+                agentId="wizard:gross-weight-input"
+              />
            </HelpTarget>
 
            <div className="tw-grid tw-grid-cols-2 tw-gap-4">
@@ -195,7 +145,7 @@ export const EndShiftPage: React.FC<Props> = ({ stops, currentVehicle, mode, onC
              <p className="tw-text-xs tw-text-center tw-text-slate-400">
                ※ 正味重量 = 総重量 - 空車重量
              </p>
-             {!isValidGross && displayGross > 0 && (
+             {!isValidGross && grossWeight > 0 && (
                 <p className="tw-text-sm tw-text-center tw-text-red-500 tw-font-bold tw-bg-red-50 tw-p-2 tw-rounded tw-animate-pulse">
                   <i className="fa-solid fa-triangle-exclamation tw-mr-1"></i>
                   空車重量（{tare}kg）より大きい値を入力してください
@@ -252,7 +202,7 @@ export const EndShiftPage: React.FC<Props> = ({ stops, currentVehicle, mode, onC
       )}
 
       {/* Navigation Buttons */}
-       <div className={`tw-fixed tw-bottom-0 tw-left-0 tw-w-full tw-bg-white tw-border-t tw-border-slate-200 tw-p-4 tw-pb-safe tw-shadow-[0_-4px_10px_rgba(0,0,0,0.05)] tw-z-20 tw-flex tw-space-x-3 tw-transition-transform ${isKeypadOpen ? 'tw-translate-y-full' : ''}`}>
+       <div className="tw-fixed tw-bottom-0 tw-left-0 tw-w-full tw-bg-white tw-border-t tw-border-slate-200 tw-p-4 tw-pb-safe tw-shadow-[0_-4px_10px_rgba(0,0,0,0.05)] tw-z-20 tw-flex tw-space-x-3">
           {step > 1 && (
             <Button variant="secondary" onClick={() => setStep(prev => prev - 1 as any)} className="tw-flex-1" agentId="wizard:back-button">
               戻る
@@ -273,15 +223,6 @@ export const EndShiftPage: React.FC<Props> = ({ stops, currentVehicle, mode, onC
             </Button>
           )}
        </div>
-
-      <NumericKeypad 
-         isVisible={isKeypadOpen}
-         onInput={handleKeypadInput}
-         onDelete={handleKeypadDelete}
-         onClear={handleKeypadClear}
-         onCalculate={handleKeypadCalculate}
-         onClose={handleKeypadClose}
-      />
 
       <Modal isOpen={isConfirmOpen} onClose={() => setConfirmOpen(false)} title="最終確認" agentId="confirm-modal">
         <div className="tw-space-y-6">

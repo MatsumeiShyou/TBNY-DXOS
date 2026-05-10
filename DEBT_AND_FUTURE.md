@@ -1,8 +1,9 @@
 # Technical Debt & Future Roadmap (TBNY DXOS)
 
-- [x] **[SCANNER_BLIND_SPOT]**: `scan.js` の深度制限修正（完了）。
-- [x] **[MASTER_DATA_TRIAD]**: Payer/Supplier/Location 実装（完了）。
-- [x] **[PHYSICAL_VALIDATION_CORE]**: 物理バリデーションエンジン配備（完了）。
+## [Resolved] 2026-05-10: Driver App Integrity Restoration
+- **Remediation**: Fixed UTF-8 mojibake in critical driver pages (`NumericKeypad`, `EndShiftPage`, etc.) causing runtime crashes.
+- **UI Refinement**: Resolved overlapping inputs and scroll lock issues in `FuelPage` by refactoring to a 100vh layout with `border-box` sizing.
+- **Verification**: 100% build pass and physical DOM verification completed (GSEAL issued).
 
 ## Technical Debt (残存負債)
 - [ ] **[PWA_ASSET_DEBT]**: `manifest.json` のアイコンが `vite.svg` の暫定流用。正式なアセット生成と差し替えが必要。

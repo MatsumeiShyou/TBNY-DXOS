@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Card, Button } from '../components/Widgets';
+import { SmartNumericInput } from '../components/SmartNumericInput';
+import { useDriverOSBridge } from '../../bridge/useDriverOSBridge';
 
 /**
  * FuelPage
@@ -7,32 +9,61 @@ import { Card, Button } from '../components/Widgets';
  * 給油報告画面。レシートの撮影とデータの送信を行う。
  */
 export const FuelPage: React.FC = () => {
+  const { user, uploadMedia, recordDecision } = useDriverOSBridge();
   const [isCapturing, setIsCapturing] = useState(false);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
-  const [fuelAmount, setFuelAmount] = useState<string>('');
-  const [mileage, setMileage] = useState<string>('');
+  const [previewBlob, setPreviewBlob] = useState<Blob | null>(null);
+  const [fuelAmount, setFuelAmount] = useState<number>(0);
+  const [mileage, setMileage] = useState<number>(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleCapture = () => {
     setIsCapturing(true);
-    // Simulate camera capture
+    setError(null);
+    // Simulate camera capture (returning a Blob)
     setTimeout(() => {
-      setPreviewImage('https://images.unsplash.com/photo-1554224155-1696413565d3?auto=format&fit=crop&q=80&w=400');
+      const mockUrl = 'https://images.unsplash.com/photo-1554224155-1696413565d3?auto=format&fit=crop&q=80&w=400';
+      setPreviewImage(mockUrl);
+      // Create a dummy blob to simulate a real file
+      setPreviewBlob(new Blob(['mock-image-data'], { type: 'image/jpeg' }));
       setIsCapturing(false);
     }, 1500);
   };
 
-  const handleSubmit = () => {
-    if (!fuelAmount || !mileage || !previewImage) {
+  const handleSubmit = async () => {
+    if (!fuelAmount || !mileage || !previewBlob) {
       alert('全ての項目を入力し、レシートを撮影してください。');
       return;
     }
+    
     setIsSubmitting(true);
-    setTimeout(() => {
-      setIsSubmitting(false);
+    setError(null);
+
+    try {
+      // 1. R2 へアップロード
+      const uploadResult = await uploadMedia(previewBlob, 'receipts');
+      
+      // 2. 意思決定ログ（実績）としてDBに記録
+      await recordDecision('FUEL_REPORT', user?.id || '', {
+        amount: fuelAmount,
+        mileage: mileage,
+        receiptPath: uploadResult.path,
+        storageProvider: uploadResult.provider
+      });
+
       setIsSuccess(true);
-    }, 2000);
+    } catch (err: any) {
+      console.error('[FUEL] Submit failed:', err);
+      if (err.message === 'STORAGE_CONFIG_ERROR') {
+        setError('ストレージ設定（.env）が未完了です。開発者にお問い合わせください。');
+      } else {
+        setError('データの送信に失敗しました。電波の良い場所で再試行してください。');
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   if (isSuccess) {
@@ -108,6 +139,13 @@ export const FuelPage: React.FC = () => {
         </div>
       )}
 
+      {error && (
+        <div className="tw-bg-red-50 tw-border-2 tw-border-red-200 tw-p-4 tw-rounded-2xl tw-flex tw-items-start tw-text-red-700 tw-animate-shake">
+          <i className="fa-solid fa-circle-exclamation tw-mt-1 tw-mr-3 tw-text-lg"></i>
+          <p className="tw-text-sm tw-font-bold">{error}</p>
+        </div>
+      )}
+
       <div className="tw-flex tw-flex-col tw-gap-6">
         {/* Fuel Amount Section */}
         <div className="tw-space-y-2">
@@ -115,19 +153,13 @@ export const FuelPage: React.FC = () => {
             <i className="fa-solid fa-droplet tw-text-blue-500 tw-text-xs"></i>
             <label className="tw-text-sm tw-font-bold tw-text-slate-600">今回の給油量</label>
           </div>
-          <div className="tw-relative tw-group">
-            <input 
-              type="number" 
-              inputMode="decimal"
-              className="tw-w-full tw-bg-slate-50 tw-border-2 tw-border-slate-200 tw-rounded-2xl tw-p-5 tw-text-2xl tw-font-mono tw-font-bold tw-shadow-sm focus:tw-border-blue-500 focus:tw-bg-white focus:tw-outline-none tw-transition-all tw-box-border"
-              placeholder="0.0"
-              value={fuelAmount}
-              onChange={(e) => setFuelAmount(e.target.value)}
-            />
-            <div className="tw-absolute tw-right-5 tw-top-1/2 tw--translate-y-1/2 tw-flex tw-items-center tw-space-x-2">
-              <span className="tw-text-slate-400 tw-font-bold tw-text-xl">L</span>
-            </div>
-          </div>
+          <SmartNumericInput 
+            value={fuelAmount}
+            onChange={setFuelAmount}
+            label="給油量"
+            unit="L"
+            agentId="fuel:amount-input"
+          />
         </div>
 
         {/* Mileage Section */}
@@ -136,19 +168,13 @@ export const FuelPage: React.FC = () => {
             <i className="fa-solid fa-gauge-high tw-text-blue-500 tw-text-xs"></i>
             <label className="tw-text-sm tw-font-bold tw-text-slate-600">現在の走行距離 (メーター値)</label>
           </div>
-          <div className="tw-relative tw-group">
-            <input 
-              type="number" 
-              inputMode="numeric"
-              className="tw-w-full tw-bg-slate-50 tw-border-2 tw-border-slate-200 tw-rounded-2xl tw-p-5 tw-text-2xl tw-font-mono tw-font-bold tw-shadow-sm focus:tw-border-blue-500 focus:tw-bg-white focus:tw-outline-none tw-transition-all"
-              placeholder="000000"
-              value={mileage}
-              onChange={(e) => setMileage(e.target.value)}
-            />
-            <div className="tw-absolute tw-right-5 tw-top-1/2 tw--translate-y-1/2 tw-flex tw-items-center tw-space-x-2">
-              <span className="tw-text-slate-400 tw-font-bold tw-text-xl">km</span>
-            </div>
-          </div>
+          <SmartNumericInput 
+            value={mileage}
+            onChange={setMileage}
+            label="走行距離"
+            unit="km"
+            agentId="fuel:mileage-input"
+          />
         </div>
       </div>
 
@@ -160,18 +186,23 @@ export const FuelPage: React.FC = () => {
         </div>
       </div>
 
-      <div className="tw-mt-10 tw-bg-white tw-border-t tw-border-slate-100 tw-p-4 tw-pb-safe tw-z-30 tw-rounded-t-3xl">
+      <div className="tw-fixed tw-bottom-0 tw-left-0 tw-w-full tw-bg-white tw-border-t tw-border-slate-200 tw-p-4 tw-pb-safe tw-shadow-[0_-4px_10px_rgba(0,0,0,0.05)] tw-z-30">
         <Button 
           agentId="fuel:submit-button"
-          className={`tw-w-full tw-py-4 tw-text-lg tw-shadow-lg ${isSubmitting ? 'tw-opacity-70' : ''}`}
-          variant="primary"
           onClick={handleSubmit}
-          disabled={isSubmitting}
+          disabled={isSubmitting || !previewImage || !fuelAmount || !mileage}
+          className="tw-w-full"
         >
           {isSubmitting ? (
-            <><i className="fa-solid fa-circle-notch fa-spin tw-mr-2"></i>送信中...</>
+            <span className="tw-flex tw-items-center tw-justify-center">
+              <i className="fa-solid fa-circle-notch fa-spin tw-mr-2"></i>
+              送信中...
+            </span>
           ) : (
-            <><i className="fa-solid fa-paper-plane tw-mr-2"></i>報告データを送信</>
+            <span className="tw-flex tw-items-center tw-justify-center">
+              <i className="fa-solid fa-paper-plane tw-mr-2"></i>
+              給油報告を送信
+            </span>
           )}
         </Button>
       </div>
