@@ -36,7 +36,7 @@ export const Layout: React.FC<LayoutProps> = ({
 }) => {
 
   return (
-    <div className="tw-flex tw-flex-col tw-h-full tw-bg-slate-50 tw-relative">
+    <div className="tw-flex tw-flex-col tw-h-screen tw-bg-slate-50 tw-relative tw-overflow-hidden">
       {/* Agent Heartbeat - Hidden from users, visible to AI agent */}
       <div 
         id="agent-heartbeat" 
@@ -89,7 +89,7 @@ export const Layout: React.FC<LayoutProps> = ({
       </header>
 
       {/* Main Content */}
-      <main className="tw-flex-1 tw-overflow-y-auto tw-overflow-x-hidden tw-relative tw-no-scrollbar tw-pb-24 tw-overscroll-contain">
+      <main className="tw-flex-1 tw-overflow-y-auto tw-overflow-x-hidden tw-relative tw-no-scrollbar tw-pb-24 tw-touch-pan-y tw-overscroll-contain">
         {children}
       </main>
 

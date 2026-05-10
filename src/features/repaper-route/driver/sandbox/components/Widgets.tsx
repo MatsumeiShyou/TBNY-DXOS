@@ -48,7 +48,7 @@ export const Card: React.FC<{
   return (
     <div 
       onClick={onClick} 
-      className={`tw-bg-white tw-rounded-xl tw-shadow-sm tw-border tw-border-slate-200 tw-p-4 ${className}`}
+      className={`tw-bg-white tw-rounded-xl tw-shadow-sm tw-border tw-border-slate-200 tw-p-4 tw-box-border ${className}`}
       data-agent-id={fullAgentId}
     >
       {children}

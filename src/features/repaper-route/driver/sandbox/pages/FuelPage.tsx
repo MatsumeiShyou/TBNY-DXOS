@@ -119,7 +119,7 @@ export const FuelPage: React.FC = () => {
             <input 
               type="number" 
               inputMode="decimal"
-              className="tw-w-full tw-bg-slate-50 tw-border-2 tw-border-slate-200 tw-rounded-2xl tw-p-5 tw-text-2xl tw-font-mono tw-font-bold tw-shadow-sm focus:tw-border-blue-500 focus:tw-bg-white focus:tw-outline-none tw-transition-all"
+              className="tw-w-full tw-bg-slate-50 tw-border-2 tw-border-slate-200 tw-rounded-2xl tw-p-5 tw-text-2xl tw-font-mono tw-font-bold tw-shadow-sm focus:tw-border-blue-500 focus:tw-bg-white focus:tw-outline-none tw-transition-all tw-box-border"
               placeholder="0.0"
               value={fuelAmount}
               onChange={(e) => setFuelAmount(e.target.value)}
@@ -160,7 +160,7 @@ export const FuelPage: React.FC = () => {
         </div>
       </div>
 
-      <div className="tw-fixed tw-bottom-0 tw-left-0 tw-w-full tw-bg-white tw-border-t tw-border-slate-100 tw-p-4 tw-pb-safe tw-shadow-[0_-4px_20px_rgba(0,0,0,0.1)] tw-z-30 tw-rounded-t-3xl">
+      <div className="tw-mt-10 tw-bg-white tw-border-t tw-border-slate-100 tw-p-4 tw-pb-safe tw-z-30 tw-rounded-t-3xl">
         <Button 
           agentId="fuel:submit-button"
           className={`tw-w-full tw-py-4 tw-text-lg tw-shadow-lg ${isSubmitting ? 'tw-opacity-70' : ''}`}
