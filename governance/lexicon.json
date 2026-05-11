@@ -1,0 +1,34 @@
+{
+  "version": "1.0",
+  "description": "Sanctuary Governance Lexicon - 専門用語定義集",
+  "terms": {
+    "AMP": {
+      "full_name": "Asset Mutation Protocol",
+      "definition": "資産変更申請プロトコル。コードや設定などの重要な資産を変更する際、その意図、影響、承認、および物理的証跡をセットで記録し、AMPLOGに登録する手順。"
+    },
+    "SDR": {
+      "full_name": "State / Decision / Reason",
+      "definition": "事実(State)、判断(Decision)、理由(Reason)の三要素を不可分として記録する設計思想。すべての状態変化には責任ある主体による判断と正当な理由が伴わなければならない。"
+    },
+    "GSEAL": {
+      "full_name": "Governance Seal Code",
+      "definition": "統治封印コード。タスク完了時に `npm run done` を通じて発行される、物理的な整合性と検証済みであることを証明するハッシュ値または検証トークン。"
+    },
+    "SSOT": {
+      "full_name": "Single Source of Truth",
+      "definition": "単一真実源。プロジェクトにおける唯一の正しい情報源。本プロジェクトにおいては `AGENTS.md` が統治上の SSOT である。"
+    },
+    "CAVR": {
+      "full_name": "Compliance and Verification Route",
+      "definition": "遵守・検証ルート。変更の種類（UI/UX, System, Docs）に応じた物理的な検証手順の定義。Route A (UI/UX), Route B (System/Logic), Route C (Docs/Fix) が存在する。"
+    },
+    "TGS": {
+      "full_name": "Target Global Search",
+      "definition": "ターゲット・グローバル・サーチ。特定のパターンや負債をワークスペース全体および過去の会話ログから徹底的に走査し、証跡として提示する手法。"
+    },
+    "SVP": {
+      "full_name": "Single Version Policy",
+      "definition": "単一バージョンポリシー。プロジェクト全体でライブラリのバージョンを統一し、幽霊依存やバージョン不一致による不安定性を排除する方針。"
+    }
+  }
+}
