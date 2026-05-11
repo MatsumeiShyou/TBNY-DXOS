@@ -26,4 +26,4 @@
 | 018    | 2026-04-29 | Debt List Sanitization & Governance Sync (v8.0) | 承認 (PW: ｙ) | Root/Gov Debt updated to AGENTS.md v8.0 |
 | 019    | 2026-04-29 | Physical Enforcement: Husky & lint-staged Deployment | 承認 (PW: ｙ) | Automated lint/type-check on commit |
 | 020    | 2026-04-29 | Governance Infrastructure Hardening | 承認 (PW: ｙ) | Context Archiving, Integrity Check Deployment, & Hook Optimization |
-| 021    | 2026-04-29 | Synchronize risk matrix reference path in AGENTS.md | ���F (PW: ��) | TASK-005: Docs sync |
+| 021    | 2026-04-29 | Synchronize risk matrix reference path in AGENTS.md | 承認 (PW: ｙ) | TASK-005: Docs sync |

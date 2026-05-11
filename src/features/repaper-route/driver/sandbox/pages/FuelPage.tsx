@@ -19,17 +19,24 @@ export const FuelPage: React.FC = () => {
   const [isSuccess, setIsSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
+
   const handleCapture = () => {
-    setIsCapturing(true);
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
     setError(null);
-    // Simulate camera capture (returning a Blob)
-    setTimeout(() => {
-      const mockUrl = 'https://images.unsplash.com/photo-1554224155-1696413565d3?auto=format&fit=crop&q=80&w=400';
-      setPreviewImage(mockUrl);
-      // Create a dummy blob to simulate a real file
-      setPreviewBlob(new Blob(['mock-image-data'], { type: 'image/jpeg' }));
-      setIsCapturing(false);
-    }, 1500);
+    setIsCapturing(true);
+
+    // プレビュー生成
+    const imageUrl = URL.createObjectURL(file);
+    setPreviewImage(imageUrl);
+    setPreviewBlob(file);
+    setIsCapturing(false);
   };
 
   const handleSubmit = async () => {
@@ -206,6 +213,14 @@ export const FuelPage: React.FC = () => {
           )}
         </Button>
       </div>
+      <input 
+        type="file"
+        ref={fileInputRef}
+        onChange={handleFileChange}
+        accept="image/*"
+        capture="environment"
+        className="tw-hidden"
+      />
     </div>
   );
 };
