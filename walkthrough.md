@@ -1,6 +1,6 @@
 # [TASK_CLOSED]
 
-## [GSEAL-CBD7DB5-B7C11AA1F2A5] 2026-05-12
+## [GSEAL-508EC58-66414FCAA9B5] 2026-05-12
 
 [State]
 証跡ドラフトの検証を実行中。UTF-8 正規化済み。
@@ -15,7 +15,7 @@ DEG プロトコルに従い、タスク完了前に必須証跡が必要であ�
 ## # [TASK_CLOSED]
 
 
-## [GSEAL-44BED43-9E6753840F8B] 2026-05-12
+## [GSEAL-CBD7DB5-B7C11AA1F2A5] 2026-05-12
 
 [State]
 証跡ドラフトの検証を実行中。UTF-8 正規化済み。
@@ -30,4 +30,4 @@ DEG プロトコルに従い、タスク完了前に必須証跡が必要であ�
 
 
 > [!IMPORTANT]
-> **[GATE-SEAL: GSEAL-CBD7DB5-B7C11AA1F2A5]**
+> **[GATE-SEAL: GSEAL-508EC58-66414FCAA9B5]**

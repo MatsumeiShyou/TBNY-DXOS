@@ -29,18 +29,62 @@ export const FuelPage: React.FC<FuelPageProps> = ({ onBack }) => {
     fileInputRef.current?.click();
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const compressImage = async (file: File): Promise<Blob> => {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const MAX_SIZE = 1280;
+        let width = img.width;
+        let height = img.height;
+
+        if (width > height) {
+          if (width > MAX_SIZE) {
+            height *= MAX_SIZE / width;
+            width = MAX_SIZE;
+          }
+        } else {
+          if (height > MAX_SIZE) {
+            width *= MAX_SIZE / height;
+            height = MAX_SIZE;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return reject(new Error('Canvas ctx null'));
+        
+        ctx.drawImage(img, 0, 0, width, height);
+        canvas.toBlob((blob) => {
+          if (blob) resolve(blob);
+          else reject(new Error('Blob failed'));
+        }, 'image/jpeg', 0.8);
+      };
+      img.onerror = reject;
+      img.src = URL.createObjectURL(file);
+    });
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
     setError(null);
     setIsCapturing(true);
 
-    // プレビュー生成
-    const imageUrl = URL.createObjectURL(file);
-    setPreviewImage(imageUrl);
-    setPreviewBlob(file);
-    setIsCapturing(false);
+    try {
+      // プレビューと制約のため画像を圧縮（スマホのメモリ不足による強制再起動を防止）
+      const compressedBlob = await compressImage(file);
+      const imageUrl = URL.createObjectURL(compressedBlob);
+      setPreviewImage(imageUrl);
+      setPreviewBlob(compressedBlob);
+    } catch (err) {
+      console.error('[FUEL] Image compression failed', err);
+      setError('画像の圧縮に失敗しました。別の写真をお試しください。');
+    } finally {
+      setIsCapturing(false);
+    }
   };
 
   const handleSubmit = async () => {
