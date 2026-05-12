@@ -64,9 +64,10 @@ export const FuelPage: React.FC = () => {
     } catch (err: any) {
       console.error('[FUEL] Submit failed:', err);
       if (err.message === 'STORAGE_CONFIG_ERROR') {
-        setError('ストレージ設定（.env）が未完了です。開発者にお問い合わせください。');
+        setError('ストレージ設定（.env）が未完了です。');
       } else {
-        setError('データの送信に失敗しました。電波の良い場所で再試行してください。');
+        // スマホデバッグ用にエラーの詳細を表示
+        setError(`送信失敗: ${err.name || 'Error'} - ${err.message || '不明なエラー'}`);
       }
     } finally {
       setIsSubmitting(false);
@@ -99,7 +100,7 @@ export const FuelPage: React.FC = () => {
       <div className="tw-flex tw-flex-col tw-space-y-2">
         <h2 className="tw-text-2xl tw-font-bold tw-text-slate-800 tw-flex tw-items-center">
           <i className="fa-solid fa-gas-pump tw-mr-3 tw-text-blue-500"></i>
-          給油報告
+          給油報告 (v2)
         </h2>
         <p className="tw-text-sm tw-text-slate-500">
           レシートを撮影し、給油量と走行距離を入力してください。

@@ -27,3 +27,5 @@
 | 019    | 2026-04-29 | Physical Enforcement: Husky & lint-staged Deployment | 承認 (PW: ｙ) | Automated lint/type-check on commit |
 | 020    | 2026-04-29 | Governance Infrastructure Hardening | 承認 (PW: ｙ) | Context Archiving, Integrity Check Deployment, & Hook Optimization |
 | 021    | 2026-04-29 | Synchronize risk matrix reference path in AGENTS.md | 承認 (PW: ｙ) | TASK-005: Docs sync |
+
+| 022    | 2026-05-11 | Implementation of real camera capture in FuelPage.tsx | 承認 (PW: ｙ) | Native camera integration via input capture |

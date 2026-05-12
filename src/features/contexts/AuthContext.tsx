@@ -17,24 +17,30 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         return false; 
     });
 
-    const isVerifying = useRef(false);
+    const verificationPromise = useRef<Promise<any> | null>(null);
 
     useEffect(() => {
         const verifyProfile = async (uid: string) => {
-            if (isVerifying.current) return null;
-            isVerifying.current = true;
-            try {
-                const staffTimeout = new Promise<never>((_, reject) => 
-                    setTimeout(() => reject(new Error('STAFF_FETCH_TIMEOUT')), 15000)
-                );
-                const staffFetch = AuthAdapter.getStaffByAuthUid(uid);
-                return await Promise.race([staffFetch, staffTimeout]);
-            } catch (err) {
-                console.error('[STATE] AuthProvider: Profile verification failed:', err);
-                return null;
-            } finally {
-                isVerifying.current = false;
+            if (verificationPromise.current) {
+                return verificationPromise.current;
             }
+
+            verificationPromise.current = (async () => {
+                try {
+                    const staffTimeout = new Promise<never>((_, reject) => 
+                        setTimeout(() => reject(new Error('STAFF_FETCH_TIMEOUT')), 15000)
+                    );
+                    const staffFetch = AuthAdapter.getStaffByAuthUid(uid);
+                    return await Promise.race([staffFetch, staffTimeout]);
+                } catch (err) {
+                    console.error('[STATE] AuthProvider: Profile verification failed:', err);
+                    return null;
+                } finally {
+                    verificationPromise.current = null;
+                }
+            })();
+
+            return verificationPromise.current;
         };
 
         const initializeAuth = async () => {
@@ -130,6 +136,22 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             
             try {
                 if (user) {
+                    if (_event === 'SIGNED_OUT') {
+                        setCurrentUser(null);
+                        AuthAdapter.clearCachedProfile();
+                        setAuthStatus('UNAUTHENTICATED');
+                        return;
+                    }
+
+                    // [OPTIMIZATION & FIX] トークンリフレッシュ時、すでにキャッシュされた同一ユーザーであればプロフィールの再取得をスキップする。
+                    // これにより、操作中の不要なDBアクセスと再レンダリング/ログアウトの競合を防ぐ。
+                    const cachedUser = AuthAdapter.getCachedProfile();
+                    if (_event === 'TOKEN_REFRESHED' && cachedUser && cachedUser.id === user.id) {
+                        console.log(`[STATE] AuthProvider: Token refreshed for existing user. Skipping profile fetch.`);
+                        setAuthStatus('VERIFIED');
+                        return;
+                    }
+
                     console.log(`[STATE] AuthProvider: Session found via AuthStateChange. Verifying...`);
                     const staff = await verifyProfile(user.id);
 
