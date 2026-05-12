@@ -273,7 +273,7 @@ export default function DriverApp() {
             )}
              {view === 'fuel' && (
                <AgentNamespace ns="fuel">
-                 <FuelPage />
+                 <FuelPage onBack={() => setView('route')} />
                </AgentNamespace>
              )}
           </AgentNamespace>

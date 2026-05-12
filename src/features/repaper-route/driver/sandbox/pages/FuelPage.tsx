@@ -8,7 +8,11 @@ import { useDriverOSBridge } from '../../bridge/useDriverOSBridge';
  * 
  * 給油報告画面。レシートの撮影とデータの送信を行う。
  */
-export const FuelPage: React.FC = () => {
+interface FuelPageProps {
+  onBack?: () => void;
+}
+
+export const FuelPage: React.FC<FuelPageProps> = ({ onBack }) => {
   const { user, uploadMedia, recordDecision } = useDriverOSBridge();
   const [isCapturing, setIsCapturing] = useState(false);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
@@ -87,7 +91,10 @@ export const FuelPage: React.FC = () => {
         <Button 
           agentId="fuel:back-button"
           className="tw-w-full tw-max-w-xs"
-          onClick={() => window.location.reload()}
+          onClick={() => {
+            if (onBack) onBack();
+            else window.location.reload();
+          }}
         >
           ホームへ戻る
         </Button>
