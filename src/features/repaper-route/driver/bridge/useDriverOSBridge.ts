@@ -2,6 +2,7 @@ import { useState, useCallback, useEffect, useMemo } from 'react';
 import { useAuth } from '../../../hooks/useAuth';
 import { supabase } from '../../../../shared/lib/supabase/client';
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import type { Stop, Vehicle, Colleague } from '../sandbox/types';
 import { StopStatus, DriverStatus } from '../sandbox/types';
 
@@ -167,13 +168,28 @@ export const useDriverOSBridge = () => {
     const path = `${folder}/${fileName}`;
     
     try {
-      console.log(`[BRIDGE] Uploading ${path} to R2...`);
-      await client.send(new PutObjectCommand({
+      console.log(`[BRIDGE] Generating presigned URL for ${path}...`);
+      // スマホのブラウザから直接AWS SDKでアップロードするとストリーム解釈エラーが起きるため、
+      // 署名付きURL（Presigned URL）を発行し、ブラウザ標準の fetch API で送信する方式に変更
+      const command = new PutObjectCommand({
         Bucket: bucket,
         Key: path,
-        Body: file,
         ContentType: "image/jpeg",
-      }));
+      });
+      const signedUrl = await getSignedUrl(client, command, { expiresIn: 60 });
+
+      console.log(`[BRIDGE] Uploading via native fetch...`);
+      const uploadRes = await fetch(signedUrl, {
+        method: "PUT",
+        body: file,
+        headers: {
+          "Content-Type": "image/jpeg",
+        },
+      });
+
+      if (!uploadRes.ok) {
+        throw new Error(`HTTP Error ${uploadRes.status}: ${uploadRes.statusText}`);
+      }
 
       return {
         url: `${publicUrl}/${path}`,
