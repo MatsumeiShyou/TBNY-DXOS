@@ -19,6 +19,7 @@ export interface DXUser {
 
   last_event_id?: string | null;
   avatar_url?: string;
+  vehicle_info?: { id: string; name: string } | null;
 }
 
 

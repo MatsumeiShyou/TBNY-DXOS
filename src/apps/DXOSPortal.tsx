@@ -12,7 +12,7 @@ import {
 import { useAuth } from '../features/hooks/useAuth';
 import { AuthAdapter } from '../shared/lib/auth/AuthAdapter';
 import { APPS_REGISTRY, type AppConfig } from '../features/config/appsRegistry';
-import { SkeletonTile } from '../shared/components/VerificationGate';
+import { SkeletonTile } from '../features/components/VerificationGate';
 import '../shared/styles/portal.css';
 
 /**

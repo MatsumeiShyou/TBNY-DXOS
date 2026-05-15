@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useDriverOSBridge } from '../bridge/useDriverOSBridge';
 import { Layout } from './components/Layout';
 import { InspectionPage } from './pages/InspectionPage';
@@ -17,6 +17,7 @@ import { AgentNamespace } from './components/AgentContext';
 import { VehicleSelector } from '../../components/VehicleSelector';
 import { NumericKeypadProvider } from './components/NumericKeypadContext';
 import { NumericKeypad } from './components/NumericKeypad';
+import { Loader2, Truck, ArrowDown } from 'lucide-react';
 
 /**
  * DriverApp (Production Mode)
@@ -46,6 +47,9 @@ export default function DriverApp() {
   const [stops, setStops] = useState<Stop[]>([]);
   const [selectedStopId, setSelectedStopId] = useState<string | null>(() => getInitialState('selectedStopId', null));
 
+  const prevBridgeStopsRef = useRef<Stop[]>([]);
+  const prevBridgeUserRef = useRef<User | null>(null);
+
   const [toast, setToast] = useState<{message: string, type: 'success' | 'error' | 'info'} | null>(null);
   const [endShiftMode, setEndShiftMode] = useState<'FINAL' | 'INTERMEDIATE'>('FINAL');
   const [reportComment, setReportComment] = useState(() => getInitialState('reportComment', ''));
@@ -70,18 +74,20 @@ export default function DriverApp() {
     localStorage.setItem(PERSIST_KEY, JSON.stringify(sessionData));
   }, [view, selectedStopId, reportComment, user]);
 
-  // DB データの同期
+  // DB データの同期 (F-SSOT 改善)
   useEffect(() => {
-    if (bridge.stops && JSON.stringify(bridge.stops) !== JSON.stringify(stops)) {
-      Promise.resolve().then(() => setStops(bridge.stops));
+    if (bridge.stops && bridge.stops !== prevBridgeStopsRef.current) {
+      setStops(bridge.stops);
+      prevBridgeStopsRef.current = bridge.stops;
     }
-  }, [bridge.stops, stops]);
+  }, [bridge.stops]);
 
   useEffect(() => {
-    if (bridge.user && JSON.stringify(bridge.user) !== JSON.stringify(user)) {
-      Promise.resolve().then(() => setUser(bridge.user));
+    if (bridge.user && bridge.user !== prevBridgeUserRef.current) {
+      setUser(bridge.user);
+      prevBridgeUserRef.current = bridge.user;
     }
-  }, [bridge.user, user]);
+  }, [bridge.user]);
 
   const showToast = (message: string, type: 'success' | 'error' | 'info' = 'success') => {
     setToast({ message, type });
@@ -188,7 +194,7 @@ export default function DriverApp() {
     return (
       <div className="tw-h-screen tw-flex tw-items-center tw-justify-center tw-bg-slate-900 tw-text-white">
         <div className="tw-text-center tw-animate-pulse">
-          <i className="fa-solid fa-spinner fa-spin tw-text-4xl tw-mb-4"></i>
+          <Loader2 className="tw-animate-spin tw-text-4xl tw-mb-4" />
           <p className="tw-font-bold">Loading...</p>
         </div>
       </div>
@@ -344,7 +350,7 @@ export default function DriverApp() {
                         <div className="tw-font-bold tw-text-slate-800">{c.name}</div>
                         <div className="tw-text-sm tw-text-slate-500">{c.distance} 付近</div>
                       </div>
-                      <i className="fa-solid fa-truck-fast tw-text-blue-500"></i>
+                      <Truck className="tw-text-blue-500" />
                     </div>
                   </Card>
                 ))}
@@ -354,7 +360,7 @@ export default function DriverApp() {
                 <div className="tw-p-6 tw-bg-blue-50 tw-rounded-2xl">
                   <p className="tw-text-slate-600 tw-mb-2">譲渡する案件</p>
                   <h3 className="tw-text-xl tw-font-bold">{selectedStopForTransfer?.customerName}</h3>
-                  <div className="tw-my-4 tw-text-2xl tw-text-blue-600"><i className="fa-solid fa-arrow-down"></i></div>
+                  <div className="tw-my-4 tw-text-2xl tw-text-blue-600"><ArrowDown /></div>
                   <p className="tw-text-slate-600 tw-mb-2">譲渡先ドライバー</p>
                   <h3 className="tw-text-xl tw-font-bold">{selectedColleagueForTransfer?.name}</h3>
                 </div>

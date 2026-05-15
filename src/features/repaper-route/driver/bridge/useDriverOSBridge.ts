@@ -3,8 +3,8 @@ import { useAuth } from '../../../hooks/useAuth';
 import { supabase } from '../../../../shared/lib/supabase/client';
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
-import type { Stop, Vehicle, Colleague } from '../sandbox/types';
-import { StopStatus, DriverStatus } from '../sandbox/types';
+import type { Stop, Vehicle, Colleague } from './types';
+import { StopStatus, DriverStatus } from './types';
 
 /**
  * useDriverOSBridge
@@ -32,7 +32,7 @@ export const useDriverOSBridge = () => {
         name: v.callsign || v.number || '不明な車両',
         plateNumber: v.number || '',
         isInspected: false,
-        tareWeight: 0
+        tareWeight: v.empty_vehicle_weight || 0
       })));
     }
   }, []);
@@ -50,52 +50,57 @@ export const useDriverOSBridge = () => {
         name: s.name,
         status: DriverStatus.IDLE,
         distance: '不明',
-        phoneNumber: '00-0000-0000'
+        phoneNumber: s.phone_number || ''
       })));
     }
   }, [currentUser?.id]);
 
-  // 案件データのフェッチ
+  // 案件データのフェッチ — SSOT: jobs テーブル (Option A / TASK-001)
   const refreshStops = useCallback(async () => {
     if (!currentUser) return;
     setIsLoading(true);
     try {
-      // Admin 側と整合させるため、routes テーブルの JSONB から取得
-      const { data: routeRows, error: rError } = await supabase
-        .from('routes')
-        .select('*')
+      // jobs テーブルから当該ドライバーの当日分を取得し、
+      // customers テーブルから住所情報を補完する
+      const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+
+      const { data: jobRows, error: jError } = await supabase
+        .from('jobs')
+        .select('*, customers(name, address, lat, lng)')
         .eq('driver_id', currentUser.id)
-        .order('created_at', { ascending: false })
-        .limit(1);
+        .eq('scheduled_date', today)
+        .order('start_time', { ascending: true });
 
-      if (rError) throw rError;
+      if (jError) throw jError;
 
-      const latestRoute = routeRows?.[0];
-      const rawJobs = Array.isArray(latestRoute?.jobs) ? latestRoute.jobs : [];
+      const rawJobs = jobRows || [];
 
-      setStops(rawJobs.map((job: any) => ({
-        id: job.id,
-        customerName: job.customer_name || job.display_name || '名称不明',
-        address: job.address || '住所不明',
-        lat: job.lat || 35.6,
-        lng: job.lng || 139.7,
-        scheduledTime: job.scheduled_time || '00:00',
-        status: job.status === 'confirmed' ? StopStatus.COMPLETED : StopStatus.PENDING,
-        items: Array.isArray(job.items) ? job.items : [
-          { 
-            id: `${job.id}-item-1`, 
-            name: job.item_category || '回収品', 
-            defaultWeight: job.weight_kg || 0,
-            isCollected: !!job.weight_kg
-          }
-        ],
-        isPriority: !!job.is_priority,
-        notes: job.notes || '',
-        arrivalTime: job.actual_time || undefined,
-        departureTime: job.actual_time || undefined
-      })));
+      setStops(rawJobs.map((job: any) => {
+        const customer = job.customers || {};
+        return {
+          id: job.id,
+          customerName: job.customer_name || customer.name || '名称不明',
+          address: customer.address || '住所不明',
+          lat: customer.lat || 35.6,
+          lng: customer.lng || 139.7,
+          scheduledTime: job.start_time || '00:00',
+          status: job.status === 'confirmed' ? StopStatus.COMPLETED : StopStatus.PENDING,
+          items: Array.isArray(job.task_details?.items) ? job.task_details.items : [
+            { 
+              id: `${job.id}-item-1`, 
+              name: job.item_category || '回収品', 
+              defaultWeight: job.weight_kg || 0,
+              isCollected: !!job.weight_kg
+            }
+          ],
+          isPriority: !!job.is_spot,
+          notes: job.note || job.special_notes || '',
+          arrivalTime: job.actual_time || undefined,
+          departureTime: job.actual_time || undefined
+        };
+      }));
     } catch (err) {
-      console.error('[BRIDGE] Failed to fetch route stops:', err);
+      console.error('[BRIDGE] Failed to fetch stops from jobs table:', err);
     } finally {
       setIsLoading(false);
     }
@@ -210,11 +215,11 @@ export const useDriverOSBridge = () => {
     return {
       id: currentUser.id,
       name: currentUser.name || 'Unknown Driver',
-      vehicleId: '未割当',
-      vehicleName: '車両未指定',
+      vehicleId: currentUser.vehicle_info?.id || '未割当',
+      vehicleName: currentUser.vehicle_info?.name || '車両未指定',
       currentStatus: DriverStatus.IDLE,
     };
-  }, [currentUser?.id, currentUser?.name]);
+  }, [currentUser?.id, currentUser?.name, currentUser?.vehicle_info]);
 
   return {
     user,

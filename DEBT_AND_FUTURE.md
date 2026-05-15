@@ -6,19 +6,21 @@
 - **Verification**: 100% build pass and physical DOM verification completed (GSEAL issued).
 
 ## Technical Debt (残存負債)
+
+### DXOS 全体
 - [ ] **[PWA_ASSET_DEBT]**: `manifest.json` のアイコンが `vite.svg` の暫定流用。正式なアセット生成と差し替えが必要。
 - [ ] **[MODULE_INTEGRATION_DEBT]**: RePaper Route 等の外部モジュールとの物理的な統合（リンク、データ連携、SSO）。現在 Portal 側からの並行起動を復旧済み。
 - [ ] **[SWR_FULL_ADOPTION]**: 全データフェッチ層への `useSWR` パターンの導入（オフライン耐性の強化）。
 
-
-## Future Roadmap (将来構想)
-- [ ] **TBNY DXOS Core Implementation**: ポータル基盤と各モジュールのシームレスな統合（SSO含む）。
-- [x] **[DEVOPS_FIX]**: 開発サーバー並行起動の復旧 (2026-05-01)。
-- [ ] **Sentinel Governance v8.x Protocol Enforcement**: `Seal/Purge Protocol` の完全自動監視。
-
----
-> [!NOTE]
-> 本書は TBNY DXOS 全体の負債とロードマップを管理します。個別のアプリ内負債は `governance/DEBT_AND_FUTURE.md` を参照してください。
+### RePaper Route
+- [x] **[Path Fragility] 統治ツールのパス解決**: SSOT化完了。
+- [x] **[AuthAdapter Integration] Staff スキーマ準拠**: `AuthAdapter.ts` への移行完了。
+- [ ] **DeltaManager (Logic Edition)**: 差分分析および変更インパクトの論理計算エンジンの構築。
+- [ ] **Structural Validation**: 10kg単位制約、合計重量要件等の厳格なバリデーション実装。
+- [ ] **Audit Trail v2**: 変更履歴を追記型台帳（JSONL + DB）への二重記録。
+- [x] **[Git Hooks Sync]**: `husky` & `lint-staged` 導入による自動化強制力の配備完了。
+- [ ] **[DriverApp Bridge] Supabase 実装**: `useDriverOSBridge` の実 DB 同期（TASK-001 で部分対応済み）。
+- [ ] **[DriverApp Assets] アイコン資産の Lucide 移行**: FontAwesome への残存依存を解消し、Lucide へ完全移行することを推奨。
 
 ## 2026-05-05: 構造的防護と静的解析の強化
 - **対策**: `ErrorBoundary` の導入（LazyWrapper 単位）と `consistent-type-imports` ルールの強制。
@@ -28,3 +30,16 @@
     - **[観測維持]**: `ErrorBoundary` は `console.error` にスタックトレースを排出し続ける。将来的に SWR/Supabase 経由でのサーバーサイドログ出力を検討。
     - **[ビルド摩擦]**: `tsconfig.app.json` の `incremental: true` を維持し、型チェックによる待ち時間を最小化する。
     - **[React インポート]**: `verbatimModuleSyntax: true` 環境下では、JSX を使用し `React.FC` 等を参照する場合、`import React from 'react'` の明示的なインポートが必須となる（React 19 以降でもランタイムエラーを避けるため）。
+
+## Future Roadmap (将来構想)
+- [ ] **TBNY DXOS Core Implementation**: ポータル基盤と各モジュールのシームレスな統合（SSO含む）。
+- [x] **[DEVOPS_FIX]**: 開発サーバー並行起動の復旧 (2026-05-01)。
+- [ ] **Sentinel Governance v8.x Protocol Enforcement**: `Seal/Purge Protocol` の完全自動監視。
+- [ ] **[Next Phase Start] useDriverOSBridge.ts への実ロジック注入**: スタブを排して実 DB 同期を実装。
+- [ ] **OAuth2 Transition**: Staff 認証基盤の標準プロトコルへの移行。
+- [ ] **SemanticExtractor**: 業務ドキュメントからの意味抽出（LLM活用）。
+- [ ] **VLM-Based Visual Check**: 視覚言語モデルを用いた計量器の数値整合性確認。
+
+---
+> [!IMPORTANT]
+> 本書は TBNY DXOS 全体の技術的負債とロードマップの SSOT（単一真実源）です。

@@ -52,7 +52,7 @@ export const EndShiftPage: React.FC<Props> = ({ stops, currentVehicle, mode, onC
       }
       setAdjustedWeights(newWeights);
     }
-  }, [step]);
+  }, [step, grossWeight, currentVehicle.tareWeight, collectedItems]);
 
   const adjustItemWeight = (key: string, delta: number) => {
     setAdjustedWeights(prev => {

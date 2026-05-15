@@ -10,6 +10,8 @@ export interface Staff {
   allowed_apps: string[];
   is_active: boolean;
   last_event_id: string | null;
+  vehicle_info?: { id: string; name: string } | null;
+  phone_number?: string | null;
   created_at: string;
   updated_at: string;
 }

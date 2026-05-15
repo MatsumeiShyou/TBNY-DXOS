@@ -94,6 +94,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                         role: staff.role as DXUser['role'],
                         allowed_apps: staff.allowed_apps as string[],
                         last_event_id: staff.last_event_id,
+                        vehicle_info: staff.vehicle_info as { id: string; name: string } | null,
                         permissions: {
                             can_manage_master: staff.role === 'admin' || (staff.role as string) === 'manager',
                             can_view_audit: staff.role === 'admin' || (staff.role as string) === 'manager',
@@ -165,6 +166,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                             role: staff.role as DXUser['role'],
                             allowed_apps: staff.allowed_apps as string[],
                             last_event_id: staff.last_event_id,
+                            vehicle_info: staff.vehicle_info as { id: string; name: string } | null,
                             permissions: {
                                 can_manage_master: staff.role === 'admin' || (staff.role as string) === 'manager',
                                 can_view_audit: staff.role === 'admin' || (staff.role as string) === 'manager',

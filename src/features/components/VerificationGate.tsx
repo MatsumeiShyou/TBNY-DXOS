@@ -1,5 +1,5 @@
 import React from 'react';
-import { useAuth } from '../../features/hooks/useAuth';
+import { useAuth } from '../hooks/useAuth';
 
 interface VerificationGateProps {
   children: React.ReactNode;
