@@ -10,7 +10,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "type-check": "tsc -b",
-    "done": "npm run type-check && npm run integrity && node .agent/scripts/closure_gate.js --reflect",
+    "done": "node scripts/sdr_validator.js --verify && npm run type-check && npm run integrity && node scripts/sdr_validator.js --commit && node .agent/scripts/closure_gate.js --reflect",
     "integrity": "node .agent/scripts/integrity_check.js",
     "agent:scan": "node .agent/scripts/scan.js",
     "agent:check": "node .agent/scripts/reflect.js --check",
