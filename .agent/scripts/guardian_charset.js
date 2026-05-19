@@ -20,7 +20,9 @@ const TARGET_FILES = [
     'AMPLOG.jsonl',
     'ANTIPATTERN_REGISTRY.jsonl',
     'AGENTS.md',
-    'DEBT_AND_FUTURE.md'
+    'DEBT_AND_FUTURE.md',
+    '.agent/session/evidence_draft.md',
+    'walkthrough.md'
 ];
 
 function verifyCharset(filePath) {

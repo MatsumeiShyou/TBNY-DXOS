@@ -15,6 +15,7 @@
 ### RePaper Route
 - [x] **[Path Fragility] 統治ツールのパス解決**: SSOT化完了。
 - [x] **[AuthAdapter Integration] Staff スキーマ準拠**: `AuthAdapter.ts` への移行完了。
+- [ ] **[DATABASE_FOREIGN_KEY_DEBT]**: クラッシュ防止用の `jobs_customer_id_fkey` 外部キー制約の追加。ローカル開発インフラ（DNS 閉塞 & IPv6 制限）により Dashboard からの手動実行が必要。
 - [ ] **DeltaManager (Logic Edition)**: 差分分析および変更インパクトの論理計算エンジンの構築。
 - [ ] **Structural Validation**: 10kg単位制約、合計重量要件等の厳格なバリデーション実装。
 - [ ] **Audit Trail v2**: 変更履歴を追記型台帳（JSONL + DB）への二重記録。
@@ -34,11 +35,14 @@
 ## Future Roadmap (将来構想)
 - [ ] **TBNY DXOS Core Implementation**: ポータル基盤と各モジュールのシームレスな統合（SSO含む）。
 - [x] **[DEVOPS_FIX]**: 開発サーバー並行起動の復旧 (2026-05-01)。
-- [ ] **Sentinel Governance v8.x Protocol Enforcement**: `Seal/Purge Protocol` の完全自動監視。
+- [x] **Sentinel Governance v8.1 Protocol Enforcement**: `SDR Auto-Validator` & `Directory Machine` による完遂ゲートの自動化完了 (2026-05-16)。
 - [ ] **[Next Phase Start] useDriverOSBridge.ts への実ロジック注入**: スタブを排して実 DB 同期を実装。
 - [ ] **OAuth2 Transition**: Staff 認証基盤の標準プロトコルへの移行。
 - [ ] **SemanticExtractor**: 業務ドキュメントからの意味抽出（LLM活用）。
 - [ ] **VLM-Based Visual Check**: 視覚言語モデルを用いた計量器の数値整合性確認。
+
+### Abandoned Concepts (永久凍結・破棄)
+- **OS-Level ACL Separation (マルチエージェントの物理権限分離)**: 運用オーバーヘッドとAntigravity環境との不整合のため完全に中止。将来の再検討も行わない（ADR-0017参照）。
 
 ---
 > [!IMPORTANT]

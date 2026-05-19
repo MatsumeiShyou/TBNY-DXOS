@@ -28,12 +28,58 @@ import { Loader2, Truck, ArrowDown } from 'lucide-react';
 // --- 状態永続化 (State Persistence) ---
 const PERSIST_KEY = 'TBNY_DRIVER_SESSION_V1';
 
+// セッション期限切れ判定関数 (日本時間基準)
+const isSessionExpired = (savedAtIsoString: string): boolean => {
+  if (!savedAtIsoString) return true;
+  try {
+    const savedDate = new Date(savedAtIsoString);
+    const nowDate = new Date();
+
+    // 日本時間 (JST: UTC+9時間) 基準の YYYY-MM-DD 文字列を取得して日付比較
+    const getJSTDateString = (date: Date) => {
+      const jstOffset = 9 * 60 * 60 * 1000;
+      const jstDate = new Date(date.getTime() + jstOffset);
+      return jstDate.toISOString().split('T')[0];
+    };
+
+    if (getJSTDateString(savedDate) !== getJSTDateString(nowDate)) {
+      return true; // 日付が変わっている場合は期限切れ
+    }
+
+    // 操作から12時間以上経過しているか判定
+    const diffMs = nowDate.getTime() - savedDate.getTime();
+    const twelveHoursMs = 12 * 60 * 60 * 1000;
+    if (diffMs > twelveHoursMs) {
+      return true;
+    }
+
+    return false;
+  } catch {
+    return true; // パース失敗時は安全のため期限切れとみなす
+  }
+};
+
 // 初期値の遅延取得関数
 const getInitialState = (key: string, defaultValue: unknown) => {
   const saved = localStorage.getItem(PERSIST_KEY);
   if (!saved) return defaultValue;
   try {
     const data = JSON.parse(saved);
+
+    // 最初のステート初期化時に期限切れチェックを実行
+    if (data.updatedAt && isSessionExpired(data.updatedAt)) {
+      localStorage.removeItem(PERSIST_KEY); // 古いセッションを破棄
+      return defaultValue;
+    }
+
+    // 同日内の短い再起動でも、一時画面であれば仕事のリスト画面へ安全に引き戻す
+    if (key === 'view') {
+      const value = data[key];
+      if (value === 'fuel' || value === 'report') {
+        return 'route';
+      }
+    }
+
     return data[key] !== undefined ? data[key] : defaultValue;
   } catch {
     return defaultValue;

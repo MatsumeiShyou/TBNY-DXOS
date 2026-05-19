@@ -371,7 +371,15 @@ function main() {
         if (runCommand('git status --porcelain')) {
             const msgIdx = process.argv.findIndex(arg => arg.includes('--message='));
             const customMsg = msgIdx !== -1 ? process.argv.slice(msgIdx).join(' ').split('--message=')[1]?.replace(/\^/g, '').trim() : null;
-            const commitMsg = customMsg ? `[${tier}] ${customMsg}` : `[${tier}] Final Automated Task Closure`;
+            
+            const jpRegex = /[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff]/;
+            if (!customMsg || !jpRegex.test(customMsg)) {
+                Log.error('SCHEMA VIOLATION: コミットメッセージには日本語での説明を含める必要があります。(B-3違反)');
+                Log.error('バイリンガル・コンベンショナル・コミット形式を使用してください。');
+                process.exit(1);
+            }
+
+            const commitMsg = `[${tier}] ${customMsg}`;
             runCommand(`git commit -m "${commitMsg.replace(/"/g, '\\"')}" --no-verify`);
             runCommand('git push origin main');
         }
