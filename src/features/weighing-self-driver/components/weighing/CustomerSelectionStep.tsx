@@ -35,46 +35,46 @@ const CustomerSelectionStep: React.FC = () => {
 
   return (
     <Card>
-      <div className="flex justify-between items-start mb-6">
+      <div className="tw-flex tw-justify-between tw-items-start tw-mb-6">
         <div>
-          <h2 className="text-xl font-bold mb-1">ステップ 2/{maxSteps}</h2>
-          <p className="text-2xl font-bold text-slate-700 dark:text-slate-300">記録の種類を選択してください</p>
+          <h2 className="tw-text-xl tw-font-bold tw-mb-1">ステップ 2/{maxSteps}</h2>
+          <p className="tw-text-2xl tw-font-bold tw-text-slate-700 dark:text-slate-300">記録の種類を選択してください</p>
         </div>
         <HelpTooltip title="記録の種類の選択">
-          <div className="space-y-4 text-slate-600 dark:text-slate-300 leading-relaxed">
-            <h4 className="font-bold text-slate-800 dark:text-slate-200">どちらを選べばいい？</h4>
-            <div className="mt-2 p-3 bg-slate-100 dark:bg-slate-700 rounded-lg border border-slate-200 dark:border-slate-600">
-              <h5 className="font-semibold text-blue-600 dark:text-blue-400">「自社の荷物として記録」を選ぶ場合</h5>
-              <p className="text-sm text-slate-700 dark:text-slate-200">持ち込んだ荷物がすべて自分（または自社）のものである場合や、回収先が1箇所のみの場合に選択します。</p>
-              <p className="text-xs mt-1 text-slate-500 dark:text-slate-400">例： 鈴木様が、ご自身の段ボールだけを持ち込んだ。</p>
+          <div className="tw-space-y-4 tw-text-slate-600 dark:text-slate-300 tw-leading-relaxed">
+            <h4 className="tw-font-bold tw-text-slate-800 dark:text-slate-200">どちらを選べばいい？</h4>
+            <div className="tw-mt-2 tw-p-3 tw-bg-slate-100 dark:bg-slate-700 tw-rounded-lg tw-border tw-border-slate-200 dark:border-slate-600">
+              <h5 className="tw-font-semibold tw-text-blue-600 dark:text-blue-400">「自社の荷物として記録」を選ぶ場合</h5>
+              <p className="tw-text-sm tw-text-slate-700 dark:text-slate-200">持ち込んだ荷物がすべて自分（または自社）のものである場合や、回収先が1箇所のみの場合に選択します。</p>
+              <p className="tw-text-xs tw-mt-1 tw-text-slate-500 dark:text-slate-400">例： 鈴木様が、ご自身の段ボールだけを持ち込んだ。</p>
             </div>
-            <div className="mt-2 p-3 bg-slate-100 dark:bg-slate-700 rounded-lg border border-slate-200 dark:border-slate-600">
-              <h5 className="font-semibold text-blue-600 dark:text-blue-400">「回収先を選んで記録」を選ぶ場合</h5>
-              <p className="text-sm text-slate-700 dark:text-slate-200">複数の異なる場所から荷物を回収してきた場合に選択します。荷物ごとに、どの回収先のものかを記録できます。</p>
-              <p className="text-xs mt-1 text-slate-500 dark:text-slate-400">例： A商事から新聞を、B新聞社から雑誌を回収した。</p>
+            <div className="tw-mt-2 tw-p-3 tw-bg-slate-100 dark:bg-slate-700 tw-rounded-lg tw-border tw-border-slate-200 dark:border-slate-600">
+              <h5 className="tw-font-semibold tw-text-blue-600 dark:text-blue-400">「回収先を選んで記録」を選ぶ場合</h5>
+              <p className="tw-text-sm tw-text-slate-700 dark:text-slate-200">複数の異なる場所から荷物を回収してきた場合に選択します。荷物ごとに、どの回収先のものかを記録できます。</p>
+              <p className="tw-text-xs tw-mt-1 tw-text-slate-500 dark:text-slate-400">例： A商事から新聞を、B新聞社から雑誌を回収した。</p>
             </div>
           </div>
         </HelpTooltip>
       </div>
 
-      <div className="text-center space-y-4">
-        <p className="text-slate-600 dark:text-slate-300 mb-8">どなたの荷物を記録しますか？</p>
+      <div className="tw-text-center tw-space-y-4">
+        <p className="tw-text-slate-600 dark:text-slate-300 tw-mb-8">どなたの荷物を記録しますか？</p>
         
-        <div className="space-y-4">
-          <Button onClick={handleSelectOwnGoods} size="lg" fullWidth variant="primary" className={isPulseEffectEnabled ? 'highlight-navigation' : ''}>
-            <User className="mr-3 h-6 w-6" />
+        <div className="tw-space-y-4">
+          <Button onClick={handleSelectOwnGoods} size="lg" fullWidth variant="primary" className={isPulseEffectEnabled ? 'tw-highlight-navigation' : ''}>
+            <User className="tw-mr-3 tw-h-6 tw-w-6" />
             {ownGoodsButtonLabel}
           </Button>
-          <Button onClick={handleSelectCollectionPoint} size="lg" fullWidth variant="secondary" className={isPulseEffectEnabled ? 'highlight-navigation' : ''}>
-            <Building className="mr-3 h-6 w-6" />
+          <Button onClick={handleSelectCollectionPoint} size="lg" fullWidth variant="secondary" className={isPulseEffectEnabled ? 'tw-highlight-navigation' : ''}>
+            <Building className="tw-mr-3 tw-h-6 tw-w-6" />
             回収先を選んで記録する
           </Button>
         </div>
       </div>
 
-      <div className="flex justify-start mt-8">
+      <div className="tw-flex tw-justify-start tw-mt-8">
         <Button onClick={prevStep} variant="secondary">
-          <ArrowLeft className="mr-2 h-4 w-4" />
+          <ArrowLeft className="tw-mr-2 tw-h-4 tw-w-4" />
           総重量計量に戻る
         </Button>
       </div>

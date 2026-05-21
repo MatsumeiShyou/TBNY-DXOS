@@ -23,10 +23,10 @@ interface DetailRowProps {
 }
 
 const DetailRow: React.FC<DetailRowProps> = ({ label, value, children, className }) => (
-  <div className={`flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-700/50 rounded-md ${className}`}>
+  <div className={`tw-flex tw-items-center tw-justify-between tw-p-3 tw-bg-slate-50 dark:bg-slate-700/50 tw-rounded-md ${className}`}>
     <span>{label}:</span>
-    <div className="flex items-center space-x-2">
-      <span className="font-bold">{value} kg</span>
+    <div className="tw-flex tw-items-center tw-space-x-2">
+      <span className="tw-font-bold">{value} kg</span>
       {children}
     </div>
   </div>
@@ -168,26 +168,26 @@ const ConfirmStep: React.FC = () => {
     const itemName = masterItems.find(mi => mi.id === item.itemId)?.name || '不明な品目';
     
     return (
-      <div key={originalIndex} className="p-3 bg-white dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600 rounded-md">
-        <div className="flex justify-between items-start mb-2">
+      <div key={originalIndex} className="tw-p-3 tw-bg-white dark:bg-slate-700/50 tw-border tw-border-slate-200 dark:border-slate-600 tw-rounded-md">
+        <div className="tw-flex tw-justify-between tw-items-start tw-mb-2">
             <div>
-                <p className="font-bold">{itemName}</p>
-                {showLocation && <p className="text-sm text-slate-500 dark:text-slate-300">{locationName}</p>}
+                <p className="tw-font-bold">{itemName}</p>
+                {showLocation && <p className="tw-text-sm tw-text-slate-500 dark:text-slate-300">{locationName}</p>}
             </div>
             {!isExpressMode && (
-                <div className="flex items-center space-x-1 flex-shrink-0">
-                <button onClick={() => setEditingItem({ index: originalIndex, item })} className="p-2 text-slate-500 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400" aria-label="重量を編集">
+                <div className="tw-flex tw-items-center tw-space-x-1 tw-flex-shrink-0">
+                <button onClick={() => setEditingItem({ index: originalIndex, item })} className="tw-p-2 tw-text-slate-500 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400" aria-label="重量を編集">
                     <Edit size={18} />
                 </button>
-                <button onClick={() => setDeletingIndex(originalIndex)} className="p-2 text-red-500 hover:text-red-700" aria-label="品目を削除">
+                <button onClick={() => setDeletingIndex(originalIndex)} className="tw-p-2 tw-text-red-500 hover:text-red-700" aria-label="品目を削除">
                     <Trash2 size={18} />
                 </button>
                 </div>
             )}
         </div>
-        <div className="bg-slate-100 dark:bg-slate-800 p-2 rounded-md text-right">
-            <span className="text-sm text-slate-600 dark:text-slate-300 mr-2">品目重量:</span>
-            <span className="font-bold text-xl">{item.weight.toLocaleString()} kg</span>
+        <div className="tw-bg-slate-100 dark:bg-slate-800 tw-p-2 tw-rounded-md tw-text-right">
+            <span className="tw-text-sm tw-text-slate-600 dark:text-slate-300 tw-mr-2">品目重量:</span>
+            <span className="tw-font-bold tw-text-xl">{item.weight.toLocaleString()} kg</span>
         </div>
       </div>
     );
@@ -196,17 +196,17 @@ const ConfirmStep: React.FC = () => {
   return (
     <>
       <Card>
-        <div className="flex justify-between items-start mb-6">
+        <div className="tw-flex tw-justify-between tw-items-start tw-mb-6">
           <div>
-            <h2 className="text-xl font-bold mb-1">ステップ {currentStep}/{maxSteps}</h2>
-            <p className="text-2xl font-bold text-slate-700 dark:text-slate-300">最終確認と送信</p>
+            <h2 className="tw-text-xl tw-font-bold tw-mb-1">ステップ {currentStep}/{maxSteps}</h2>
+            <p className="tw-text-2xl tw-font-bold tw-text-slate-700 dark:text-slate-300">最終確認と送信</p>
           </div>
           <HelpTooltip title="最終確認">
-            <div className="space-y-4 text-slate-600 dark:text-slate-300 leading-relaxed">
+            <div className="tw-space-y-4 tw-text-slate-600 dark:text-slate-300 tw-leading-relaxed">
               <p>すべての計量データが表示されています。内容が正しいことを確認してください。</p>
-              <div className="bg-slate-100 dark:bg-slate-700 p-3 rounded-lg border border-slate-200 dark:border-slate-600">
-                <h4 className="font-semibold text-blue-600 dark:text-blue-400 mb-2">重量の検証について</h4>
-                <p className="text-sm text-slate-700 dark:text-slate-200">
+              <div className="tw-bg-slate-100 dark:bg-slate-700 tw-p-3 tw-rounded-lg tw-border tw-border-slate-200 dark:border-slate-600">
+                <h4 className="tw-font-semibold tw-text-blue-600 dark:text-blue-400 tw-mb-2">重量の検証について</h4>
+                <p className="tw-text-sm tw-text-slate-700 dark:text-slate-200">
                   「差引重量」と「品目合計」が一致している必要があります。一致していない場合、品目重量の編集や追加ができます。
                 </p>
               </div>
@@ -214,41 +214,41 @@ const ConfirmStep: React.FC = () => {
           </HelpTooltip>
         </div>
 
-        <div className="space-y-3">
+        <div className="tw-space-y-3">
           <DetailRow label="総重量" value={grossWeight?.toLocaleString() || 'N/A'}>
-            <Button onClick={() => setIsGrossModalOpen(true)} variant="secondary" size="sm" className="px-2 !py-2.5" title="総重量を再計量">
+            <Button onClick={() => setIsGrossModalOpen(true)} variant="secondary" size="sm" className="tw-px-2 tw-!py-2.5" title="総重量を再計量">
               <Repeat size={16} />
             </Button>
           </DetailRow>
           <DetailRow label="空車重量" value={tareWeight?.toLocaleString() || 'N/A'}>
-            <Button onClick={() => setIsTareModalOpen(true)} variant="secondary" size="sm" className="px-2 !py-2.5" title="空車重量を再計量">
+            <Button onClick={() => setIsTareModalOpen(true)} variant="secondary" size="sm" className="tw-px-2 tw-!py-2.5" title="空車重量を再計量">
               <Repeat size={16} />
             </Button>
           </DetailRow>
-          <DetailRow label="差引重量" value={netWeight.toLocaleString()} className="bg-blue-50 dark:bg-blue-900/50 text-blue-800 dark:text-blue-300 !font-bold" />
+          <DetailRow label="差引重量" value={netWeight.toLocaleString()} className="tw-bg-blue-50 dark:bg-blue-900/50 tw-text-blue-800 dark:text-blue-300 tw-!font-bold" />
         </div>
 
         {!isSimpleFlow && (
-          <div className="mt-6">
-            <div className="flex justify-between items-center mb-2">
-                <h3 className="font-bold text-lg">品目内訳</h3>
+          <div className="tw-mt-6">
+            <div className="tw-flex tw-justify-between tw-items-center tw-mb-2">
+                <h3 className="tw-font-bold tw-text-lg">品目内訳</h3>
                 {items.length > 0 && (
                     <ViewSwitcher currentView={viewMode} onViewChange={setViewMode} />
                 )}
             </div>
-             <div className="space-y-4 border-t border-slate-200 dark:border-slate-700 pt-4">
+             <div className="tw-space-y-4 tw-border-t tw-border-slate-200 dark:border-slate-700 tw-pt-4">
                  {viewMode === 'grouped' ? (
                     Array.from(groupedItems.entries()).map(([locId, group]) => {
                         const locationName = getLocationName(locId);
                         return (
-                            <div key={locId} className="bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-lg p-3">
-                                <div className="flex justify-between items-baseline mb-2 pb-2 border-b border-slate-200 dark:border-slate-600">
-                                    <h4 className="font-bold text-slate-700 dark:text-slate-300">{locationName}</h4>
-                                    <p className="text-sm font-semibold text-slate-600 dark:text-slate-300">
+                            <div key={locId} className="tw-bg-slate-50 dark:bg-slate-800/50 tw-border tw-border-slate-200 dark:border-slate-700 tw-rounded-lg tw-p-3">
+                                <div className="tw-flex tw-justify-between tw-items-baseline tw-mb-2 tw-pb-2 tw-border-b tw-border-slate-200 dark:border-slate-600">
+                                    <h4 className="tw-font-bold tw-text-slate-700 dark:text-slate-300">{locationName}</h4>
+                                    <p className="tw-text-sm tw-font-semibold tw-text-slate-600 dark:text-slate-300">
                                         小計: {group.subTotal.toLocaleString()} kg
                                     </p>
                                 </div>
-                                <div className="space-y-2">
+                                <div className="tw-space-y-2">
                                 {group.itemsWithIndex.map(({ item, originalIndex }) => renderItemRow(item, originalIndex, false))}
                                 </div>
                             </div>
@@ -257,20 +257,20 @@ const ConfirmStep: React.FC = () => {
                  ) : (
                     items.map((item, index) => renderItemRow(item, index, true))
                  )}
-                <div className="text-right font-bold text-lg pt-2 pr-2">
+                <div className="tw-text-right tw-font-bold tw-text-lg tw-pt-2 tw-pr-2">
                     品目合計: {totalItemsWeight.toLocaleString()} kg
                 </div>
             </div>
             
-             <div className={`mt-4 p-3 rounded-lg text-center font-bold ${isVerified ? 'bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-300' : 'bg-red-100 dark:bg-red-900/50 text-red-800 dark:text-red-300'}`}>
-                <div className="flex items-center justify-center leading-tight">
+             <div className={`tw-mt-4 tw-p-3 tw-rounded-lg tw-text-center tw-font-bold ${isVerified ? 'tw-bg-green-100 dark:bg-green-900/50 tw-text-green-800 dark:text-green-300' : 'tw-bg-red-100 dark:bg-red-900/50 tw-text-red-800 dark:text-red-300'}`}>
+                <div className="tw-flex tw-items-center tw-justify-center tw-leading-tight">
                     {isVerified ? (
-                        <><CheckCircle className="mr-2"/><span>重量の誤差はありません</span></>
+                        <><CheckCircle className="tw-mr-2"/><span>重量の誤差はありません</span></>
                     ) : (
                         <>
-                            <XCircle className="mr-2"/>
+                            <XCircle className="tw-mr-2"/>
                             <span>
-                                重量に <span className="text-2xl font-black">{weightDifference.toLocaleString()}</span> kg の誤差があります
+                                重量に <span className="tw-text-2xl tw-font-black">{weightDifference.toLocaleString()}</span> kg の誤差があります
                             </span>
                         </>
                     )}
@@ -279,20 +279,20 @@ const ConfirmStep: React.FC = () => {
           </div>
         )}
         
-        <div className="flex justify-between mt-8">
+        <div className="tw-flex tw-justify-between tw-mt-8">
           <Button onClick={prevStep} variant="secondary">
-            <ArrowLeft className="mr-2 h-4 w-4" />
+            <ArrowLeft className="tw-mr-2 tw-h-4 tw-w-4" />
             戻る
           </Button>
-          <div className="flex items-center space-x-2">
+          <div className="tw-flex tw-items-center tw-space-x-2">
             {!isExpressMode && !isSimpleFlow && (
               <Button onClick={handleAddMoreItems} variant="secondary">
-                <Plus className="mr-2 h-4 w-4" />
+                <Plus className="tw-mr-2 tw-h-4 tw-w-4" />
                 品目を追加
               </Button>
             )}
-            <Button onClick={handleSubmit} disabled={!isVerified || isSubmitting} className={isPulseEffectEnabled ? 'highlight-navigation' : ''}>
-              <Send className="mr-2 h-4 w-4" />
+            <Button onClick={handleSubmit} disabled={!isVerified || isSubmitting} className={isPulseEffectEnabled ? 'tw-highlight-navigation' : ''}>
+              <Send className="tw-mr-2 tw-h-4 tw-w-4" />
               {isSubmitting ? '送信中...' : '記録を送信'}
             </Button>
           </div>
@@ -320,8 +320,8 @@ const ConfirmStep: React.FC = () => {
       
       {tareError && (
         <Modal isOpen={!!tareError} onClose={() => setTareError('')} title="入力エラー">
-            <p className="text-red-600">{tareError}</p>
-            <div className="text-right mt-4">
+            <p className="tw-text-red-600">{tareError}</p>
+            <div className="tw-text-right tw-mt-4">
                 <Button onClick={() => setTareError('')}>閉じる</Button>
             </div>
         </Modal>
@@ -345,11 +345,11 @@ const ConfirmStep: React.FC = () => {
             onClose={() => setDeletingIndex(null)}
             title="品目の削除"
         >
-            <p className="text-slate-600 dark:text-slate-300 mb-6">
+            <p className="tw-text-slate-600 dark:text-slate-300 tw-mb-6">
                 「{masterItems.find(mi => mi.id === items[deletingIndex].itemId)?.name}」をリストから削除しますか？<br/>
                 総重量が自動的に再計算されます。
             </p>
-            <div className="flex justify-end space-x-2">
+            <div className="tw-flex tw-justify-end tw-space-x-2">
                 <Button variant="secondary" onClick={() => setDeletingIndex(null)}>キャンセル</Button>
                 <Button variant="danger" onClick={handleConfirmDelete}>はい、削除します</Button>
             </div>

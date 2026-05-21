@@ -56,8 +56,8 @@ const WeighingFlow: React.FC = () => {
   };
 
   return (
-    <main className="container mx-auto p-4 md:p-6">
-      <div className="max-w-2xl mx-auto">
+    <main className="tw-container tw-mx-auto tw-p-4 md:p-6">
+      <div className="tw-max-w-2xl tw-mx-auto">
         {renderStep()}
       </div>
     </main>

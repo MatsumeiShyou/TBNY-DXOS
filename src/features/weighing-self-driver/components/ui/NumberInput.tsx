@@ -57,37 +57,37 @@ const NumberInput: React.FC<NumberInputProps> = ({
   return (
     <div>
       {label && (
-          <label htmlFor={id} className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
+          <label htmlFor={id} className="tw-block tw-text-sm tw-font-medium tw-text-slate-700 dark:text-slate-300 tw-mb-1">
             {label}
           </label>
       )}
-      <div className={`relative flex items-stretch ${className}`}>
+      <div className={`tw-relative tw-flex tw-items-stretch ${className}`}>
         <button
           type="button"
           onClick={handleDecrement}
           disabled={isDecrementDisabled}
-          className="px-4 bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-200 rounded-l-md border border-r-0 border-slate-300 dark:border-slate-600 hover:bg-slate-200 dark:hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center"
+          className="tw-px-4 tw-bg-slate-100 dark:bg-slate-700 tw-text-slate-800 dark:text-slate-200 tw-rounded-l-md tw-border tw-border-r-0 tw-border-slate-300 dark:border-slate-600 hover:bg-slate-200 dark:hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed tw-transition-colors tw-flex tw-items-center tw-justify-center"
           aria-label={`Decrement by ${step}`}
         >
           <Minus size={16} />
         </button>
-        <div className="relative flex-grow">
+        <div className="tw-relative tw-flex-grow">
           <input
             id={id}
             type="number"
             value={value}
             onChange={onChange}
             disabled={disabled}
-            className={`w-full px-3 py-2.5 border-y border-x-0 border-slate-300 dark:border-slate-600 text-center text-lg font-bold focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-50 placeholder-slate-400 dark:placeholder-slate-500 disabled:bg-slate-50 dark:disabled:bg-slate-700/50 ${
-              unit ? 'pr-12' : ''
+            className={`tw-w-full tw-px-3 tw-py-2.5 tw-border-y tw-border-x-0 tw-border-slate-300 dark:border-slate-600 tw-text-center tw-text-lg tw-font-bold focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 tw-bg-white dark:bg-slate-700 tw-text-slate-900 dark:text-slate-50 tw-placeholder-slate-400 dark:placeholder-slate-500 disabled:bg-slate-50 dark:disabled:bg-slate-700/50 ${
+              unit ? 'tw-pr-12' : ''
             }`}
             style={{ MozAppearance: 'textfield' }}
             min={min}
             {...props}
           />
           {unit && (
-            <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-              <span className="text-slate-500 dark:text-slate-300 sm:text-sm">{unit}</span>
+            <div className="tw-absolute tw-inset-y-0 tw-right-0 tw-pr-3 tw-flex tw-items-center tw-pointer-events-none">
+              <span className="tw-text-slate-500 dark:text-slate-300 sm:text-sm">{unit}</span>
             </div>
           )}
         </div>
@@ -95,7 +95,7 @@ const NumberInput: React.FC<NumberInputProps> = ({
           type="button"
           onClick={handleIncrement}
           disabled={isIncrementDisabled}
-          className="px-4 bg-slate-100 dark:bg-slate-700 text-slate-800 dark:text-slate-200 rounded-r-md border border-l-0 border-slate-300 dark:border-slate-600 hover:bg-slate-200 dark:hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center"
+          className="tw-px-4 tw-bg-slate-100 dark:bg-slate-700 tw-text-slate-800 dark:text-slate-200 tw-rounded-r-md tw-border tw-border-l-0 tw-border-slate-300 dark:border-slate-600 hover:bg-slate-200 dark:hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed tw-transition-colors tw-flex tw-items-center tw-justify-center"
           aria-label={`Increment by ${step}`}
         >
           <Plus size={16} />

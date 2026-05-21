@@ -67,14 +67,14 @@ const ScaleDifferenceModal: React.FC<ScaleDifferenceModalProps> = ({ isOpen, onC
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title={`「${itemName}」の差分計量`}>
-      <div className="space-y-4">
-        <div className="bg-slate-100 dark:bg-slate-700 p-3 rounded-md text-center">
-            <p className="text-sm text-slate-600 dark:text-slate-300">荷降ろし前の車両重量</p>
-            <p className="text-2xl font-bold">{weightBefore.toLocaleString()} kg</p>
+      <div className="tw-space-y-4">
+        <div className="tw-bg-slate-100 dark:bg-slate-700 tw-p-3 tw-rounded-md tw-text-center">
+            <p className="tw-text-sm tw-text-slate-600 dark:text-slate-300">荷降ろし前の車両重量</p>
+            <p className="tw-text-2xl tw-font-bold">{weightBefore.toLocaleString()} kg</p>
         </div>
         
-        <div className="flex justify-center">
-            <ArrowDown className="text-slate-400" size={24}/>
+        <div className="tw-flex tw-justify-center">
+            <ArrowDown className="tw-text-slate-400" size={24}/>
         </div>
 
         <NumberInput
@@ -90,15 +90,15 @@ const ScaleDifferenceModal: React.FC<ScaleDifferenceModalProps> = ({ isOpen, onC
         />
 
         {calculatedWeight !== null && (
-            <div className="bg-blue-50 dark:bg-blue-900/50 border-l-4 border-blue-500 dark:border-blue-400 p-3 rounded-r-lg text-center">
-                <p className="text-sm text-blue-700 dark:text-blue-300">計算された品目重量</p>
-                <p className="text-2xl font-bold text-blue-800 dark:text-blue-200">{calculatedWeight.toLocaleString()} kg</p>
+            <div className="tw-bg-blue-50 dark:bg-blue-900/50 tw-border-l-4 tw-border-blue-500 dark:border-blue-400 tw-p-3 tw-rounded-r-lg tw-text-center">
+                <p className="tw-text-sm tw-text-blue-700 dark:text-blue-300">計算された品目重量</p>
+                <p className="tw-text-2xl tw-font-bold tw-text-blue-800 dark:text-blue-200">{calculatedWeight.toLocaleString()} kg</p>
             </div>
         )}
 
-        {error && <p className="text-red-500 text-sm">{error}</p>}
+        {error && <p className="tw-text-red-500 tw-text-sm">{error}</p>}
       </div>
-      <div className="flex justify-end space-x-2 mt-6">
+      <div className="tw-flex tw-justify-end tw-space-x-2 tw-mt-6">
         <Button variant="secondary" onClick={onClose}>キャンセル</Button>
         <Button onClick={handleConfirm} disabled={!weightAfter}>確定</Button>
       </div>

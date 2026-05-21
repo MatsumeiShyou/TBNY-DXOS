@@ -159,8 +159,8 @@ const TareStep: React.FC = () => {
   const helpContent = isFirstAndOnlyItem ? (
     <>
       <p>すべての品物をまとめて荷降ろしした場合に使用します。</p>
-      <div className="mt-2 p-3 bg-slate-100 dark:bg-slate-700 rounded-lg border border-slate-200 dark:border-slate-600">
-          <p className="text-sm text-slate-700 dark:text-slate-200">
+      <div className="tw-mt-2 tw-p-3 tw-bg-slate-100 dark:bg-slate-700 tw-rounded-lg tw-border tw-border-slate-200 dark:border-slate-600">
+          <p className="tw-text-sm tw-text-slate-700 dark:text-slate-200">
             荷降ろしした品目の情報（回収先・品目）を選択し、完全に空になった車両の重量（空車重量）を記録してください。<br/><br/>
             <strong>計算方法:</strong><br/>
             （総重量） - （空車重量） = （品目の重量）
@@ -170,13 +170,13 @@ const TareStep: React.FC = () => {
   ) : (
     <>
       <p>ここでは、トラックに残っている<strong>最後の品物</strong>を荷降ろしし、その後の<strong>完全に空になった車両の重量（空車重量）</strong>を記録します。</p>
-      <div className="mt-2 p-3 bg-slate-100 dark:bg-slate-700 rounded-lg border border-slate-200 dark:border-slate-600">
-          <p className="text-sm text-slate-700 dark:text-slate-200">
+      <div className="tw-mt-2 tw-p-3 tw-bg-slate-100 dark:bg-slate-700 tw-rounded-lg tw-border tw-border-slate-200 dark:border-slate-600">
+          <p className="tw-text-sm tw-text-slate-700 dark:text-slate-200">
               <strong>計算方法:</strong><br/>
               （最終品目を降ろす前の車両重量） - （空車重量） = （最終品目の重量）
           </p>
       </div>
-      <p className="mt-2">このステップを完了すると、すべての品目の重量が確定します。</p>
+      <p className="tw-mt-2">このステップを完了すると、すべての品目の重量が確定します。</p>
     </>
   );
 
@@ -186,26 +186,26 @@ const TareStep: React.FC = () => {
   return (
     <>
       <Card>
-        <div className="flex justify-between items-start mb-6">
+        <div className="tw-flex tw-justify-between tw-items-start tw-mb-6">
           <div>
-            <h2 className="text-xl font-bold mb-1">ステップ {currentStep}/{maxSteps}</h2>
-            <p className="text-2xl font-bold text-slate-700 dark:text-slate-300">{stepTitle}</p>
+            <h2 className="tw-text-xl tw-font-bold tw-mb-1">ステップ {currentStep}/{maxSteps}</h2>
+            <p className="tw-text-2xl tw-font-bold tw-text-slate-700 dark:text-slate-300">{stepTitle}</p>
           </div>
           <HelpTooltip title={helpTitle}>
-            <div className="space-y-4 text-slate-600 dark:text-slate-300 leading-relaxed">
+            <div className="tw-space-y-4 tw-text-slate-600 dark:text-slate-300 tw-leading-relaxed">
               {helpContent}
             </div>
           </HelpTooltip>
         </div>
 
-        <div className="space-y-6">
-            <div className="bg-slate-100 dark:bg-slate-700 p-4 rounded-lg">
-                <p className="text-slate-600 dark:text-slate-300">荷降ろし前の車両重量（計算値）</p>
-                <p className="text-3xl font-bold text-slate-800 dark:text-slate-200">{weightBeforeUnload.toLocaleString()} <span className="text-xl">kg</span></p>
+        <div className="tw-space-y-6">
+            <div className="tw-bg-slate-100 dark:bg-slate-700 tw-p-4 tw-rounded-lg">
+                <p className="tw-text-slate-600 dark:text-slate-300">荷降ろし前の車両重量（計算値）</p>
+                <p className="tw-text-3xl tw-font-bold tw-text-slate-800 dark:text-slate-200">{weightBeforeUnload.toLocaleString()} <span className="tw-text-xl">kg</span></p>
             </div>
             
-            <div className={`space-y-4 p-4 border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-800/50 ${tareWeight === null && (!locationId || !itemId) && isPulseEffectEnabled ? 'highlight-navigation' : ''}`}>
-                <h3 className="font-bold text-lg">{(isFirstAndOnlyItem) ? '品目情報' : '最終品目情報'}</h3>
+            <div className={`tw-space-y-4 tw-p-4 tw-border tw-border-slate-200 dark:border-slate-700 tw-rounded-lg tw-bg-slate-50 dark:bg-slate-800/50 ${tareWeight === null && (!locationId || !itemId) && isPulseEffectEnabled ? 'tw-highlight-navigation' : ''}`}>
+                <h3 className="tw-font-bold tw-text-lg">{(isFirstAndOnlyItem) ? '品目情報' : '最終品目情報'}</h3>
                 <div>
                     <Select
                     id="last-location"
@@ -234,31 +234,31 @@ const TareStep: React.FC = () => {
 
 
             {tareWeight === null ? (
-                <div className="text-center py-4">
+                <div className="tw-text-center tw-py-4">
                     <Button 
                         onClick={() => setIsModalOpen(true)} 
                         size="lg" 
                         disabled={!canWeigh}
-                        className={canWeigh && isPulseEffectEnabled ? 'highlight-navigation' : ''}
+                        className={canWeigh && isPulseEffectEnabled ? 'tw-highlight-navigation' : ''}
                     >
-                        <GaugeCircle className="mr-2 h-6 w-6" />
+                        <GaugeCircle className="tw-mr-2 tw-h-6 tw-w-6" />
                         台貫で計量開始
                     </Button>
-                    {!canWeigh && <p className="text-sm text-slate-500 dark:text-slate-300 mt-2">品目情報を選択してください。</p>}
+                    {!canWeigh && <p className="tw-text-sm tw-text-slate-500 dark:text-slate-300 tw-mt-2">品目情報を選択してください。</p>}
                 </div>
             ) : (
-                <div className="bg-blue-50 dark:bg-blue-900/50 border-l-4 border-blue-500 dark:border-blue-400 p-4 rounded-r-lg">
-                    <p className="text-slate-600 dark:text-slate-300">計量済み空車重量</p>
-                    <p className="text-4xl font-bold text-slate-800 dark:text-slate-200">{tareWeight.toLocaleString()} <span className="text-2xl">kg</span></p>
+                <div className="tw-bg-blue-50 dark:bg-blue-900/50 tw-border-l-4 tw-border-blue-500 dark:border-blue-400 tw-p-4 tw-rounded-r-lg">
+                    <p className="tw-text-slate-600 dark:text-slate-300">計量済み空車重量</p>
+                    <p className="tw-text-4xl tw-font-bold tw-text-slate-800 dark:text-slate-200">{tareWeight.toLocaleString()} <span className="tw-text-2xl">kg</span></p>
                 </div>
             )}
         </div>
         
-        {error && <p className="text-red-500 text-sm mt-4 text-center">{error}</p>}
+        {error && <p className="tw-text-red-500 tw-text-sm tw-mt-4 tw-text-center">{error}</p>}
       
-        <div className="flex justify-between items-center mt-8">
+        <div className="tw-flex tw-justify-between tw-items-center tw-mt-8">
           <Button onClick={handleGoBack} variant="secondary">
-            <ArrowLeft className="mr-2 h-4 w-4" />
+            <ArrowLeft className="tw-mr-2 tw-h-4 tw-w-4" />
             {backButtonText}
           </Button>
           {tareWeight === null ? (
@@ -267,20 +267,20 @@ const TareStep: React.FC = () => {
                 disabled={tareWeight === null}
               >
                   確認画面へ
-                  <ArrowRight className="ml-2 h-4 w-4" />
+                  <ArrowRight className="tw-ml-2 tw-h-4 tw-w-4" />
               </Button>
           ) : (
-            <div className="flex items-center space-x-2">
+            <div className="tw-flex tw-items-center tw-space-x-2">
                  <Button onClick={() => setIsModalOpen(true)} variant="secondary">
-                    <Repeat className="mr-2 h-4 w-4" />
+                    <Repeat className="tw-mr-2 tw-h-4 tw-w-4" />
                     再計量
                  </Button>
                 <Button 
                     onClick={handleNextWithValidation}
-                    className={isPulseEffectEnabled ? 'highlight-navigation' : ''}
+                    className={isPulseEffectEnabled ? 'tw-highlight-navigation' : ''}
                 >
                     確認画面へ
-                    <ArrowRight className="ml-2 h-4 w-4" />
+                    <ArrowRight className="tw-ml-2 tw-h-4 tw-w-4" />
                 </Button>
             </div>
           )}

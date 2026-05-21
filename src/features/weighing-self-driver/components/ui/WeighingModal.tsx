@@ -49,7 +49,7 @@ const WeighingModal: React.FC<WeighingModalProps> = ({ isOpen, onClose, onConfir
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title={title}>
-      <div className="space-y-4">
+      <div className="tw-space-y-4">
         <NumberInput
           id="weighingValue"
           label={label}
@@ -62,9 +62,9 @@ const WeighingModal: React.FC<WeighingModalProps> = ({ isOpen, onClose, onConfir
           required
           autoFocus
         />
-        {error && <p className="text-red-500 text-sm">{error}</p>}
+        {error && <p className="tw-text-red-500 tw-text-sm">{error}</p>}
       </div>
-      <div className="flex justify-end space-x-2 mt-6">
+      <div className="tw-flex tw-justify-end tw-space-x-2 tw-mt-6">
         <Button variant="secondary" onClick={onClose}>キャンセル</Button>
         <Button onClick={handleConfirm} disabled={!weight}>確定</Button>
       </div>

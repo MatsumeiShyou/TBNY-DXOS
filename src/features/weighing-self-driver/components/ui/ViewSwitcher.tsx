@@ -9,12 +9,12 @@ interface ViewSwitcherProps {
 }
 
 const ViewSwitcher: React.FC<ViewSwitcherProps> = ({ currentView, onViewChange }) => {
-  const commonButtonClasses = "flex items-center justify-center p-3 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-blue-500";
-  const activeButtonClasses = "bg-slate-700 dark:bg-slate-600 text-white";
-  const inactiveButtonClasses = "bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-700";
+  const commonButtonClasses = "tw-flex tw-items-center tw-justify-center tw-p-3 tw-rounded-lg tw-transition-colors tw-duration-200 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-blue-500";
+  const activeButtonClasses = "tw-bg-slate-700 dark:bg-slate-600 tw-text-white";
+  const inactiveButtonClasses = "tw-bg-slate-200 dark:bg-slate-800 tw-text-slate-600 dark:text-slate-300 hover:bg-slate-300 dark:hover:bg-slate-700";
 
   return (
-    <div className="flex space-x-1">
+    <div className="tw-flex tw-space-x-1">
       <button
         onClick={() => onViewChange('grouped')}
         className={`${commonButtonClasses} ${currentView === 'grouped' ? activeButtonClasses : inactiveButtonClasses}`}

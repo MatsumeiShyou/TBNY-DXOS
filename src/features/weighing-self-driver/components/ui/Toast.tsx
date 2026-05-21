@@ -23,9 +23,9 @@ const Toast: React.FC<ToastProps> = ({ id, message, type }) => {
   }, [id, removeToast]);
 
   const icons = {
-    success: <CheckCircle className="text-white" />,
-    error: <XCircle className="text-white" />,
-    info: <Info className="text-white" />,
+    success: <CheckCircle className="tw-text-white" />,
+    error: <XCircle className="tw-text-white" />,
+    info: <Info className="tw-text-white" />,
   };
 
   const bgColors = {
@@ -35,10 +35,10 @@ const Toast: React.FC<ToastProps> = ({ id, message, type }) => {
   };
 
   return (
-    <div className={`flex items-center p-4 rounded-md shadow-lg ${bgColors[type]} text-white`}>
-      <div className="flex-shrink-0">{icons[type]}</div>
-      <div className="ml-3 font-medium">{message}</div>
-      <button onClick={() => removeToast(id)} className="ml-4 -mr-2 p-1 rounded-md hover:bg-white/20 focus:outline-none">
+    <div className={`tw-flex tw-items-center tw-p-4 tw-rounded-md tw-shadow-lg ${bgColors[type]} tw-text-white`}>
+      <div className="tw-flex-shrink-0">{icons[type]}</div>
+      <div className="tw-ml-3 tw-font-medium">{message}</div>
+      <button onClick={() => removeToast(id)} className="tw-ml-4 tw--mr-2 tw-p-1 tw-rounded-md hover:bg-white/20 focus:outline-none">
         <XCircle size={18}/>
       </button>
     </div>

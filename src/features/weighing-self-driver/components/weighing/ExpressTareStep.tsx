@@ -61,52 +61,52 @@ const ExpressTareStep: React.FC = () => {
   return (
     <>
       <Card>
-        <div className="flex justify-between items-start mb-6">
+        <div className="tw-flex tw-justify-between tw-items-start tw-mb-6">
           <div>
-            <h2 className="text-xl font-bold mb-1">ステップ 2/3</h2>
-            <p className="text-2xl font-bold text-slate-700 dark:text-slate-300">荷降ろしと空車計量</p>
+            <h2 className="tw-text-xl tw-font-bold tw-mb-1">ステップ 2/3</h2>
+            <p className="tw-text-2xl tw-font-bold tw-text-slate-700 dark:text-slate-300">荷降ろしと空車計量</p>
           </div>
           <HelpTooltip title="高速計量モード">
-            <div className="space-y-4 text-slate-600 dark:text-slate-300 leading-relaxed">
+            <div className="tw-space-y-4 tw-text-slate-600 dark:text-slate-300 tw-leading-relaxed">
               <p>回収先と品目が1種類ずつのため、高速計量モードが有効になっています。</p>
-              <div className="mt-2 p-3 bg-slate-100 dark:bg-slate-700 rounded-lg border border-slate-200 dark:border-slate-600">
-                  <p className="text-sm text-slate-700 dark:text-slate-200">
+              <div className="tw-mt-2 tw-p-3 tw-bg-slate-100 dark:bg-slate-700 tw-rounded-lg tw-border tw-border-slate-200 dark:border-slate-600">
+                  <p className="tw-text-sm tw-text-slate-700 dark:text-slate-200">
                       <strong>記録される内容:</strong><br/>
                       回収先: {singleLocation?.name || '...'} <br/>
                       品目: {singleItem?.name || '...'}
                   </p>
               </div>
-              <p className="mt-2">すべての荷物を降ろし、空になった車両の重量を計量してください。</p>
+              <p className="tw-mt-2">すべての荷物を降ろし、空になった車両の重量を計量してください。</p>
             </div>
           </HelpTooltip>
         </div>
 
-        <div className="space-y-6">
-          <div className="bg-slate-100 dark:bg-slate-700 p-4 rounded-lg">
-            <p className="text-slate-600 dark:text-slate-300">総重量（計量済み）</p>
-            <p className="text-3xl font-bold text-slate-800 dark:text-slate-200">{grossWeight.toLocaleString()} <span className="text-xl">kg</span></p>
+        <div className="tw-space-y-6">
+          <div className="tw-bg-slate-100 dark:bg-slate-700 tw-p-4 tw-rounded-lg">
+            <p className="tw-text-slate-600 dark:text-slate-300">総重量（計量済み）</p>
+            <p className="tw-text-3xl tw-font-bold tw-text-slate-800 dark:text-slate-200">{grossWeight.toLocaleString()} <span className="tw-text-xl">kg</span></p>
           </div>
 
-          <div className="bg-blue-50 dark:bg-blue-900/50 border-l-4 border-blue-400 text-blue-800 dark:text-blue-300 p-4 rounded-r-lg flex items-center">
-            <Info className="h-6 w-6 mr-3 flex-shrink-0"/>
+          <div className="tw-bg-blue-50 dark:bg-blue-900/50 tw-border-l-4 tw-border-blue-400 tw-text-blue-800 dark:text-blue-300 tw-p-4 tw-rounded-r-lg tw-flex tw-items-center">
+            <Info className="tw-h-6 tw-w-6 tw-mr-3 tw-flex-shrink-0"/>
             <div>
-              <p className="font-bold">「{singleLocation?.name}」の「{singleItem?.name}」をすべて降ろしてください。</p>
+              <p className="tw-font-bold">「{singleLocation?.name}」の「{singleItem?.name}」をすべて降ろしてください。</p>
             </div>
           </div>
           
-          <div className="text-center py-4">
-              <Button onClick={() => setIsModalOpen(true)} size="lg" className={isPulseEffectEnabled ? 'highlight-navigation' : ''}>
-                  <GaugeCircle className="mr-2 h-6 w-6" />
+          <div className="tw-text-center tw-py-4">
+              <Button onClick={() => setIsModalOpen(true)} size="lg" className={isPulseEffectEnabled ? 'tw-highlight-navigation' : ''}>
+                  <GaugeCircle className="tw-mr-2 tw-h-6 tw-w-6" />
                   荷降ろし後に台貫で計量開始
               </Button>
           </div>
         </div>
         
-        {error && <p className="text-red-500 text-sm mt-4 text-center">{error}</p>}
+        {error && <p className="tw-text-red-500 tw-text-sm tw-mt-4 tw-text-center">{error}</p>}
       
-        <div className="flex justify-between items-center mt-8">
+        <div className="tw-flex tw-justify-between tw-items-center tw-mt-8">
           <Button onClick={prevStep} variant="secondary">
-            <ArrowLeft className="mr-2 h-4 w-4" />
+            <ArrowLeft className="tw-mr-2 tw-h-4 tw-w-4" />
             戻る
           </Button>
         </div>

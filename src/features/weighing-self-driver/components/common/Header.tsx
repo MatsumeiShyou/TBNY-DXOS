@@ -31,19 +31,19 @@ const Header: React.FC<HeaderProps> = ({ currentView }) => {
 
 
   return (
-    <header className="bg-white dark:bg-slate-800 shadow-md sticky top-0 z-20 border-b border-slate-200 dark:border-slate-700">
-      <div className="container mx-auto px-4 py-3 flex justify-between items-center">
+    <header className="tw-bg-white dark:bg-slate-800 tw-shadow-md tw-sticky tw-top-0 tw-z-20 tw-border-b tw-border-slate-200 dark:border-slate-700">
+      <div className="tw-container tw-mx-auto tw-px-4 tw-py-3 tw-flex tw-justify-between tw-items-center">
         {/* Left: Title */}
-        <div className="flex-1">
-          <h1 className="text-xl font-bold text-slate-700 dark:text-slate-200 truncate">
+        <div className="tw-flex-1">
+          <h1 className="tw-text-xl tw-font-bold tw-text-slate-700 dark:text-slate-200 tw-truncate">
             {getTitle()}
           </h1>
         </div>
 
         {/* Center: Login Info */}
-        <div className="flex flex-1 justify-center items-center text-center px-2">
-            <div className="bg-slate-100 dark:bg-slate-700 px-3 py-1.5 rounded-full text-sm text-slate-600 dark:text-slate-300 truncate">
-                <User className="inline h-4 w-4 mr-2" />
+        <div className="tw-flex tw-flex-1 tw-justify-center tw-items-center tw-text-center tw-px-2">
+            <div className="tw-bg-slate-100 dark:bg-slate-700 tw-px-3 tw-py-1.5 tw-rounded-full tw-text-sm tw-text-slate-600 dark:text-slate-300 tw-truncate">
+                <User className="tw-inline tw-h-4 tw-w-4 tw-mr-2" />
                 {companyName ? (
                 <span title={`${companyName} / ${driverName}`}><strong>{companyName}</strong> / {driverName}</span>
                 ) : (
@@ -53,10 +53,10 @@ const Header: React.FC<HeaderProps> = ({ currentView }) => {
         </div>
         
         {/* Right: Logout Button */}
-        <div className="flex-1 flex justify-end">
+        <div className="tw-flex-1 tw-flex tw-justify-end">
           <Button onClick={handleLogout} variant="secondary" size="sm" title="ログアウト">
-            <LogOut className="h-4 w-4 sm:mr-2" />
-            <span className="hidden sm:inline">ログアウト</span>
+            <LogOut className="tw-h-4 tw-w-4 sm:mr-2" />
+            <span className="tw-hidden sm:inline">ログアウト</span>
           </Button>
         </div>
       </div>

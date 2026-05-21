@@ -14,7 +14,7 @@ const HelpTooltip: React.FC<HelpTooltipProps> = ({ title, children }) => {
     <>
       <button
         onClick={() => setIsModalOpen(true)}
-        className="text-slate-400 hover:text-blue-600 transition-colors p-1"
+        className="tw-text-slate-400 hover:text-blue-600 tw-transition-colors tw-p-1"
         aria-label={`${title}のヘルプを表示`}
       >
         <Info size={22} />

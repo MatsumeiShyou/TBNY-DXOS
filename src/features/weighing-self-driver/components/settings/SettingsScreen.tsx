@@ -80,25 +80,25 @@ const SettingsScreen: React.FC = () => {
 
     return (
         <>
-            <main className="container mx-auto p-4 md:p-6">
-                <div className="max-w-4xl mx-auto space-y-8">
+            <main className="tw-container tw-mx-auto tw-p-4 md:p-6">
+                <div className="tw-max-w-4xl tw-mx-auto tw-space-y-8">
                     <Card>
-                        <h3 className="text-lg font-bold mb-4">表示設定</h3>
-                        <div className="space-y-6">
+                        <h3 className="tw-text-lg tw-font-bold tw-mb-4">表示設定</h3>
+                        <div className="tw-space-y-6">
                             {/* Theme Settings */}
                             <div>
-                                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">テーマ</label>
-                                <div className="flex bg-slate-200 dark:bg-slate-700 rounded-lg p-1">
+                                <label className="tw-block tw-text-sm tw-font-medium tw-text-slate-700 dark:text-slate-300 tw-mb-2">テーマ</label>
+                                <div className="tw-flex tw-bg-slate-200 dark:bg-slate-700 tw-rounded-lg tw-p-1">
                                     {themeOptions.map(option => {
                                         const Icon = option.icon;
                                         return (
                                             <button
                                                 key={option.value}
                                                 onClick={() => setTheme(option.value)}
-                                                className={`w-full flex items-center justify-center space-x-2 text-center font-bold py-2 rounded-md transition-colors ${
+                                                className={`tw-w-full tw-flex tw-items-center tw-justify-center tw-space-x-2 tw-text-center tw-font-bold tw-py-2 tw-rounded-md tw-transition-colors ${
                                                     theme === option.value 
-                                                    ? 'bg-white dark:bg-slate-900 text-blue-600 dark:text-blue-400 shadow' 
-                                                    : 'text-slate-600 dark:text-slate-300 hover:bg-white/50 dark:hover:bg-slate-800/50'
+                                                    ? 'tw-bg-white dark:bg-slate-900 tw-text-blue-600 dark:text-blue-400 tw-shadow' 
+                                                    : 'tw-text-slate-600 dark:text-slate-300 hover:bg-white/50 dark:hover:bg-slate-800/50'
                                                 }`}
                                             >
                                                 <Icon size={16} />
@@ -111,16 +111,16 @@ const SettingsScreen: React.FC = () => {
 
                             {/* Font Size Settings */}
                             <div>
-                                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">フォントサイズ</label>
-                                <div className="flex bg-slate-200 dark:bg-slate-700 rounded-lg p-1">
+                                <label className="tw-block tw-text-sm tw-font-medium tw-text-slate-700 dark:text-slate-300 tw-mb-2">フォントサイズ</label>
+                                <div className="tw-flex tw-bg-slate-200 dark:bg-slate-700 tw-rounded-lg tw-p-1">
                                     {fontOptions.map(option => (
                                         <button
                                             key={option.value}
                                             onClick={() => setFontSize(option.value)}
-                                            className={`w-full text-center font-bold py-2 rounded-md transition-colors ${
+                                            className={`tw-w-full tw-text-center tw-font-bold tw-py-2 tw-rounded-md tw-transition-colors ${
                                                 fontSize === option.value 
-                                                ? 'bg-white dark:bg-slate-900 text-blue-600 dark:text-blue-400 shadow' 
-                                                : 'text-slate-600 dark:text-slate-300 hover:bg-white/50 dark:hover:bg-slate-800/50'
+                                                ? 'tw-bg-white dark:bg-slate-900 tw-text-blue-600 dark:text-blue-400 tw-shadow' 
+                                                : 'tw-text-slate-600 dark:text-slate-300 hover:bg-white/50 dark:hover:bg-slate-800/50'
                                             }`}
                                         >
                                             {option.label}
@@ -130,7 +130,7 @@ const SettingsScreen: React.FC = () => {
                             </div>
                             
                             {/* Pulse Effect Setting */}
-                            <div className="border-t border-slate-200 dark:border-slate-700 pt-6">
+                            <div className="tw-border-t tw-border-slate-200 dark:border-slate-700 tw-pt-6">
                                 <ToggleSwitch
                                     id="pulse-effect-toggle"
                                     label="ナビゲーションヒント"
@@ -143,25 +143,25 @@ const SettingsScreen: React.FC = () => {
                     </Card>
 
                     <Card>
-                        <h3 className="text-lg font-bold mb-4">セキュリティ設定</h3>
-                        <div className="space-y-4">
+                        <h3 className="tw-text-lg tw-font-bold tw-mb-4">セキュリティ設定</h3>
+                        <div className="tw-space-y-4">
                             <Button onClick={() => setIsPasswordModalOpen(true)} fullWidth variant="secondary">
-                                <ShieldCheck className="mr-2 h-5 w-5" />
+                                <ShieldCheck className="tw-mr-2 tw-h-5 tw-w-5" />
                                 パスワードを変更する
                             </Button>
                         </div>
                     </Card>
 
                     <Card>
-                        <h3 className="text-lg font-bold mb-4">情報</h3>
-                        <div className="space-y-4">
+                        <h3 className="tw-text-lg tw-font-bold tw-mb-4">情報</h3>
+                        <div className="tw-space-y-4">
                             <Button onClick={() => setIsHelpModalOpen(true)} fullWidth variant="secondary">
-                                <Info className="mr-2 h-5 w-5" />
+                                <Info className="tw-mr-2 tw-h-5 tw-w-5" />
                                 使い方・お問い合わせ
                             </Button>
-                            <div className="flex justify-between items-center text-left p-4 bg-slate-50 dark:bg-slate-700/50 rounded-lg">
-                                <span className="font-semibold text-slate-800 dark:text-slate-200">アプリバージョン</span>
-                                <span className="text-slate-600 dark:text-slate-300">{appVersion}</span>
+                            <div className="tw-flex tw-justify-between tw-items-center tw-text-left tw-p-4 tw-bg-slate-50 dark:bg-slate-700/50 tw-rounded-lg">
+                                <span className="tw-font-semibold tw-text-slate-800 dark:text-slate-200">アプリバージョン</span>
+                                <span className="tw-text-slate-600 dark:text-slate-300">{appVersion}</span>
                             </div>
                         </div>
                     </Card>
@@ -173,7 +173,7 @@ const SettingsScreen: React.FC = () => {
                 onClose={() => setIsPasswordModalOpen(false)}
                 title="パスワードの変更"
             >
-                <div className="space-y-4">
+                <div className="tw-space-y-4">
                     <Input
                         id="current-password"
                         label="現在のパスワード"
@@ -205,9 +205,9 @@ const SettingsScreen: React.FC = () => {
                         onEndIconClick={() => setIsConfirmVisible(!isConfirmVisible)}
                     />
                     <PasswordPolicyValidator password={newPassword} />
-                    {passwordError && <p className="text-red-500 text-sm text-center">{passwordError}</p>}
+                    {passwordError && <p className="tw-text-red-500 tw-text-sm tw-text-center">{passwordError}</p>}
                 </div>
-                <div className="flex justify-end space-x-2 mt-6">
+                <div className="tw-flex tw-justify-end tw-space-x-2 tw-mt-6">
                     <Button variant="secondary" onClick={() => setIsPasswordModalOpen(false)}>キャンセル</Button>
                     <Button onClick={handlePasswordChange} disabled={!canSubmitPassword || isLoading}>
                         {isLoading ? '変更中...' : '変更する'}
@@ -220,43 +220,43 @@ const SettingsScreen: React.FC = () => {
                 onClose={() => setIsHelpModalOpen(false)}
                 title="ヘルプ"
             >
-                <div className="space-y-6 text-slate-600 dark:text-slate-300 leading-relaxed">
+                <div className="tw-space-y-6 tw-text-slate-600 dark:text-slate-300 tw-leading-relaxed">
                     <div>
-                        <h4 className="font-bold text-lg text-slate-800 dark:text-slate-200 mb-2">基本的な使い方</h4>
+                        <h4 className="tw-font-bold tw-text-lg tw-text-slate-800 dark:text-slate-200 tw-mb-2">基本的な使い方</h4>
                         <p>このアプリは、計量記録を簡単に行うためのツールです。</p>
-                        <ul className="mt-4 space-y-4">
-                           <li className="flex items-start">
-                               <GaugeCircle className="h-6 w-6 text-blue-600 dark:text-blue-400 mr-3 mt-1 flex-shrink-0" />
+                        <ul className="tw-mt-4 tw-space-y-4">
+                           <li className="tw-flex tw-items-start">
+                               <GaugeCircle className="tw-h-6 tw-w-6 tw-text-blue-600 dark:text-blue-400 tw-mr-3 tw-mt-1 tw-flex-shrink-0" />
                                <div>
-                                   <strong className="text-slate-800 dark:text-slate-200">計量記録:</strong> 画面下の「計量記録」から、ステップに従って新しい記録を作成します。
+                                   <strong className="tw-text-slate-800 dark:text-slate-200">計量記録:</strong> 画面下の「計量記録」から、ステップに従って新しい記録を作成します。
                                </div>
                            </li>
-                           <li className="flex items-start">
-                               <History className="h-6 w-6 text-blue-600 dark:text-blue-400 mr-3 mt-1 flex-shrink-0" />
+                           <li className="tw-flex tw-items-start">
+                               <History className="tw-h-6 tw-w-6 tw-text-blue-600 dark:text-blue-400 tw-mr-3 tw-mt-1 tw-flex-shrink-0" />
                                <div>
-                                   <strong className="text-slate-800 dark:text-slate-200">履歴:</strong> 過去の記録を「履歴」から確認・編集できます。（記録後24時間以内）
+                                   <strong className="tw-text-slate-800 dark:text-slate-200">履歴:</strong> 過去の記録を「履歴」から確認・編集できます。（記録後24時間以内）
                                </div>
                            </li>
-                           <li className="flex items-start">
-                               <Plus className="h-6 w-6 text-blue-600 dark:text-blue-400 mr-3 mt-1 flex-shrink-0" />
+                           <li className="tw-flex tw-items-start">
+                               <Plus className="tw-h-6 tw-w-6 tw-text-blue-600 dark:text-blue-400 tw-mr-3 tw-mt-1 tw-flex-shrink-0" />
                                <div>
-                                   <strong className="text-slate-800 dark:text-slate-200">新規作成:</strong> 画面右下の「+」ボタンから、現在の入力を破棄して新しい記録を開始します。
+                                   <strong className="tw-text-slate-800 dark:text-slate-200">新規作成:</strong> 画面右下の「+」ボタンから、現在の入力を破棄して新しい記録を開始します。
                                </div>
                            </li>
-                           <li className="flex items-start">
-                               <WifiOff className="h-6 w-6 text-blue-600 dark:text-blue-400 mr-3 mt-1 flex-shrink-0" />
+                           <li className="tw-flex tw-items-start">
+                               <WifiOff className="tw-h-6 tw-w-6 tw-text-blue-600 dark:text-blue-400 tw-mr-3 tw-mt-1 tw-flex-shrink-0" />
                                <div>
-                                   <strong className="text-slate-800 dark:text-slate-200">オフライン:</strong> 電波のない場所でも記録は可能です。オンラインになった際に自動で送信されます。
+                                   <strong className="tw-text-slate-800 dark:text-slate-200">オフライン:</strong> 電波のない場所でも記録は可能です。オンラインになった際に自動で送信されます。
                                </div>
                            </li>
                         </ul>
                     </div>
-                    <div className="border-t border-slate-200 dark:border-slate-700 pt-6">
-                        <h4 className="font-bold text-lg text-slate-800 dark:text-slate-200 mb-2">お問い合わせ</h4>
+                    <div className="tw-border-t tw-border-slate-200 dark:border-slate-700 tw-pt-6">
+                        <h4 className="tw-font-bold tw-text-lg tw-text-slate-800 dark:text-slate-200 tw-mb-2">お問い合わせ</h4>
                         <p>問題が発生した場合や、ご不明な点がある場合は、管理担当者までご連絡ください。</p>
-                        <div className="mt-4 bg-slate-100 dark:bg-slate-700 p-4 rounded-lg border border-slate-200 dark:border-slate-600 flex items-start">
-                           <Phone className="h-6 w-6 text-blue-600 dark:text-blue-400 mr-4 flex-shrink-0" />
-                           <div className="text-slate-800 dark:text-slate-200">
+                        <div className="tw-mt-4 tw-bg-slate-100 dark:bg-slate-700 tw-p-4 tw-rounded-lg tw-border tw-border-slate-200 dark:border-slate-600 tw-flex tw-items-start">
+                           <Phone className="tw-h-6 tw-w-6 tw-text-blue-600 dark:text-blue-400 tw-mr-4 tw-flex-shrink-0" />
+                           <div className="tw-text-slate-800 dark:text-slate-200">
                                <p><strong>担当:</strong> 鈴木</p>
                                <p><strong>連絡先:</strong> xxx-xxxx-xxxx</p>
                            </div>

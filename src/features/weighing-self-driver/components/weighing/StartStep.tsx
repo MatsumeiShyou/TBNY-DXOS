@@ -21,16 +21,16 @@ const StartStep: React.FC = () => {
   return (
     <>
       <Card>
-        <div className="flex justify-between items-start mb-6">
+        <div className="tw-flex tw-justify-between tw-items-start tw-mb-6">
           <div>
-            <h2 className="text-xl font-bold mb-1">ステップ 1/{maxSteps}</h2>
-            <p className="text-2xl font-bold text-slate-700 dark:text-slate-300">総重量を計量してください</p>
+            <h2 className="tw-text-xl tw-font-bold tw-mb-1">ステップ 1/{maxSteps}</h2>
+            <p className="tw-text-2xl tw-font-bold tw-text-slate-700 dark:text-slate-300">総重量を計量してください</p>
           </div>
           <HelpTooltip title="総重量とは？">
-            <div className="space-y-4 text-slate-600 dark:text-slate-300 leading-relaxed">
+            <div className="tw-space-y-4 tw-text-slate-600 dark:text-slate-300 tw-leading-relaxed">
               <p>総重量とは、これから荷降ろしをする<strong>すべての品物を積んだ状態</strong>での、車両全体の重量のことです。</p>
-              <div className="bg-slate-100 dark:bg-slate-700 p-3 rounded-lg border border-slate-200 dark:border-slate-600">
-                <p className="text-sm text-slate-700 dark:text-slate-200">
+              <div className="tw-bg-slate-100 dark:bg-slate-700 tw-p-3 tw-rounded-lg tw-border tw-border-slate-200 dark:border-slate-600">
+                <p className="tw-text-sm tw-text-slate-700 dark:text-slate-200">
                   まず最初にこの重量を記録することで、後から品物ごとの重量を正確に計算できます。
                 </p>
               </div>
@@ -39,33 +39,33 @@ const StartStep: React.FC = () => {
         </div>
         
         {grossWeight === null ? (
-          <div className="text-center py-8">
+          <div className="tw-text-center tw-py-8">
             <Button 
               onClick={() => setIsModalOpen(true)} 
               size="lg"
-              className={isPulseEffectEnabled ? "highlight-navigation" : ""}
+              className={isPulseEffectEnabled ? "tw-highlight-navigation" : ""}
             >
-              <GaugeCircle className="mr-2 h-6 w-6" />
+              <GaugeCircle className="tw-mr-2 tw-h-6 tw-w-6" />
               台貫で計量開始
             </Button>
           </div>
         ) : (
-          <div className="space-y-6">
-            <div className="bg-blue-50 dark:bg-blue-900/50 border-l-4 border-blue-500 dark:border-blue-400 p-4 rounded-r-lg">
-              <p className="text-slate-600 dark:text-slate-300">計量済み総重量</p>
-              <p className="text-4xl font-bold text-slate-800 dark:text-slate-200">{grossWeight.toLocaleString()} <span className="text-2xl">kg</span></p>
+          <div className="tw-space-y-6">
+            <div className="tw-bg-blue-50 dark:bg-blue-900/50 tw-border-l-4 tw-border-blue-500 dark:border-blue-400 tw-p-4 tw-rounded-r-lg">
+              <p className="tw-text-slate-600 dark:text-slate-300">計量済み総重量</p>
+              <p className="tw-text-4xl tw-font-bold tw-text-slate-800 dark:text-slate-200">{grossWeight.toLocaleString()} <span className="tw-text-2xl">kg</span></p>
             </div>
-            <div className="flex justify-between items-center">
+            <div className="tw-flex tw-justify-between tw-items-center">
               <Button onClick={() => setIsModalOpen(true)} variant="secondary">
-                <Repeat className="mr-2 h-4 w-4" />
+                <Repeat className="tw-mr-2 tw-h-4 tw-w-4" />
                 再計量する
               </Button>
               <Button 
                 onClick={nextStep}
-                className={isPulseEffectEnabled ? "highlight-navigation" : ""}
+                className={isPulseEffectEnabled ? "tw-highlight-navigation" : ""}
               >
                 次へ進む
-                <ArrowRight className="ml-2 h-4 w-4" />
+                <ArrowRight className="tw-ml-2 tw-h-4 tw-w-4" />
               </Button>
             </div>
           </div>

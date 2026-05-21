@@ -8,9 +8,9 @@ interface FullScreenLoaderProps {
 
 const FullScreenLoader: React.FC<FullScreenLoaderProps> = ({ message = "読み込み中..." }) => {
   return (
-    <div className="fixed inset-0 bg-white/75 dark:bg-slate-900/75 backdrop-blur-sm flex flex-col items-center justify-center z-50">
+    <div className="tw-fixed tw-inset-0 tw-bg-white/75 dark:bg-slate-900/75 tw-backdrop-blur-sm tw-flex tw-flex-col tw-items-center tw-justify-center tw-z-50">
       <Spinner />
-      <p className="mt-4 text-slate-600 dark:text-slate-300 font-semibold">{message}</p>
+      <p className="tw-mt-4 tw-text-slate-600 dark:text-slate-300 tw-font-semibold">{message}</p>
     </div>
   );
 };

@@ -172,16 +172,16 @@ const LoginScreen: React.FC = () => {
   // Re-login flow for returning users
   if (driverName) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900 p-4">
-        <Card className="w-full max-w-sm">
-          <div className="text-center mb-6">
-            <UserCheck className="mx-auto h-12 w-12 text-blue-600 dark:text-blue-400" />
-            <h2 className="mt-4 text-2xl font-bold text-slate-800 dark:text-slate-200">おかえりなさい、<br/>{driverName}さん</h2>
-            <p className="text-slate-600 dark:text-slate-300 mt-2">{companyName || '個人のお客様'}</p>
+      <div className="tw-min-h-screen tw-flex tw-items-center tw-justify-center tw-bg-slate-50 dark:bg-slate-900 tw-p-4">
+        <Card className="tw-w-full tw-max-w-sm">
+          <div className="tw-text-center tw-mb-6">
+            <UserCheck className="tw-mx-auto tw-h-12 tw-w-12 tw-text-blue-600 dark:text-blue-400" />
+            <h2 className="tw-mt-4 tw-text-2xl tw-font-bold tw-text-slate-800 dark:text-slate-200">おかえりなさい、<br/>{driverName}さん</h2>
+            <p className="tw-text-slate-600 dark:text-slate-300 tw-mt-2">{companyName || '個人のお客様'}</p>
           </div>
           
           <form onSubmit={handleRelogin}>
-            <div className="space-y-4">
+            <div className="tw-space-y-4">
               <Input
                 id="relogin-password"
                 label="個人パスワード"
@@ -192,7 +192,7 @@ const LoginScreen: React.FC = () => {
                 endIcon={isReloginPasswordVisible ? <EyeOff size={18} /> : <Eye size={18} />}
                 onEndIconClick={() => setIsReloginPasswordVisible(!isReloginPasswordVisible)}
               />
-              {error && <p className="text-red-500 text-sm text-center">{error}</p>}
+              {error && <p className="tw-text-red-500 tw-text-sm tw-text-center">{error}</p>}
               <Button type="submit" fullWidth disabled={isLoading}>
                 {isLoading ? 'ログイン中...' : 'ログイン'}
               </Button>
@@ -208,29 +208,29 @@ const LoginScreen: React.FC = () => {
 
   // Standard login flow
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-900 p-4">
-      <Card className="w-full max-w-sm">
+    <div className="tw-min-h-screen tw-flex tw-items-center tw-justify-center tw-bg-slate-50 dark:bg-slate-900 tw-p-4">
+      <Card className="tw-w-full tw-max-w-sm">
         {step === 'pin' && (
           <div>
-            <div className="text-center mb-6">
-              <LogIn className="mx-auto h-12 w-12 text-blue-600 dark:text-blue-400" />
-              <h2 className="mt-4 text-2xl font-bold text-slate-800 dark:text-slate-200">会社PINコード入力</h2>
-              <p className="text-slate-600 dark:text-slate-300 mt-2 flex items-center justify-center">
+            <div className="tw-text-center tw-mb-6">
+              <LogIn className="tw-mx-auto tw-h-12 tw-w-12 tw-text-blue-600 dark:text-blue-400" />
+              <h2 className="tw-mt-4 tw-text-2xl tw-font-bold tw-text-slate-800 dark:text-slate-200">会社PINコード入力</h2>
+              <p className="tw-text-slate-600 dark:text-slate-300 tw-mt-2 tw-flex tw-items-center tw-justify-center">
                 会社用、またはお客様用のPINコードを入力してください
                 <HelpTooltip title="会社PINコードとは？">
-                  <div className="space-y-4 text-slate-600 dark:text-slate-300 leading-relaxed">
+                  <div className="tw-space-y-4 tw-text-slate-600 dark:text-slate-300 tw-leading-relaxed">
                     <p>
                       管理者から共有された、協力会社または顧客ごとに割り当てられた共通の暗証番号（PIN）のことです。
                     </p>
-                    <div className="bg-slate-100 dark:bg-slate-700 p-3 rounded-lg border border-slate-200 dark:border-slate-600">
-                      <p className="font-semibold text-slate-800 dark:text-slate-200">ご不明な場合は、管理担当者にご確認ください。</p>
+                    <div className="tw-bg-slate-100 dark:bg-slate-700 tw-p-3 tw-rounded-lg tw-border tw-border-slate-200 dark:border-slate-600">
+                      <p className="tw-font-semibold tw-text-slate-800 dark:text-slate-200">ご不明な場合は、管理担当者にご確認ください。</p>
                     </div>
                   </div>
                 </HelpTooltip>
               </p>
             </div>
             <form onSubmit={handlePinSubmit}>
-              <div className="space-y-4">
+              <div className="tw-space-y-4">
                 <Input
                   id="pin"
                   label="会社PINコード"
@@ -241,10 +241,10 @@ const LoginScreen: React.FC = () => {
                   endIcon={isPinVisible ? <EyeOff size={18} /> : <Eye size={18} />}
                   onEndIconClick={() => setIsPinVisible(!isPinVisible)}
                 />
-                {error && <p className="text-red-500 text-sm text-center">{error}</p>}
+                {error && <p className="tw-text-red-500 tw-text-sm tw-text-center">{error}</p>}
                 <Button type="submit" fullWidth disabled={isLoading || !pin}>
                   {isLoading ? '確認中...' : '次へ'}
-                  {!isLoading && <ArrowRight className="ml-2 h-4 w-4" />}
+                  {!isLoading && <ArrowRight className="tw-ml-2 tw-h-4 tw-w-4" />}
                 </Button>
               </div>
             </form>
@@ -252,15 +252,15 @@ const LoginScreen: React.FC = () => {
         )}
         {step === 'driver' && verificationData?.success && (
           <div>
-            <div className="text-center mb-6">
-              <UserCheck className="mx-auto h-12 w-12 text-blue-600 dark:text-blue-400" />
-              <h2 className="mt-4 text-2xl font-bold text-slate-800 dark:text-slate-200">
+            <div className="tw-text-center tw-mb-6">
+              <UserCheck className="tw-mx-auto tw-h-12 tw-w-12 tw-text-blue-600 dark:text-blue-400" />
+              <h2 className="tw-mt-4 tw-text-2xl tw-font-bold tw-text-slate-800 dark:text-slate-200">
                 {verificationData?.company?.name || verificationData?.customerName || ''} 様
               </h2>
-              <p className="text-slate-600 dark:text-slate-300 mt-2">ようこそ。ログインする担当者を選択してください。</p>
+              <p className="tw-text-slate-600 dark:text-slate-300 tw-mt-2">ようこそ。ログインする担当者を選択してください。</p>
             </div>
             <form onSubmit={handleDriverSelect}>
-              <div className="space-y-4">
+              <div className="tw-space-y-4">
                 <Select
                   id="driver"
                   label="ドライバー名"
@@ -277,15 +277,15 @@ const LoginScreen: React.FC = () => {
                     </option>
                   ))}
                 </Select>
-                {error && <p className="text-red-500 text-sm text-center">{error}</p>}
-                <div className="flex justify-between items-center mt-6">
+                {error && <p className="tw-text-red-500 tw-text-sm tw-text-center">{error}</p>}
+                <div className="tw-flex tw-justify-between tw-items-center tw-mt-6">
                   <Button type="button" variant="secondary" onClick={() => { setStep('pin'); setError(''); setPin(''); }}>
-                    <ArrowLeft className="mr-2 h-4 w-4" />
+                    <ArrowLeft className="tw-mr-2 tw-h-4 tw-w-4" />
                     戻る
                   </Button>
                   <Button type="submit" disabled={isLoading}>
                     次へ
-                    <ArrowRight className="ml-2 h-4 w-4" />
+                    <ArrowRight className="tw-ml-2 tw-h-4 tw-w-4" />
                   </Button>
                 </div>
               </div>
@@ -294,15 +294,15 @@ const LoginScreen: React.FC = () => {
         )}
         {step === 'password' && (
           <div>
-            <div className="text-center mb-6">
-              <KeyRound className="mx-auto h-12 w-12 text-blue-600 dark:text-blue-400" />
-              <h2 className="mt-4 text-2xl font-bold text-slate-800 dark:text-slate-200">
+            <div className="tw-text-center tw-mb-6">
+              <KeyRound className="tw-mx-auto tw-h-12 tw-w-12 tw-text-blue-600 dark:text-blue-400" />
+              <h2 className="tw-mt-4 tw-text-2xl tw-font-bold tw-text-slate-800 dark:text-slate-200">
                 こんにちは、<br/>{selectedDriver?.name}さん
               </h2>
-              <p className="text-slate-600 dark:text-slate-300 mt-2">個人パスワードを入力してください。</p>
+              <p className="tw-text-slate-600 dark:text-slate-300 tw-mt-2">個人パスワードを入力してください。</p>
             </div>
             <form onSubmit={handlePasswordLogin}>
-              <div className="space-y-4">
+              <div className="tw-space-y-4">
                 <Input
                   id="personal-password"
                   label="個人パスワード"
@@ -313,15 +313,15 @@ const LoginScreen: React.FC = () => {
                   endIcon={isPersonalPasswordVisible ? <EyeOff size={18} /> : <Eye size={18} />}
                   onEndIconClick={() => setIsPersonalPasswordVisible(!isPersonalPasswordVisible)}
                 />
-                {error && <p className="text-red-500 text-sm text-center">{error}</p>}
-                <div className="flex justify-between items-center mt-6">
+                {error && <p className="tw-text-red-500 tw-text-sm tw-text-center">{error}</p>}
+                <div className="tw-flex tw-justify-between tw-items-center tw-mt-6">
                   <Button type="button" variant="secondary" onClick={() => { setStep('driver'); setError(''); setPersonalPassword(''); }}>
-                    <ArrowLeft className="mr-2 h-4 w-4" />
+                    <ArrowLeft className="tw-mr-2 tw-h-4 tw-w-4" />
                     戻る
                   </Button>
                   <Button type="submit" disabled={isLoading || !personalPassword}>
                     {isLoading ? 'ログイン中...' : 'ログイン'}
-                    {!isLoading && <LogIn className="ml-2 h-4 w-4" />}
+                    {!isLoading && <LogIn className="tw-ml-2 tw-h-4 tw-w-4" />}
                   </Button>
                 </div>
               </div>
@@ -330,15 +330,15 @@ const LoginScreen: React.FC = () => {
         )}
         {step === 'setPassword' && (
           <div>
-            <div className="text-center mb-6">
-              <ShieldQuestion className="mx-auto h-12 w-12 text-blue-600 dark:text-blue-400" />
-              <h2 className="mt-4 text-2xl font-bold text-slate-800 dark:text-slate-200">
+            <div className="tw-text-center tw-mb-6">
+              <ShieldQuestion className="tw-mx-auto tw-h-12 tw-w-12 tw-text-blue-600 dark:text-blue-400" />
+              <h2 className="tw-mt-4 tw-text-2xl tw-font-bold tw-text-slate-800 dark:text-slate-200">
                 ようこそ、<br/>{selectedDriver?.name}さん
               </h2>
-              <p className="text-slate-600 dark:text-slate-300 mt-2">初回ログインのため、パスワードを設定してください。</p>
+              <p className="tw-text-slate-600 dark:text-slate-300 tw-mt-2">初回ログインのため、パスワードを設定してください。</p>
             </div>
             <form onSubmit={handleSetPassword}>
-              <div className="space-y-4">
+              <div className="tw-space-y-4">
                 <Input
                   id="new-password"
                   label="新しいパスワード"
@@ -360,15 +360,15 @@ const LoginScreen: React.FC = () => {
                   onEndIconClick={() => setIsConfirmPasswordVisible(!isConfirmPasswordVisible)}
                 />
                 <PasswordPolicyValidator password={newPassword} />
-                {error && <p className="text-red-500 text-sm text-center">{error}</p>}
-                <div className="flex justify-between items-center mt-6">
+                {error && <p className="tw-text-red-500 tw-text-sm tw-text-center">{error}</p>}
+                <div className="tw-flex tw-justify-between tw-items-center tw-mt-6">
                   <Button type="button" variant="secondary" onClick={() => { setStep('driver'); setError(''); setNewPassword(''); setConfirmPassword(''); }}>
-                    <ArrowLeft className="mr-2 h-4 w-4" />
+                    <ArrowLeft className="tw-mr-2 tw-h-4 tw-w-4" />
                     戻る
                   </Button>
                   <Button type="submit" disabled={isLoading || !canSubmitSetPassword}>
                     {isLoading ? '設定中...' : '設定してログイン'}
-                    {!isLoading && <LogIn className="ml-2 h-4 w-4" />}
+                    {!isLoading && <LogIn className="tw-ml-2 tw-h-4 tw-w-4" />}
                   </Button>
                 </div>
               </div>

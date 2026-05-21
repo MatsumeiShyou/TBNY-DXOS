@@ -157,28 +157,28 @@ const ItemsStep: React.FC = () => {
     const remainingVehicleWeight = (grossWeight || 0) - totalWeightUpToIndex;
 
     return (
-      <div key={originalIndex} className="p-3 bg-white dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600 rounded-md">
-          <div className="flex justify-between items-start mb-2">
+      <div key={originalIndex} className="tw-p-3 tw-bg-white dark:bg-slate-700/50 tw-border tw-border-slate-200 dark:border-slate-600 tw-rounded-md">
+          <div className="tw-flex tw-justify-between tw-items-start tw-mb-2">
               <div>
-                  <p className="font-bold">{masterItems.find(mi => mi.id === item.itemId)?.name}</p>
-                  {showLocation && <p className="text-sm text-slate-500 dark:text-slate-300">{getLocationName(item.locationId)}</p>}
-                  <p className="text-xs text-slate-500 dark:text-slate-400 flex items-center mt-1">
-                      <Truck size={12} className="inline mr-1" />
+                  <p className="tw-font-bold">{masterItems.find(mi => mi.id === item.itemId)?.name}</p>
+                  {showLocation && <p className="tw-text-sm tw-text-slate-500 dark:text-slate-300">{getLocationName(item.locationId)}</p>}
+                  <p className="tw-text-xs tw-text-slate-500 dark:text-slate-400 tw-flex tw-items-center tw-mt-1">
+                      <Truck size={12} className="tw-inline tw-mr-1" />
                       この品目を降ろした後の車両重量: {remainingVehicleWeight.toLocaleString()} kg
                   </p>
               </div>
-              <div className="flex items-center space-x-1 flex-shrink-0">
-                  <button onClick={() => setEditingItem({ index: originalIndex, item })} className="p-2 text-slate-500 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400" aria-label="重量を編集">
+              <div className="tw-flex tw-items-center tw-space-x-1 tw-flex-shrink-0">
+                  <button onClick={() => setEditingItem({ index: originalIndex, item })} className="tw-p-2 tw-text-slate-500 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400" aria-label="重量を編集">
                       <Edit size={18} />
                   </button>
-                  <button onClick={() => removeItem(originalIndex)} className="p-2 text-red-500 hover:text-red-700" aria-label="品目を削除">
+                  <button onClick={() => removeItem(originalIndex)} className="tw-p-2 tw-text-red-500 hover:text-red-700" aria-label="品目を削除">
                       <Trash2 size={18} />
                   </button>
               </div>
           </div>
-          <div className="bg-slate-100 dark:bg-slate-800 p-2 rounded-md text-right">
-              <span className="text-sm text-slate-600 dark:text-slate-300 mr-2">品目重量:</span>
-              <span className="font-bold text-xl">{item.weight.toLocaleString()} kg</span>
+          <div className="tw-bg-slate-100 dark:bg-slate-800 tw-p-2 tw-rounded-md tw-text-right">
+              <span className="tw-text-sm tw-text-slate-600 dark:text-slate-300 tw-mr-2">品目重量:</span>
+              <span className="tw-font-bold tw-text-xl">{item.weight.toLocaleString()} kg</span>
           </div>
       </div>
     );
@@ -187,28 +187,28 @@ const ItemsStep: React.FC = () => {
   return (
     <>
       <Card>
-        <div className="flex justify-between items-start mb-6">
+        <div className="tw-flex tw-justify-between tw-items-start tw-mb-6">
           <div>
-            <h2 className="text-xl font-bold mb-1">ステップ 3/{maxSteps}</h2>
-            <p className="text-2xl font-bold text-slate-700 dark:text-slate-300">品目を追加してください</p>
+            <h2 className="tw-text-xl tw-font-bold tw-mb-1">ステップ 3/{maxSteps}</h2>
+            <p className="tw-text-2xl tw-font-bold tw-text-slate-700 dark:text-slate-300">品目を追加してください</p>
           </div>
           <HelpTooltip title="品目の追加方法">
-            <div className="space-y-4 text-slate-600 dark:text-slate-300 leading-relaxed">
-              <h4 className="font-bold text-slate-800 dark:text-slate-200">品目の重量を記録するには、2つの方法があります。</h4>
-              <div className="mt-2 p-3 bg-slate-100 dark:bg-slate-700 rounded-lg border border-slate-200 dark:border-slate-600">
-                  <h5 className="font-semibold text-blue-600 dark:text-blue-400">1. 台貫で計量（差分計量）</h5>
-                  <p className="text-sm text-slate-700 dark:text-slate-200">最も正確な方法です。品物を荷台から降ろした後に、もう一度車両の重量を計量します。その差分が、降ろした品物の重量として自動で計算・記録されます。</p>
+            <div className="tw-space-y-4 tw-text-slate-600 dark:text-slate-300 tw-leading-relaxed">
+              <h4 className="tw-font-bold tw-text-slate-800 dark:text-slate-200">品目の重量を記録するには、2つの方法があります。</h4>
+              <div className="tw-mt-2 tw-p-3 tw-bg-slate-100 dark:bg-slate-700 tw-rounded-lg tw-border tw-border-slate-200 dark:border-slate-600">
+                  <h5 className="tw-font-semibold tw-text-blue-600 dark:text-blue-400">1. 台貫で計量（差分計量）</h5>
+                  <p className="tw-text-sm tw-text-slate-700 dark:text-slate-200">最も正確な方法です。品物を荷台から降ろした後に、もう一度車両の重量を計量します。その差分が、降ろした品物の重量として自動で計算・記録されます。</p>
               </div>
-              <div className="mt-2 p-3 bg-slate-100 dark:bg-slate-700 rounded-lg border border-slate-200 dark:border-slate-600">
-                  <h5 className="font-semibold text-blue-600 dark:text-blue-400">2. 手入力する</h5>
-                  <p className="text-sm text-slate-700 dark:text-slate-200">品物の重量が分かっている場合や、概算で記録したい場合に使います。手動で重量を入力して記録します。</p>
+              <div className="tw-mt-2 tw-p-3 tw-bg-slate-100 dark:bg-slate-700 tw-rounded-lg tw-border tw-border-slate-200 dark:border-slate-600">
+                  <h5 className="tw-font-semibold tw-text-blue-600 dark:text-blue-400">2. 手入力する</h5>
+                  <p className="tw-text-sm tw-text-slate-700 dark:text-slate-200">品物の重量が分かっている場合や、概算で記録したい場合に使います。手動で重量を入力して記録します。</p>
               </div>
             </div>
           </HelpTooltip>
         </div>
 
-        <div className={`space-y-4 p-4 border border-slate-200 dark:border-slate-700 rounded-lg bg-slate-50 dark:bg-slate-800/50 mb-6`}>
-          <div className={!locationId && isPulseEffectEnabled ? 'highlight-navigation p-1 -m-1 rounded-lg' : ''}>
+        <div className={`tw-space-y-4 tw-p-4 tw-border tw-border-slate-200 dark:border-slate-700 tw-rounded-lg tw-bg-slate-50 dark:bg-slate-800/50 tw-mb-6`}>
+          <div className={!locationId && isPulseEffectEnabled ? 'tw-highlight-navigation tw-p-1 tw--m-1 tw-rounded-lg' : ''}>
             <Select
               id="location"
               label="回収先"
@@ -220,7 +220,7 @@ const ItemsStep: React.FC = () => {
               {availableLocations.map(loc => <option key={loc.id} value={loc.id}>{loc.name}</option>)}
             </Select>
           </div>
-          <div className={locationId && !itemId && isPulseEffectEnabled ? 'highlight-navigation p-1 -m-1 rounded-lg' : ''}>
+          <div className={locationId && !itemId && isPulseEffectEnabled ? 'tw-highlight-navigation tw-p-1 tw--m-1 tw-rounded-lg' : ''}>
             <Select
               id="item"
               label="品目"
@@ -234,13 +234,13 @@ const ItemsStep: React.FC = () => {
           </div>
 
           {canProceed && (
-            <div className="pt-4 grid grid-cols-2 gap-2">
-                <Button onClick={handleOpenScaleModal} variant="primary" fullWidth className={isPulseEffectEnabled ? 'highlight-navigation' : ''}>
-                    <GaugeCircle className="mr-2 h-5 w-5" />
+            <div className="tw-pt-4 tw-grid tw-grid-cols-2 tw-gap-2">
+                <Button onClick={handleOpenScaleModal} variant="primary" fullWidth className={isPulseEffectEnabled ? 'tw-highlight-navigation' : ''}>
+                    <GaugeCircle className="tw-mr-2 tw-h-5 tw-w-5" />
                     台貫で計量
                 </Button>
-                <Button onClick={() => setIsManualModalOpen(true)} variant="secondary" fullWidth className={isPulseEffectEnabled ? 'highlight-navigation' : ''}>
-                    <Edit className="mr-2 h-5 w-5" />
+                <Button onClick={() => setIsManualModalOpen(true)} variant="secondary" fullWidth className={isPulseEffectEnabled ? 'tw-highlight-navigation' : ''}>
+                    <Edit className="tw-mr-2 tw-h-5 tw-w-5" />
                     手入力する
                 </Button>
             </div>
@@ -248,28 +248,28 @@ const ItemsStep: React.FC = () => {
         </div>
 
         <div>
-          <div className="flex justify-between items-center mb-2">
-            <h3 className="font-bold text-lg">追加済み品目リスト</h3>
+          <div className="tw-flex tw-justify-between tw-items-center tw-mb-2">
+            <h3 className="tw-font-bold tw-text-lg">追加済み品目リスト</h3>
             {items.length > 0 && (
                 <ViewSwitcher currentView={viewMode} onViewChange={setViewMode} />
             )}
           </div>
           {items.length === 0 ? (
-            <p className="text-slate-500 dark:text-slate-300 text-center py-4">まだ品目が追加されていません。</p>
+            <p className="tw-text-slate-500 dark:text-slate-300 tw-text-center tw-py-4">まだ品目が追加されていません。</p>
           ) : (
-            <div className="space-y-4">
+            <div className="tw-space-y-4">
              {viewMode === 'grouped' ? (
                 Array.from(groupedItems.entries()).map(([locId, group]) => {
                     const locationName = getLocationName(locId);
                     return (
-                        <div key={locId} className="bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-lg p-3">
-                            <div className="flex justify-between items-baseline mb-2 pb-2 border-b border-slate-200 dark:border-slate-600">
-                                <h4 className="font-bold text-slate-700 dark:text-slate-300">{locationName}</h4>
-                                <p className="text-sm font-semibold text-slate-600 dark:text-slate-300">
+                        <div key={locId} className="tw-bg-slate-50 dark:bg-slate-800/50 tw-border tw-border-slate-200 dark:border-slate-700 tw-rounded-lg tw-p-3">
+                            <div className="tw-flex tw-justify-between tw-items-baseline tw-mb-2 tw-pb-2 tw-border-b tw-border-slate-200 dark:border-slate-600">
+                                <h4 className="tw-font-bold tw-text-slate-700 dark:text-slate-300">{locationName}</h4>
+                                <p className="tw-text-sm tw-font-semibold tw-text-slate-600 dark:text-slate-300">
                                     小計: {group.subTotal.toLocaleString()} kg
                                 </p>
                             </div>
-                            <div className="space-y-2">
+                            <div className="tw-space-y-2">
                             {group.itemsWithIndex.map(({ item, originalIndex }) => renderItemRow(item, originalIndex, false))}
                             </div>
                         </div>
@@ -278,25 +278,25 @@ const ItemsStep: React.FC = () => {
              ) : (
                 items.map((item, index) => renderItemRow(item, index, true))
              )}
-              <div className="text-right font-bold text-lg pt-2 pr-2">
+              <div className="tw-text-right tw-font-bold tw-text-lg tw-pt-2 tw-pr-2">
                 合計: {totalItemsWeight.toLocaleString()} kg
               </div>
             </div>
           )}
         </div>
 
-        <div className="flex justify-between mt-8">
+        <div className="tw-flex tw-justify-between tw-mt-8">
           <Button onClick={handleGoBack} variant="secondary">
-            <ArrowLeft className="mr-2 h-4 w-4" />
+            <ArrowLeft className="tw-mr-2 tw-h-4 tw-w-4" />
             {backButtonText}
           </Button>
           <Button 
             onClick={nextStep} 
             disabled={items.length === 0}
-            className={items.length > 0 && isPulseEffectEnabled ? 'highlight-navigation' : ''}
+            className={items.length > 0 && isPulseEffectEnabled ? 'tw-highlight-navigation' : ''}
           >
             空車計量へ進む
-            <Truck className="ml-2 h-4 w-4" />
+            <Truck className="tw-ml-2 tw-h-4 tw-w-4" />
           </Button>
         </div>
       </Card>
@@ -335,17 +335,17 @@ const ItemsStep: React.FC = () => {
         onClose={() => setIsNextActionModalOpen(false)}
         title="品目を追加しました"
       >
-        <p className="text-slate-600 dark:text-slate-300 mb-6">次の操作を選択してください。</p>
-        <div className="flex flex-col space-y-3">
-          <Button variant="secondary" onClick={() => setIsNextActionModalOpen(false)} fullWidth className={isPulseEffectEnabled ? 'highlight-navigation' : ''}>
-            <Plus className="mr-2 h-5 w-5" />
+        <p className="tw-text-slate-600 dark:text-slate-300 tw-mb-6">次の操作を選択してください。</p>
+        <div className="tw-flex tw-flex-col tw-space-y-3">
+          <Button variant="secondary" onClick={() => setIsNextActionModalOpen(false)} fullWidth className={isPulseEffectEnabled ? 'tw-highlight-navigation' : ''}>
+            <Plus className="tw-mr-2 tw-h-5 tw-w-5" />
             続けて追加
           </Button>
           <Button variant="primary" onClick={() => {
             setIsNextActionModalOpen(false);
             nextStep();
-          }} fullWidth className={isPulseEffectEnabled ? 'highlight-navigation' : ''}>
-            <Truck className="mr-2 h-5 w-5" />
+          }} fullWidth className={isPulseEffectEnabled ? 'tw-highlight-navigation' : ''}>
+            <Truck className="tw-mr-2 tw-h-5 tw-w-5" />
             空車計量へ進む
           </Button>
         </div>
