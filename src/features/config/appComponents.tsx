@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import { APPS_REGISTRY } from './appsRegistry';
 import React, { lazy, Suspense } from 'react';
 import { ErrorBoundary } from '../../shared/components/ErrorBoundary';
@@ -6,6 +7,7 @@ import { ErrorBoundary } from '../../shared/components/ErrorBoundary';
 const RePaperRouteAppLazy = lazy(() => import('../repaper-route/RePaperRouteApp').then(m => ({ default: m.RePaperRouteApp })));
 const MasterDataManagerLazy = lazy(() => import('../components/MasterDataManager').then(m => ({ default: m.MasterDataManager })));
 const DriverOSAppLazy = lazy(() => import('../repaper-route/driver/DriverOSApp').then(m => ({ default: m.default })));
+const WeighingSelfDriverAppLazy = lazy(() => import('../weighing-self-driver/WeighingSelfDriverApp').then(m => ({ default: m.default })));
 
 /**
  * LazyWrapper - ホワイトアウト防止用の Suspense + ErrorBoundary 境界
@@ -83,14 +85,9 @@ export const APP_COMPONENTS: Record<string, React.ReactNode> = {
   ),
 
   'weighing-self-driver': (
-    <div style={placeholderStyle('weighing-self-driver')}>
-      <div>
-        <p style={labelStyle}>{APPS_REGISTRY['weighing-self-driver']?.label}</p>
-        <p style={subTextStyle}>計量OSの中枢モジュール。統合プロトタイプを先行公開。</p>
-      </div>
-      {/* gov-bypass [II-2] */}
-      <img src="/weighing-preview.png" style={previewImageStyle} alt="Preview" />
-    </div>
+    <LazyWrapper name="セルフ計量記録">
+      <WeighingSelfDriverAppLazy />
+    </LazyWrapper>
   ),
   'weighing-admin': (
     <div style={placeholderStyle('weighing-admin')}>
