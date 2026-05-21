@@ -1,5 +1,4 @@
 /* eslint-disable react-refresh/only-export-components */
-import { APPS_REGISTRY } from './appsRegistry';
 import React, { lazy, Suspense } from 'react';
 import { ErrorBoundary } from '../../shared/components/ErrorBoundary';
 
@@ -8,6 +7,7 @@ const RePaperRouteAppLazy = lazy(() => import('../repaper-route/RePaperRouteApp'
 const MasterDataManagerLazy = lazy(() => import('../components/MasterDataManager').then(m => ({ default: m.MasterDataManager })));
 const DriverOSAppLazy = lazy(() => import('../repaper-route/driver/DriverOSApp').then(m => ({ default: m.default })));
 const WeighingSelfDriverAppLazy = lazy(() => import('../weighing-self-driver/WeighingSelfDriverApp').then(m => ({ default: m.default })));
+const WeighingSelfAdminAppLazy = lazy(() => import('../weighing-self-admin/WeighingSelfAdminApp').then(m => ({ default: m.default })));
 
 /**
  * LazyWrapper - ホワイトアウト防止用の Suspense + ErrorBoundary 境界
@@ -30,39 +30,6 @@ const LazyWrapper = ({ children, name }: { children: React.ReactNode, name: stri
     </Suspense>
   </ErrorBoundary>
 );
-
-const labelStyle: React.CSSProperties = {
-  fontSize: '1.125rem',
-  fontWeight: 600,
-  color: '#94a3b8',
-  marginBottom: '0.5rem',
-};
-
-const subTextStyle: React.CSSProperties = {
-  fontSize: '0.8125rem',
-};
-
-const previewImageStyle: React.CSSProperties = {
-  marginTop: '2rem',
-  maxWidth: '600px',
-  borderRadius: '8px',
-  boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)',
-  opacity: 0.8,
-};
-
-function placeholderStyle(_appId: string): React.CSSProperties {
-  return {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    minHeight: 'calc(100vh - 41px)',
-    background: '#0b0d14',
-    color: '#64748b',
-    fontFamily: "'Inter', 'Noto Sans JP', sans-serif",
-    textAlign: 'center',
-    padding: '2rem',
-  };
-}
 
 /**
  * appRegistry — app_id に基づいてコンポーネントを返す定数マップ
@@ -90,13 +57,8 @@ export const APP_COMPONENTS: Record<string, React.ReactNode> = {
     </LazyWrapper>
   ),
   'weighing-admin': (
-    <div style={placeholderStyle('weighing-admin')}>
-      <div>
-        <p style={labelStyle}>{APPS_REGISTRY['weighing-admin']?.label}</p>
-        <p style={subTextStyle}>管理者向け計量分析。データ集計基盤の構築中。</p>
-      </div>
-      {/* gov-bypass [II-2] */}
-      <img src="/weighing-preview.png" style={previewImageStyle} alt="Preview" />
-    </div>
+    <LazyWrapper name="計量管理ダッシュボード">
+      <WeighingSelfAdminAppLazy />
+    </LazyWrapper>
   ),
 };

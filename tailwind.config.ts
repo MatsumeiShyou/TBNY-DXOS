@@ -15,6 +15,29 @@ const config: Config = {
         accent: '#d97706',
         success: '#10b981',
         danger: '#ef4444',
+
+        // Weighing Admin App Theme
+        warning: 'rgb(var(--color-warning) / <alpha-value>)',
+        error: 'rgb(var(--color-error) / <alpha-value>)',
+        background: {
+          primary: 'rgb(var(--color-bg-primary) / <alpha-value>)',
+          secondary: 'rgb(var(--color-bg-secondary) / <alpha-value>)',
+          tertiary: 'rgb(var(--color-bg-tertiary) / <alpha-value>)',
+        },
+        text: {
+          primary: 'rgb(var(--color-text-primary) / <alpha-value>)',
+          secondary: 'rgb(var(--color-text-secondary) / <alpha-value>)',
+          disabled: 'rgb(var(--color-text-disabled) / <alpha-value>)',
+        },
+        border: {
+          default: 'rgb(var(--color-border-default) / <alpha-value>)',
+          focus: 'rgb(var(--color-border-focus) / <alpha-value>)',
+        },
+        interactive: {
+          default: 'rgb(var(--color-interactive-default) / <alpha-value>)',
+          hover: 'rgb(var(--color-interactive-hover) / <alpha-value>)',
+          active: 'rgb(var(--color-interactive-active) / <alpha-value>)',
+        },
       },
       animation: {
         'fade-in': 'fadeIn 0.2s ease-out',

@@ -12,6 +12,37 @@
 :root {
   -webkit-tap-highlight-color: transparent;
   overscroll-behavior-y: auto;
+
+  /* Weighing Admin App Colors */
+  --color-bg-primary: 255 255 255;
+  --color-bg-secondary: 248 250 252;
+  --color-bg-tertiary: 241 245 249;
+  --color-text-primary: 30 41 59;
+  --color-text-secondary: 71 85 105;
+  --color-text-disabled: 148 163 184;
+  --color-border-default: 226 232 240;
+  --color-border-focus: 59 130 246;
+  --color-interactive-default: 37 99 235;
+  --color-interactive-hover: 29 78 216;
+  --color-interactive-active: 30 64 175;
+  --color-success: 22 163 74;
+  --color-warning: 245 158 11;
+  --color-error: 220 38 38;
+}
+
+[data-theme="dark"] {
+  /* Weighing Admin App Colors (Dark Mode) */
+  --color-bg-primary: 15 23 42;
+  --color-bg-secondary: 30 41 59;
+  --color-bg-tertiary: 51 65 85;
+  --color-text-primary: 248 250 252;
+  --color-text-secondary: 148 163 184;
+  --color-text-disabled: 100 116 139;
+  --color-border-default: 51 65 85;
+  --color-border-focus: 96 165 250;
+  --color-interactive-default: 96 165 250;
+  --color-interactive-hover: 147 197 253;
+  --color-interactive-active: 191 219 254;
 }
 
 html, body {
