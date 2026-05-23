@@ -24,15 +24,15 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose, currentView, setCurr
             </button>
         </div>
         <nav className="tw-flex-1 tw-px-4 tw-py-4 tw-overflow-y-auto">
-        <ul>
+        <ul className="tw-list-none tw-p-2 tw-m-0 tw-space-y-1">
           {NAV_ITEMS.map((item) => (
             <li key={item.view}>
               <button
                 onClick={() => setCurrentView(item.view)}
-                className={`tw-w-full tw-flex tw-items-center tw-px-4 tw-py-2.5 tw-text-sm tw-font-medium tw-rounded-md tw-transition-colors tw-duration-200 ${
+                className={`tw-w-full tw-flex tw-items-center tw-px-4 tw-py-3 tw-text-sm tw-font-bold tw-rounded-xl tw-transition-all tw-duration-300 ${
                   currentView === item.view
-                    ? 'tw-bg-interactive-default tw-text-white'
-                    : 'tw-text-text-secondary hover:tw-bg-background-tertiary hover:tw-text-text-primary'
+                    ? 'tw-bg-blue-50 tw-text-blue-600 tw-shadow-sm tw-border tw-border-blue-100 tw-dark:bg-slate-900 tw-dark:text-blue-400 tw-dark:border-slate-800 tw-dark:shadow-[0_0_15px_rgba(59,130,246,0.15)]'
+                    : 'tw-text-slate-500 tw-bg-transparent hover:tw-bg-slate-50 hover:tw-text-slate-800 tw-border tw-border-transparent tw-dark:text-slate-400 tw-dark:hover:bg-slate-800/50 tw-dark:hover:text-slate-200'
                 }`}
               >
                 <item.icon className="tw-w-5 tw-h-5 tw-mr-3" />
