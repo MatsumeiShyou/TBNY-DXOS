@@ -13,12 +13,12 @@ const ThemeToggle: React.FC = () => {
     ];
 
     return (
-        <div className="tw-flex tw-items-center tw-p-1 tw-rounded-full tw-bg-slate-100 tw-dark:bg-slate-800/50">
+        <div className="tw-flex tw-items-center tw-p-1 tw-rounded-full tw-bg-background-tertiary tw-border tw-border-border-default">
             {options.map((option) => (
                 <button
                     key={option.name}
                     onClick={() => setMode(option.name as any)}
-                    className={`tw-p-1.5 tw-rounded-full tw-transition-all tw-duration-300 ${mode === option.name ? 'tw-bg-white tw-shadow-sm tw-text-slate-800 tw-dark:bg-blue-600 tw-dark:text-white tw-dark:shadow-[0_0_10px_rgba(37,99,235,0.5)]' : 'tw-text-slate-400 hover:tw-text-slate-600 tw-dark:text-slate-500 tw-dark:hover:text-slate-300'}`}
+                    className={`tw-p-1.5 tw-rounded-full tw-transition-colors tw-duration-200 ${mode === option.name ? 'tw-bg-background-primary tw-shadow-sm tw-text-text-primary' : 'tw-text-text-secondary hover:tw-text-text-primary'}`}
                     aria-label={option.label}
                 >
                     <option.icon className="tw-w-5 tw-h-5" />

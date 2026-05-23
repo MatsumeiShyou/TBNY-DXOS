@@ -41,7 +41,7 @@ const ItemFilter: React.FC<ItemFilterProps> = ({ allItems, selectedIds, onSelect
         <div className="tw-flex tw-flex-wrap tw-gap-2 tw-flex-1">
           <button
             onClick={handleSelectAll}
-            className={`tw-px-3 tw-py-1 tw-text-sm tw-font-medium tw-rounded-full tw-transition-colors tw-duration-200 tw-border-2 ${
+            className={`tw-px-3 tw-py-1 tw-text-sm tw-font-medium tw-rounded-full tw-transition-colors tw-duration-200 tw-border ${
               allSelected
                 ? 'tw-bg-interactive-default tw-text-white tw-border-interactive-default'
                 : 'tw-bg-transparent tw-text-text-primary tw-border-border-default hover:tw-bg-background-tertiary'
@@ -55,7 +55,7 @@ const ItemFilter: React.FC<ItemFilterProps> = ({ allItems, selectedIds, onSelect
               <button
                 key={item.id}
                 onClick={() => handleToggle(item.id)}
-                className={`tw-px-3 tw-py-1 tw-text-sm tw-font-medium tw-rounded-full tw-transition-colors tw-duration-200 tw-border-2 ${
+                className={`tw-px-3 tw-py-1 tw-text-sm tw-font-medium tw-rounded-full tw-transition-colors tw-duration-200 tw-border ${
                   isSelected
                     ? 'tw-bg-interactive-default tw-text-white tw-border-interactive-default'
                     : 'tw-bg-transparent tw-text-text-primary tw-border-border-default hover:tw-bg-background-tertiary'

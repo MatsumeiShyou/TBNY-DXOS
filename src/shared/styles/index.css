@@ -65,6 +65,8 @@ html, body {
   button {
     transition: all 0.2s var(--transition-base);
     outline: none;
+    background-color: transparent;
+    border: 0 solid transparent;
   }
   
   button:active:not(:disabled) {
