@@ -1,6 +1,8 @@
 
+/* eslint-disable react-refresh/only-export-components */
 import React from 'react';
 import { useNumericKeypad } from './NumericKeypadContext';
+import { Delete } from 'lucide-react';
 
 // Safe Calculator Parser
 export const safeCalculate = (expression: string): number => {
@@ -112,7 +114,7 @@ export const NumericKeypad: React.FC = () => {
                     }
                   `}
                 >
-                  {key === '⌫' ? <i className="fa-solid fa-delete-left"></i> : key}
+                  {key === '⌫' ? <Delete size={24} /> : key}
                 </button>
               ))}
             </React.Fragment>

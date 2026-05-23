@@ -1,5 +1,7 @@
+import React from 'react';
 import type { User } from '../types';
 import { useAgentId } from '../components/AgentContext';
+import { X, Truck, ChevronRight, Route, Fuel, LogOut } from 'lucide-react';
 
 interface MenuPageProps {
   isOpen: boolean;
@@ -25,6 +27,12 @@ export const MenuPage: React.FC<MenuPageProps> = ({
   onFuelReport,
   onLogout
 }) => {
+  const closeBtnId = useAgentId("close-button");
+  const vehicleChangeId = useAgentId("action:vehicle-change");
+  const courseChangeId = useAgentId("action:course-change");
+  const fuelReportId = useAgentId("action:fuel-report");
+  const logoutId = useAgentId("action:logout");
+
   if (!isOpen) return null;
 
   return (
@@ -36,9 +44,9 @@ export const MenuPage: React.FC<MenuPageProps> = ({
            <button 
              onClick={onClose}
              className="tw-absolute tw-top-safe tw-right-4 tw-w-10 tw-h-10 tw-flex tw-items-center tw-justify-center tw-bg-white/20 tw-rounded-full tw-active:tw-bg-white/30"
-             data-agent-id={useAgentId("close-button")}
+             data-agent-id={closeBtnId}
            >
-             <i className="fa-solid fa-xmark"></i>
+             <X size={20} />
            </button>
            
            <div className="tw-flex tw-items-center tw-space-x-3 tw-mt-4">
@@ -64,46 +72,46 @@ export const MenuPage: React.FC<MenuPageProps> = ({
                  <button 
                    onClick={onVehicleChange}
                    className="tw-w-full tw-flex tw-items-center tw-p-4 tw-border-b tw-border-slate-100 tw-active:tw-bg-slate-50 tw-transition-colors tw-text-left"
-                   data-agent-id={useAgentId("action:vehicle-change")}
+                   data-agent-id={vehicleChangeId}
                  >
                     <div className="tw-w-8 tw-h-8 tw-rounded-full tw-bg-slate-100 tw-flex tw-items-center tw-justify-center tw-mr-3 tw-text-slate-500">
-                      <i className="fa-solid fa-truck"></i>
+                      <Truck size={18} />
                     </div>
                     <div className="tw-flex-1">
                        <div className="tw-font-bold tw-text-slate-700">車両乗り換え</div>
                        <div className="tw-text-xs tw-text-slate-400">現在: {user.vehicleName}</div>
                     </div>
-                    <i className="fa-solid fa-chevron-right tw-text-slate-300"></i>
+                    <ChevronRight size={18} className="tw-text-slate-300" />
                  </button>
                  
                  <button 
                    onClick={onCourseChange}
                    className="tw-w-full tw-flex tw-items-center tw-p-4 tw-border-b tw-border-slate-100 tw-active:tw-bg-slate-50 tw-transition-colors tw-text-left"
-                   data-agent-id={useAgentId("action:course-change")}
+                   data-agent-id={courseChangeId}
                  >
                     <div className="tw-w-8 tw-h-8 tw-rounded-full tw-bg-slate-100 tw-flex tw-items-center tw-justify-center tw-mr-3 tw-text-slate-500">
-                      <i className="fa-solid fa-route"></i>
+                      <Route size={18} />
                     </div>
                     <div className="tw-flex-1">
                        <div className="tw-font-bold tw-text-slate-700">担当コース変更</div>
                        <div className="tw-text-xs tw-text-slate-400">他コースへの変更（管理者通知）</div>
                     </div>
-                    <i className="fa-solid fa-chevron-right tw-text-slate-300"></i>
+                    <ChevronRight size={18} className="tw-text-slate-300" />
                  </button>
 
                  <button 
                    onClick={onFuelReport}
                    className="tw-w-full tw-flex tw-items-center tw-p-4 tw-active:tw-bg-slate-50 tw-transition-colors tw-text-left"
-                   data-agent-id={useAgentId("action:fuel-report")}
+                   data-agent-id={fuelReportId}
                  >
                     <div className="tw-w-8 tw-h-8 tw-rounded-full tw-bg-slate-100 tw-flex tw-items-center tw-justify-center tw-mr-3 tw-text-slate-500">
-                      <i className="fa-solid fa-gas-pump"></i>
+                      <Fuel size={18} />
                     </div>
                     <div className="tw-flex-1">
                        <div className="tw-font-bold tw-text-slate-700">給油報告</div>
                        <div className="tw-text-xs tw-text-slate-400">レシート撮影・走行距離入力</div>
                     </div>
-                    <i className="fa-solid fa-chevron-right tw-text-slate-300"></i>
+                    <ChevronRight size={18} className="tw-text-slate-300" />
                  </button>
               </div>
            </div>
@@ -113,9 +121,9 @@ export const MenuPage: React.FC<MenuPageProps> = ({
               <button 
                 onClick={onLogout}
                 className="tw-w-full tw-bg-white tw-border tw-border-slate-200 tw-text-red-600 tw-p-4 tw-rounded-xl tw-font-bold tw-flex tw-items-center tw-justify-center tw-active:tw-bg-red-50 tw-transition-colors"
-                data-agent-id={useAgentId("action:logout")}
+                data-agent-id={logoutId}
               >
-                <i className="fa-solid fa-right-from-bracket tw-mr-2"></i> ログアウト
+                <LogOut className="tw-mr-2" size={18} /> ログアウト
               </button>
            </div>
 
