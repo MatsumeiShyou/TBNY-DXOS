@@ -30,3 +30,4 @@
 
 | 022    | 2026-05-11 | Implementation of real camera capture in FuelPage.tsx | 承認 (PW: ｙ) | Native camera integration via input capture |
 | 023    | 2026-05-23 | パッチ生成・検証分離システムの構築 | 承認 (PW: ｙ) | 分離パッチの隔離・手動適用機能の実装 (apply_patch.js) |
+| 024    | 2026-05-23 | T1軽量統治（UI/UX）へのダウングレード機能のパッチ生成 | 承認 (PW: ｙ) | 軽量UI/UX判定と自動T1ダウングレードパッチの出力 (ui_lightweight.patch) |

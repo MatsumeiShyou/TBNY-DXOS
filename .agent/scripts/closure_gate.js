@@ -219,6 +219,70 @@ function verifySessionDesync() {
     Log.success('Session Alignment OK.');
 }
 
+function isEligibleForT1Downgrade() {
+    Log.info('Checking eligibility for T1 lightweight UI downgrade...');
+    const status = runCommand('git status --porcelain', true);
+    const lines = status.split('\n').filter(l => l.trim());
+    if (lines.length === 0) return false;
+
+    const changedFiles = lines.map(line => line.slice(3).trim());
+
+    // 1. 対象ファイルの拡張子検査
+    const uiExtensions = ['.tsx', '.css', '.ts', '.jsx', '.html'];
+    const hasNonUIOrGovChanges = changedFiles.some(file => {
+        const isUI = uiExtensions.some(ext => file.endsWith(ext));
+        const isGovOrAgent = file.includes('governance/') || file.includes('.agent/') || file.includes('AGENTS.md') || file.includes('package.json');
+        return !isUI || isGovOrAgent;
+    });
+
+    if (hasNonUIOrGovChanges) {
+        Log.info('T1 Downgrade: Non-UI or Governance/Agent files modified. Ineligible.');
+        return false;
+    }
+
+    // 2. データ保存処理（insert等）の有無の検査
+    // 3. 同フォルダ内のエラー画面（error.tsx等）の存在確認
+    const savePatterns = /\.(insert|update|upsert|delete|mutate|save)\(|supabase\.from\(.*?\)\.(insert|update|upsert|delete)/i;
+
+    for (const file of changedFiles) {
+        const fullPath = join(process.cwd(), file);
+        if (!existsSync(fullPath)) continue;
+
+        const content = readFileSync(fullPath, 'utf8');
+        if (savePatterns.test(content)) {
+            Log.info(`T1 Downgrade: File ${file} contains data mutation patterns. Ineligible.`);
+            return false;
+        }
+
+        const dir = path.dirname(fullPath);
+        const fallbackKeywords = ['error', 'fallback', 'ErrorBoundary'];
+        const hasFallback = readdirSync(dir).some(f => {
+            const ext = path.extname(f);
+            const base = path.basename(f, ext);
+            return (ext === '.tsx' || ext === '.ts' || ext === '.jsx') && 
+                   fallbackKeywords.some(kw => base.toLowerCase().includes(kw.toLowerCase()));
+        });
+
+        if (!hasFallback) {
+            Log.info(`T1 Downgrade: Directory of ${file} lacks an error fallback screen (e.g. error.tsx). Ineligible.`);
+            return false;
+        }
+    }
+
+    // 4. テストの成功確認
+    Log.info('T1 Downgrade: Running automated tests to verify safety...');
+    try {
+        runCommand('npx vitest run', false);
+        Log.info('T1 Downgrade: Automated tests passed.');
+    } catch (e) {
+        Log.info('T1 Downgrade: Automated tests failed. Ineligible.');
+        return false;
+    }
+
+    Log.success('T1 Downgrade: All criteria met. Downgrading to T1 (Lightweight).');
+    return true;
+}
+
 function generateEvidenceCode() {
     const head = runCommand('git rev-parse --short HEAD', true) || 'no-head';
     const session = getActiveTier();
@@ -307,7 +371,10 @@ function clearSeal() {
 function main() {
     process.on('exit', () => { if (!completionFlag) incrementRetryCount('Aborted'); });
 
-    const tier = getActiveTier();
+    let tier = getActiveTier();
+    if (tier === 'T3' && isEligibleForT1Downgrade()) {
+        tier = 'T1';
+    }
     // ----- 追加：証跡ドラフトの必須検証 -----
     validateEvidenceDraft();
     // ------------------------------------------------

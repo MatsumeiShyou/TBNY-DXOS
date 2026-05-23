@@ -15,6 +15,12 @@
       "reason": "Massive file changes affect system stability"
     },
     {
+      "id": "UI_UX_LIGHTWEIGHT",
+      "tier": "T1",
+      "condition": "path.includes('apps/') && (path.endsWith('.tsx') || path.endsWith('.css')) && !has_data_save && has_error_fallback && test_passed",
+      "reason": "Lightweight UI/UX changes with error fallback and passing tests are low risk"
+    },
+    {
       "id": "UI_UX_CHANGE",
       "tier": "T3",
       "condition": "path.includes('apps/') && (path.endsWith('.tsx') || path.endsWith('.css'))",
