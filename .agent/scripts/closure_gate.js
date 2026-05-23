@@ -494,7 +494,7 @@ function clearSeal() {
     }
 }
 
-function main() {
+async function main() {
     process.on('exit', () => { if (!completionFlag) incrementRetryCount('Aborted'); });
 
     if (existsSync(LOCK_FILE)) {
@@ -531,6 +531,43 @@ function main() {
         Log.error('GOVERNANCE CHECK FAILED');
         if (err.message) console.error(`   [VIOLATION]: ${err.message}`);
         process.exit(1);
+    }
+
+    let customMsg = null;
+    if (REFLECT_FLAG) {
+        const msgIdx = process.argv.findIndex(arg => arg.includes('--message='));
+        if (msgIdx !== -1) {
+            customMsg = process.argv.slice(msgIdx).join(' ').split('--message=')[1]?.replace(/\^/g, '').trim();
+        }
+
+        const status = runCommand('git status --porcelain', true);
+        if (status) {
+            const jpRegex = /[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff]/;
+            
+            while (!customMsg || !jpRegex.test(customMsg)) {
+                if (customMsg && !jpRegex.test(customMsg)) {
+                    Log.warn('コミットメッセージには日本語での説明を含める必要があります。(B-3違反)');
+                }
+                customMsg = await new Promise(resolve => {
+                    const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+                    rl.question('\n[!] 変更をコミットします。日本語で変更内容を入力してください:\n> ', ans => {
+                        rl.close(); resolve(ans.trim());
+                    });
+                });
+            }
+
+            const pw = await new Promise(resolve => {
+                const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+                rl.question('\n[!] 変更をリモートにPushしてタスクを完了しますか？ (承認PW: y):\n> ', ans => {
+                    rl.close(); resolve(ans.trim().toLowerCase());
+                });
+            });
+
+            if (pw !== 'y') {
+                Log.error('Push承認が拒否されました。タスク完了を中断します。');
+                process.exit(1);
+            }
+        }
     }
 
     const evidenceCode = generateEvidenceCode();
@@ -575,16 +612,6 @@ function main() {
         runCommand('git add -A');
         try { runCommand('git pull --rebase origin main'); } catch (e) { }
         if (runCommand('git status --porcelain')) {
-            const msgIdx = process.argv.findIndex(arg => arg.includes('--message='));
-            const customMsg = msgIdx !== -1 ? process.argv.slice(msgIdx).join(' ').split('--message=')[1]?.replace(/\^/g, '').trim() : null;
-            
-            const jpRegex = /[\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff]/;
-            if (!customMsg || !jpRegex.test(customMsg)) {
-                Log.error('SCHEMA VIOLATION: コミットメッセージには日本語での説明を含める必要があります。(B-3違反)');
-                Log.error('バイリンガル・コンベンショナル・コミット形式を使用してください。');
-                process.exit(1);
-            }
-
             const commitMsg = `[${tier}] ${customMsg}`;
             runCommand(`git commit -m "${commitMsg.replace(/"/g, '\\"')}" --no-verify`);
             runCommand('git push origin main');
