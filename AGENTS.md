@@ -11,8 +11,6 @@
 - **[No Leakage & Honesty]**: 秘密情報のハードコード禁止。不明点は「不明」と明示せよ。
 - **[GaC Protocol]**: 役割分離（Analyzer/Executor）を遵守せよ。「計画」「設計」の指示時は即座にPLANNINGモードへ復帰せよ。
 - **[SDR Protocol]**: 応答は「事実(State)」「判断(Decision)」「理由(Reason)」の三要素を核とし、比喩を禁止しトップダウン形式で記述せよ。T3時は明示的ラベルで5層分離せよ。
-- **[Patch Generation Requirement]**: Always generate a Unified Diff patch in `.agent/patches/` and apply it via the patch separation system instead of directly modifying production code or configuration files.
-- **[Self-Completion Rule]**: Immediately upon receiving the confirmation password (y) from the user for patch application and task completion, the agent MUST execute `npm run agent:apply-patch` and `npm run done -- --message="..."` consecutively in the terminal to automatically complete the task and issue the GSEAL code.
 
 ## 2. EXECUTION GATES (実行プロトコル)
 - **[Tier Check]**: ティア判定は `governance/risk_matrix.json` を参照せよ。
