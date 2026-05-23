@@ -1,6 +1,6 @@
 # [TASK_CLOSED]
 
-## [GSEAL-F2F0293-CF53D1DAC703] 2026-05-23
+## [GSEAL-121CBB8-94AB10611ED4] 2026-05-23
 
 [State]
 証跡ドラフトの検証を実行中。UTF-8 正規化済み。
@@ -15,7 +15,7 @@ DEG プロトコルに従い、タスク完了前に必須証跡が必要であ�
 ## # [TASK_CLOSED]
 
 
-## [GSEAL-F2F0293-0AF53A1F306E] 2026-05-23
+## [GSEAL-F2F0293-CF53D1DAC703] 2026-05-23
 
 [State]
 証跡ドラフトの検証を実行中。UTF-8 正規化済み。
@@ -30,4 +30,4 @@ DEG プロトコルに従い、タスク完了前に必須証跡が必要であ�
 
 
 > [!IMPORTANT]
-> **[GATE-SEAL: GSEAL-F2F0293-CF53D1DAC703]**
+> **[GATE-SEAL: GSEAL-121CBB8-94AB10611ED4]**
