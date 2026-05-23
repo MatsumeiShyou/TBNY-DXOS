@@ -130,18 +130,18 @@ const DashboardCharts: React.FC<DashboardChartsProps> = ({ data, onDrillDown, lo
                   <span className="tw-text-sm tw-font-normal tw-text-text-secondary tw-ml-2">{chartRangeTitle}</span>
                 </h2>
                 <div className="tw-flex tw-items-center tw-gap-2 tw-flex-wrap">
-                    <div className="tw-flex tw-items-center tw-gap-1 tw-p-1 tw-bg-background-tertiary tw-rounded-md tw-self-start">
-                        <button onClick={() => onPeriodChange('7d')} className={`tw-px-3 tw-py-1 tw-text-xs tw-rounded-md tw-transition-colors ${period === '7d' ? 'tw-bg-background-primary tw-shadow-sm tw-text-text-primary tw-font-semibold' : 'tw-text-text-secondary hover:tw-bg-background-primary/50'}`}>過去1週間</button>
-                        <button onClick={() => onPeriodChange('30d')} className={`tw-px-3 tw-py-1 tw-text-xs tw-rounded-md tw-transition-colors ${period === '30d' ? 'tw-bg-background-primary tw-shadow-sm tw-text-text-primary tw-font-semibold' : 'tw-text-text-secondary hover:tw-bg-background-primary/50'}`}>過去30日間</button>
-                        <button onClick={() => onPeriodChange('3m')} className={`tw-px-3 tw-py-1 tw-text-xs tw-rounded-md tw-transition-colors ${period === '3m' ? 'tw-bg-background-primary tw-shadow-sm tw-text-text-primary tw-font-semibold' : 'tw-text-text-secondary hover:tw-bg-background-primary/50'}`}>過去3ヶ月</button>
+                    <div className="tw-flex tw-items-center tw-gap-1 tw-p-1 tw-bg-slate-100 tw-dark:bg-slate-800/50 tw-rounded-lg tw-self-start">
+                        <button onClick={() => onPeriodChange('7d')} className={`tw-px-3 tw-py-1 tw-text-xs tw-rounded-md tw-transition-all ${period === '7d' ? 'tw-bg-white tw-text-slate-800 tw-shadow-sm tw-font-bold tw-dark:bg-blue-600 tw-dark:text-white tw-dark:shadow-[0_0_10px_rgba(37,99,235,0.4)]' : 'tw-text-slate-500 hover:tw-bg-slate-200/50 tw-dark:text-slate-400 tw-dark:hover:bg-slate-700/50'}`}>過去1週間</button>
+                        <button onClick={() => onPeriodChange('30d')} className={`tw-px-3 tw-py-1 tw-text-xs tw-rounded-md tw-transition-all ${period === '30d' ? 'tw-bg-white tw-text-slate-800 tw-shadow-sm tw-font-bold tw-dark:bg-blue-600 tw-dark:text-white tw-dark:shadow-[0_0_10px_rgba(37,99,235,0.4)]' : 'tw-text-slate-500 hover:tw-bg-slate-200/50 tw-dark:text-slate-400 tw-dark:hover:bg-slate-700/50'}`}>過去30日間</button>
+                        <button onClick={() => onPeriodChange('3m')} className={`tw-px-3 tw-py-1 tw-text-xs tw-rounded-md tw-transition-all ${period === '3m' ? 'tw-bg-white tw-text-slate-800 tw-shadow-sm tw-font-bold tw-dark:bg-blue-600 tw-dark:text-white tw-dark:shadow-[0_0_10px_rgba(37,99,235,0.4)]' : 'tw-text-slate-500 hover:tw-bg-slate-200/50 tw-dark:text-slate-400 tw-dark:hover:bg-slate-700/50'}`}>過去3ヶ月</button>
                     </div>
-                    <div className="tw-flex tw-items-center tw-gap-1 tw-p-1 tw-bg-background-tertiary tw-rounded-md tw-self-start">
-                        <button onClick={() => setAggregationType('daily')} className={`tw-px-3 tw-py-1 tw-text-xs tw-rounded-md tw-transition-colors ${aggregationType === 'daily' ? 'tw-bg-background-primary tw-shadow-sm tw-text-text-primary tw-font-semibold' : 'tw-text-text-secondary hover:tw-bg-background-primary/50'}`}>日別</button>
-                        <button onClick={() => setAggregationType('weekly')} className={`tw-px-3 tw-py-1 tw-text-xs tw-rounded-md tw-transition-colors ${aggregationType === 'weekly' ? 'tw-bg-background-primary tw-shadow-sm tw-text-text-primary tw-font-semibold' : 'tw-text-text-secondary hover:tw-bg-background-primary/50'}`}>曜日別</button>
+                    <div className="tw-flex tw-items-center tw-gap-1 tw-p-1 tw-bg-slate-100 tw-dark:bg-slate-800/50 tw-rounded-lg tw-self-start">
+                        <button onClick={() => setAggregationType('daily')} className={`tw-px-3 tw-py-1 tw-text-xs tw-rounded-md tw-transition-all ${aggregationType === 'daily' ? 'tw-bg-white tw-text-slate-800 tw-shadow-sm tw-font-bold tw-dark:bg-blue-600 tw-dark:text-white tw-dark:shadow-[0_0_10px_rgba(37,99,235,0.4)]' : 'tw-text-slate-500 hover:tw-bg-slate-200/50 tw-dark:text-slate-400 tw-dark:hover:bg-slate-700/50'}`}>日別</button>
+                        <button onClick={() => setAggregationType('weekly')} className={`tw-px-3 tw-py-1 tw-text-xs tw-rounded-md tw-transition-all ${aggregationType === 'weekly' ? 'tw-bg-white tw-text-slate-800 tw-shadow-sm tw-font-bold tw-dark:bg-blue-600 tw-dark:text-white tw-dark:shadow-[0_0_10px_rgba(37,99,235,0.4)]' : 'tw-text-slate-500 hover:tw-bg-slate-200/50 tw-dark:text-slate-400 tw-dark:hover:bg-slate-700/50'}`}>曜日別</button>
                     </div>
-                    <div className="tw-flex tw-items-center tw-gap-1 tw-p-1 tw-bg-background-tertiary tw-rounded-md tw-self-start">
-                        <button onClick={() => setChartMetric('count')} className={`tw-px-3 tw-py-1 tw-text-xs tw-rounded-md tw-transition-colors ${chartMetric === 'count' ? 'tw-bg-background-primary tw-shadow-sm tw-text-text-primary tw-font-semibold' : 'tw-text-text-secondary hover:tw-bg-background-primary/50'}`}>件数</button>
-                        <button onClick={() => setChartMetric('netWeight')} className={`tw-px-3 tw-py-1 tw-text-xs tw-rounded-md tw-transition-colors ${chartMetric === 'netWeight' ? 'tw-bg-background-primary tw-shadow-sm tw-text-text-primary tw-font-semibold' : 'tw-text-text-secondary hover:tw-bg-background-primary/50'}`}>重量</button>
+                    <div className="tw-flex tw-items-center tw-gap-1 tw-p-1 tw-bg-slate-100 tw-dark:bg-slate-800/50 tw-rounded-lg tw-self-start">
+                        <button onClick={() => setChartMetric('count')} className={`tw-px-3 tw-py-1 tw-text-xs tw-rounded-md tw-transition-all ${chartMetric === 'count' ? 'tw-bg-white tw-text-slate-800 tw-shadow-sm tw-font-bold tw-dark:bg-blue-600 tw-dark:text-white tw-dark:shadow-[0_0_10px_rgba(37,99,235,0.4)]' : 'tw-text-slate-500 hover:tw-bg-slate-200/50 tw-dark:text-slate-400 tw-dark:hover:bg-slate-700/50'}`}>件数</button>
+                        <button onClick={() => setChartMetric('netWeight')} className={`tw-px-3 tw-py-1 tw-text-xs tw-rounded-md tw-transition-all ${chartMetric === 'netWeight' ? 'tw-bg-white tw-text-slate-800 tw-shadow-sm tw-font-bold tw-dark:bg-blue-600 tw-dark:text-white tw-dark:shadow-[0_0_10px_rgba(37,99,235,0.4)]' : 'tw-text-slate-500 hover:tw-bg-slate-200/50 tw-dark:text-slate-400 tw-dark:hover:bg-slate-700/50'}`}>重量</button>
                     </div>
                 </div>
             </div>
@@ -153,18 +153,18 @@ const DashboardCharts: React.FC<DashboardChartsProps> = ({ data, onDrillDown, lo
                         margin={{ top: 5, right: 20, left: -10, bottom: 20 }}
                         onClick={handleBarClick}
                     >
-                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgb(var(--color-border-default))" />
+                        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--color-border-subtle)" />
                         <XAxis 
                             dataKey="key" 
-                            tick={{ fill: 'rgb(var(--color-text-secondary))', fontSize: 12 }} 
-                            tickLine={{ stroke: 'rgb(var(--color-text-secondary))' }}
-                            axisLine={{ stroke: 'rgb(var(--color-border-default))' }}
+                            tick={{ fill: 'var(--color-text-secondary)', fontSize: 12 }} 
+                            tickLine={{ stroke: 'var(--color-text-secondary)' }}
+                            axisLine={{ stroke: 'var(--color-border-subtle)' }}
                             tickFormatter={aggregationType === 'daily' ? (tick) => new Date(tick + 'T00:00:00').getDate().toString() : undefined}
                         />
                         <YAxis 
-                            tick={{ fill: 'rgb(var(--color-text-secondary))', fontSize: 12 }} 
-                            tickLine={{ stroke: 'rgb(var(--color-text-secondary))' }}
-                            axisLine={{ stroke: 'rgb(var(--color-border-default))' }}
+                            tick={{ fill: 'var(--color-text-secondary)', fontSize: 12 }} 
+                            tickLine={{ stroke: 'var(--color-text-secondary)' }}
+                            axisLine={{ stroke: 'var(--color-border-subtle)' }}
                             tickFormatter={(value) => value.toLocaleString()}
                             width={80}
                         />
