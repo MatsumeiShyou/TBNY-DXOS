@@ -70,5 +70,6 @@ export const APPS_REGISTRY: Record<string, AppConfig> = {
     gradientTo: '#f97316',
     url: null,
     order: 5,
+    isEnabled: false,
   },
 };

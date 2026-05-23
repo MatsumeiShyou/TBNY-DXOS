@@ -1,0 +1,18 @@
+{
+  "inventory_date": "2026-05-22",
+  "total_files": 11,
+  "description": "@ts-nocheck is strictly banned for new files. These files are grandfathered in and represent technical debt to be resolved in future phases.",
+  "files": [
+    "src/features/hooks/useMasterCRUD.ts",
+    "src/features/repaper-route/board/BoardCanvas.tsx",
+    "src/features/repaper-route/board/components/BoardTimeline.tsx",
+    "src/features/repaper-route/board/components/CalendarPicker.tsx",
+    "src/features/repaper-route/board/components/JobDetailPanel.tsx",
+    "src/features/repaper-route/board/components/TimeGrid.tsx",
+    "src/features/repaper-route/board/hooks/useBoardData.ts",
+    "src/features/repaper-route/board/hooks/useBoardDragDrop.ts",
+    "src/features/repaper-route/board/hooks/useDataSync.ts",
+    "src/features/repaper-route/components/MasterDataLayout.tsx",
+    "src/features/repaper-route/lib/idb/boardStore.ts"
+  ]
+}

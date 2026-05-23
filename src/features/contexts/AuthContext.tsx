@@ -91,15 +91,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                         id: staff.id,
                         name: staff.name,
                         email: user.email || '',
-                        role: staff.role as DXUser['role'],
+                        role: staff.role,
                         allowed_apps: staff.allowed_apps as string[],
                         last_event_id: staff.last_event_id,
                         vehicle_info: staff.vehicle_info as { id: string; name: string } | null,
                         permissions: {
-                            can_manage_master: staff.role === 'admin' || (staff.role as string) === 'manager',
-                            can_view_audit: staff.role === 'admin' || (staff.role as string) === 'manager',
-                            can_edit_board: staff.role === 'admin' || (staff.role as string) === 'manager' || staff.role === 'staff',
-                            can_edit_past_records: staff.role === 'admin' || (staff.role as string) === 'manager'
+                            can_manage_master: staff.role === 'admin' || staff.role === 'office',
+                            can_view_audit: staff.role === 'admin' || staff.role === 'office',
+                            can_edit_board: staff.role === 'admin' || staff.role === 'office' || staff.role === 'manager',
+                            can_edit_past_records: staff.role === 'admin' || staff.role === 'office'
                         }
                     };
 
@@ -163,15 +163,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                             id: staff.id,
                             name: staff.name,
                             email: user.email || '',
-                            role: staff.role as DXUser['role'],
+                            role: staff.role,
                             allowed_apps: staff.allowed_apps as string[],
                             last_event_id: staff.last_event_id,
                             vehicle_info: staff.vehicle_info as { id: string; name: string } | null,
                             permissions: {
-                                can_manage_master: staff.role === 'admin' || (staff.role as string) === 'manager',
-                                can_view_audit: staff.role === 'admin' || (staff.role as string) === 'manager',
-                                can_edit_board: staff.role === 'admin' || (staff.role as string) === 'manager' || staff.role === 'staff',
-                                can_edit_past_records: staff.role === 'admin' || (staff.role as string) === 'manager'
+                                can_manage_master: staff.role === 'admin' || staff.role === 'office',
+                                can_view_audit: staff.role === 'admin' || staff.role === 'office',
+                                can_edit_board: staff.role === 'admin' || staff.role === 'office' || staff.role === 'manager',
+                                can_edit_past_records: staff.role === 'admin' || staff.role === 'office'
                             }
                         };
                         setCurrentUser(verifiedUser);

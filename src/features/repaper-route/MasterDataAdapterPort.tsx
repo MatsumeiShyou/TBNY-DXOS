@@ -48,6 +48,17 @@ export const useMasterDataContext = () => {
 // Backward compatibility hooks
 export const useMasterData = () => useMasterDataContext();
 
-export const useMasterPoints = () => ({ points: [], isLoading: false });
-export const useMasterDrivers = () => ({ drivers: [], isLoading: false });
-export const useMasterVehicles = () => ({ vehicles: [], isLoading: false });
+export const useMasterPoints = () => {
+    const { points, isLoading } = useMasterDataContext();
+    return { points, isLoading };
+};
+
+export const useMasterDrivers = () => {
+    const { drivers, isLoading } = useMasterDataContext();
+    return { drivers, isLoading };
+};
+
+export const useMasterVehicles = () => {
+    const { vehicles, isLoading } = useMasterDataContext();
+    return { vehicles, isLoading };
+};

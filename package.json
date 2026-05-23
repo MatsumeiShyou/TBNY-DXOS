@@ -14,6 +14,7 @@
     "integrity": "node .agent/scripts/integrity_check.js",
     "agent:scan": "node .agent/scripts/scan.js",
     "agent:check": "node .agent/scripts/reflect.js --check",
+    "agent:apply-patch": "node .agent/scripts/apply_patch.js",
     "test": "vitest run",
     "prepare": "husky || true"
   },

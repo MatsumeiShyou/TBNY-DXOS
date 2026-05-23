@@ -2,13 +2,13 @@
  * Auth Types — DXOS 全体で共有される認証・ユーザー情報
  */
 
-export type UserRole = 'admin' | 'staff' | 'driver' | 'viewer';
+import type { StaffRole } from './staff';
 
 export interface DXUser {
   id: string;
   name: string;
   email: string;
-  role: UserRole;
+  role: StaffRole;
   allowed_apps: string[];
     permissions: {
         can_manage_master: boolean;
@@ -22,6 +22,8 @@ export interface DXUser {
   vehicle_info?: { id: string; name: string } | null;
 }
 
+
+export type StaffPermissions = DXUser['permissions'];
 
 export interface AuthSession {
   user: DXUser | null;
