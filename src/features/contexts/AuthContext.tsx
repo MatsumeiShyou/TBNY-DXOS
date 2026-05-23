@@ -28,7 +28,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             verificationPromise.current = (async () => {
                 try {
                     const staffTimeout = new Promise<never>((_, reject) => 
-                        setTimeout(() => reject(new Error('STAFF_FETCH_TIMEOUT')), 15000)
+                        setTimeout(() => reject(new Error('STAFF_FETCH_TIMEOUT')), 30000)
                     );
                     const staffFetch = AuthAdapter.getStaffByAuthUid(uid);
                     return await Promise.race([staffFetch, staffTimeout]);

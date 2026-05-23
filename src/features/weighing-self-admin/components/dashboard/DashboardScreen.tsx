@@ -114,7 +114,7 @@ const DashboardScreen: React.FC<DashboardScreenProps> = ({ setCurrentView }) => 
   const isInitialLoading = !summary || allItems.length === 0;
 
   return (
-    <div className="tw-space-y-8">
+    <div className="tw-space-y-8 tw-text-text-primary">
       <div>
         <h1 className="tw-text-3xl tw-font-bold">ダッシュボード</h1>
         <p className="tw-text-text-secondary tw-mt-1">ようこそ。システム全体の概要を確認できます。</p>

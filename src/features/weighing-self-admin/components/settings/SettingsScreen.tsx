@@ -36,7 +36,7 @@ const ThemeSelector: React.FC = () => {
 
 const SettingsScreen: React.FC = () => {
   return (
-    <div className="tw-space-y-8 tw-max-w-3xl tw-mx-auto">
+    <div className="tw-space-y-8 tw-max-w-3xl tw-mx-auto tw-text-text-primary">
       <div>
         <h1 className="tw-text-3xl tw-font-bold">設定</h1>
         <p className="tw-text-text-secondary tw-mt-1">アプリケーションの表示やアカウント情報を管理します。</p>
