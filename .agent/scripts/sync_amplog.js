@@ -12,8 +12,18 @@ const existingSummaries = new Set(
         .filter(line => line.trim())
         .map(line => {
             try {
-                return JSON.parse(line).summary;
+                const parsed = JSON.parse(line);
+                if (parsed.type === 'EMERGENCY_RECOVERY' || parsed.detail?.type === 'EMERGENCY_RECOVERY') {
+                    console.warn(`[sync_amplog] Known recovery/emergency entry detected, handling safely: ${parsed.summary || 'No Summary'}`);
+                    return parsed.summary || 'Emergency Recovery Default Summary';
+                }
+                if (!parsed.summary) {
+                    console.warn('[sync_amplog] Warning: Detected line without summary property. Defaulting to empty.');
+                    return 'Default Unknown Summary';
+                }
+                return parsed.summary;
             } catch {
+                console.warn('[sync_amplog] Warning: Failed to parse line in AMPLOG.jsonl, skipping corrupt entry.');
                 return null;
             }
         })

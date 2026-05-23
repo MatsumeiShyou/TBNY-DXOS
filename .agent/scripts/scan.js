@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { execSync } from 'child_process';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -15,6 +16,30 @@ const LOG_PATH = path.join(__dirname, '../logs/structure.json');
  */
 async function runScan() {
     console.log('[agent:scan] Starting project scan...');
+
+    // タスク開始時の未完遂ブロック判定
+    try {
+        const patchesDir = path.join(__dirname, '../patches');
+        if (fs.existsSync(patchesDir)) {
+            const patchFiles = fs.readdirSync(patchesDir).filter(f => f.endsWith('.patch') || f.endsWith('.diff'));
+            if (patchFiles.length > 0) {
+                console.error('\n[agent:scan] ❌ ERROR: 未適用のパッチが残っています。');
+                console.error('[agent:scan] 先に npm run agent:apply-patch を実行してください。\n');
+                process.exit(1);
+            }
+        }
+
+        const gitStatus = execSync('git status --porcelain', { encoding: 'utf-8' }).trim();
+        if (gitStatus.length > 0) {
+            console.error('\n[agent:scan] ❌ ERROR: 未封印の変更が残っています。');
+            console.error('[agent:scan] 先に npm run done を実行して封印を完了してください。\n');
+            process.exit(1);
+        }
+    } catch (e) {
+        if (e.status === 1 || process.exitCode === 1) process.exit(1);
+        console.error('[agent:scan] Failed to run pre-scan interlock checks:', e.message);
+        process.exit(1);
+    }
 
     try {
         // 1. 憲法の同期（SSOTプロトコル）

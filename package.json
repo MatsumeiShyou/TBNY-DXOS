@@ -15,6 +15,7 @@
     "agent:scan": "node .agent/scripts/scan.js",
     "agent:check": "node .agent/scripts/reflect.js --check",
     "agent:apply-patch": "node .agent/scripts/apply_patch.js",
+    "agent:recover": "node .agent/scripts/recovery.js",
     "test": "vitest run",
     "prepare": "husky || true"
   },

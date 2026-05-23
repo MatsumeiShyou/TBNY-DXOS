@@ -4,10 +4,13 @@ import { execSync, spawn } from 'child_process';
 import path, { join } from 'path';
 import { existsSync, readdirSync, statSync, readFileSync, writeFileSync, mkdirSync, copyFileSync, appendFileSync } from 'fs';
 import crypto from 'crypto';
+import readline from 'readline';
 import { incrementRetryCount, resetRetryCount } from './session_manager.js';
 import { readJsonStrict } from './lib/gov_loader.js';
 
 const REFLECT_FLAG = process.argv.includes('--reflect');
+const UNLOCK_FLAG = process.argv.includes('--unlock');
+const LOCK_FILE = join(process.cwd(), '.agent', 'session', 'safemode.lock');
 const BRANCH = 'main';
 let completionFlag = false;
 
@@ -283,6 +286,129 @@ function isEligibleForT1Downgrade() {
     return true;
 }
 
+function verifyDirectEdit() {
+    Log.info('Checking for Direct Edits (Sentinel 5.8)...');
+    const flagFile = join(process.cwd(), '.agent', 'session', 'patch_applied.flag');
+    
+    const status = runCommand('git status --porcelain', true);
+    const lines = status.split('\n').filter(l => l.trim());
+    if (lines.length === 0) return;
+
+    const changedFiles = lines.map(line => line.slice(3).trim());
+
+    // Source files and configuration file extensions
+    const targetExtensions = ['.js', '.ts', '.tsx', '.jsx', '.json', '.css', '.html', '.sql', '.md'];
+    
+    const hasSourceChanges = changedFiles.some(file => {
+        const ext = path.extname(file);
+        const isTarget = targetExtensions.includes(ext) || path.basename(file) === 'AGENTS.md';
+        const isExcluded = file.includes('.agent/patches/') || file.includes('.agent/session/') || 
+                             file.includes('artifacts/') || file.includes('AMPLOG.jsonl') || file.includes('AMPLOG.md');
+        return isTarget && !isExcluded;
+    });
+
+    if (hasSourceChanges && !existsSync(flagFile)) {
+        Log.error('DIRECT EDIT VIOLATION: パッチシステムを経由しない直接編集が検出されました。');
+        Log.error('ソースコードや設定ファイルを改修する際は、必ずパッチ（.patch / .diff）を生成し、apply_patch を介して適用してください。');
+        process.exit(1);
+    }
+    Log.success('No illegal direct edits detected.');
+}
+
+function handleUnlockSequence() {
+    Log.info('セーフモード解除シーケンス（対話プロンプト）を開始します...');
+    
+    const rl = readline.createInterface({
+        input: process.stdin,
+        output: process.stdout
+    });
+
+    const answers = {
+        state: '',
+        decision: '',
+        reason: ''
+    };
+
+    const askState = () => {
+        rl.question('\n[1/3] [State] 何が原因で統治構造がハードロックしたか:\n> ', (answer) => {
+            if (!answer.trim()) {
+                Log.error('入力が空であるため解除を拒否しました。');
+                rl.close();
+                process.exit(1);
+            }
+            answers.state = answer.trim();
+            askDecision();
+        });
+    };
+
+    const askDecision = () => {
+        rl.question('\n[2/3] [Decision] 統治構造に対してどのような修復・調整を行ったか:\n> ', (answer) => {
+            if (!answer.trim()) {
+                Log.error('入力が空であるため解除を拒否しました。');
+                rl.close();
+                process.exit(1);
+            }
+            answers.decision = answer.trim();
+            askReason();
+        });
+    };
+
+    const askReason = () => {
+        rl.question('\n[3/3] [Reason] なぜその修復で再発を防げると判断したか:\n> ', (answer) => {
+            if (!answer.trim()) {
+                Log.error('入力が空であるため解除を拒否しました。');
+                rl.close();
+                process.exit(1);
+            }
+            answers.reason = answer.trim();
+            completeUnlock();
+        });
+    };
+
+    const completeUnlock = () => {
+        rl.close();
+        
+        try {
+            const ampLogPath = join(process.cwd(), 'AMPLOG.jsonl');
+            const uuid = crypto.randomUUID();
+            const date = new Date().toISOString();
+            
+            const record = {
+                timestamp: date,
+                id: uuid,
+                summary: `EMERGENCY_RECOVERY: セーフモード解除 (承認 (PW: y))`,
+                detail: {
+                    title: "Emergency Recovery Safe Mode Unlock",
+                    scope: "governance",
+                    impact: "high",
+                    status: "Approved (PW: y)",
+                    state: answers.state,
+                    decision: answers.decision,
+                    reason: answers.reason,
+                    evidence_locked: true
+                }
+            };
+            
+            appendFileSync(ampLogPath, '\n' + JSON.stringify(record));
+            Log.info('復旧記録を AMPLOG.jsonl に記録しました。');
+
+            if (existsSync(LOCK_FILE)) {
+                fs.unlinkSync(LOCK_FILE);
+                Log.success('safemode.lock を削除し、セーフモードを解除しました。');
+            }
+
+            completionFlag = true;
+            Log.success('解除シーケンスが成功しました。システムは正常状態に復帰しました。');
+            process.exit(0);
+        } catch (error) {
+            Log.error(`セーフモード解除処理中にエラーが発生しました: ${error.message}`);
+            process.exit(1);
+        }
+    };
+
+    askState();
+}
+
 function generateEvidenceCode() {
     const head = runCommand('git rev-parse --short HEAD', true) || 'no-head';
     const session = getActiveTier();
@@ -371,6 +497,18 @@ function clearSeal() {
 function main() {
     process.on('exit', () => { if (!completionFlag) incrementRetryCount('Aborted'); });
 
+    if (existsSync(LOCK_FILE)) {
+        if (!UNLOCK_FLAG) {
+            Log.error('セーフモード稼働中のため、新規実装の完遂ゲートをブロックしました。');
+            Log.error('ロックを解除するには、--unlock オプションを付与してコマンドを実行してください。');
+            Log.error('例: npm run done -- --unlock または node .agent/scripts/closure_gate.js --unlock');
+            process.exit(1);
+        } else {
+            handleUnlockSequence();
+            return;
+        }
+    }
+
     let tier = getActiveTier();
     if (tier === 'T3' && isEligibleForT1Downgrade()) {
         tier = 'T1';
@@ -382,6 +520,7 @@ function main() {
     try {
         verifySQLSync();
         verifySessionDesync();
+        verifyDirectEdit();
         verifyConstitutionalIntegrity();
         verifyLegislativeInterlock();
         verifyClosureStandard();
@@ -450,6 +589,12 @@ function main() {
             runCommand(`git commit -m "${commitMsg.replace(/"/g, '\\"')}" --no-verify`);
             runCommand('git push origin main');
         }
+    }
+
+    // 正常終了時に直接編集フラグファイルを削除
+    const flagFile = join(process.cwd(), '.agent', 'session', 'patch_applied.flag');
+    if (existsSync(flagFile)) {
+        try { fs.unlinkSync(flagFile); Log.info('patch_applied.flag removed.'); } catch (e) {}
     }
 
     completionFlag = true;

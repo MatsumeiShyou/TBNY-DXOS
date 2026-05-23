@@ -3,8 +3,15 @@ import path from 'path';
 import { execSync } from 'child_process';
 
 const PATCHES_DIR = path.join(process.cwd(), '.agent', 'patches');
+const LOCK_FILE = path.join(process.cwd(), '.agent', 'session', 'safemode.lock');
 
 function main() {
+  if (fs.existsSync(LOCK_FILE)) {
+    console.error('\n[apply_patch] ❌ ERROR: セーフモード稼働中のため新規パッチの適用をブロックしました。');
+    console.error('[apply_patch] ロックを解除するには完遂ゲートを --unlock オプション付きで実行してください。\n');
+    process.exit(1);
+  }
+
   console.log('[apply_patch] Scanning for patches in:', PATCHES_DIR);
 
   if (!fs.existsSync(PATCHES_DIR)) {
@@ -43,6 +50,15 @@ function main() {
       process.exit(1);
     }
   }
+
+  // 正常終了する直前に patch_applied.flag を生成
+  const flagFile = path.join(process.cwd(), '.agent', 'session', 'patch_applied.flag');
+  const flagDir = path.dirname(flagFile);
+  if (!fs.existsSync(flagDir)) {
+    fs.mkdirSync(flagDir, { recursive: true });
+  }
+  fs.writeFileSync(flagFile, JSON.stringify({ timestamp: new Date().toISOString(), status: 'VALID' }), 'utf8');
+  console.log('[apply_patch] Generated patch_applied.flag successfully.');
 
   console.log('[apply_patch] All patches applied successfully.');
 }
