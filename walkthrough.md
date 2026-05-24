@@ -1,17 +1,17 @@
 # [TASK_CLOSED]
 
-## [GSEAL-48E34A1-49ADEFB9D17E] 2026-05-24
+## [GSEAL-F90FC29-A30028F0725A] 2026-05-24
 
 [State]
-先ほどの監査により、AGENTS.md の規定に対して「AIの記憶依存」や「過剰な物理強制によるDX低下」など、実運用上の摩擦や脆弱性（抜け道）が発見された。
+最終監査により、ADRの必須チェックが既存ファイルを見るだけで素通りできるバグ、T3時のSDR（Risk/Unknown）が強制されていない欠落、およびSVPチェックがコミットゲートから漏れているという3つのエッジケースが残存していた。
 
 [Decision]
-1. closure_gate.js にて、CAVRのバイパスフラグ（--interactive）を子プロセスへ伝播させる修正を行った。
-2. package.json の "done" スクリプトに reflect.js --purge を追加し、Sanctuary Purge（不純物排除）を自動強制化した。
-3. SVP（Single Version Policy）強制ロジックを npx 依存からローカルの npm dedupe --dry-run 解析（svp_check.js）へ変更し、CIでの誤作動やデッドロックを防止した。
+1. closure_gate.js にて、ADRチェックを「git status 上の新規・更新ファイル」を判定するように厳格化。
+2. closure_gate.js にて、active_task.json の Tier判定を読み込み、T3タスク時のみ [Risk] と [Unknown] を証跡ドラフト必須要件として動的追加。
+3. package.json の "done" スクリプト内に svp_check.js を組み込み、コミット直前ゲートを完全に封鎖した。
 
 [Reason]
-「完璧性ではなく『運用可能性』を最優先」とするプロトコルに則り、客観的に強制できる仕組みのみを摩擦ゼロでシステムに組み込むため。これにより、ヒューマンエラーやAIの忘却リスクを排除しつつ、開発者の作業を阻害しない堅牢なインフラが完成した。
+これらのエッジケースは実運用において「抜け道」となり得たため、物理強制アーキテクチャの完成度（Anti-Fragility）を100%に高め、主観の余地を完全に排除するため。
 
 
 ## # [TASK_CLOSED]
@@ -20,18 +20,18 @@
 ## [GSEAL-PENDING] 2026-05-24
 
 ### [State]
-先ほどの監査により、AGENTS.md の規定に対して「AIの記憶依存」や「過剰な物理強制によるDX低下」など、実運用上の摩擦や脆弱性（抜け道）が発見された。
+最終監査により、ADRの必須チェックが既存ファイルを見るだけで素通りできるバグ、T3時のSDR（Risk/Unknown）が強制されていない欠落、およびSVPチェックがコミットゲートから漏れているという3つのエッジケースが残存していた。
 
 ### [Decision]
-1. `closure_gate.js` にて、CAVRのバイパスフラグ（`--interactive`）を子プロセスへ伝播させる修正を行った。
-2. `package.json` の `"done"` スクリプトに `reflect.js --purge` を追加し、Sanctuary Purge（不純物排除）を自動強制化した。
-3. SVP（Single Version Policy）強制ロジックを `npx` 依存からローカルの `npm dedupe --dry-run` 解析（`svp_check.js`）へ変更し、CIでの誤作動やデッドロックを防止した。
+1. `closure_gate.js` にて、ADRチェックを「`git status` 上の新規・更新ファイル」を判定するように厳格化。
+2. `closure_gate.js` にて、`active_task.json` の Tier判定を読み込み、T3タスク時のみ `[Risk]` と `[Unknown]` を証跡ドラフト必須要件として動的追加。
+3. `package.json` の `"done"` スクリプト内に `svp_check.js` を組み込み、コミット直前ゲートを完全に封鎖した。
 
 ### [Reason]
-「完璧性ではなく『運用可能性』を最優先」とするプロトコルに則り、客観的に強制できる仕組みのみを摩擦ゼロでシステムに組み込むため。これにより、ヒューマンエラーやAIの忘却リスクを排除しつつ、開発者の作業を阻害しない堅牢なインフラが完成した。
+これらのエッジケースは実運用において「抜け道」となり得たため、物理強制アーキテクチャの完成度（Anti-Fragility）を100%に高め、主観の余地を完全に排除するため。
 
 > [!IMPORTANT]
 > **[GATE-SEAL: PENDING]**
 
 > [!IMPORTANT]
-> **[GATE-SEAL: GSEAL-48E34A1-49ADEFB9D17E]**
+> **[GATE-SEAL: GSEAL-F90FC29-A30028F0725A]**

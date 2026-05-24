@@ -67,6 +67,19 @@ function validateEvidenceDraft() {
         { name: '[Decision]', regex: /\[Decision\]/i },
         { name: '[Reason]', regex: /\[Reason\]/i }
     ];
+
+    try {
+        const sessionPath = join(process.cwd(), '.agent', 'session', 'active_task.json');
+        if (existsSync(sessionPath)) {
+            const session = JSON.parse(readFileSync(sessionPath, 'utf8'));
+            if (session?.active_task?.tier === 'T3') {
+                patterns.push({ name: '[Risk]', regex: /\[Risk\]/i });
+                patterns.push({ name: '[Unknown]', regex: /\[Unknown\]/i });
+            }
+        }
+    } catch (e) {
+        Log.warn(`Session read failed for T3 SDR check: ${e.message}`);
+    }
     
     for (const p of patterns) {
         const match = content.match(p.regex);
@@ -94,9 +107,9 @@ function verifyLegislativeInterlock() {
     const status = runCommand('git status --porcelain', true);
     if (status.includes('governance/') || status.includes('AGENTS.md')) {
         Log.info('Legislative changes detected. Checking ADR...');
-        const adrFound = existsSync('governance/ADR') && readdirSync('governance/ADR').some(f => f.endsWith('.md'));
-        if (!adrFound) {
-            Log.error('ADR MISSING');
+        const hasNewAdr = status.split('\n').some(line => line.includes('governance/ADR/') && line.endsWith('.md'));
+        if (!hasNewAdr) {
+            Log.error('ADR MISSING: Legislative changes require a new or updated ADR in governance/ADR/');
             process.exit(1);
         }
     }
