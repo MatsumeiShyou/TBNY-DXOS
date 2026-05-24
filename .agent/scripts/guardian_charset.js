@@ -22,7 +22,8 @@ const TARGET_FILES = [
     'AGENTS.md',
     'DEBT_AND_FUTURE.md',
     '.agent/session/evidence_draft.md',
-    'walkthrough.md'
+    'walkthrough.md',
+    'lint_report.json'
 ];
 
 function verifyCharset(filePath) {
