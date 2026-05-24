@@ -23,9 +23,10 @@
 - **[Seal Protocol]**: 実装完了時は必ず単一コマンド `npm run done` を実行し、最終報告の直前に出力されたGSEALコードを引用提示せよ。
 
 ## 3. DOMAIN RULES (領域別・現場統治)
+- **[Knowledge Scope]**: 過去のマニュアルや知識を検索する際は、プロジェクト内の `knowledge/` に加え、必ずシステム裏側の共有領域（`C:\Users\shiyo\.gemini\antigravity\knowledge`）も検索対象に含め、存在を確認すること。
 - **[DOM Observation]**: DOM操作ツール実行前後で `[Loading]`, `[Ready]`, `[Stable]` の3段階状態を物理的に観測・報告せよ。
 - **[SQL Sync]**: スキーマ変更時は必ず `npx supabase db diff` を実行し、生成SQLを提示せよ。変更内容は即時 `SCHEMA_HISTORY.md` に記録せよ。
-- **[Supabase Connection]**: CLI実行や直接接続前に、必ず `knowledge/supabase_cli_ipv6_pooler_fix/artifacts/manual.md` を読み込み遵守せよ。
+- **[Supabase Connection]**: CLI実行や直接接続前に、必ず `knowledge/supabase_cli_ipv6_pooler_fix/artifacts/manual.md` またはシステム裏側の同名ファイルを読み込み遵守せよ。
 - **[Debt Loan]**: `DEBT_AND_FUTURE.md` への記録は「借金」であり、完済するまで関連モジュールの新規機能提案を禁止する。
 - **[Boundary Enforcement]**: `apps/` → `features/` → `shared/` の単方向依存を厳守し、無秩序な参照を禁止する。
 - **[SVP (Single Version)]**: 全体で同一バージョンのライブラリを使用し、幽霊依存を根絶せよ。

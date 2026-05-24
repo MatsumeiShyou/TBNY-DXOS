@@ -1,16 +1,22 @@
-// @ts-nocheck
-import { openDB, type IDBPDatabase } from 'idb';
+import { openDB, type IDBPDatabase, type DBSchema } from 'idb';
 import type { BoardState } from '../../board/hooks/useBoardData';
 
 const DB_NAME = 'repaper-route-offline-cache';
 const STORE_NAME = 'board-routes';
 const VERSION = 1;
 
-let dbPromise: Promise<IDBPDatabase> | null = null;
+interface BoardDB extends DBSchema {
+  'board-routes': {
+    key: string;
+    value: { date: string; state: BoardState; updatedAt: string };
+  };
+}
+
+let dbPromise: Promise<IDBPDatabase<BoardDB>> | null = null;
 
 const getDB = () => {
     if (!dbPromise) {
-        dbPromise = openDB(DB_NAME, VERSION, {
+        dbPromise = openDB<BoardDB>(DB_NAME, VERSION, {
             upgrade(db) {
                 if (!db.objectStoreNames.contains(STORE_NAME)) {
                     db.createObjectStore(STORE_NAME, { keyPath: 'date' });

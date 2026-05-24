@@ -5,6 +5,140 @@ import { Card, StatusBadge, Button } from '../components/Widgets';
 import { useAgentId } from '../components/AgentContext';
 import { HelpTarget } from '../components/Help';
 
+// --- 新規追加: StopListItem ---
+interface StopListItemProps {
+  stop: Stop;
+  index: number;
+  isNext: boolean;
+  showDivider: boolean;
+  isRequesting: boolean;
+  isReordering: boolean;
+  stopsLength: number;
+  onSelectStop: (id: string) => void;
+  onTransferRequest: (stop: Stop) => void;
+  moveStop: (index: number, direction: 'up' | 'down') => void;
+}
+
+const StopListItem: React.FC<StopListItemProps> = ({
+  stop, index, isNext, showDivider, isRequesting, isReordering, stopsLength,
+  onSelectStop, onTransferRequest, moveStop
+}) => {
+  const cardAgentId = useAgentId(`stop-card:${stop.id}`);
+  const menuAgentId = useAgentId(`stop-card:${stop.id}:menu-button`);
+  const startAgentId = useAgentId(`stop-card:${stop.id}:start-button`);
+  const reorderUpAgentId = useAgentId(`stop-card:${stop.id}:reorder-up`);
+  const reorderDownAgentId = useAgentId(`stop-card:${stop.id}:reorder-down`);
+
+  return (
+    <React.Fragment>
+      {showDivider && (
+        <div className="tw-relative tw-z-10 tw-flex tw-items-center tw-justify-center tw-my-6">
+           <div className="tw-bg-slate-200 tw-h-px tw-flex-1"></div>
+           <div className="tw-mx-4 tw-text-xs tw-font-bold tw-text-slate-400 tw-bg-slate-100 tw-px-3 tw-py-1 tw-rounded-full tw-border tw-border-slate-200">
+             <i className="fa-regular fa-clock tw-mr-1"></i> 午後の部 (12:00~)
+           </div>
+           <div className="tw-bg-slate-200 tw-h-px tw-flex-1"></div>
+        </div>
+      )}
+
+      <div className="tw-relative tw-z-10 tw-pl-2">
+        <div className="tw-flex tw-items-center">
+          <div className="tw-flex-1 tw-min-w-0">
+            <Card 
+              className={`tw-transition-all tw-relative tw-min-h-[110px] ${isNext ? 'tw-border-l-4 tw-border-l-primary tw-ring-2 tw-ring-blue-100' : 'tw-opacity-90'} ${stop.status === StopStatus.COMPLETED ? 'tw-bg-slate-50 tw-opacity-60' : ''} ${isRequesting ? 'tw-bg-slate-100 tw-border-dashed tw-border-2 tw-border-slate-300' : ''}`}
+              onClick={() => !isReordering && !isRequesting && onSelectStop(stop.id)}
+              agentId={cardAgentId}
+            >
+              {isRequesting && (
+                <div className="tw-absolute tw-inset-0 tw-bg-white/60 tw-z-20 tw-flex tw-items-center tw-justify-center tw-rounded-xl tw-backdrop-blur-[1px]">
+                   <div className="tw-bg-white tw-px-4 tw-py-2 tw-rounded-full tw-shadow-lg tw-border tw-border-slate-200 tw-text-slate-500 tw-font-bold tw-text-sm tw-flex tw-items-center tw-animate-pulse">
+                     <i className="fa-solid fa-paper-plane tw-mr-2 tw-text-primary"></i> 譲渡申請中...
+                   </div>
+                </div>
+              )}
+
+              <div className="tw-flex tw-justify-between tw-items-start tw-mb-2 tw-pr-10">
+                <div className="tw-flex tw-items-center tw-space-x-2">
+                  <span className="tw-font-mono tw-text-lg tw-font-bold tw-text-slate-700 tw-bg-slate-100 tw-px-2 tw-rounded">{stop.scheduledTime}</span>
+                  <StatusBadge status={stop.status} />
+                </div>
+                {stop.isPriority && (
+                  <HelpTarget helpId="priority-badge">
+                    <span className="tw-text-xs tw-font-bold tw-text-white tw-bg-danger tw-px-2 tw-py-0.5 tw-rounded-full tw-animate-pulse">
+                      優先
+                    </span>
+                  </HelpTarget>
+                )}
+              </div>
+
+              {stop.status === StopStatus.PENDING && !isReordering && !isRequesting && (
+                <button 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onTransferRequest(stop);
+                  }}
+                  className="tw-absolute tw-top-0 tw-right-0 tw-w-12 tw-h-12 tw-flex tw-items-center tw-justify-center tw-rounded-bl-xl tw-text-slate-400 tw-hover:tw-text-slate-700 tw-active:tw-bg-slate-100 tw-active:tw-text-primary tw-transition-colors tw-z-30"
+                  data-agent-id={menuAgentId}
+                >
+                  <i className="fa-solid fa-ellipsis-vertical tw-text-xl"></i>
+                </button>
+              )}
+              
+              <h3 className="tw-font-bold tw-text-lg tw-text-slate-800 tw-leading-snug tw-mb-1 tw-pr-4 tw-truncate">{stop.customerName}</h3>
+              <p className="tw-text-sm tw-text-slate-500 tw-truncate tw-mb-3"><i className="fa-solid fa-location-dot tw-mr-1"></i> {stop.address}</p>
+              
+              {stop.status === StopStatus.COMPLETED && (
+                 <div className="tw-mt-2 tw-text-xs tw-text-slate-400 tw-font-bold tw-flex tw-items-center">
+                   {stop.items.every(i => i.isUnloaded) ? (
+                      <span className="tw-text-green-600"><i className="fa-solid fa-check-double tw-mr-1"></i>荷下ろし済</span>
+                   ) : (
+                      <span className="tw-text-orange-400"><i className="fa-solid fa-truck-loading tw-mr-1"></i>積載中</span>
+                   )}
+                 </div>
+              )}
+
+              {isNext && stop.status !== StopStatus.COMPLETED && !isReordering && !isRequesting && (
+                <div className="tw-mt-2" onClick={(e) => e.stopPropagation()}>
+                  <Button 
+                      variant="primary" 
+                      className="tw-py-2 tw-text-sm tw-h-10 tw-min-h-[44px]"
+                      onClick={() => onSelectStop(stop.id)}
+                      agentId={startAgentId}
+                  >
+                      <i className="fa-solid fa-arrow-right tw-mr-2"></i> 詳細・作業開始
+                  </Button>
+                </div>
+              )}
+            </Card>
+          </div>
+
+          {isReordering && (
+            <div className="tw-flex tw-flex-col tw-ml-2 tw-space-y-3 tw-shrink-0">
+              <button 
+                onClick={() => moveStop(index, 'up')}
+                disabled={index === 0}
+                className="tw-w-12 tw-h-12 tw-bg-white tw-border tw-border-slate-200 tw-rounded-full tw-text-slate-600 tw-shadow-sm tw-flex tw-items-center tw-justify-center active:tw-bg-slate-100 disabled:tw-opacity-30 disabled:active:tw-bg-white tw-transition-all tw-touch-manipulation"
+                data-agent-id={reorderUpAgentId}
+              >
+                <i className="fa-solid fa-arrow-up tw-text-lg"></i>
+              </button>
+              <button 
+                onClick={() => moveStop(index, 'down')}
+                disabled={index === stopsLength - 1}
+                className="tw-w-12 tw-h-12 tw-bg-white tw-border tw-border-slate-200 tw-rounded-full tw-text-slate-600 tw-shadow-sm tw-flex tw-items-center tw-justify-center active:tw-bg-slate-100 disabled:tw-opacity-30 disabled:active:tw-bg-white tw-transition-all tw-touch-manipulation"
+                data-agent-id={reorderDownAgentId}
+              >
+                <i className="fa-solid fa-arrow-down tw-text-lg"></i>
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+    </React.Fragment>
+  );
+};
+// --- /新規追加: StopListItem ---
+
 interface Props {
   stops: Stop[];
   currentRouteName: string;
@@ -18,6 +152,11 @@ interface Props {
 
 export const RouteListPage: React.FC<Props> = ({ stops, currentRouteName, onSelectStop, onChangeCourse, onTransferRequest, onIntermediateUnload, onReorderStops }) => {
   const [isReordering, setIsReordering] = useState(false);
+  
+  // フック呼び出しをトップレベルに引き上げ
+  const courseCardAgentId = useAgentId("header:course-card");
+  const reorderButtonAgentId = useAgentId("header:reorder-button");
+  const fabAgentId = useAgentId("fab:intermediate-unload");
 
   // Calculate progress
   const completed = stops.filter(s => s.status === StopStatus.COMPLETED).length;
@@ -52,7 +191,7 @@ export const RouteListPage: React.FC<Props> = ({ stops, currentRouteName, onSele
           <div 
             onClick={onChangeCourse}
             className="tw-flex-1 tw-bg-slate-800 tw-text-white tw-p-4 tw-rounded-xl tw-shadow-lg tw-flex tw-justify-between tw-items-center active:tw-bg-slate-700 tw-transition-colors tw-touch-manipulation tw-cursor-pointer tw-min-h-[72px]"
-            data-agent-id={useAgentId("header:course-card")}
+            data-agent-id={courseCardAgentId}
           >
             <div>
                 <div className="tw-text-[10px] tw-text-slate-400 tw-font-bold tw-uppercase tw-tracking-wider tw-mb-0.5">現在の担当コース</div>
@@ -82,7 +221,7 @@ export const RouteListPage: React.FC<Props> = ({ stops, currentRouteName, onSele
              <button 
               onClick={() => setIsReordering(!isReordering)}
               className={`tw-h-10 tw-px-4 tw-rounded-lg tw-text-sm tw-font-bold tw-shadow-sm tw-flex tw-items-center tw-transition-colors ${isReordering ? 'tw-bg-primary tw-text-white tw-border-transparent' : 'tw-bg-white tw-border tw-border-slate-200 tw-text-slate-700 active:tw-bg-slate-50'}`}
-              data-agent-id={useAgentId("header:reorder-button")}
+              data-agent-id={reorderButtonAgentId}
             >
               <i className={`fa-solid ${isReordering ? 'fa-check' : 'fa-sort'} tw-mr-2`}></i>
               {isReordering ? '完了' : '並び替え'}
@@ -114,111 +253,19 @@ export const RouteListPage: React.FC<Props> = ({ stops, currentRouteName, onSele
             const isRequesting = stop.transferStatus === 'REQUESTING';
 
             return (
-              <React.Fragment key={stop.id}>
-                {showDivider && (
-                  <div className="tw-relative tw-z-10 tw-flex tw-items-center tw-justify-center tw-my-6">
-                     <div className="tw-bg-slate-200 tw-h-px tw-flex-1"></div>
-                     <div className="tw-mx-4 tw-text-xs tw-font-bold tw-text-slate-400 tw-bg-slate-100 tw-px-3 tw-py-1 tw-rounded-full tw-border tw-border-slate-200">
-                       <i className="fa-regular fa-clock tw-mr-1"></i> 午後の部 (12:00~)
-                     </div>
-                     <div className="tw-bg-slate-200 tw-h-px tw-flex-1"></div>
-                  </div>
-                )}
-
-                <div className="tw-relative tw-z-10 tw-pl-2">
-                  <div className="tw-flex tw-items-center">
-                    <div className="tw-flex-1 tw-min-w-0">
-                      <Card 
-                        className={`tw-transition-all tw-relative tw-min-h-[110px] ${isNext ? 'tw-border-l-4 tw-border-l-primary tw-ring-2 tw-ring-blue-100' : 'tw-opacity-90'} ${stop.status === StopStatus.COMPLETED ? 'tw-bg-slate-50 tw-opacity-60' : ''} ${isRequesting ? 'tw-bg-slate-100 tw-border-dashed tw-border-2 tw-border-slate-300' : ''}`}
-                        onClick={() => !isReordering && !isRequesting && onSelectStop(stop.id)}
-                        agentId={`stop-card:${stop.id}`}
-                      >
-                        {isRequesting && (
-                          <div className="tw-absolute tw-inset-0 tw-bg-white/60 tw-z-20 tw-flex tw-items-center tw-justify-center tw-rounded-xl tw-backdrop-blur-[1px]">
-                             <div className="tw-bg-white tw-px-4 tw-py-2 tw-rounded-full tw-shadow-lg tw-border tw-border-slate-200 tw-text-slate-500 tw-font-bold tw-text-sm tw-flex tw-items-center tw-animate-pulse">
-                               <i className="fa-solid fa-paper-plane tw-mr-2 tw-text-primary"></i> 譲渡申請中...
-                             </div>
-                          </div>
-                        )}
-
-                        <div className="tw-flex tw-justify-between tw-items-start tw-mb-2 tw-pr-10">
-                          <div className="tw-flex tw-items-center tw-space-x-2">
-                            <span className="tw-font-mono tw-text-lg tw-font-bold tw-text-slate-700 tw-bg-slate-100 tw-px-2 tw-rounded">{stop.scheduledTime}</span>
-                            <StatusBadge status={stop.status} />
-                          </div>
-                          {stop.isPriority && (
-                            <HelpTarget helpId="priority-badge">
-                              <span className="tw-text-xs tw-font-bold tw-text-white tw-bg-danger tw-px-2 tw-py-0.5 tw-rounded-full tw-animate-pulse">
-                                優先
-                              </span>
-                            </HelpTarget>
-                          )}
-                        </div>
-
-                        {stop.status === StopStatus.PENDING && !isReordering && !isRequesting && (
-                          <button 
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              onTransferRequest(stop);
-                            }}
-                            className="tw-absolute tw-top-0 tw-right-0 tw-w-12 tw-h-12 tw-flex tw-items-center tw-justify-center tw-rounded-bl-xl tw-text-slate-400 tw-hover:tw-text-slate-700 tw-active:tw-bg-slate-100 tw-active:tw-text-primary tw-transition-colors tw-z-30"
-                            data-agent-id={useAgentId(`stop-card:${stop.id}:menu-button`)}
-                          >
-                            <i className="fa-solid fa-ellipsis-vertical tw-text-xl"></i>
-                          </button>
-                        )}
-                        
-                        <h3 className="tw-font-bold tw-text-lg tw-text-slate-800 tw-leading-snug tw-mb-1 tw-pr-4 tw-truncate">{stop.customerName}</h3>
-                        <p className="tw-text-sm tw-text-slate-500 tw-truncate tw-mb-3"><i className="fa-solid fa-location-dot tw-mr-1"></i> {stop.address}</p>
-                        
-                        {stop.status === StopStatus.COMPLETED && (
-                           <div className="tw-mt-2 tw-text-xs tw-text-slate-400 tw-font-bold tw-flex tw-items-center">
-                             {stop.items.every(i => i.isUnloaded) ? (
-                                <span className="tw-text-green-600"><i className="fa-solid fa-check-double tw-mr-1"></i>荷下ろし済</span>
-                             ) : (
-                                <span className="tw-text-orange-400"><i className="fa-solid fa-truck-loading tw-mr-1"></i>積載中</span>
-                             )}
-                           </div>
-                        )}
-
-                        {isNext && stop.status !== StopStatus.COMPLETED && !isReordering && !isRequesting && (
-                          <div className="tw-mt-2" onClick={(e) => e.stopPropagation()}>
-                            <Button 
-                                variant="primary" 
-                                className="tw-py-2 tw-text-sm tw-h-10 tw-min-h-[44px]"
-                                onClick={() => onSelectStop(stop.id)}
-                                agentId={`stop-card:${stop.id}:start-button`}
-                            >
-                                <i className="fa-solid fa-arrow-right tw-mr-2"></i> 詳細・作業開始
-                            </Button>
-                          </div>
-                        )}
-                      </Card>
-                    </div>
-
-                    {isReordering && (
-                      <div className="tw-flex tw-flex-col tw-ml-2 tw-space-y-3 tw-shrink-0">
-                        <button 
-                          onClick={() => moveStop(index, 'up')}
-                          disabled={index === 0}
-                          className="tw-w-12 tw-h-12 tw-bg-white tw-border tw-border-slate-200 tw-rounded-full tw-text-slate-600 tw-shadow-sm tw-flex tw-items-center tw-justify-center active:tw-bg-slate-100 disabled:tw-opacity-30 disabled:active:tw-bg-white tw-transition-all tw-touch-manipulation"
-                          data-agent-id={useAgentId(`stop-card:${stop.id}:reorder-up`)}
-                        >
-                          <i className="fa-solid fa-arrow-up tw-text-lg"></i>
-                        </button>
-                        <button 
-                          onClick={() => moveStop(index, 'down')}
-                          disabled={index === stops.length - 1}
-                          className="tw-w-12 tw-h-12 tw-bg-white tw-border tw-border-slate-200 tw-rounded-full tw-text-slate-600 tw-shadow-sm tw-flex tw-items-center tw-justify-center active:tw-bg-slate-100 disabled:tw-opacity-30 disabled:active:tw-bg-white tw-transition-all tw-touch-manipulation"
-                          data-agent-id={useAgentId(`stop-card:${stop.id}:reorder-down`)}
-                        >
-                          <i className="fa-solid fa-arrow-down tw-text-lg"></i>
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </React.Fragment>
+              <StopListItem 
+                key={stop.id}
+                stop={stop}
+                index={index}
+                isNext={isNext}
+                showDivider={showDivider}
+                isRequesting={isRequesting}
+                isReordering={isReordering}
+                stopsLength={stops.length}
+                onSelectStop={onSelectStop}
+                onTransferRequest={onTransferRequest}
+                moveStop={moveStop}
+              />
             );
           })}
         </div>
@@ -230,7 +277,7 @@ export const RouteListPage: React.FC<Props> = ({ stops, currentRouteName, onSele
              <button 
                onClick={onIntermediateUnload}
                className="tw-bg-white tw-text-slate-700 tw-border tw-border-slate-200 tw-shadow-lg tw-rounded-full tw-px-5 tw-py-3 tw-font-bold tw-flex tw-items-center tw-space-x-2 active:tw-scale-95 tw-transition-transform tw-h-14"
-               data-agent-id={useAgentId("fab:intermediate-unload")}
+               data-agent-id={fabAgentId}
              >
                <div className="tw-bg-orange-100 tw-text-orange-600 tw-w-8 tw-h-8 tw-rounded-full tw-flex tw-items-center tw-justify-center">
                   <i className="fa-solid fa-dolly"></i>
