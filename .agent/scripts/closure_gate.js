@@ -132,7 +132,8 @@ function verifyUIQuality() {
 
     if (hasUIChanges) {
         try {
-            runCommand('node .agent/scripts/check_ui_quality.js');
+            const interactiveFlag = process.argv.includes('--interactive') ? ' --interactive' : '';
+            runCommand('node .agent/scripts/check_ui_quality.js' + interactiveFlag);
             Log.success('UI/UX Quality Verified.');
         } catch (e) {
             Log.error('UI/UX QUALITY VIOLATION: Please refer to guidelines III/VII.');
