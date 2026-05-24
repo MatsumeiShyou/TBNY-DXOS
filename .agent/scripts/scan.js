@@ -29,67 +29,12 @@ async function runScan() {
             }
         }
 
-        // タスク継続中判定
-        const currentBranch = execSync('git branch --show-current', { encoding: 'utf-8' }).trim();
-        if (currentBranch.startsWith('task/auto-')) {
-            console.log(`[agent:scan] 継続中のタスクブランチ (${currentBranch}) を検知しました。スキャンを許可します。`);
-        } else {
-            const gitStatus = execSync('git status --porcelain', { encoding: 'utf-8' }).trim();
-            if (gitStatus.length > 0) {
-                console.error('\n[agent:scan] ⚠️ 未封印の変更を検知しました。');
-                
-                // 防壁3: Impact-Aware Lock
-                const hasImpactFiles = gitStatus.split('\n').some(line => {
-                    return line.includes('package.json') || line.includes('AGENTS.md') || line.includes('.agent/') || line.includes('shared/');
-                });
-                if (hasImpactFiles) {
-                    console.error('[agent:scan] ❌ ERROR: 共通モジュール・設定ファイルが変更されています。');
-                    console.error('[agent:scan] デッドロック防止のため、自動退避は禁止されています。完了(done)するか手動で破棄してください。\n');
-                    process.exit(1);
-                }
-
-                // 防壁2: WIP Limit
-                const branchesStr = execSync("git branch --list 'task/auto-*'", { encoding: 'utf-8' }).trim();
-                const branches = branchesStr ? branchesStr.split('\n').filter(b => b.trim().length > 0) : [];
-                if (branches.length >= 3) {
-                    console.error('[agent:scan] ❌ ERROR: 保留中タスク(WIP)の上限(3件)に達しています。');
-                    console.error('[agent:scan] ゴミ増殖防止のため、どれかを完了(done)するか破棄してから再度実行してください。\n');
-                    process.exit(1);
-                }
-
-                // 防壁1: Dry-Run Confirm (CLIフレンドリー)
-                const isSuspendMode = process.argv.includes('--suspend');
-                if (!isSuspendMode) {
-                    console.error('[agent:scan] 以下のファイルを自動退避してクリーンな空間で新規タスクを開始できます:');
-                    console.error(gitStatus);
-                    console.error('\n[agent:scan] ❌ ERROR: 自動退避を承認する場合は npm run agent:scan -- --suspend を実行してください。\n');
-                    process.exit(1);
-                }
-
-                // 自動隔離プロトコル実行
-                console.log('[agent:scan] 承認されました。未封印タスクを自動退避(隔離)します...');
-                const branchName = `task/auto-${Date.now()}`;
-                try {
-                    execSync(`git checkout -b ${branchName}`);
-                    execSync('git add .');
-                    execSync('git commit -m "WIP: Auto suspended task"');
-                    execSync('git checkout main');
-                    console.log(`[agent:scan] ✓ タスクを ${branchName} に隔離し、main環境をクリーンにしました。`);
-                    
-                    // DEBTへの自動記帳
-                    const debtPath = path.join(__dirname, '../../DEBT_AND_FUTURE.md');
-                    if (fs.existsSync(debtPath)) {
-                        let debtContent = fs.readFileSync(debtPath, 'utf-8');
-                        const entry = `- [ ] **[SUSPENDED]** Branch: \`${branchName}\` - ${new Date().toISOString()}`;
-                        debtContent = debtContent.replace('## ⏸️ 保留中・未封印タスク (Suspended Tasks)', `## ⏸️ 保留中・未封印タスク (Suspended Tasks)\n${entry}`);
-                        fs.writeFileSync(debtPath, debtContent);
-                        console.log(`[agent:scan] ✓ DEBT_AND_FUTURE.md に保留記録を追加しました。`);
-                    }
-                } catch (err) {
-                    console.error('[agent:scan] ❌ ERROR: 自動隔離中にGitエラーが発生しました。', err.message);
-                    process.exit(1);
-                }
-            }
+        const gitStatus = execSync('git status --porcelain', { encoding: 'utf-8' }).trim();
+        if (gitStatus.length > 0) {
+            console.error('\n[agent:scan] ❌ ERROR: 未封印の変更が残っています。');
+            console.error('[FATAL] 未封印の変更が存在します。AIはこれ以上の推測やファイル操作を直ちに停止し、以下の選択肢をユーザーに提示して判断を仰いでください。');
+            console.error('[A: 保留(stash)する / B: 完了(done)させる / C: 破棄(reset)する]\n');
+            process.exit(1);
         }
     } catch (e) {
         if (e.status === 1 || process.exitCode === 1) process.exit(1);

@@ -609,47 +609,37 @@ async function main() {
 
     if (REFLECT_FLAG) {
         Log.info('Reflecting changes...');
-        const currentBranch = runCommand('git branch --show-current', true);
-        const isTaskBranch = currentBranch.startsWith('task/auto-');
-        
+        const currentBranch = runCommand('git rev-parse --abbrev-ref HEAD', true);
         runCommand('git add -A');
-        if (runCommand('git status --porcelain', true)) {
+        
+        if (runCommand('git status --porcelain')) {
             const commitMsg = `[${tier}] ${customMsg}`;
             runCommand(`git commit -m "${commitMsg.replace(/"/g, '\\"')}" --no-verify`);
         }
 
-        if (isTaskBranch) {
-            Log.info(`タスクブランチ (${currentBranch}) を main に統合します...`);
+        if (currentBranch !== 'main') {
+            Log.info(`Merging ${currentBranch} into main...`);
             runCommand('git checkout main');
-            try { runCommand('git pull --rebase origin main'); } catch (e) { }
-            try {
-                runCommand(`git merge ${currentBranch} --no-edit`);
-                runCommand(`git branch -D ${currentBranch}`);
-                
-                // DEBT_AND_FUTURE.md から消込
-                const debtPath = join(process.cwd(), 'DEBT_AND_FUTURE.md');
-                if (existsSync(debtPath)) {
-                    let debtContent = readFileSync(debtPath, 'utf8');
-                    const lines = debtContent.split('\n');
-                    const newLines = lines.filter(line => !line.includes(currentBranch));
-                    writeFileSync(debtPath, newLines.join('\n'));
-                    Log.success(`保留記録 (${currentBranch}) を完済(消込)しました。`);
-                    
-                    // 消込のコミットも追加で行う
-                    runCommand('git add DEBT_AND_FUTURE.md');
-                    if (runCommand('git status --porcelain', true)) {
-                        runCommand('git commit -m "Auto-resolve suspended task debt" --no-verify');
+            try { runCommand(`git merge ${currentBranch} --no-edit`); } catch(e) { Log.error('Merge failed. Resolve conflicts manually.'); process.exit(1); }
+            
+            // WIP完済機構
+            const stateFilePath = join(process.cwd(), '.agent', 'state', 'SUSPENDED_TASKS.json');
+            if (existsSync(stateFilePath)) {
+                try {
+                    let state = JSON.parse(readFileSync(stateFilePath, 'utf-8'));
+                    const originalLen = state.length;
+                    state = state.filter(t => t.branch !== currentBranch);
+                    if (state.length < originalLen) {
+                        writeFileSync(stateFilePath, JSON.stringify(state, null, 2));
+                        Log.info(`WIPタスク [${currentBranch}] を完済（記録から削除）しました。`);
                     }
-                }
-            } catch (mergeError) {
-                Log.error(`マージに失敗しました: ${mergeError.message}`);
-                process.exit(1);
+                } catch(e) { Log.warn(`WIP完済処理エラー: ${e.message}`); }
             }
-            runCommand('git push origin main');
-        } else {
-            try { runCommand('git pull --rebase origin main'); } catch (e) { }
-            runCommand('git push origin main');
+            try { runCommand(`git branch -D ${currentBranch}`); } catch(e) {}
         }
+        
+        try { runCommand('git pull --rebase origin main'); } catch (e) { }
+        runCommand('git push origin main');
     }
 
     // 正常終了時に直接編集フラグファイルを削除

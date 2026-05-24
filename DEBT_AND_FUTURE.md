@@ -5,9 +5,6 @@
 - **UI Refinement**: Resolved overlapping inputs and scroll lock issues in `FuelPage` by refactoring to a 100vh layout with `border-box` sizing.
 - **Verification**: 100% build pass and physical DOM verification completed (GSEAL issued).
 
-## ⏸️ 保留中・未封印タスク (Suspended Tasks)
-<!-- ここに自動退避されたタスクがスクリプトにより追記・消込されます -->
-
 ## Technical Debt (残存負債)
 
 ### DXOS 全体
