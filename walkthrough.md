@@ -1,43 +1,37 @@
 # [TASK_CLOSED]
 
-## [GSEAL-CCF949B-125FAE5473AD] 2026-05-24
+## [GSEAL-234F48D-9812B410CE73] 2026-05-24
 
-[State]
-未封印のタスクを保留・再開する仕組みが存在せず、手動で作業を行うと既存の物理強制と衝突するか、AIの推論に依存した危険な運用になっていた。
-また、保留枠（WIP上限）の管理や状態と負債の分離が行われておらず、デッドロックの懸念があった。
+### [State]
+プロジェクトのコア原則である「単一真実源（SSOT）」および「認知的統治（SDR）」をシステム上で物理的に強制するため、アーキテクチャの監査基盤および強制スクリプトの導入が必要であった。
 
-[Decision]
-WIPの退避・再開・破棄を行う専用のスクリプト（suspend.js, resume.js, discard.js）を新設し、物理防壁（上限管理、共通ファイルロック）を実装した。
-保留状態は DEBT_AND_FUTURE.md ではなく、専用の SUSPENDED_TASKS.json に記録するよう状態分離を行った。
-未封印時にはAIに自律判断させず、A/B/Cの判断を人間に仰ぐシステム強制プロンプト出力を実装した。
-closure_gate.js に、WIP復帰時のマージおよび完済機構を実装した。
+### [Decision]
+1. `closure_gate.js` に `validateEvidenceDraft()` を統合し、SDR形式の本文空チェックを厳密化した。
+2. `eslint.config.js` に対し、`no-restricted-syntax`（F-SSOT違反防止：既存環境への影響を考慮し `warn` レベルで運用）および `no-restricted-imports`（依存境界強制）を導入した。
+3. `package.json` に `preinstall` フックによるSVP（単一バージョン）強制、および `start-task`, `bypass-debt` コマンドを追加した。
 
-[Reason]
-AIの「空気を読む推論」を排除し、人間の判断とシステムの物理壁による100%安全で破綻しないワークフローを確立するため。
-技術的負債と一時的な状態（WIP）を分離し、プロジェクトの恒久的なロックを防ぐため。
+### [Reason]
+人為的なミスや推測に基づく「理由なき」実装をブロックしつつも、ESLintによる一斉破壊を防ぐため（過剰検知ルールの `warn` 化）、実運用可能性と安全性のバランス（DoD）を最大化するため。
 
 
 ## # [TASK_CLOSED]
 
 
-## [GSEAL-9D16ACC-6D7923E9BF3E] 2026-05-24
+## [GSEAL-PENDING] 2026-05-24
 
-[State]
-未封印のタスクを保留・再開する仕組みが存在せず、手動で作業を行うと既存の物理強制と衝突するか、AIの推論に依存した危険な運用になっていた。
-また、保留枠（WIP上限）の管理や状態と負債の分離が行われておらず、デッドロックの懸念があった。
+### [State]
+プロジェクトのコア原則である「単一真実源（SSOT）」および「認知的統治（SDR）」をシステム上で物理的に強制するため、アーキテクチャの監査基盤および強制スクリプトの導入が必要であった。
 
-[Decision]
-WIPの退避・再開・破棄を行う専用のスクリプト（suspend.js, resume.js, discard.js）を新設し、物理防壁（上限管理、共通ファイルロック）を実装した。
-保留状態は DEBT_AND_FUTURE.md ではなく、専用の SUSPENDED_TASKS.json に記録するよう状態分離を行った。
-未封印時にはAIに自律判断させず、A/B/Cの判断を人間に仰ぐシステム強制プロンプト出力を実装した。
-closure_gate.js に、WIP復帰時のマージおよび完済機構を実装した。
+### [Decision]
+1. `closure_gate.js` に `validateEvidenceDraft()` を統合し、SDR形式の本文空チェックを厳密化した。
+2. `eslint.config.js` に対し、`no-restricted-syntax`（F-SSOT違反防止：既存環境への影響を考慮し `warn` レベルで運用）および `no-restricted-imports`（依存境界強制）を導入した。
+3. `package.json` に `preinstall` フックによるSVP（単一バージョン）強制、および `start-task`, `bypass-debt` コマンドを追加した。
 
-[Reason]
-AIの「空気を読む推論」を排除し、人間の判断とシステムの物理壁による100%安全で破綻しないワークフローを確立するため。
-技術的負債と一時的な状態（WIP）を分離し、プロジェクトの恒久的なロックを防ぐため。
-
-
-
+### [Reason]
+人為的なミスや推測に基づく「理由なき」実装をブロックしつつも、ESLintによる一斉破壊を防ぐため（過剰検知ルールの `warn` 化）、実運用可能性と安全性のバランス（DoD）を最大化するため。
 
 > [!IMPORTANT]
-> **[GATE-SEAL: GSEAL-CCF949B-125FAE5473AD]**
+> **[GATE-SEAL: PENDING]**
+
+> [!IMPORTANT]
+> **[GATE-SEAL: GSEAL-234F48D-9812B410CE73]**

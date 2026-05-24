@@ -60,13 +60,32 @@ function validateEvidenceDraft() {
     }
     // CRLF → LF に統一
     content = content.replace(/\r\n/g, '\n');
-    const required = ['[State]', '[Decision]', '[Reason]'];
-    const missing = required.filter(s => !content.includes(s));
+    
+    const missing = [];
+    const patterns = [
+        { name: '[State]', regex: /\[State\]/i },
+        { name: '[Decision]', regex: /\[Decision\]/i },
+        { name: '[Reason]', regex: /\[Reason\]/i }
+    ];
+    
+    for (const p of patterns) {
+        const match = content.match(p.regex);
+        if (!match) {
+            missing.push(p.name);
+        } else {
+            const index = content.indexOf(match[0]);
+            const nextContent = content.slice(index + match[0].length).trim();
+            if (nextContent.length === 0 || nextContent.startsWith('[')) {
+                missing.push(`${p.name} (本文が空です)`);
+            }
+        }
+    }
+    
     if (missing.length) {
-        Log.error(`証跡ドラフトに必須セクションが不足しています: ${missing.join(', ')}`);
+        Log.error(`証跡ドラフトに必須セクションが不足、または本文が空です: ${missing.join(', ')}`);
         process.exit(1);
     }
-    Log.info('証跡ドラフト検証成功。');
+    Log.info('証跡ドラフト検証成功（厳密検証）。');
 }
 // --------------------------------------------------------
 

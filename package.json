@@ -21,7 +21,10 @@
     "agent:apply-patch": "node .agent/scripts/apply_patch.js",
     "agent:recover": "node .agent/scripts/recovery.js",
     "test": "vitest run",
-    "prepare": "husky || true"
+    "prepare": "husky || true",
+    "preinstall": "npx npm-dedupe-check || (echo 'SVP Violation: Dependency duplication detected' && exit 1)",
+    "start-task": "node .agent/scripts/start-task.js",
+    "bypass-debt": "node .agent/scripts/bypass_debt.js"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1045.0",
