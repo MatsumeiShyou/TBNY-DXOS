@@ -517,6 +517,16 @@ async function main() {
     validateEvidenceDraft();
     // ------------------------------------------------
 
+    // ----- 追加：物理インターロック（完了アナウンスの強制） -----
+    const sealRequestFile = join(process.cwd(), '.agent', 'session', '.seal_requested');
+    if (!existsSync(sealRequestFile)) {
+        Log.error('FATAL INTERLOCK: 完了アナウンス（npm run request-done）が実行されていません。');
+        Log.error('AIは完了報告の前に必ず npm run request-done を実行して人間に承認を求める義務があります。');
+        Log.error('確認をバイパスして完了ゲートを通過することはできません。');
+        process.exit(1);
+    }
+    // ------------------------------------------------
+
     try {
         verifySQLSync();
         verifySessionDesync();
@@ -646,6 +656,11 @@ async function main() {
     const flagFile = join(process.cwd(), '.agent', 'session', 'patch_applied.flag');
     if (existsSync(flagFile)) {
         try { fs.unlinkSync(flagFile); Log.info('patch_applied.flag removed.'); } catch (e) {}
+    }
+
+    const sealRequestFileToClean = join(process.cwd(), '.agent', 'session', '.seal_requested');
+    if (existsSync(sealRequestFileToClean)) {
+        try { fs.unlinkSync(sealRequestFileToClean); } catch (e) {}
     }
 
     completionFlag = true;

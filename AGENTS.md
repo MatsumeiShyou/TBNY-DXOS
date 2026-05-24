@@ -20,7 +20,7 @@
 - **[Physical Verification (CAVR)]**: `governance/rules/compliance.json` に従え。UI/UX変更(Route A)はPreview実機確認必須。バイパス時は `npm run done -- --interactive` で理由を回答し、`DEBT_AND_FUTURE.md` に記録せよ。
 - **[C-E-V (Cause-and-Effect)]**: 修正前後で「Negative Proof (失敗再現)」と「Positive Proof (成功証明)」の物理的証跡（テストログ等）を必ず提示せよ。
 - **[Sanctuary Purge]**: `/push` 提案前に必ず `git status` を確認し、`node .agent/scripts/reflect.js --purge` を実行して不純物を排除せよ。
-- **[Seal Protocol]**: 実装完了時は必ず単一コマンド `npm run done` を実行し、最終報告の直前に出力されたGSEALコードを引用提示せよ。
+- **[Seal Protocol]**: 実装完了時は必ず `npm run request-done` を実行して人間に「承認PW（y）」を求めよ。人間の承認を得た後、必ず単一コマンド `npm run done` を実行し、最終報告の直前に出力されたGSEALコードを引用提示せよ。
 
 ## 3. DOMAIN RULES (領域別・現場統治)
 - **[Knowledge Scope]**: 過去のマニュアルや知識を検索する際は、プロジェクト内の `knowledge/` に加え、必ずシステム裏側の共有領域（`C:\Users\shiyo\.gemini\antigravity\knowledge`）も検索対象に含め、存在を確認すること。
