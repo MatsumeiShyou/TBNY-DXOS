@@ -609,11 +609,45 @@ async function main() {
 
     if (REFLECT_FLAG) {
         Log.info('Reflecting changes...');
+        const currentBranch = runCommand('git branch --show-current', true);
+        const isTaskBranch = currentBranch.startsWith('task/auto-');
+        
         runCommand('git add -A');
-        try { runCommand('git pull --rebase origin main'); } catch (e) { }
-        if (runCommand('git status --porcelain')) {
+        if (runCommand('git status --porcelain', true)) {
             const commitMsg = `[${tier}] ${customMsg}`;
             runCommand(`git commit -m "${commitMsg.replace(/"/g, '\\"')}" --no-verify`);
+        }
+
+        if (isTaskBranch) {
+            Log.info(`タスクブランチ (${currentBranch}) を main に統合します...`);
+            runCommand('git checkout main');
+            try { runCommand('git pull --rebase origin main'); } catch (e) { }
+            try {
+                runCommand(`git merge ${currentBranch} --no-edit`);
+                runCommand(`git branch -D ${currentBranch}`);
+                
+                // DEBT_AND_FUTURE.md から消込
+                const debtPath = join(process.cwd(), 'DEBT_AND_FUTURE.md');
+                if (existsSync(debtPath)) {
+                    let debtContent = readFileSync(debtPath, 'utf8');
+                    const lines = debtContent.split('\n');
+                    const newLines = lines.filter(line => !line.includes(currentBranch));
+                    writeFileSync(debtPath, newLines.join('\n'));
+                    Log.success(`保留記録 (${currentBranch}) を完済(消込)しました。`);
+                    
+                    // 消込のコミットも追加で行う
+                    runCommand('git add DEBT_AND_FUTURE.md');
+                    if (runCommand('git status --porcelain', true)) {
+                        runCommand('git commit -m "Auto-resolve suspended task debt" --no-verify');
+                    }
+                }
+            } catch (mergeError) {
+                Log.error(`マージに失敗しました: ${mergeError.message}`);
+                process.exit(1);
+            }
+            runCommand('git push origin main');
+        } else {
+            try { runCommand('git pull --rebase origin main'); } catch (e) { }
             runCommand('git push origin main');
         }
     }
