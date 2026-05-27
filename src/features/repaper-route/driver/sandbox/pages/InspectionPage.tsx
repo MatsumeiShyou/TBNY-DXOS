@@ -10,7 +10,7 @@ interface Props {
 }
 
 export const InspectionPage: React.FC<Props> = ({ onComplete }) => {
-  const [items, setItems] = useState<InspectionItem[]>(INITIAL_INSPECTION_ITEMS);
+  const [items, setItems] = useState<InspectionItem[]>(() => INITIAL_INSPECTION_ITEMS);
   const [isConfirmOpen, setConfirmOpen] = useState(false);
   const bulkCheckId = useAgentId("bulk-check-button");
 

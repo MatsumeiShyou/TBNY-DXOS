@@ -4,6 +4,12 @@ import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
 import tseslint from 'typescript-eslint'
 import { defineConfig, globalIgnores } from 'eslint/config'
+import { getEffectiveMode } from './.agent/scripts/lib/force_mode_reader.js'
+
+const getEslintMode = (ruleName) => {
+  const mode = getEffectiveMode(ruleName);
+  return mode === 'warning' ? 'warn' : mode;
+};
 
 export default defineConfig([
   globalIgnores(['dist']),
@@ -35,38 +41,48 @@ export default defineConfig([
         },
       ],
       'no-restricted-syntax': [
-        'warn',
+        getEslintMode('FSOOT'),
         {
-          selector: 'CallExpression[callee.name="useState"] > Identifier.arguments',
-          message: 'F-SSOT Violation: Do not pass variables directly to useState. This creates derived state. Use useMemo instead.'
+          selector: "CallExpression[callee.name='useState'][arguments.0.type='Identifier'][arguments.0.name!='undefined']",
+          message: "[F-SSOT] useStateに変数(Identifier)を直接渡して派生状態を作らないでください。useMemoによる純粋導出を使用してください。"
         },
         {
-          selector: 'CallExpression[callee.name="useState"] > MemberExpression.arguments',
-          message: 'F-SSOT Violation: Do not pass object properties directly to useState. This creates derived state.'
+          selector: "CallExpression[callee.name='useState'][arguments.0.type='MemberExpression']",
+          message: "[F-SSOT] useStateにpropsやオブジェクトのプロパティ(MemberExpression)を直接渡して派生状態を作らないでください。useMemoによる純粋導出を使用してください。"
         }
-      ]
+      ],
     },
   },
   {
-    files: ['src/shared/**/*.{ts,tsx}'],
+    files: ['src/shared/**/*.{ts,tsx}', 'src/shared/**/*.js'],
     rules: {
-      'no-restricted-imports': ['error', {
-        patterns: [{
-          group: ['*features/*', '*apps/*'],
-          message: 'Boundary Violation: shared/ cannot import from features/ or apps/'
-        }]
-      }]
+      'no-restricted-imports': [
+        getEslintMode('BOUNDARY'),
+        {
+          patterns: [
+            {
+              group: ['@/features/*', '@/apps/*', '*/features/*', '*/apps/*', '../*features/*', '../*apps/*'],
+              message: '[Boundary Enforcement] shared/ 層から features/ や apps/ への依存は禁止されています。'
+            }
+          ]
+        }
+      ]
     }
   },
   {
-    files: ['src/features/**/*.{ts,tsx}'],
+    files: ['src/features/**/*.{ts,tsx}', 'src/features/**/*.js'],
     rules: {
-      'no-restricted-imports': ['error', {
-        patterns: [{
-          group: ['*apps/*'],
-          message: 'Boundary Violation: features/ cannot import from apps/'
-        }]
-      }]
+      'no-restricted-imports': [
+        getEslintMode('BOUNDARY'),
+        {
+          patterns: [
+            {
+              group: ['@/apps/*', '*/apps/*', '../*apps/*'],
+              message: '[Boundary Enforcement] features/ 層から apps/ への依存は禁止されています。'
+            }
+          ]
+        }
+      ]
     }
-  },
+  }
 ])

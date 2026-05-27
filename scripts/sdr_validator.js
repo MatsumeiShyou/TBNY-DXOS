@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { getEffectiveMode } from '../.agent/scripts/lib/force_mode_reader.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT_DIR = path.resolve(__dirname, '..');
@@ -11,6 +12,13 @@ const ERROR_FILE = path.join(REVIEW_DIR, 'validation_error.md');
 // Bypass check
 if (process.env.BYPASS_SDR_VALIDATION === '1') {
   console.log('[SDR_VALIDATOR] Bypass mode enabled. Skipping validation.');
+  process.exit(0);
+}
+
+// Check Governance Mode
+const sdrMode = getEffectiveMode('SDR', ROOT_DIR);
+if (sdrMode === 'off') {
+  console.log('[SDR_VALIDATOR] Governance SDR rule is OFF. Skipping validation.');
   process.exit(0);
 }
 
@@ -44,7 +52,9 @@ if (mode === 'verify') {
     const patterns = [
       { name: 'State/状態', regex: /### \[(State|状態)\]|### (State|状態)/ },
       { name: 'Decision/判断', regex: /### \[(Decision|判断)\]|### (Decision|判断)/ },
-      { name: 'Reason/理由', regex: /### \[(Reason|理由)\]|### (Reason|理由)/ }
+      { name: 'Reason/理由', regex: /### \[(Reason|理由)\]|### (Reason|理由)/ },
+      { name: 'Negative Proof', regex: /\[Negative Proof\]|Negative Proof/i },
+      { name: 'Positive Proof', regex: /\[Positive Proof\]|Positive Proof/i }
     ];
 
     for (const p of patterns) {
@@ -68,17 +78,25 @@ if (mode === 'verify') {
   }
 
   if (hasError) {
-    const errorMsg = `### [ValidationError]
+    if (sdrMode === 'error') {
+      const errorMsg = `### [ValidationError]
 ${errors.map(e => `* 対象ファイル: artifacts/review/${e.file}
 * 欠落要素: ${e.missing.join(', ')}
 * 状況: 必須見出しが存在しないか、本文が空です。`).join('\n\n')}
 
 ---
 修正案: 記述規則に従い、State/Decision/Reason の3要素を具体的に記述してください。`;
-    
-    fs.writeFileSync(ERROR_FILE, errorMsg, 'utf-8');
-    console.error('[SDR_VALIDATOR] Validation FAILED. Error log written to artifacts/review/validation_error.md');
-    process.exit(1);
+      
+      fs.writeFileSync(ERROR_FILE, errorMsg, 'utf-8');
+      console.error('[SDR_VALIDATOR] Validation FAILED. Error log written to artifacts/review/validation_error.md');
+      process.exit(1);
+    } else {
+      console.warn('[SDR_VALIDATOR] WARNING: SDR Format Validation failed but proceeding due to warning mode.');
+      errors.forEach(e => {
+        console.warn(`  - [WARNING] File: ${e.file}, Missing: ${e.missing.join(', ')}`);
+      });
+      process.exit(0);
+    }
   } else {
     if (fs.existsSync(ERROR_FILE)) fs.unlinkSync(ERROR_FILE);
     console.log('[SDR_VALIDATOR] Validation PASSED.');

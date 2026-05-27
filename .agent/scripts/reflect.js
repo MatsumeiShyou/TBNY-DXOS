@@ -10,6 +10,7 @@ import path from 'path';
 import { execSync } from 'child_process';
 import { getSession } from './session_manager.js';
 import { readJsonStrict } from './lib/gov_loader.js';
+import { getEffectiveMode } from './lib/force_mode_reader.js';
 
 const PROJECT_ROOT = process.cwd();
 const AMPLOG_PATH = path.join(PROJECT_ROOT, 'AMPLOG.jsonl');
@@ -78,8 +79,14 @@ function checkAMPLOGViolations() {
     const recentCommits = getRecentCommits(audit_rules.days_to_check);
     const hasCodeChanges = recentCommits.includes('\n');
 
-    if (hasCodeChanges && lines.length === 0) {
-        violations.push({ severity: '高', category: 'Traceability', issue: 'コード変更があるのに履歴なし', recommendation: '記録せよ' });
+    // 直近 N 日以内の AMPLOG レコードを抽出
+    const cutoffDate = new Date(Date.now() - audit_rules.days_to_check * 24 * 60 * 60 * 1000);
+    const recentLogs = lines
+        .map(l => { try { return JSON.parse(l); } catch { return null; } })
+        .filter(entry => entry && entry.timestamp && new Date(entry.timestamp) > cutoffDate);
+
+    if (hasCodeChanges && recentLogs.length === 0) {
+        violations.push({ severity: '高', category: 'Traceability', issue: '直近のコード変更があるのにAMPLOGに履歴なし', recommendation: 'node .agent/scripts/record_amp.js で記録せよ' });
     }
 
     return violations;
@@ -163,15 +170,52 @@ function checkCognitiveViolations() {
     }
 
     const redesignCount = session?.active_task?.redesign_count || 0;
-    // 上限値は thought_rules.json から取得するのが理想だが、ここでは物理的な目安として 5 を使用
-    if (redesignCount > 5) {
+    
+    // thought_rules.json から上限値を正しく取得する
+    let redesignLimit = 5;
+    try {
+        const thoughtRulesPath = path.join(PROJECT_ROOT, 'governance', 'thought_rules.json');
+        if (fs.existsSync(thoughtRulesPath)) {
+            const rules = JSON.parse(fs.readFileSync(thoughtRulesPath, 'utf8'));
+            if (rules.reasoning_budget && typeof rules.reasoning_budget.redesign_limit === 'number') {
+                redesignLimit = rules.reasoning_budget.redesign_limit;
+            }
+        }
+    } catch (e) {}
+
+    if (redesignCount > redesignLimit) {
         violations.push({
             severity: '致命的',
             category: 'Cognitive',
-            issue: `再設計回数 (${redesignCount}) が上限を超えています`,
+            issue: `再設計回数 (${redesignCount}) が上限 (${redesignLimit}) を超えています`,
             recommendation: '思考のループを停止し、分析フェーズ（Analyzer）に差し戻せ'
         });
     }
+
+    return violations;
+}
+
+function checkSanctuaryPurge() {
+    const mode = getEffectiveMode('PURGE');
+    if (mode === 'off') return [];
+
+    const violations = [];
+    try {
+        const status = execSync('git status --porcelain', { cwd: PROJECT_ROOT, encoding: 'utf8' }).trim();
+        if (!status) return [];
+
+        const lines = status.split('\n').filter(Boolean);
+        const untracked = lines.filter(l => l.startsWith('??'));
+
+        if (untracked.length > 0) {
+            const msg = `未追跡ファイルが ${untracked.length} 件存在します。コミットするか削除(purge)して不純物を排除してください。`;
+            if (mode === 'error') {
+                violations.push({ severity: '致命的', category: 'SanctuaryPurge', issue: msg, recommendation: 'git add または 削除せよ' });
+            } else {
+                console.warn(`⚠️ [Sanctuary Purge] WARNING: ${msg}`);
+            }
+        }
+    } catch (e) {}
 
     return violations;
 }
@@ -196,7 +240,8 @@ function main() {
         ...checkAMPLOGViolations(),
         ...(shouldPurge ? checkCleanupViolations() : cleanupViolations),
         ...checkRetryPatterns(),
-        ...checkCognitiveViolations()
+        ...checkCognitiveViolations(),
+        ...(shouldPurge ? checkSanctuaryPurge() : [])
     ];
 
     fs.writeFileSync(REPORT_PATH, generateReport(violations), 'utf8');

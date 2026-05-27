@@ -15,7 +15,8 @@ const FORBIDDEN_PATTERNS = [
   { pattern: /\.\.\/RePaper Route/g, label: 'EXTERNAL_PATH_DEPENDENCY', message: 'リポジトリ外への相対パス参照が検出されました。' },
   { pattern: /Sentinel Governance v7\.1/gi, label: 'OUTDATED_GOVERNANCE_VERSION', message: '旧バージョンの統治憲法への参照が残っています。' },
   { pattern: /外部アプリケーションとして稼働中です/g, label: 'PLACEHOLDER_DEBT', message: '未統合のプレースホルダーが残存しています。' },
-  { pattern: /agentId=["'](dummy|test|todo|fixme)["']/gi, label: 'INVALID_AGENT_ID', message: '無意味な agentId (dummy/test/todo/fixme) が検出されました。具体的な命名を行ってください。' }
+  { pattern: /agentId=["'](dummy|test|todo|fixme)["']/gi, label: 'INVALID_AGENT_ID', message: '無意味な agentId (dummy/test/todo/fixme) が検出されました。具体的な命名を行ってください。' },
+  { pattern: /(sk-[A-Za-z0-9]{20,})|(Bearer\s+[A-Za-z0-9\-\._~+\/]+=*)|(password\s*=\s*["'][^"']+["'])/g, label: 'SECRET_LEAKAGE', message: '秘密情報（APIキー、トークン、パスワード等）のハードコードが検出されました。[No Leakage] 違反です。' }
 ];
 
 const IGNORE_DIRS = ['.git', 'node_modules', 'dist', '.agent', 'governance/history'];
@@ -39,6 +40,19 @@ function scanDir(dir) {
           issues++;
         }
       });
+
+      if (!fullPath.endsWith('.json') && content.includes('@ts-nocheck')) {
+        const relativePath = path.relative(ROOT, fullPath).replace(/\\/g, '/');
+        const tsNocheckInventoryPath = path.join(ROOT, 'governance', 'ts_nocheck_inventory.json');
+        if (fs.existsSync(tsNocheckInventoryPath)) {
+          const inventory = JSON.parse(fs.readFileSync(tsNocheckInventoryPath, 'utf8'));
+          if (!inventory.files.includes(relativePath)) {
+            console.error(`[\x1b[31mTS_NOCHECK_VIOLATION\x1b[0m] ${fullPath}`);
+            console.error(`   -> @ts-nocheck の新規追加は厳格に禁止されています（ts_nocheck_inventory.json 未登録）。`);
+            issues++;
+          }
+        }
+      }
     }
   }
   return issues;

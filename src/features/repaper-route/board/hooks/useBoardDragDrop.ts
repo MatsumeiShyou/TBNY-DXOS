@@ -46,7 +46,7 @@ export const useBoardDragDrop = (
         let newDriverId = targetJob.driverId;
         if (driverColRefs.current) {
             Object.entries(driverColRefs.current).forEach(([dId, el]) => {
-                if (el) {
+                if (el && typeof el.getBoundingClientRect === 'function') {
                     const rect = el.getBoundingClientRect();
                     if (pointerX >= rect.left && pointerX <= rect.right) {
                         newDriverId = dId;

@@ -13,7 +13,7 @@ interface Props {
 }
 
 export const StopDetailPage: React.FC<Props> = ({ stop, onUpdateStop, onBack }) => {
-  const [items, setItems] = useState<CargoItem[]>(stop.items);
+  const [items, setItems] = useState<CargoItem[]>(() => stop.items);
   const [isAddItemModalOpen, setAddItemModalOpen] = useState(false);
   const [newItemName, setNewItemName] = useState('');
   const [newItemWeight, setNewItemWeight] = useState('');

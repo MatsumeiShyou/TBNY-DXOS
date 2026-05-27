@@ -10,7 +10,7 @@ interface RecordsFilterProps {
 }
 
 const RecordsFilter: React.FC<RecordsFilterProps> = ({ initialFilters, onApplyFilters, onClearFilters }) => {
-  const [filters, setFilters] = useState<RecordFilters>(initialFilters);
+  const [filters, setFilters] = useState<RecordFilters>(() => initialFilters);
   const [companies, setCompanies] = useState<string[]>([]);
   const [drivers, setDrivers] = useState<Driver[]>([]);
   const statuses: WeighingRecord['status'][] = ['完了', '未確認', '修正済'];

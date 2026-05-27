@@ -1,0 +1,20 @@
+{
+  "version": "1.0",
+  "purpose": "自己破壊（デグレ）の歴史的資産化。類似エラー発生時、AIは推測前に必ず本カタログと照合すること。",
+  "catastrophic_failures": [
+    {
+      "id": "CLOSURE_GATE_SYNTAX_CRASH",
+      "date": "2026-05-24",
+      "symptom": "SyntaxError: Missing catch or finally after try",
+      "cause": "AIが closure_gate.js にルールを追加した際、try {} ブロックを閉じ忘れたり、未定義の変数（fs.existsSync等）を呼び出し、完遂ゲート全体がクラッシュした。",
+      "lesson": "AIは自分自身を規定するゲートウェイスクリプトを編集する際、構文エラーを引き起こしやすい。推測で編集せず、純粋な構文チェック（node -c）を事前にパスする必要がある。"
+    },
+    {
+      "id": "ESLINT_CASCADING_LOCKDOWN",
+      "date": "2026-05-24",
+      "symptom": "npm run lint が数百件のエラーを吐き、タスクが永遠に完了できなくなる",
+      "cause": "AIが F-SSOT などの制約を物理強制しようとして、eslint.config.js のルールを 'warn' から 'error' に厳格化した。しかし、既存コードにすでに182件の違反が残存していたため、全体がビルド不能（デッドロック）に陥った。",
+      "lesson": "ルールの厳格化（物理強制）を行う際、Blast Radius（既存コードへの影響範囲）を無配慮に適用してはならない。既存負債によってデッドロックに陥る場合は、設定を元に戻すか、例外スコープを設けること。"
+    }
+  ]
+}

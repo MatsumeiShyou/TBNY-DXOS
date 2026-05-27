@@ -15,6 +15,14 @@ try {
         process.exit(0);
     }
 
+    const firstLine = commitMsg.trim().split('\\n')[0];
+    const conventionalPattern = /^(feat|fix|docs|style|refactor|perf|test|chore|ci|build)(\([^)]+\))?: /;
+    if (!conventionalPattern.test(firstLine) && !firstLine.startsWith('Merge branch')) {
+        console.error("❌ [Error] コミットメッセージは Conventional Commits (feat:, fix: 等) に従う必要があります。");
+        console.error(`    Received: ${firstLine}`);
+        process.exit(1);
+    }
+
     // Check for modified governance files
     const diffOutput = execSync('git diff --cached --name-only', { encoding: 'utf8' });
     const changedFiles = diffOutput.split('\n').filter(Boolean);
