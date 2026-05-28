@@ -109,6 +109,7 @@ export interface Vehicle {
   plateNumber: string;
   isInspected: boolean; // Has daily inspection been done today?
   tareWeight: number; // 空車重量 (kg)
+  maxLoadingCapacity?: number; // 最大積載量 (kg)
 }
 
 export interface BaseTask {

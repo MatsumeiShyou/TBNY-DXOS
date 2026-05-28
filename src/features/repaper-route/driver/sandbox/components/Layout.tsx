@@ -5,6 +5,7 @@ import { DriverStatus } from '../types';
 import { Toast } from './Widgets';
 import { HelpTarget } from './Help';
 import { useAgentId } from './AgentContext';
+import { Menu, ChevronDown, ListChecks, Fuel, LineChart, LogOut } from 'lucide-react';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -66,7 +67,7 @@ export const Layout: React.FC<LayoutProps> = ({
                className="tw-w-10 tw-h-10 tw-flex tw-items-center tw-justify-center tw-hover:tw-bg-white/10 tw-active:tw-bg-white/20 tw-transition-colors tw-rounded-lg"
                data-agent-id={useAgentId("header:menu-button")}
              >
-               <i className="fa-solid fa-bars tw-text-xl"></i>
+               <Menu className="tw-w-5 tw-h-5" />
              </button>
              
              <div className="tw-flex tw-flex-col tw-justify-center tw--mt-3.5">
@@ -76,7 +77,7 @@ export const Layout: React.FC<LayoutProps> = ({
                  className="tw--mt-1 tw-flex tw-items-center tw-space-x-1 tw-text-sm tw-text-slate-300 tw-opacity-90 tw-hover:tw-opacity-100 tw-active:tw-opacity-70 tw-transition-opacity tw-text-left tw-bg-transparent tw-border-none tw-outline-none"
                >
                  <span>{user.name} | {user.vehicleName}</span>
-                 {onVehicleClick && <i className="fa-solid fa-caret-down tw-text-[10px] tw-ml-0.5"></i>}
+                 {onVehicleClick && <ChevronDown className="tw-w-3 tw-h-3 tw-ml-0.5" />}
                </button>
              </div>
           </div>
@@ -99,7 +100,7 @@ export const Layout: React.FC<LayoutProps> = ({
           <div className="tw-flex tw-justify-around tw-items-center tw-h-[60px]">
             <HelpTarget helpId="nav-route" wrapperClassName="tw-w-full tw-h-full tw-flex-1">
               <NavButton 
-                icon="fa-solid fa-list-check" 
+                icon={ListChecks} 
                 label="ルート" 
                 active={currentView === 'route' || currentView === 'stop'} 
                 onClick={() => onNavigate('route')} 
@@ -108,7 +109,7 @@ export const Layout: React.FC<LayoutProps> = ({
             </HelpTarget>
             <HelpTarget helpId="nav-fuel" wrapperClassName="tw-w-full tw-h-full tw-flex-1">
               <NavButton 
-                icon="fa-solid fa-gas-pump" 
+                icon={Fuel} 
                 label="給油" 
                 active={currentView === 'fuel'} 
                 onClick={() => onNavigate('fuel')} 
@@ -117,7 +118,7 @@ export const Layout: React.FC<LayoutProps> = ({
             </HelpTarget>
             <HelpTarget helpId="nav-report" wrapperClassName="tw-w-full tw-h-full tw-flex-1">
               <NavButton 
-                icon="fa-solid fa-chart-line" 
+                icon={LineChart} 
                 label="実績" 
                 active={currentView === 'report'} 
                 onClick={() => onNavigate('report')} 
@@ -126,7 +127,7 @@ export const Layout: React.FC<LayoutProps> = ({
             </HelpTarget>
             <HelpTarget helpId="nav-end" wrapperClassName="tw-w-full tw-h-full tw-flex-1">
               <NavButton 
-                icon="fa-solid fa-right-from-bracket" 
+                icon={LogOut} 
                 label="終了" 
                 active={currentView === 'end'} 
                 onClick={() => onNavigate('end')} 
@@ -140,13 +141,13 @@ export const Layout: React.FC<LayoutProps> = ({
   );
 };
 
-const NavButton = ({ icon, label, active, onClick, agentId }: { icon: string, label: string, active: boolean, onClick: () => void, agentId: string }) => (
+const NavButton = ({ icon: Icon, label, active, onClick, agentId }: { icon: React.ElementType, label: string, active: boolean, onClick: () => void, agentId: string }) => (
   <button 
     onClick={onClick}
     className={`tw-flex tw-flex-col tw-items-center tw-justify-center tw-w-full tw-h-full tw-space-y-1 tw-active:tw-bg-slate-50 tw-transition-colors tw-touch-manipulation ${active ? 'tw-text-primary' : 'tw-text-slate-400'}`}
     data-agent-id={useAgentId(agentId)}
   >
-    <i className={`${icon} tw-text-xl tw-mb-0.5 ${active ? 'tw-scale-110' : ''} tw-transition-transform`}></i>
+    <Icon className={`tw-w-5 tw-h-5 tw-mb-0.5 ${active ? 'tw-scale-110' : ''} tw-transition-transform`} />
     <span className="tw-text-[10px] tw-font-bold">{label}</span>
   </button>
 );

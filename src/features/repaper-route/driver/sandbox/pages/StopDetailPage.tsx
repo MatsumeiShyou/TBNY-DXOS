@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import type { Stop, CargoItem } from '../types';
+import type { Stop, CargoItem, Vehicle } from '../types';
 import { StopStatus } from '../types';
 import { Button, Card, Modal } from '../components/Widgets';
 import { HelpTarget } from '../components/Help';
@@ -10,9 +10,10 @@ interface Props {
   stop: Stop;
   onUpdateStop: (stopId: string, updates: Partial<Stop>) => void;
   onBack: () => void;
+  currentVehicle?: Vehicle;
 }
 
-export const StopDetailPage: React.FC<Props> = ({ stop, onUpdateStop, onBack }) => {
+export const StopDetailPage: React.FC<Props> = ({ stop, onUpdateStop, onBack, currentVehicle }) => {
   const [items, setItems] = useState<CargoItem[]>(() => stop.items);
   const [isAddItemModalOpen, setAddItemModalOpen] = useState(false);
   const [newItemName, setNewItemName] = useState('');
@@ -49,7 +50,7 @@ export const StopDetailPage: React.FC<Props> = ({ stop, onUpdateStop, onBack }) 
   };
 
   const updateItemWeight = (id: string, weight: number) => {
-    const validWeight = Math.max(0, Math.round(weight));
+    const validWeight = Math.max(0, Math.round(weight / 10) * 10);
     setItems(items.map(i => i.id === id ? { ...i, actualWeight: validWeight } : i));
   };
 
@@ -59,11 +60,14 @@ export const StopDetailPage: React.FC<Props> = ({ stop, onUpdateStop, onBack }) 
 
   const addNewItem = () => {
     if (newItemName && newItemWeight) {
+      const parsedWeight = Number(newItemWeight);
+      const validWeight = isNaN(parsedWeight) ? 0 : Math.round(parsedWeight / 10) * 10;
+      
       const newItem: CargoItem = {
         id: `custom-${Date.now()}`,
         name: newItemName,
-        defaultWeight: Number(newItemWeight),
-        actualWeight: Number(newItemWeight),
+        defaultWeight: validWeight,
+        actualWeight: validWeight,
         isCollected: true
       };
       setItems([...items, newItem]);
@@ -257,6 +261,11 @@ export const StopDetailPage: React.FC<Props> = ({ stop, onUpdateStop, onBack }) 
             <span>総重量（概算）:</span>
             <span className="tw-text-2xl tw-text-primary tw-font-mono">{totalWeight} <span className="tw-text-sm">kg</span></span>
           </div>
+          {currentVehicle?.maxLoadingCapacity && totalWeight > currentVehicle.maxLoadingCapacity && (
+            <div className="tw-bg-red-50 tw-text-red-600 tw-p-2 tw-rounded-lg tw-text-sm tw-font-bold tw-flex tw-items-center tw-justify-center tw-mb-3">
+              <i className="fa-solid fa-triangle-exclamation tw-mr-2"></i> [過積載警告] 最大積載量({currentVehicle.maxLoadingCapacity}kg)を超過しています
+            </div>
+          )}
           {isEditing ? (
             <Button onClick={handleSaveCorrection} className="tw-bg-orange-600 tw-shadow-orange-900/20 hover:tw-bg-orange-700" agentId="action:save-correction-button">
               <i className="fa-solid fa-save tw-mr-2"></i> 修正内容を保存

@@ -1,6 +1,7 @@
 
 import React, { useEffect } from 'react';
 import { useAgentId } from './AgentContext';
+import { X, CheckCircle, AlertCircle, Info } from 'lucide-react';
 
 // Primary Action Button
 export const Button: React.FC<React.ButtonHTMLAttributes<HTMLButtonElement> & { 
@@ -111,7 +112,7 @@ export const Modal: React.FC<{
             aria-label="閉じる"
             data-agent-id={`${fullAgentId}:close`}
           >
-            <i className="fa-solid fa-xmark tw-text-2xl"></i>
+            <X className="tw-w-6 tw-h-6" />
           </button>
         </div>
         <div className="tw-p-4 tw-overflow-y-auto">
@@ -145,11 +146,12 @@ export const Toast: React.FC<{
     info: 'tw-bg-blue-600 tw-text-white tw-shadow-blue-900/20'
   };
 
-  const icons = {
-    success: 'fa-solid fa-circle-check',
-    error: 'fa-solid fa-circle-exclamation',
-    info: 'fa-solid fa-circle-info'
+  const IconMap = {
+    success: CheckCircle,
+    error: AlertCircle,
+    info: Info
   };
+  const IconComponent = IconMap[type];
 
   return (
     <div 
@@ -158,11 +160,11 @@ export const Toast: React.FC<{
     >
       <div className={`${bgColors[type]} tw-px-4 tw-py-3 tw-rounded-xl tw-shadow-xl tw-flex tw-items-center tw-justify-between tw-min-h-[56px]`}>
          <div className="tw-flex tw-items-center tw-space-x-3">
-            <i className={`${icons[type]} tw-text-lg`}></i>
+            <IconComponent className="tw-w-5 tw-h-5" />
             <span className="tw-font-bold tw-text-sm tw-leading-tight">{message}</span>
          </div>
          <button onClick={onClose} className="tw-w-10 tw-h-10 tw-flex tw-items-center tw-justify-center tw-bg-white/20 tw-rounded-full tw-ml-2 tw-active:tw-bg-white/30">
-            <i className="fa-solid fa-xmark tw-text-sm"></i>
+            <X className="tw-w-4 tw-h-4" />
          </button>
       </div>
     </div>

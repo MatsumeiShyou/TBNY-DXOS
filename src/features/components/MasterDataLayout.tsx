@@ -7,8 +7,7 @@ import { useNotification } from '../hooks/useNotification';
 import type { MasterSchema, MasterColumn } from '../config/masterSchema';
 import '../../shared/styles/master-data.css';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type DataItem = Record<string, any>;
+type DataItem = Record<string, unknown>;
 
 interface MasterDataLayoutProps {
     schema: MasterSchema;
@@ -106,7 +105,7 @@ export const MasterDataLayout = ({ schema, customRenderers = {} }: MasterDataLay
                 
                 // フォールバック: number 型の自動パース
                 if (f.type === 'number' && f.transformOut === undefined && val != null && val !== '') {
-                    data[f.name] = parseFloat(val);
+                    data[f.name] = parseFloat(String(val));
                 }
             });
             return data;
@@ -180,7 +179,7 @@ export const MasterDataLayout = ({ schema, customRenderers = {} }: MasterDataLay
                         </thead>
                         <tbody className="master-table__body">
                             {items.map((item: DataItem) => (
-                                <tr key={item.id} className="master-table__row">
+                                <tr key={item.id as string | number} className="master-table__row">
                                     {schema.columns.map(col => (
                                         <td key={col.key} className="master-table__td">
                                             {renderValue(item, col)}
@@ -223,13 +222,13 @@ export const MasterDataLayout = ({ schema, customRenderers = {} }: MasterDataLay
                                 {field.type === 'select' ? (
                                     <select
                                         className="master-form__select"
-                                        value={formData[field.name] ?? ''}
+                                        value={(formData[field.name] as string) ?? ''}
                                         onChange={e => setFormData({ ...formData, [field.name]: e.target.value })}
                                     >
                                         <option value="">{field.placeholder || '--- 選択 ---'}</option>
                                         {field.options
                                             ? field.options.map(opt => <option key={opt} value={opt}>{opt}</option>)
-                                            : extraData[field.optionsSource!]?.map((opt: DataItem) => <option key={opt.id} value={opt.id}>{opt.name}</option>)
+                                            : extraData[field.optionsSource!]?.map((opt: DataItem) => <option key={opt.id as string | number} value={opt.id as string | number}>{String(opt.name)}</option>)
                                         }
                                     </select>
                                 ) : (
@@ -237,7 +236,7 @@ export const MasterDataLayout = ({ schema, customRenderers = {} }: MasterDataLay
                                         type={field.type}
                                         placeholder={field.placeholder || ''}
                                         className="master-form__input"
-                                        value={formData[field.name] ?? ''}
+                                        value={(formData[field.name] as string) ?? ''}
                                         onChange={e => setFormData({ ...formData, [field.name]: e.target.value })}
                                     />
                                 )}

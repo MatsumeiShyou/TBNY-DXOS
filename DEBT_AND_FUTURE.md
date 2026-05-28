@@ -16,9 +16,9 @@
 ### RePaper Route
 - [x] **[Path Fragility] 統治ツールのパス解決**: SSOT化完了。
 - [x] **[AuthAdapter Integration] Staff スキーマ準拠**: `AuthAdapter.ts` への移行完了。
-- [ ] **[DATABASE_FOREIGN_KEY_DEBT]**: クラッシュ防止用の `jobs_customer_id_fkey` 外部キー制約の追加。ローカル開発インフラ（DNS 閉塞 & IPv6 制限）により Dashboard からの手動実行が必要。
+- [x] **[DATABASE_FOREIGN_KEY_DEBT]**: クラッシュ防止用の `jobs_customer_id_fkey` 外部キー制約の追加。ローカル開発インフラ（DNS 閉塞 & IPv6 制限）により Dashboard からの手動実行が必要。
 - [ ] **DeltaManager (Logic Edition)**: 差分分析および変更インパクトの論理計算エンジンの構築。
-- [ ] **Structural Validation**: 10kg単位制約、合計重量要件等の厳格なバリデーション実装。
+- [x] **Structural Validation**: 10kg単位制約、合計重量要件等の厳格なバリデーション実装。
 - [ ] **Audit Trail v2**: 変更履歴を追記型台帳（JSONL + DB）への二重記録。
 - [x] **[Git Hooks Sync]**: `husky` & `lint-staged` 導入による自動化強制力の配備完了。
 - [ ] **[DriverApp Bridge] Supabase 実装**: `useDriverOSBridge` の実 DB 同期（TASK-001 で部分対応済み）。

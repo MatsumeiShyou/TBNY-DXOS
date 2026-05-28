@@ -1,5 +1,4 @@
-// @ts-nocheck
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import useSWR from 'swr';
 // gov-bypass [III-2] [EXPIRY:2026-05-29] Custom fetch logic replaced with SWR for robust offline resilience.
 import { supabase } from '../../shared/lib/supabase/client';
@@ -21,8 +20,7 @@ interface UseMasterCRUDOptions {
     initialSort?: SortConfig;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type DataItem = Record<string, any>;
+type DataItem = Record<string, unknown>;
 
 export default function useMasterCRUD({
     viewName,
@@ -60,7 +58,7 @@ export default function useMasterCRUD({
         return data || [];
     }, [viewName, rpcTableName, initialSort]);
 
-    const { data: rawData, error: fetchError, isLoading, mutate: refresh } = useSWR(
+    const { data: rawData, isLoading, mutate: refresh } = useSWR(
         currentUser ? `master/${viewName || rpcTableName}` : null,
         fetcher,
         {
@@ -110,7 +108,7 @@ export default function useMasterCRUD({
                 timestamp: new Date().toISOString(),
                 action: isEdit ? 'UPDATE' : 'CREATE',
                 tableName: rpcTableName,
-                recordId: selectedItem?.id || 'NEW',
+                recordId: (selectedItem?.id as string | number) || 'NEW',
                 payload: coreData,
                 staffId: currentUser.id,
                 reason: reason
@@ -160,7 +158,7 @@ export default function useMasterCRUD({
                 timestamp: new Date().toISOString(),
                 action: 'ARCHIVE',
                 tableName: rpcTableName,
-                recordId: selectedItem[idField],
+                recordId: selectedItem[idField] as string | number,
                 staffId: currentUser.id,
                 reason: reason
             });

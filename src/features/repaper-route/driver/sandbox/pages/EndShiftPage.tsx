@@ -123,7 +123,7 @@ export const EndShiftPage: React.FC<Props> = ({ stops, currentVehicle, mode, onC
            <HelpTarget helpId="input-gross-weight">
               <SmartNumericInput 
                 value={grossWeight}
-                onChange={setGrossWeight}
+                onChange={(val) => setGrossWeight(Math.round(val / 10) * 10)}
                 label="総重量"
                 unit="kg"
                 agentId="wizard:gross-weight-input"
@@ -140,6 +140,12 @@ export const EndShiftPage: React.FC<Props> = ({ stops, currentVehicle, mode, onC
                  <div className={`tw-text-xl tw-font-bold ${net > 0 ? 'tw-text-green-400' : 'tw-text-slate-500'}`}>{net.toLocaleString()} <span className="tw-text-xs">kg</span></div>
               </div>
            </div>
+           
+           {currentVehicle?.maxLoadingCapacity && net > currentVehicle.maxLoadingCapacity && (
+              <div className="tw-bg-red-50 tw-text-red-600 tw-p-3 tw-rounded-lg tw-text-sm tw-font-bold tw-flex tw-items-center tw-justify-center tw-animate-pulse">
+                <i className="fa-solid fa-triangle-exclamation tw-mr-2"></i> [過積載警告] 最大積載量({currentVehicle.maxLoadingCapacity}kg)を超過しています
+              </div>
+           )}
            
            <div className="tw-space-y-2">
              <p className="tw-text-xs tw-text-center tw-text-slate-400">

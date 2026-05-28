@@ -28,10 +28,10 @@ export const DEFAULT_BASE_TASKS: BaseTask[] = [
 ];
 
 export const TRAFFIC_STATUS_OPTIONS = [
-  { label: '順調', value: 'OK', icon: 'fa-regular fa-face-smile', color: 'tw-text-green-600' },
-  { label: '少し遅れ', value: 'DELAY_SLIGHT', icon: 'fa-regular fa-face-meh', color: 'tw-text-yellow-600' },
-  { label: '渋滞中', value: 'JAM', icon: 'fa-solid fa-traffic-light', color: 'tw-text-red-600' },
-  { label: 'トラブル', value: 'TROUBLE', icon: 'fa-solid fa-triangle-exclamation', color: 'tw-text-red-600' },
+  { label: '順調', value: 'OK', icon: 'Smile', color: 'tw-text-green-600' },
+  { label: '少し遅れ', value: 'DELAY_SLIGHT', icon: 'Meh', color: 'tw-text-yellow-600' },
+  { label: '渋滞中', value: 'JAM', icon: 'TrafficCone', color: 'tw-text-red-600' },
+  { label: 'トラブル', value: 'TROUBLE', icon: 'AlertTriangle', color: 'tw-text-red-600' },
 ];
 
 export const HELP_CONTENT: Record<string, { title: string, description: string, action: string }> = {

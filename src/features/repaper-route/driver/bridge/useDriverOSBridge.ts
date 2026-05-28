@@ -32,7 +32,8 @@ export const useDriverOSBridge = () => {
         name: v.callsign || v.number || '不明な車両',
         plateNumber: v.number || '',
         isInspected: false,
-        tareWeight: v.empty_vehicle_weight || 0
+        tareWeight: v.empty_vehicle_weight || 0,
+        maxLoadingCapacity: v.max_loading_capacity || 0
       })));
     }
   }, []);

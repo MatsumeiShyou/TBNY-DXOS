@@ -294,6 +294,7 @@ export default function DriverApp() {
                   stop={stops.find(s => s.id === selectedStopId)!} 
                   onUpdateStop={handleUpdateStop}
                   onBack={() => setView('route')}
+                  currentVehicle={bridge.availableVehicles.find(v => v.id === user.vehicleId) || { id: 'default', name: '不明', plateNumber: '-', tareWeight: 2500, isInspected: true }}
                 />
               </AgentNamespace>
             )}
