@@ -16,7 +16,7 @@
 - **[F-SSOT]**: 派生状態の `useState` 保存禁止。`useMemo` による純粋導出を義務とする。
 - **[No Leakage & Honesty]**: 秘密情報のハードコード禁止。不明点は「不明」と明示せよ。
 - **[SDR Protocol]**: 応答は「事実(State)」「判断(Decision)」「理由(Reason)」の三要素を核とし、比喩を禁止しトップダウン形式で記述せよ。T3時は明示的ラベルで5層分離せよ。
-- **[Tier Check]**: ティア判定は `governance/risk_matrix.json` を参照せよ。
+- **[Tier Check]**: ティア判定は `governance/core_config.json` を参照せよ。
   - **T1**: 低リスク。即実行。
   - **T2**: 中リスク。自動テスト合格が承認条件。
   - **T3**: 高リスク。提案→承認（PW:`ｙ`）→実行。AMPLOG(JSONL)への記録（`design_ref` 必須）。
@@ -35,7 +35,7 @@
 - **[No Guessing]**: 推測実装禁止。事実(State)なき実装は即時終了せよ。
 - **[SSOT Scan]**: 構造不明時はタスク開始時に必ず `npm run agent:scan --target=all` を実行せよ。未実行は完遂ゲートで物理的に遮断される。
 - **[GaC Protocol]**: 役割分離（Analyzer/Executor）を遵守せよ。「計画」「設計」の指示時は即座にPLANNINGモードへ復帰せよ。
-- **[Physical Verification (CAVR)]**: `governance/rules/compliance.json` に従え。UI/UX変更(Route A)はPreview実機確認必須。バイパス時は `npm run done -- --interactive` で理由を回答し、`DEBT_AND_FUTURE.md` に記録せよ。
+- **[Physical Verification (CAVR)]**: `governance/core_config.json` に従え。UI/UX変更(Route A)はPreview実機確認必須。バイパス時は `npm run done -- --interactive` で理由を回答し、`DEBT_AND_FUTURE.md` に記録せよ。
 - **[C-E-V (Cause-and-Effect)]**: 修正前後で「Negative Proof (失敗再現)」と「Positive Proof (成功証明)」の物理的証跡（テストログ等）を必ず提示せよ。
 - **[DOM Observation]**: DOM操作ツール実行前後で `[Loading]`, `[Ready]`, `[Stable]` の3段階状態を物理的に観測・報告せよ。
 - **[TGS Trace]**: T3/不具合修正前は `grep_search` 等で `C:\Users\shiyo\.gemini\antigravity\brain\` およびワークスペースを走査し、SDRに明記せよ。
