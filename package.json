@@ -4,8 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "node .agent/scripts/remind_observation.js && vite",
-    "dev:all": "node .agent/scripts/remind_observation.js && node start-all.js",
+    "dev": "vite",
+    "dev:all": "node start-all.js",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",

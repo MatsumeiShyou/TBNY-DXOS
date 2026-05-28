@@ -1,4 +1,4 @@
-// @ts-nocheck
+
 import { History, RotateCcw } from 'lucide-react';
 import type { BoardAction } from '../../types';
 

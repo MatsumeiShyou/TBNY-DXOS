@@ -25,7 +25,7 @@ const ENV_PATH = join(PROJECT_ROOT, '.env');
 const AMPLOG_PATH = join(PROJECT_ROOT, 'AMPLOG.jsonl');
 
 const VALID_TARGETS = ['FORCE_MODE', ...Object.values(RULE_MAP)];
-const VALID_VALUES = ['error', 'warning', 'off'];
+const VALID_VALUES = ['error', 'off'];
 
 const Log = {
   info: (msg) => console.log(`[SET_FORCE_MODE] ${msg}`),

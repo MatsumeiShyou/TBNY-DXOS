@@ -81,6 +81,15 @@ export interface BoardSplit {
     endTime: string;
 }
 
+export interface BoardState {
+    drivers: BoardDriver[];
+    jobs: BoardJob[];
+    pendingJobs: BoardJob[];
+    splits: BoardSplit[];
+    vehicles: MasterVehicle[];
+    lastSync: string;
+}
+
 export interface BoardHistoryEntry {
     jobs: BoardJob[];
     pendingJobs: BoardJob[];

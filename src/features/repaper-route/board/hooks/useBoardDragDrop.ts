@@ -1,4 +1,4 @@
-// @ts-nocheck
+
 import { useState, useCallback, useEffect, useMemo } from 'react';
 
 import type { BoardJob, BoardDriver, BoardSplit } from '../../types';

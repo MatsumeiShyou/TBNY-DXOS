@@ -1,4 +1,6 @@
-// @ts-nocheck
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { supabase } from '../../../../shared/lib/supabase/client';
 import { nativeSupabaseFetch } from '../../lib/supabase/nativeFetch';
@@ -12,13 +14,7 @@ import type {
 } from '../../types';
 import type { Staff } from '../../types';
 
-// --- Types ---
-export interface BoardState {
-    drivers: BoardDriver[];
-    jobs: BoardJob[];
-    pendingJobs: BoardJob[];
-    splits: BoardSplit[];
-}
+import type { BoardState } from '../../types';
 
 export const useBoardData = (user: Staff | null, currentDateKey: string, isInteracting: boolean = false) => {
     const currentUserId = user?.id;
@@ -58,7 +54,9 @@ export const useBoardData = (user: Staff | null, currentDateKey: string, isInter
         drivers: [],
         jobs: [],
         pendingJobs: [],
-        splits: []
+        splits: [],
+        vehicles: [],
+        lastSync: new Date().toISOString()
     });
 
     const [isDataLoaded, setIsDataLoaded] = useState(false);
@@ -69,7 +67,7 @@ export const useBoardData = (user: Staff | null, currentDateKey: string, isInter
         if (remoteData && history.past.length === 0 && !isInteracting) {
             // 車両マスタのスペックを BoardDriver に結合 (物理回帰)
             const enrichedDrivers = (remoteData.drivers || []).map((driver: BoardDriver) => {
-                const mv = masterVehicles.find(v => 
+                const mv = masterVehicles.find((v: any) => 
                     v.callsign === driver.vehicleCallsign || 
                     v.number === (driver as any).vehicleNumber
                 );
@@ -81,8 +79,11 @@ export const useBoardData = (user: Staff | null, currentDateKey: string, isInter
             });
 
             setState({
+                ...state,
                 ...remoteData,
-                drivers: enrichedDrivers
+                drivers: enrichedDrivers,
+                vehicles: state.vehicles,
+                lastSync: state.lastSync
             });
             setIsDataLoaded(true);
         }
@@ -101,7 +102,7 @@ export const useBoardData = (user: Staff | null, currentDateKey: string, isInter
     const canEditBoard = useMemo(() => {
         if (!user) return false;
         if (user.role === 'admin') return true;
-        return !!user.permissions?.can_edit_board;
+        return !!(user as any).permissions?.can_edit_board;
     }, [user]);
 
     const [exceptionReasons, setExceptionReasons] = useState<ExceptionReasonMaster[]>([]);
@@ -441,14 +442,14 @@ export const useBoardData = (user: Staff | null, currentDateKey: string, isInter
                     break;
                 }
                 case 'ADD_COLUMN':
-                    if (payload.data) newState.drivers.push(payload.data);
+                    if (payload.data) newState.drivers.push(payload.data as BoardDriver);
                     break;
                 case 'DELETE_COLUMN':
                     newState.drivers = newState.drivers.filter(d => d.id !== payload.columnId);
                     break;
                 case 'UPDATE_DRIVER':
                     newState.drivers = newState.drivers.map(d => 
-                        d.id === payload.driverId ? { ...d, ...payload.data } : d
+                        d.id === payload.driverId ? { ...d, ...(payload.data as any) } : d
                     );
                     break;
                 case 'DELETE_DRIVER':
@@ -456,11 +457,11 @@ export const useBoardData = (user: Staff | null, currentDateKey: string, isInter
                     newState.jobs = newState.jobs.filter(j => j.driverId !== payload.driverId);
                     break;
                 case 'ADD_JOB':
-                    if (payload.data) newState.jobs.push(payload.data);
+                    if (payload.data) newState.jobs.push(payload.data as BoardJob);
                     break;
                 case 'UPDATE_JOB':
                     newState.jobs = newState.jobs.map(j => 
-                        j.id === payload.jobId ? { ...j, ...payload.data } : j
+                        j.id === payload.jobId ? { ...j, ...(payload.data as any) } : j
                     );
                     break;
             }
@@ -478,12 +479,12 @@ export const useBoardData = (user: Staff | null, currentDateKey: string, isInter
     const addColumn = useCallback(() => {
         if (!editMode) return;
         const newCourseName = String.fromCharCode(65 + state.drivers.length);
-        const newColumn: BoardDriver = {
+        const newColumn = {
             id: `course_${newCourseName}_${Date.now()}`,
             name: `${newCourseName}コース`,
             driverName: '未割当', currentVehicle: '未定', course: newCourseName,
             color: 'bg-gray-50 border-gray-200'
-        };
+        } as BoardDriver;
         setState(prev => ({ ...prev, drivers: [...prev.drivers, newColumn] }));
         recordAction({
             action_type: 'ADD_COLUMN',
@@ -510,7 +511,7 @@ export const useBoardData = (user: Staff | null, currentDateKey: string, isInter
         if (!targetJob || targetJob.status === 'confirmed') return;
         let restoredTimeConstraint = targetJob.timeConstraint;
         if (targetJob.location_id) {
-            const masterPoint = masterPoints.find(p => p.id === targetJob.location_id);
+            const masterPoint = masterPoints.find((p: any) => p.id === targetJob.location_id);
             if (masterPoint) {
                 restoredTimeConstraint = masterPoint.time_constraint || undefined;
             }
@@ -523,7 +524,7 @@ export const useBoardData = (user: Staff | null, currentDateKey: string, isInter
                 driverId: undefined, 
                 startTime: undefined,
                 timeConstraint: restoredTimeConstraint
-            }]
+            } as BoardJob]
         }));
         recordAction({
             action_type: 'UNASSIGN_JOB',

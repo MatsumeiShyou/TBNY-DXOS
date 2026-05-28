@@ -1,4 +1,4 @@
-// @ts-nocheck
+
 import { useState, useEffect, useCallback } from 'react';
 
 import { supabase } from '../../../../shared/lib/supabase/client';
@@ -56,7 +56,7 @@ export const useDataSync = (
 
         if (!isAdmin && (target < min || target > lastDayOfNextMonth)) {
             console.warn(`[useDataSync] Unauthorized fetch attempt for ${dateKey}. Reverting to localized empty state.`);
-            setData({ drivers: getDefaultDrivers(), jobs: [], pendingJobs: [], splits: [] });
+            setData({ drivers: getDefaultDrivers(), jobs: [], pendingJobs: [], splits: [], vehicles: [], lastSync: new Date().toISOString() });
             setIsLoading(false);
             return;
         }
@@ -75,7 +75,9 @@ export const useDataSync = (
                 const upgradedLocalData: BoardState = {
                     ...localData,
                     pendingJobs: upgradedPending,
-                    jobs: upgradedJobs
+                    jobs: upgradedJobs,
+                    vehicles: localData.vehicles || [],
+                    lastSync: localData.lastSync || new Date().toISOString()
                 };
 
                 setData(upgradedLocalData);
@@ -169,7 +171,9 @@ export const useDataSync = (
                         : getDefaultDrivers(),
                     jobs: upgradedSavedJobs,
                     pendingJobs: mergedPendingJobs,
-                    splits: Array.isArray(routeData.splits) ? routeData.splits as unknown as BoardSplit[] : []
+                    splits: Array.isArray(routeData.splits) ? routeData.splits as unknown as BoardSplit[] : [],
+                    vehicles: [],
+                    lastSync: new Date().toISOString()
                 };
 
                 setData(newState);
@@ -182,7 +186,9 @@ export const useDataSync = (
                     drivers: getDefaultDrivers(),
                     jobs: fallbackJobs,
                     pendingJobs: autoImportedJobs,
-                    splits: []
+                    splits: [],
+                    vehicles: [],
+                    lastSync: new Date().toISOString()
                 };
                 setData(newState);
                 cache[dateKey] = newState;

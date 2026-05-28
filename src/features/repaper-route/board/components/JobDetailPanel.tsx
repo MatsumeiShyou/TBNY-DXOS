@@ -1,4 +1,4 @@
-// @ts-nocheck
+
 import React, { useState } from 'react';
 import { 
     X, Clock, User, Trash2, AlertTriangle, 

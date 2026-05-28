@@ -11,6 +11,7 @@
 - [ ] **[PWA_ASSET_DEBT]**: `manifest.json` のアイコンが `vite.svg` の暫定流用。正式なアセット生成と差し替えが必要。
 - [ ] **[MODULE_INTEGRATION_DEBT]**: RePaper Route 等の外部モジュールとの物理的な統合（リンク、データ連携、SSO）。現在 Portal 側からの並行起動を復旧済み。
 - [ ] **[SWR_FULL_ADOPTION]**: 全データフェッチ層への `useSWR` パターンの導入（オフライン耐性の強化）。
+- [ ] **[LEGACY_LINTER_DEBT]**: `no-explicit-any` や `exhaustive-deps` 等の一般的な Linter 例外（eslint-disable）が約35箇所残留。A群規則の例外はゼロを達成済みだが、これらの一般的な負債は機能開発と並行して順次解消する。
 
 ### RePaper Route
 - [x] **[Path Fragility] 統治ツールのパス解決**: SSOT化完了。

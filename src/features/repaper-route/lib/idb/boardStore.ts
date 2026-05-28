@@ -1,5 +1,5 @@
 import { openDB, type IDBPDatabase, type DBSchema } from 'idb';
-import type { BoardState } from '../../board/hooks/useBoardData';
+import type { BoardState } from '../../types';
 
 const DB_NAME = 'repaper-route-offline-cache';
 const STORE_NAME = 'board-routes';

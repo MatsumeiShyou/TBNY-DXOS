@@ -1,5 +1,4 @@
-// @ts-nocheck
-import { useState, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { getHolidayInfo } from '../utils/holidayUtils';
 import { clsx, type ClassValue } from 'clsx';
