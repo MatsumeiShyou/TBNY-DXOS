@@ -15,9 +15,7 @@ CREATE OR REPLACE FUNCTION rpc_execute_master_update(
     p_decision_type text,
     p_reason text,
     p_user_id uuid
-) RETURNS void AS 
-SET search_path = public
-$$
+) RETURNS void AS $$
 DECLARE
     v_staff_id uuid;
     v_new_id uuid;
@@ -99,7 +97,7 @@ BEGIN
     WHERE id = v_staff_id;
 
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
 
 -- 3. 既存データへの適用
 UPDATE staffs SET is_active = true WHERE is_active IS NULL;
