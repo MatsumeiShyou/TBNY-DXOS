@@ -16,28 +16,33 @@ export function LoginGate() {
     setError('');
     setIsSubmitting(true);
     
+    let timeoutId: ReturnType<typeof setTimeout> | undefined;
     try {
       // [SAFETY] 認証リクエストが10秒以上かかる場合は強制的にタイムアウトさせる
-      const timeout = new Promise<never>((_, reject) => 
-        setTimeout(() => reject(new Error('AUTH_TIMEOUT')), 10000)
-      );
+      const timeout = new Promise<never>((_, reject) => {
+        timeoutId = setTimeout(() => reject(new Error('AUTH_TIMEOUT')), 10000);
+      });
 
       const loginTask = AuthAdapter.signInWithPassword(email, password);
       const result = await Promise.race([loginTask, timeout]);
       
-      const { error: authError } = result as { error: any };
+      const { error: authError } = result as { error: { message: string } | null };
       if (authError) {
         console.error('[AUTH] Login failed:', authError.message);
         setError('認証に失敗しました。メールアドレスまたはパスワードを確認してください。');
       }
-    } catch (err: any) {
+    } catch (err) {
       console.error('[AUTH] Login exception:', err);
-      if (err.message === 'AUTH_TIMEOUT') {
+      const isTimeout = err instanceof Error && err.message === 'AUTH_TIMEOUT';
+      if (isTimeout) {
         setError('認証リクエストがタイムアウトしました。通信環境を確認し、もう一度お試しください。');
       } else {
         setError('認証中に予期せぬエラーが発生しました。');
       }
     } finally {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
       setIsSubmitting(false);
     }
   };

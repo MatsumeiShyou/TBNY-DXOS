@@ -1,5 +1,5 @@
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 
 import { supabase } from '../../../../shared/lib/supabase/client';
 import { nativeSupabaseFetch } from '../../lib/supabase/nativeFetch';
@@ -15,6 +15,17 @@ type MasterPoint = Database['public']['Tables']['master_collection_points']['Row
 
 // Simple Cache Store (In-Memory)
 const cache: Record<string, BoardState> = {};
+
+function getErrorMessage(err: unknown): string {
+    if (err instanceof Error) return err.message;
+    if (typeof err === 'object' && err !== null && 'message' in err) {
+        const message = (err as Record<string, unknown>).message;
+        if (typeof message === 'string') {
+            return message;
+        }
+    }
+    return String(err);
+}
 
 export interface SyncResult {
     data: BoardState | null;
@@ -33,6 +44,11 @@ export const useDataSync = (
     const [error, setError] = useState<string | null>(null);
 
     const dateKey = date; // date is already YYYY-MM-DD string from useBoardData.ts
+
+    const activeDateRef = useRef(date);
+    useEffect(() => {
+        activeDateRef.current = date;
+    }, [date]);
 
     const fetchData = useCallback(async (forceBypassCache: boolean = false) => {
         if (!forceBypassCache && cache[dateKey]) {
@@ -69,8 +85,29 @@ export const useDataSync = (
             const localData = await boardStore.get(dateKey);
             if (localData && !forceBypassCache) {
                 // If local data exists, apply Upgrade Logic via JobAdapter
-                const upgradedPending = (localData.pendingJobs || []).map((j: any) => JobAdapter.mapToBoardJob(j));
-                const upgradedJobs = (localData.jobs || []).map((j: any) => JobAdapter.mapToBoardJob(j));
+                const upgradedPending = (localData.pendingJobs || [])
+                    .filter(Boolean)
+                    .map((j: unknown) => {
+                        try {
+                            return JobAdapter.mapToBoardJob(j as Record<string, unknown>);
+                        } catch (e) {
+                            console.warn('Skipping corrupt pending job from localData:', e);
+                            return null;
+                        }
+                    })
+                    .filter((j): j is BoardJob => j !== null);
+
+                const upgradedJobs = (localData.jobs || [])
+                    .filter(Boolean)
+                    .map((j: unknown) => {
+                        try {
+                            return JobAdapter.mapToBoardJob(j as Record<string, unknown>);
+                        } catch (e) {
+                            console.warn('Skipping corrupt job from localData:', e);
+                            return null;
+                        }
+                    })
+                    .filter((j): j is BoardJob => j !== null);
                 
                 const upgradedLocalData: BoardState = {
                     ...localData,
@@ -79,6 +116,11 @@ export const useDataSync = (
                     vehicles: localData.vehicles || [],
                     lastSync: localData.lastSync || new Date().toISOString()
                 };
+
+                if (dateKey !== activeDateRef.current) {
+                    console.log(`[useDataSync] Discarding stale fetch result for date: ${dateKey}`);
+                    return;
+                }
 
                 setData(upgradedLocalData);
                 cache[dateKey] = upgradedLocalData;
@@ -104,7 +146,7 @@ export const useDataSync = (
                         ...p,
                         job_title: p.name,
                         bucket_type: p.visit_slot === 'AM' ? 'AM' : 'PM',
-                        duration_minutes: (p as any).duration_minutes || 60,
+                        duration_minutes: (p as Record<string, unknown>).duration_minutes as number | undefined || 60,
                         special_notes: p.note,
                         start_time: (p.time_constraint_type && p.time_constraint_type !== 'NONE') ? '要確認' : undefined,
                         task_type: (p.special_type && p.special_type !== 'NONE') ? 'special' : 'collection'
@@ -119,7 +161,7 @@ export const useDataSync = (
                 }
             });
 
-            const routeData = (routesRes.data as any[])?.[0] || null;
+            const routeData = (routesRes.data as Record<string, unknown>[])?.[0] || null;
 
             // === 診断ログ：データ消失の追跡 ===
             console.log(`[useDataSync] routeData found: ${!!routeData}`);
@@ -134,8 +176,29 @@ export const useDataSync = (
                 const savedPending = Array.isArray(routeData?.pending) ? routeData.pending : [];
                 const savedJobs = Array.isArray(routeData?.jobs) ? routeData.jobs : [];
 
-                const upgradedSavedPending = savedPending.map((j: any) => JobAdapter.mapToBoardJob(j));
-                const upgradedSavedJobs = savedJobs.map((j: any) => JobAdapter.mapToBoardJob(j));
+                const upgradedSavedPending = savedPending
+                    .filter(Boolean)
+                    .map((j: unknown) => {
+                        try {
+                            return JobAdapter.mapToBoardJob(j as Record<string, unknown>);
+                        } catch (e) {
+                            console.warn('Skipping corrupt saved pending job:', e);
+                            return null;
+                        }
+                    })
+                    .filter((j): j is BoardJob => j !== null);
+
+                const upgradedSavedJobs = savedJobs
+                    .filter(Boolean)
+                    .map((j: unknown) => {
+                        try {
+                            return JobAdapter.mapToBoardJob(j as Record<string, unknown>);
+                        } catch (e) {
+                            console.warn('Skipping corrupt saved job:', e);
+                            return null;
+                        }
+                    })
+                    .filter((j): j is BoardJob => j !== null);
 
                 console.log(`[useDataSync] upgradedSavedPending: ${upgradedSavedPending.length}, upgradedSavedJobs: ${upgradedSavedJobs.length}`);
 
@@ -166,7 +229,7 @@ export const useDataSync = (
                 console.log(`[useDataSync] FINAL mergedPendingJobs: ${mergedPendingJobs.length}`);
 
                 const newState: BoardState = {
-                    drivers: Array.isArray(routeData.drivers) && (routeData.drivers as any[]).length > 0
+                    drivers: Array.isArray(routeData.drivers) && (routeData.drivers as Record<string, unknown>[]).length > 0
                         ? routeData.drivers as unknown as BoardDriver[]
                         : getDefaultDrivers(),
                     jobs: upgradedSavedJobs,
@@ -176,12 +239,22 @@ export const useDataSync = (
                     lastSync: new Date().toISOString()
                 };
 
+                if (dateKey !== activeDateRef.current) {
+                    console.log(`[useDataSync] Discarding stale fetch result for date: ${dateKey}`);
+                    return;
+                }
+
                 setData(newState);
                 cache[dateKey] = newState;
                 
                 await boardStore.save(dateKey, newState);
 
             } else {
+                if (dateKey !== activeDateRef.current) {
+                    console.log(`[useDataSync] Discarding stale fetch result for date: ${dateKey}`);
+                    return;
+                }
+
                 const newState: BoardState = {
                     drivers: getDefaultDrivers(),
                     jobs: fallbackJobs,
@@ -195,13 +268,16 @@ export const useDataSync = (
                 
                 await boardStore.save(dateKey, newState);
             }
-        } catch (err: any) {
+        } catch (err: unknown) {
+            if (dateKey !== activeDateRef.current) return;
             console.error('Fetch error:', err);
-            setError(err.message);
+            setError(getErrorMessage(err));
         } finally {
-            setIsLoading(false);
+            if (dateKey === activeDateRef.current) {
+                setIsLoading(false);
+            }
         }
-    }, [date, dateKey, getDefaultDrivers]);
+    }, [date, dateKey, getDefaultDrivers, userRole]);
 
     useEffect(() => {
         // [100pt 統治] 認証が完全に解決されていない状態（または DXOS からのトークンが未着の状態）での

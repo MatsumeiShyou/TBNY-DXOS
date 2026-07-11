@@ -5,7 +5,7 @@ import type { DXUser } from '../../shared/types/auth';
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [currentUser, setCurrentUser] = useState<DXUser | null>(() => 
-        AuthAdapter.getCachedProfile()
+        AuthAdapter.getCachedProfile() as DXUser | null
     );
     const [authStatus, setAuthStatus] = useState<AuthStatus>(() => {
         if (AuthAdapter.hasCachedSession()) return 'OPTIMISTIC';
@@ -27,11 +27,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
             verificationPromise.current = (async () => {
                 try {
-                    const staffTimeout = new Promise<never>((_, reject) => 
-                        setTimeout(() => reject(new Error('STAFF_FETCH_TIMEOUT')), 30000)
-                    );
+                    let timeoutId: ReturnType<typeof setTimeout> | undefined;
+                    const staffTimeout = new Promise<never>((_, reject) => {
+                        timeoutId = setTimeout(() => reject(new Error('STAFF_FETCH_TIMEOUT')), 30000);
+                    });
                     const staffFetch = AuthAdapter.getStaffByAuthUid(uid);
-                    return await Promise.race([staffFetch, staffTimeout]);
+                    try {
+                        return await Promise.race([staffFetch, staffTimeout]);
+                    } finally {
+                        if (timeoutId) clearTimeout(timeoutId);
+                    }
                 } catch (err) {
                     console.error('[STATE] AuthProvider: Profile verification failed:', err);
                     return null;
@@ -47,10 +52,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             console.log(`[STATE] AuthProvider: Initialization started (Status: ${authStatus}).`);
             
             try {
-                // [SAFETY] 初期検証が 8秒以上かかる場合は強制中断
-                const timeout = new Promise<never>((_, reject) => 
-                    setTimeout(() => reject(new Error('INITIALIZE_TIMEOUT')), 30000)
-                );
+                let timeoutId: ReturnType<typeof setTimeout> | undefined;
+                const timeout = new Promise<never>((_, reject) => {
+                    timeoutId = setTimeout(() => reject(new Error('INITIALIZE_TIMEOUT')), 30000);
+                });
 
                 const verifyPromise = (async () => {
                     const cachedUid = AuthAdapter.getCachedUserId();
@@ -76,11 +81,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                     return null;
                 })();
 
-                const result = await Promise.race([verifyPromise, timeout])
-                    .catch((err) => {
-                        console.error('[STATE] AuthProvider: Verification promise failed:', err);
-                        return null;
-                    });
+                let result;
+                try {
+                    result = await Promise.race([verifyPromise, timeout]);
+                } catch (err) {
+                    console.error('[STATE] AuthProvider: Verification promise failed:', err);
+                    result = null;
+                } finally {
+                    if (timeoutId) clearTimeout(timeoutId);
+                }
 
                 let finalStatus: AuthStatus = 'UNAUTHENTICATED';
                 if (result && result.staff) {
@@ -146,7 +155,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
                     // [OPTIMIZATION & FIX] トークンリフレッシュ時、すでにキャッシュされた同一ユーザーであればプロフィールの再取得をスキップする。
                     // これにより、操作中の不要なDBアクセスと再レンダリング/ログアウトの競合を防ぐ。
-                    const cachedUser = AuthAdapter.getCachedProfile();
+                    const cachedUser = AuthAdapter.getCachedProfile() as DXUser | null;
                     if (_event === 'TOKEN_REFRESHED' && cachedUser && cachedUser.id === user.id) {
                         console.log(`[STATE] AuthProvider: Token refreshed for existing user. Skipping profile fetch.`);
                         setAuthStatus('VERIFIED');

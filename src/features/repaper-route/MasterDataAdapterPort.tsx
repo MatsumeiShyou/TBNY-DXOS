@@ -2,13 +2,23 @@ import useSWR from 'swr';
 import { supabase } from '../../shared/lib/supabase/client';
 import React, { createContext, useContext, useMemo } from 'react';
 
-const MasterDataContext = createContext<any>(null);
+export interface MasterDataContextType {
+    drivers: Record<string, unknown>[];
+    vehicles: Record<string, unknown>[];
+    points: Record<string, unknown>[];
+    customers: Record<string, unknown>[];
+    items: Record<string, unknown>[];
+    isLoading: boolean;
+    refresh: () => Promise<void>;
+}
+
+const MasterDataContext = createContext<MasterDataContextType | null>(null);
 
 export const MasterDataProvider = ({ children }: { children: React.ReactNode }) => {
-    const fetchTable = async (table: string) => {
+    const fetchTable = async (table: string): Promise<Record<string, unknown>[]> => {
         const { data, error } = await supabase.from(table).select('*');
         if (error) throw error;
-        return data || [];
+        return Array.isArray(data) ? (data as Record<string, unknown>[]) : [];
     };
 
     const { data: drivers, isLoading: drLoading } = useSWR('master/drivers', () => fetchTable('drivers'));

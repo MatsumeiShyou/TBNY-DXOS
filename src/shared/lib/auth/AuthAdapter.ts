@@ -111,7 +111,7 @@ export const AuthAdapter = {
   /**
    * プロフィール情報を localStorage にキャッシュする
    */
-  saveCachedProfile(profile: any) {
+  saveCachedProfile(profile: unknown) {
     if (typeof window === 'undefined') return;
     localStorage.setItem('dxos_cached_profile', JSON.stringify(profile));
   },
@@ -119,7 +119,7 @@ export const AuthAdapter = {
   /**
    * キャッシュされたプロフィール情報を取得する
    */
-  getCachedProfile(): any | null {
+  getCachedProfile(): unknown | null {
     if (typeof window === 'undefined') return null;
     const cached = localStorage.getItem('dxos_cached_profile');
     if (!cached) return null;

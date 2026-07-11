@@ -204,8 +204,7 @@ function verifySQLSync() {
     Log.info('Checking DB Schema Sync (Sentinel 5.7)...');
     try {
         const diff = runCommand('npx supabase db diff --local', true);
-        const isEmptyJsonDiff = diff.includes('"diff":"\\n"') || diff.includes('"diff":""');
-        if (diff && diff.trim() !== "" && !diff.includes("No changes found") && !isEmptyJsonDiff) {
+        if (diff && diff.trim() !== "" && !diff.includes("No changes found") && !diff.includes("No schema changes found") && !diff.includes('"diff":"\\n"') && !diff.includes('"diff":"\\r\\n"')) {
             Log.error('SCHEMA SYNC VIOLATION: Local DB schema is out of sync with code.');
             process.exit(1);
         }

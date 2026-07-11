@@ -12,6 +12,19 @@ interface SortConfig {
     ascending: boolean;
 }
 
+function toError(err: unknown): Error {
+    if (err instanceof Error) return err;
+    if (err && typeof err === 'object') {
+        const obj = err as Record<string, unknown>;
+        if (typeof obj.message === 'string') {
+            const msg = obj.message;
+            const extra = [obj.code, obj.details, obj.hint].filter(Boolean).join(' | ');
+            return new Error(extra ? `${msg} (${extra})` : msg);
+        }
+    }
+    return new Error(String(err));
+}
+
 interface UseMasterCRUDOptions {
     viewName: string;
     rpcTableName: string;
@@ -118,7 +131,8 @@ export default function useMasterCRUD({
             setIsModalOpen(false);
             showNotification(isEdit ? "マスタを更新しました" : "マスタを新規登録しました", "success");
         } catch (e) {
-            const message = e instanceof Error ? e.message : String(e);
+            const error = toError(e);
+            const message = error.message;
             let displayMessage = "保存エラー: " + message;
             
             // DXOS_VAL_ エラーのパースと日本語化
@@ -167,7 +181,8 @@ export default function useMasterCRUD({
             setIsDeleteModalOpen(false);
             showNotification("データをアーカイブしました", "success");
         } catch (e) {
-            const message = e instanceof Error ? e.message : String(e);
+            const error = toError(e);
+            const message = error.message;
             let displayMessage = "アーカイブエラー: " + message;
 
             if (message.includes('DXOS_VAL_01')) {

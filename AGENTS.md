@@ -40,6 +40,7 @@
 - **[DOM Observation]**: DOM操作ツール実行前後で `[Loading]`, `[Ready]`, `[Stable]` の3段階状態を物理的に観測・報告せよ。
 - **[TGS Trace]**: T3/不具合修正前は `grep_search` 等で `C:\Users\shiyo\.gemini\antigravity\brain\` およびワークスペースを走査し、SDRに明記せよ。
 - **[Cognitive Gov]**: ティア比例型の思考ステップを義務付ける。理由なき再設計は制限される。
+- **[Cleanup & Type-Check]**: Hooks（`useEffect`等）のロジックを削除・分離した際は、必ずファイル先頭の `import` 文もセットでクリーンアップせよ。また、Lint確認だけでなく、必ず `npm run type-check` を併用してコンパイルレベルでの検証を義務とする。
 
 ---
 

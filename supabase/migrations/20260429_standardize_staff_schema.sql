@@ -15,7 +15,8 @@ CREATE OR REPLACE FUNCTION rpc_execute_master_update(
     p_decision_type text,
     p_reason text,
     p_user_id uuid
-) RETURNS void AS $$
+) RETURNS void AS 
+$$
 DECLARE
     v_staff_id uuid;
     v_new_id uuid;
