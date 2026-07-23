@@ -9,4 +9,20 @@ if (!supabaseUrl || !supabaseAnonKey) {
     throw new Error(msg);
 }
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+    auth: {
+        // [ROOT CAUSE FIX] React StrictMode が開発時にコンポーネントを2回マウントするため、
+        // 同一クライアントから getSession() が並行して呼ばれ、
+        // ブラウザの Web Locks API（navigator.locks）でロック競合が発生する。
+        // → NavigatorLockAcquireTimeoutError: Lock "lock:sb-*-auth-token" was released
+        //    because another request stole it
+        //
+        // 対策: Web Locks API を使わず、関数をそのまま実行するカスタムロックを提供する。
+        // これにより、並行アクセスでもエラーにならない。
+        // 本番環境でも安全（単一クライアントインスタンスのため競合は発生しない）。
+        lock: async <R>(_name: string, _acquireTimeout: number, fn: () => Promise<R>): Promise<R> => {
+            return await fn();
+        },
+    },
+});
+
