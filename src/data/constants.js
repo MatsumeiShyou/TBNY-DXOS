@@ -37,7 +37,7 @@ export const CUSTOMERS = [
     holidayCollection: false,
     defaultDuration: 45, requiredVehicle: '',
     items: [], note: '', isInvalid: false,
-    preferredTime: '9:00'
+    preferredTime: '09:00-12:00'
   },
   { 
     id: 'c1_pm', 
@@ -48,7 +48,7 @@ export const CUSTOMERS = [
     holidayCollection: false,
     defaultDuration: 45, requiredVehicle: '',
     items: [], note: '', isInvalid: false,
-    preferredTime: '13:00'
+    preferredTime: '13:00~'
   },
   { 
     id: 'c2', 
@@ -69,7 +69,7 @@ export const CUSTOMERS = [
     holidayCollection: true,
     defaultDuration: 45, requiredVehicle: '',
     items: [], note: '9時以降', isInvalid: false,
-    preferredTime: '9:00'
+    preferredTime: '~12:00'
   },
   { 
     id: 'c4', 

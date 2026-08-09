@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { X, Database, ArrowUpDown, Clock, AlertTriangle } from 'lucide-react';
+import { formatPreferredTime } from '../utils/timeUtils';
 
 export default function PendingJobsModal({ selectedCell, pendingJobs, driverName, onAddJob, onClose }) {
   if (!selectedCell) return null;
@@ -37,7 +38,7 @@ export default function PendingJobsModal({ selectedCell, pendingJobs, driverName
               <div className="flex justify-between items-start">
                 <div className="flex items-center gap-2 overflow-hidden">
                   {job.preferredTime ? (
-                    <span className="text-[10px] px-1.5 py-0.5 rounded font-bold border bg-gray-100 text-gray-600 border-gray-200 flex items-center gap-0.5 whitespace-nowrap"><Clock size={10} /> {job.preferredTime}</span>
+                    <span className="text-[10px] px-1.5 py-0.5 rounded font-bold border bg-gray-100 text-gray-600 border-gray-200 flex items-center gap-0.5 whitespace-nowrap"><Clock size={10} /> {formatPreferredTime(job.preferredTime)}</span>
                   ) : (
                     <span className="text-[10px] px-1.5 py-0.5 rounded font-bold border bg-gray-100 text-gray-500 border-gray-200 whitespace-nowrap">⭐ スポット</span>
                   )}

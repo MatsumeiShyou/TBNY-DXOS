@@ -1,6 +1,6 @@
 import { GripVertical, AlertTriangle } from 'lucide-react';
 import { COLOR_PALETTE, QUARTER_HEIGHT_REM } from '../data/constants';
-import { timeToMinutes } from '../utils/timeUtils';
+import { timeToMinutes, isTimeWarning, formatPreferredTime } from '../utils/timeUtils';
 
 export default function JobCard({
   job,
@@ -30,7 +30,7 @@ export default function JobCard({
     >
       {renderJobHourLines(job)}
       {job.isVehicleError && <div className="absolute top-0 right-0 p-0.5 z-30 bg-red-500 text-white rounded-bl-md shadow"><AlertTriangle size={12} /></div>}
-      {!job.isVehicleError && job.preferredTime && Math.abs(timeToMinutes(job.startTime) - timeToMinutes(job.preferredTime)) > 15 && <div className="absolute top-0 right-0 p-0.5 z-30 bg-amber-500 text-white rounded-bl-md shadow" title={`希望: ${job.preferredTime}`}><AlertTriangle size={12} /></div>}
+      {!job.isVehicleError && job.preferredTime && isTimeWarning(job.startTime, job.duration, job.preferredTime) && <div className="absolute top-0 right-0 p-0.5 z-30 bg-amber-500 text-white rounded-bl-md shadow" title={`希望: ${formatPreferredTime(job.preferredTime)}`}><AlertTriangle size={12} /></div>}
       <div className="absolute top-0 left-0 right-0 h-1.5 cursor-ns-resize z-20 hover:bg-black/10 transition-colors rounded-t" onMouseDown={(e) => { e.stopPropagation(); recordHistory(); setResizingState({ id: job.id, direction: 'top', startY: e.clientY, originalDuration: job.duration, originalStartTime: job.startTime }); }} />
       <div className="absolute left-0 top-0 bottom-0 w-6 flex items-center justify-center cursor-grab active:cursor-grabbing z-20 hover:bg-black/5 rounded-l" onMouseDown={(e) => { e.stopPropagation(); if (e.button === 2) e.preventDefault(); setDraggingJobId(job.id); setSelectedJobId(job.id); setDragButton(e.button); setDragOffset({ x: e.clientX, y: e.clientY }); setDragCurrent({ x: 0, y: 0 }); setDragMousePos({ x: e.clientX, y: e.clientY }); }}>
         <GripVertical size={12} className="text-black/20" />

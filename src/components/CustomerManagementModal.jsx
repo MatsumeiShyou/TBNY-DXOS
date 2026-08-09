@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, Plus, Search, Trash2, Building, Calendar, Settings, AlertCircle } from 'lucide-react';
 import { MASTER_VEHICLES_LIST } from '../data/constants';
+import { parsePreferredTime } from '../utils/timeUtils';
 
 const DAYS = [
   { key: 'mon', label: '月' },
@@ -46,7 +47,7 @@ export default function CustomerManagementModal({ customers, masterVehicles, onS
 
   const handleSelectCustomer = (customer) => {
     setSelectedCustomerId(customer.id);
-    setFormData({ ...customer });
+    setFormData({ ...initialFormState, ...customer });
     setActiveTab('basic');
   };
 
@@ -62,6 +63,32 @@ export default function CustomerManagementModal({ customers, masterVehicles, onS
       ...prev,
       [name]: type === 'checkbox' ? checked : value
     }));
+  };
+
+  const handlePrefTypeChange = (e) => {
+    const newType = e.target.value;
+    let newStr = '';
+    if (newType === 'between') newStr = '09:00-11:00';
+    else if (newType === 'before') newStr = '~12:00';
+    else if (newType === 'after') newStr = '13:00~';
+    else if (newType === 'exact') newStr = '09:00';
+    
+    setFormData(prev => ({ ...prev, preferredTime: newStr }));
+  };
+
+  const handlePrefTimeChange = (field, val) => {
+    const parsed = parsePreferredTime(formData.preferredTime);
+    let newStr = formData.preferredTime;
+    if (parsed.type === 'between') {
+      newStr = field === 'start' ? `${val}-${parsed.end || '11:00'}` : `${parsed.start || '09:00'}-${val}`;
+    } else if (parsed.type === 'before') {
+      newStr = `~${val}`;
+    } else if (parsed.type === 'after') {
+      newStr = `${val}~`;
+    } else if (parsed.type === 'exact') {
+      newStr = val;
+    }
+    setFormData(prev => ({ ...prev, preferredTime: newStr }));
   };
 
   const handleScheduleChange = (day, freq) => {
@@ -261,7 +288,7 @@ export default function CustomerManagementModal({ customers, masterVehicles, onS
                               <div className="w-8 text-sm font-bold text-gray-700">{day.label}</div>
                               <div className="flex flex-wrap gap-2">
                                 {FREQUENCIES.map(freq => {
-                                  const isActive = (formData.scheduleRules[day.key] || []).includes(freq.value);
+                                  const isActive = (formData.scheduleRules?.[day.key] || []).includes(freq.value);
                                   return (
                                     <button
                                       key={freq.value}
@@ -291,9 +318,45 @@ export default function CustomerManagementModal({ customers, masterVehicles, onS
                     </div>
 
                     <div className="grid grid-cols-3 gap-4">
-                      <div>
+                      <div className="col-span-2">
                         <label className="block text-xs font-bold text-gray-600 mb-1">希望時間</label>
-                        <input type="time" name="preferredTime" value={formData.preferredTime} onChange={handleChange} className="w-full border rounded p-2 text-sm" />
+                        <div className="flex gap-2">
+                          <select 
+                            value={parsePreferredTime(formData.preferredTime).type} 
+                            onChange={handlePrefTypeChange}
+                            className="border rounded p-2 text-sm bg-white"
+                          >
+                            <option value="none">指定なし</option>
+                            <option value="between">時間帯指定 (〜の間)</option>
+                            <option value="before">期限指定 (〜までに)</option>
+                            <option value="after">以降指定 (〜以降)</option>
+                            <option value="exact">時間指定 (〜頃)</option>
+                          </select>
+                          
+                          {(() => {
+                            const parsed = parsePreferredTime(formData.preferredTime);
+                            if (parsed.type === 'between') {
+                              return (
+                                <div className="flex items-center gap-1">
+                                  <input type="time" value={parsed.start || ''} onChange={e => handlePrefTimeChange('start', e.target.value)} className="border rounded p-2 text-sm w-[110px]" />
+                                  <span className="text-gray-500">〜</span>
+                                  <input type="time" value={parsed.end || ''} onChange={e => handlePrefTimeChange('end', e.target.value)} className="border rounded p-2 text-sm w-[110px]" />
+                                </div>
+                              );
+                            } else if (parsed.type === 'before' || parsed.type === 'after' || parsed.type === 'exact') {
+                              return (
+                                <div className="flex items-center gap-1">
+                                  {parsed.type === 'before' && <span className="text-sm text-gray-500">遅くとも</span>}
+                                  <input type="time" value={parsed.time || ''} onChange={e => handlePrefTimeChange('time', e.target.value)} className="border rounded p-2 text-sm w-[110px]" />
+                                  {parsed.type === 'before' && <span className="text-sm text-gray-500">までに</span>}
+                                  {parsed.type === 'after' && <span className="text-sm text-gray-500">以降</span>}
+                                  {parsed.type === 'exact' && <span className="text-sm text-gray-500">頃</span>}
+                                </div>
+                              );
+                            }
+                            return null;
+                          })()}
+                        </div>
                       </div>
                       <div>
                         <label className="block text-xs font-bold text-gray-600 mb-1">デフォルト所要時間(分)</label>
@@ -303,7 +366,7 @@ export default function CustomerManagementModal({ customers, masterVehicles, onS
                         <label className="block text-xs font-bold text-gray-600 mb-1">必須車両</label>
                         <select name="requiredVehicle" value={formData.requiredVehicle} onChange={handleChange} className="w-full border rounded p-2 text-sm bg-white">
                           <option value="">指定なし</option>
-                          {masterVehicles.map(v => <option key={v.id} value={v.name}>{v.name}</option>)}
+                          {(masterVehicles || []).map(v => <option key={v.id} value={v.name}>{v.name}</option>)}
                         </select>
                       </div>
                     </div>
@@ -311,7 +374,7 @@ export default function CustomerManagementModal({ customers, masterVehicles, onS
                     <div>
                       <label className="block text-xs font-bold text-gray-600 mb-1">回収品目タグ</label>
                       <div className="flex flex-wrap gap-2 mb-2">
-                        {formData.items.map(item => (
+                        {(formData.items || []).map(item => (
                           <span key={item} className="inline-flex items-center gap-1 px-2 py-1 bg-blue-50 text-blue-700 border border-blue-200 rounded text-xs font-bold">
                             {item}
                             <button type="button" onClick={() => removeItemTag(item)} className="hover:text-red-500"><X size={12} /></button>
