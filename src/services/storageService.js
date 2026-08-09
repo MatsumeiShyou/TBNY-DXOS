@@ -38,7 +38,8 @@ const generateInitialState = () => {
     drivers: INITIAL_DRIVERS,
     jobs: INITIAL_JOBS,
     pendingJobs: generatedPendingJobs,
-    splits: initialSplits
+    splits: initialSplits,
+    monthlySchedules: {}
   };
 };
 
@@ -57,6 +58,9 @@ export const storageService = {
             }
             return job;
           });
+        }
+        if (!parsed.monthlySchedules) {
+          parsed.monthlySchedules = {};
         }
         return parsed;
       }
@@ -102,21 +106,22 @@ export const storageService = {
           workers: Array.isArray(parsed.workers) ? parsed.workers : defaultWorkers,
           vehicles: Array.isArray(parsed.vehicles) ? parsed.vehicles : defaultVehicles,
           customers: Array.isArray(parsed.customers) ? parsed.customers : defaultCustomers,
+          systemSettings: parsed.systemSettings || { holidays: [] }
         };
       }
     } catch (e) {
       console.error('LocalStorageマスタ読み込みエラー:', e);
     }
-    return { workers: defaultWorkers, vehicles: defaultVehicles, customers: defaultCustomers };
+    return { workers: defaultWorkers, vehicles: defaultVehicles, customers: defaultCustomers, systemSettings: { holidays: [] } };
   },
 
   /**
    * マスターデータを保存する（workers, vehicles, customers）
    * 将来的な Supabase リポジトリ連携時の永続化インターフェースを兼用
    */
-  saveMasterData: ({ workers, vehicles, customers }) => {
+  saveMasterData: ({ workers, vehicles, customers, systemSettings }) => {
     try {
-      localStorage.setItem(MASTER_STORAGE_KEY, JSON.stringify({ workers, vehicles, customers }));
+      localStorage.setItem(MASTER_STORAGE_KEY, JSON.stringify({ workers, vehicles, customers, systemSettings }));
     } catch (e) {
       console.error('LocalStorageマスタ保存エラー:', e);
     }

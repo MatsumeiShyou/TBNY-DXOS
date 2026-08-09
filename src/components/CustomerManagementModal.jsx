@@ -317,8 +317,8 @@ export default function CustomerManagementModal({ customers, masterVehicles, onS
                       )}
                     </div>
 
-                    <div className="grid grid-cols-3 gap-4">
-                      <div className="col-span-2">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="col-span-1 md:col-span-2">
                         <label className="block text-xs font-bold text-gray-600 mb-1">希望時間</label>
                         <div className="flex gap-2">
                           <select 

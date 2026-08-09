@@ -43,6 +43,8 @@ import WorkerManagementModal from './components/WorkerManagementModal';
 import VehicleManagementModal from './components/VehicleManagementModal';
 import CustomerManagementModal from './components/CustomerManagementModal';
 import Sidebar from './components/Sidebar';
+import CalendarView from './components/CalendarView';
+import SettingsModal from './components/SettingsModal';
 import { storageService } from './services/storageService';
 
 // 初期マスターデータ（workersマスタ）
@@ -80,11 +82,12 @@ export default function App() {
   const [jobs, setJobs] = useState(initialState.jobs);
   const [pendingJobs, setPendingJobs] = useState(initialState.pendingJobs); 
   const [splits, setSplits] = useState(initialState.splits);
+  const [monthlySchedules, setMonthlySchedules] = useState(initialState.monthlySchedules || {});
 
   // 履歴管琁Etate
   const { history, recordHistory, undo, redo } = useHistory(
-    { jobs, pendingJobs, splits, drivers },
-    { setJobs, setPendingJobs, setSplits, setDrivers }
+    { jobs, pendingJobs, splits, drivers, monthlySchedules },
+    { setJobs, setPendingJobs, setSplits, setDrivers, setMonthlySchedules }
   );
 
   const [selectedCell, setSelectedCell] = useState(null);
@@ -104,11 +107,16 @@ export default function App() {
   const [isVehicleModalOpen, setIsVehicleModalOpen] = useState(false);
   const [isCustomerModalOpen, setIsCustomerModalOpen] = useState(false);
 
-  // マスターデータState（LocalStorageから復元、なければ初期データ）
+  // === マスタデータの読み込み ===
   const initialMaster = storageService.loadMasterData(INITIAL_WORKERS, INITIAL_VEHICLES, CUSTOMERS);
   const [masterWorkers, setMasterWorkers] = useState(initialMaster.workers);
   const [masterVehicles, setMasterVehicles] = useState(initialMaster.vehicles);
   const [masterCustomers, setMasterCustomers] = useState(initialMaster.customers);
+  const [systemSettings, setSystemSettings] = useState(initialMaster.systemSettings || { holidays: [] });
+
+  // === ビューモード (dispatch | calendar) ===
+  const [viewMode, setViewMode] = useState('dispatch');
+  const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
 
   // --- マスタCRUDハンドラ ---
   const handleSaveWorker = (workerData, isEdit) => {
@@ -202,13 +210,13 @@ export default function App() {
   // 状態E自動保孁E
   // ----------------------------------------
   useEffect(() => {
-    storageService.saveState({ drivers, jobs, pendingJobs, splits });
-  }, [drivers, jobs, pendingJobs, splits]);
+    storageService.saveState({ drivers, jobs, pendingJobs, splits, monthlySchedules });
+  }, [drivers, jobs, pendingJobs, splits, monthlySchedules]);
 
   // マスターデータの自動保存
   useEffect(() => {
-    storageService.saveMasterData({ workers: masterWorkers, vehicles: masterVehicles, customers: masterCustomers });
-  }, [masterWorkers, masterVehicles, masterCustomers]);
+    storageService.saveMasterData({ workers: masterWorkers, vehicles: masterVehicles, customers: masterCustomers, systemSettings });
+  }, [masterWorkers, masterVehicles, masterCustomers, systemSettings]);
 
   // ----------------------------------------
   // Smart Coloring Logic
@@ -668,10 +676,22 @@ export default function App() {
         canUndo={history.past.length > 0} 
         canRedo={history.future.length > 0} 
         onOpenSidebar={() => setIsSidebarOpen(true)}
+        viewMode={viewMode}
+        setViewMode={setViewMode}
+        onOpenSettings={() => setIsSettingsModalOpen(true)}
       />
 
-      {/* Main Board */}
-      <div className="flex-1 overflow-auto relative bg-white" onClick={() => setSelectedJobId(null)}>
+      {/* Main Content Area */}
+      {viewMode === 'calendar' ? (
+        <CalendarView 
+          monthlySchedules={monthlySchedules}
+          setMonthlySchedules={setMonthlySchedules}
+          masterCustomers={masterCustomers}
+          systemSettings={systemSettings}
+          setPendingJobs={setPendingJobs}
+        />
+      ) : (
+        <div className="flex-1 overflow-auto relative bg-white" onClick={() => setSelectedJobId(null)}>
         <div className="min-w-max">
           {/* Sticky Header Row */}
           <div className="flex border-b border-white bg-black text-white sticky top-0 z-40 shadow-sm">
@@ -822,6 +842,7 @@ export default function App() {
           />
         )}
       </div>
+      )}
       {isCustomerModalOpen && (
         <CustomerManagementModal 
           customers={masterCustomers}
@@ -829,6 +850,14 @@ export default function App() {
           onSave={handleSaveCustomer}
           onDelete={handleDeleteCustomer}
           onClose={() => setIsCustomerModalOpen(false)}
+        />
+      )}
+
+      {isSettingsModalOpen && (
+        <SettingsModal 
+          systemSettings={systemSettings}
+          setSystemSettings={setSystemSettings}
+          onClose={() => setIsSettingsModalOpen(false)}
         />
       )}
     </div>
