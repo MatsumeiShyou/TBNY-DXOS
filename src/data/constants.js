@@ -28,13 +28,90 @@ export const MASTER_DRIVERS_LIST = ['畑澤', '菊地', '万里', '片山', '大
 export const MASTER_VEHICLES_LIST = ['2025PK', '2267PK', '2618PK', '5122PK', '1111PK', '西濃運輸', '予備車', 'レンタカー'];
 
 export const CUSTOMERS = [
-  { id: 'c1', name: '富士ロジ長沼', kana: 'ふじろじながぬま', area: '厚木', defaultDuration: 45, visits: [{ label: '午前便', preferredTime: '9:00' }, { label: '午後便', preferredTime: '13:00' }] },
-  { id: 'c2', name: 'ESPOT(スポット)', kana: 'えすぽっと', area: '伊勢原', defaultDuration: 30, visits: [{ label: '回収', note: '要電話' }] },
-  { id: 'c3', name: 'リバークレイン', kana: 'りばーくれいん', area: '横浜', defaultDuration: 45, visits: [{ label: '回収', preferredTime: '9:00', note: '9時以降' }] },
-  { id: 'c4', name: 'ユニマット', kana: 'ゆにまっと', area: '厚木', defaultDuration: 15, visits: [{ label: '回収' }] },
-  { id: 'c5', name: '特別工場A', kana: 'とくべつこうじょうえー', area: '海老名', defaultDuration: 60, requiredVehicle: '2025PK', visits: [{ label: '指定車限定', preferredTime: '9:00', note: '車両注意' }] },
-  { id: 'c99', name: '富士電線', kana: 'ふじでんせん', area: '厚木', defaultDuration: 30, visits: [] },
-  { id: 'c98', name: '厚木事業所', kana: 'あつぎじぎょうしょ', area: '厚木', defaultDuration: 60, visits: [] },
+  { 
+    id: 'c1_am', 
+    payeeCode: '', payeeName: '', supplierCode: '', supplierName: '',
+    name: '富士ロジ長沼 午前便', kana: 'ふじろじながぬま ごぜんびん', area: '厚木', address: '',
+    jobType: 'regular',
+    scheduleRules: { mon: [], tue: [], wed: [], thu: [], fri: [], sat: [], sun: [] },
+    holidayCollection: false,
+    defaultDuration: 45, requiredVehicle: '',
+    items: [], note: '', isInvalid: false,
+    preferredTime: '9:00'
+  },
+  { 
+    id: 'c1_pm', 
+    payeeCode: '', payeeName: '', supplierCode: '', supplierName: '',
+    name: '富士ロジ長沼 午後便', kana: 'ふじろじながぬま ごごびん', area: '厚木', address: '',
+    jobType: 'regular',
+    scheduleRules: { mon: [], tue: [], wed: [], thu: [], fri: [], sat: [], sun: [] },
+    holidayCollection: false,
+    defaultDuration: 45, requiredVehicle: '',
+    items: [], note: '', isInvalid: false,
+    preferredTime: '13:00'
+  },
+  { 
+    id: 'c2', 
+    payeeCode: '', payeeName: '', supplierCode: '', supplierName: '',
+    name: 'ESPOT(スポット)', kana: 'えすぽっと', area: '伊勢原', address: '',
+    jobType: 'spot',
+    scheduleRules: {},
+    holidayCollection: false,
+    defaultDuration: 30, requiredVehicle: '',
+    items: [], note: '要電話', isInvalid: false
+  },
+  { 
+    id: 'c3', 
+    payeeCode: '', payeeName: '', supplierCode: '', supplierName: '',
+    name: 'リバークレイン', kana: 'りばーくれいん', area: '横浜', address: '',
+    jobType: 'regular',
+    scheduleRules: { mon: ['every'], tue: [], wed: ['every'], thu: [], fri: ['every'], sat: [], sun: [] },
+    holidayCollection: true,
+    defaultDuration: 45, requiredVehicle: '',
+    items: [], note: '9時以降', isInvalid: false,
+    preferredTime: '9:00'
+  },
+  { 
+    id: 'c4', 
+    payeeCode: '', payeeName: '', supplierCode: '', supplierName: '',
+    name: 'ユニマット', kana: 'ゆにまっと', area: '厚木', address: '',
+    jobType: 'regular',
+    scheduleRules: { mon: [], tue: [], wed: [], thu: [], fri: [], sat: [], sun: [] },
+    holidayCollection: false,
+    defaultDuration: 15, requiredVehicle: '',
+    items: [], note: '', isInvalid: false
+  },
+  { 
+    id: 'c5', 
+    payeeCode: '', payeeName: '', supplierCode: '', supplierName: '',
+    name: '特別工場A', kana: 'とくべつこうじょうえー', area: '海老名', address: '',
+    jobType: 'regular',
+    scheduleRules: { mon: [], tue: [], wed: [], thu: [], fri: [], sat: [], sun: [] },
+    holidayCollection: false,
+    defaultDuration: 60, requiredVehicle: '2025PK',
+    items: [], note: '車両注意', isInvalid: false,
+    preferredTime: '9:00'
+  },
+  { 
+    id: 'c99', 
+    payeeCode: '', payeeName: '', supplierCode: '', supplierName: '',
+    name: '富士電線', kana: 'ふじでんせん', area: '厚木', address: '',
+    jobType: 'regular',
+    scheduleRules: { mon: [], tue: [], wed: [], thu: [], fri: [], sat: [], sun: [] },
+    holidayCollection: false,
+    defaultDuration: 30, requiredVehicle: '',
+    items: [], note: '', isInvalid: false
+  },
+  { 
+    id: 'c98', 
+    payeeCode: '', payeeName: '', supplierCode: '', supplierName: '',
+    name: '厚木事業所', kana: 'あつぎじぎょうしょ', area: '厚木', address: '',
+    jobType: 'regular',
+    scheduleRules: { mon: [], tue: [], wed: [], thu: [], fri: [], sat: [], sun: [] },
+    holidayCollection: false,
+    defaultDuration: 60, requiredVehicle: '',
+    items: [], note: '', isInvalid: false
+  }
 ];
 
 export const INITIAL_DRIVERS = [

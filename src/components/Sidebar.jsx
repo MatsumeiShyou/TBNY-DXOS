@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { X, Settings, Truck, Users, Database, FileOutput, Map } from 'lucide-react';
+import { X, Settings, Truck, Users, Database, FileOutput, Map, Building } from 'lucide-react';
 
-export default function Sidebar({ isOpen, onClose, onOpenCourseManagement, onOpenWorkerManagement, onOpenVehicleManagement }) {
+export default function Sidebar({ isOpen, onClose, onOpenCourseManagement, onOpenWorkerManagement, onOpenVehicleManagement, onOpenCustomerManagement }) {
   // マウント時のアニメーション状態管理
   const [isRendered, setIsRendered] = useState(false);
 
@@ -94,13 +94,14 @@ export default function Sidebar({ isOpen, onClose, onOpenCourseManagement, onOpe
               </li>
               <li>
                 <button 
-                  disabled
-                  className="w-full flex items-center gap-3 px-3 py-2.5 rounded-md text-sm text-left opacity-50 cursor-not-allowed group relative overflow-hidden"
-                  title="現在準備中です"
+                  onClick={() => {
+                    onOpenCustomerManagement();
+                    onClose();
+                  }}
+                  className="w-full flex items-center gap-3 px-3 py-2.5 rounded-md hover:bg-gray-800 hover:text-white transition-colors text-sm text-left group"
                 >
-                  <Users size={18} className="text-gray-500" />
+                  <Building size={18} className="text-yellow-400 group-hover:text-yellow-300" />
                   <span className="flex-1">顧客マスタ管理</span>
-                  <span className="text-[10px] bg-gray-800 text-gray-400 px-1.5 py-0.5 rounded">準備中</span>
                 </button>
               </li>
             </ul>

@@ -9,21 +9,20 @@ const MASTER_STORAGE_KEY = 'collection_shift_manager_master';
 // =========================================
 const generateInitialState = () => {
   const generatedPendingJobs = [];
-  const targetCustomers = CUSTOMERS.filter(c => ['c1', 'c2', 'c3', 'c4', 'c5'].includes(c.id));
+  const targetCustomerIds = ['c1_am', 'c1_pm', 'c2', 'c3', 'c4', 'c5'];
+  const targetCustomers = CUSTOMERS.filter(c => targetCustomerIds.includes(c.id));
 
   targetCustomers.forEach(customer => {
-    customer.visits.forEach((visit, index) => {
-      generatedPendingJobs.push({
-        id: `p_${customer.id}_${index}`,
-        title: customer.name + (visit.label ? ` (${visit.label})` : ''),
-        kana: customer.kana || '',
-        duration: customer.defaultDuration,
-        note: visit.note || '',
-        area: customer.area,
-        preferredTime: visit.preferredTime || null,
-        originalCustomerId: customer.id,
-        requiredVehicle: customer.requiredVehicle
-      });
+    generatedPendingJobs.push({
+      id: `p_${customer.id}_0`,
+      title: customer.name,
+      kana: customer.kana || '',
+      duration: customer.defaultDuration,
+      note: customer.note || '',
+      area: customer.area,
+      preferredTime: customer.preferredTime || null,
+      originalCustomerId: customer.id,
+      requiredVehicle: customer.requiredVehicle || ''
     });
   });
 
@@ -91,33 +90,55 @@ export const storageService = {
   },
 
   /**
-   * マスターデータを読み込む（workers, vehicles）
-   * 保存データがない場合は defaultWorkers / defaultVehicles を返却
+   * マスターデータを読み込む（workers, vehicles, customers）
+   * 保存データがない・不整合の場合はデフォルト値を返却
    */
-  loadMasterData: (defaultWorkers, defaultVehicles) => {
+  loadMasterData: (defaultWorkers = [], defaultVehicles = [], defaultCustomers = []) => {
     try {
       const savedData = localStorage.getItem(MASTER_STORAGE_KEY);
       if (savedData) {
         const parsed = JSON.parse(savedData);
         return {
-          workers: parsed.workers || defaultWorkers,
-          vehicles: parsed.vehicles || defaultVehicles,
+          workers: Array.isArray(parsed.workers) ? parsed.workers : defaultWorkers,
+          vehicles: Array.isArray(parsed.vehicles) ? parsed.vehicles : defaultVehicles,
+          customers: Array.isArray(parsed.customers) ? parsed.customers : defaultCustomers,
         };
       }
     } catch (e) {
       console.error('LocalStorageマスタ読み込みエラー:', e);
     }
-    return { workers: defaultWorkers, vehicles: defaultVehicles };
+    return { workers: defaultWorkers, vehicles: defaultVehicles, customers: defaultCustomers };
   },
 
   /**
-   * マスターデータを保存する
+   * マスターデータを保存する（workers, vehicles, customers）
+   * 将来的な Supabase リポジトリ連携時の永続化インターフェースを兼用
    */
-  saveMasterData: ({ workers, vehicles }) => {
+  saveMasterData: ({ workers, vehicles, customers }) => {
     try {
-      localStorage.setItem(MASTER_STORAGE_KEY, JSON.stringify({ workers, vehicles }));
+      localStorage.setItem(MASTER_STORAGE_KEY, JSON.stringify({ workers, vehicles, customers }));
     } catch (e) {
       console.error('LocalStorageマスタ保存エラー:', e);
     }
   },
+
+  /**
+   * 保存されたマスターデータを消去する
+   */
+  clearMasterData: () => {
+    try {
+      localStorage.removeItem(MASTER_STORAGE_KEY);
+    } catch (e) {
+      console.error('LocalStorageマスタ削除エラー:', e);
+    }
+  },
+
+  /**
+   * 全ての保存データ（シフト配置およびマスターデータ）を初期化する
+   */
+  clearAll: () => {
+    storageService.clearState();
+    storageService.clearMasterData();
+  },
 };
+

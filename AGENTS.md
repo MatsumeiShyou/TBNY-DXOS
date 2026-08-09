@@ -67,11 +67,13 @@
 - **[GaC Protocol]**: 役割分離（Analyzer/Executor）を遵守せよ。「計画」「設計」の指示時は即座にPLANNINGモードへ復帰せよ。
 - **[Physical Verification (CAVR)]**: `governance/core_config.json` に従え。UI/UX変更(Route A)はPreview実機確認必須。バイパス時は `npm run done -- --interactive` で理由を回答し、`DEBT_AND_FUTURE.md` に記録せよ。
 - **[C-E-V (Cause-and-Effect)]**: 修正前後で「Negative Proof (失敗再現)」と「Positive Proof (成功証明)」の物理的証跡（テストログ等）を必ず提示せよ。
+- **[Strict Verification Protocol]**: 実装後は必ずテストと実装内容の動作証明（ビルド、Lint、型チェック等）を実行し、すべて合格させてから報告せよ。合格しない（エラーが発生した）場合は、その場で勝手な応急処置を試みるのではなく、必ず修正計画を報告しユーザーの承認を求めてから修正を実行せよ。
 - **[DOM Observation]**: DOM操作ツール実行前後で `[Loading]`, `[Ready]`, `[Stable]` の3段階状態を物理的に観測・報告せよ。
 - **[TGS Trace]**: T3/不具合修正前は `grep_search` 等で `C:\Users\shiyo\.gemini\antigravity\brain\` およびワークスペースを走査し、SDRに明記せよ。
 - **[Cognitive Gov]**: ティア比例型の思考ステップを義務付ける。理由なき再設計は制限される。
 - **[Cleanup & Type-Check]**: Hooks（`useEffect`等）のロジックを削除・分離した際は、必ずファイル先頭の `import` 文もセットでクリーンアップせよ。また、Lint確認だけでなく、必ず `npm run type-check` を併用してコンパイルレベルでの検証を義務とする。
 - **[Deep Governance Harmony]**: 理念（本憲法）やルールを変更した際、必ず物理ゲートスクリプト（`.agent/scripts/` 等）と矛盾・デッドロックを起こさないか深部走査し、物理層を同期改修する義務を持つ。
+- **[Future Tasks Reflection]**: 実装完了後、未対応の要件や次のステップとして残る課題がある場合は、必ず `DEBT_AND_FUTURE.md` の「将来の課題 (Future Tasks)」セクションへ追記すること。また、実装を完了した課題は同セクションから削除・更新し、タスクの完了報告とセットで同期を完了させよ。
 - **[SSOT Sync Protocol]**: `src/` 配下のコードを変更した際は、必ず `README.md` を最新化して同時コミットせよ。更新が不要な軽微な修正の場合は、物理ゲートの遮断を回避するため、必ずコミットメッセージに `[README-Skip: 理由]` を含めること。
 ---
 

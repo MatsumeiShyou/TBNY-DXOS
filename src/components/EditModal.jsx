@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { Edit3, X, Trash2 } from 'lucide-react';
-import { MASTER_DRIVERS_LIST, MASTER_VEHICLES_LIST } from '../data/constants';
 
-export default function EditModal({ editModal, onSave, onDelete, onClose }) {
-  const [driverName, setDriverName] = useState(editModal.initialDriverName);
-  const [vehicleName, setVehicleName] = useState(editModal.initialVehicle);
+export default function EditModal({ editModal, masterWorkers = [], masterVehicles = [], onSave, onDelete, onClose }) {
+  const [driverName, setDriverName] = useState(editModal?.initialDriverName || '');
+  const [vehicleName, setVehicleName] = useState(editModal?.initialVehicle || '');
 
   if (!editModal) return null;
+
+  const activeWorkers = masterWorkers.filter(w => w.is_active !== false);
 
   return (
     <>
@@ -33,7 +34,7 @@ export default function EditModal({ editModal, onSave, onDelete, onClose }) {
               onChange={(e) => setDriverName(e.target.value)}
             >
               <option value="">選択してください</option>
-              {MASTER_DRIVERS_LIST.map(d => <option key={d} value={d}>{d}</option>)}
+              {activeWorkers.map(w => <option key={w.id} value={w.name}>{w.name}</option>)}
             </select>
           </div>
           <div>
@@ -44,7 +45,7 @@ export default function EditModal({ editModal, onSave, onDelete, onClose }) {
               onChange={(e) => setVehicleName(e.target.value)}
             >
               <option value="">選択してください</option>
-              {MASTER_VEHICLES_LIST.map(v => <option key={v} value={v}>{v}</option>)}
+              {masterVehicles.map(v => <option key={v.id} value={v.name}>{v.name}</option>)}
             </select>
           </div>
           <div className="pt-2 flex gap-2">

@@ -41,6 +41,7 @@ import SplitLine from './components/SplitLine';
 import CourseManagementModal from './components/CourseManagementModal';
 import WorkerManagementModal from './components/WorkerManagementModal';
 import VehicleManagementModal from './components/VehicleManagementModal';
+import CustomerManagementModal from './components/CustomerManagementModal';
 import Sidebar from './components/Sidebar';
 import { storageService } from './services/storageService';
 
@@ -101,11 +102,13 @@ export default function App() {
   // マスタ管理モーダル用State
   const [isWorkerModalOpen, setIsWorkerModalOpen] = useState(false);
   const [isVehicleModalOpen, setIsVehicleModalOpen] = useState(false);
+  const [isCustomerModalOpen, setIsCustomerModalOpen] = useState(false);
 
   // マスターデータState（LocalStorageから復元、なければ初期データ）
-  const initialMaster = storageService.loadMasterData(INITIAL_WORKERS, INITIAL_VEHICLES);
+  const initialMaster = storageService.loadMasterData(INITIAL_WORKERS, INITIAL_VEHICLES, CUSTOMERS);
   const [masterWorkers, setMasterWorkers] = useState(initialMaster.workers);
   const [masterVehicles, setMasterVehicles] = useState(initialMaster.vehicles);
+  const [masterCustomers, setMasterCustomers] = useState(initialMaster.customers);
 
   // --- マスタCRUDハンドラ ---
   const handleSaveWorker = (workerData, isEdit) => {
@@ -127,6 +130,18 @@ export default function App() {
   };
   const handleDeleteVehicle = (id) => {
     setMasterVehicles(prev => prev.filter(v => v.id !== id));
+  };
+  const handleSaveCustomer = (customerData) => {
+    setMasterCustomers(prev => {
+      const exists = prev.find(c => c.id === customerData.id);
+      if (exists) {
+        return prev.map(c => c.id === customerData.id ? customerData : c);
+      }
+      return [...prev, customerData];
+    });
+  };
+  const handleDeleteCustomer = (id) => {
+    setMasterCustomers(prev => prev.filter(c => c.id !== id));
   };
 
   // ドラチE & リサイズ管琁E
@@ -170,21 +185,21 @@ export default function App() {
       setPendingJobs(prev => [...prev, ...jobsToRescue.map(j => ({
         ...j,
         id: `p_rescued_${j.id}_${Date.now()}`,
-        preferredTime: j.startTime, // 允E�E開始時間を希望時間に
+        preferredTime: j.startTime, // 允EE開始時間を希望時間に
         note: `(コース削除による返却)`,
       }))]);
     }
     
-    // ジョブとスプリチE��から対象ドライバ�Eを削除
+    // ジョブとスプリチEから対象ドライバEを削除
     setJobs(prev => prev.filter(j => j.driverId !== driverId));
     setSplits(prev => prev.filter(s => s.driverId !== driverId));
     
-    // ドライバ�E本体を削除
+    // ドライバE本体を削除
     setDrivers(prev => prev.filter(d => d.id !== driverId));
   };
 
   // ----------------------------------------
-  // 状態�E自動保孁E
+  // 状態E自動保孁E
   // ----------------------------------------
   useEffect(() => {
     storageService.saveState({ drivers, jobs, pendingJobs, splits });
@@ -192,8 +207,8 @@ export default function App() {
 
   // マスターデータの自動保存
   useEffect(() => {
-    storageService.saveMasterData({ workers: masterWorkers, vehicles: masterVehicles });
-  }, [masterWorkers, masterVehicles]);
+    storageService.saveMasterData({ workers: masterWorkers, vehicles: masterVehicles, customers: masterCustomers });
+  }, [masterWorkers, masterVehicles, masterCustomers]);
 
   // ----------------------------------------
   // Smart Coloring Logic
@@ -764,6 +779,7 @@ export default function App() {
           onOpenCourseManagement={() => setIsCourseModalOpen(true)}
           onOpenWorkerManagement={() => setIsWorkerModalOpen(true)}
           onOpenVehicleManagement={() => setIsVehicleModalOpen(true)}
+          onOpenCustomerManagement={() => setIsCustomerModalOpen(true)}
         />
 
         {isWorkerModalOpen && (
@@ -798,12 +814,23 @@ export default function App() {
         {editModal && (
           <EditModal 
             editModal={editModal}
+            masterWorkers={masterWorkers}
+            masterVehicles={masterVehicles}
             onSave={handleSaveEdit}
             onDelete={handleDeleteSplit}
             onClose={() => setEditModal(null)}
           />
         )}
       </div>
+      {isCustomerModalOpen && (
+        <CustomerManagementModal 
+          customers={masterCustomers}
+          masterVehicles={masterVehicles}
+          onSave={handleSaveCustomer}
+          onDelete={handleDeleteCustomer}
+          onClose={() => setIsCustomerModalOpen(false)}
+        />
+      )}
     </div>
   );
 }

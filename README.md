@@ -77,7 +77,10 @@ AI エージェントが本プロジェクトを解析・拡張する際は、�
 | `jobs` | タイムライン上に配置済みの回収案件のリスト。開始時間 (`startTime`) と所要時間 (`duration`) で管理される。 |
 | `pendingJobs` | 未配車の回収案件リスト。画面追加時にここから `jobs` へ移動する。 |
 | `splits` | ドライバーや車両の途中交代を示す「区切り線」のリスト。 |
+| `masterWorkers` | ドライバー（作業員）マスタの全データ。氏名、かな、保有免許バッジ、ステータス等を保持。 |
+| `masterVehicles` | 車両マスタの全データ。車両名、車種タイプ、最大積載量(kg)、車高制限(m)等を保持。 |
 | `history` | Undo/Redo を実現するためのスナップショット (`past`, `future`)。 |
+
 
 ### 3. データ構造 (モックデータ)
 バックエンド（DB等）は現在未接続であり、以下の初期定数から動的に State が生成されます。
@@ -109,7 +112,7 @@ AI エージェントが本プロジェクトを解析・拡張する際は、�
 
 | 項目 | 状態 | 備考 |
 |------|------|------|
-| データ永続化 | ✅ 実装済み (LocalStorage) | `src/services/storageService.js` にて状態の自動保存・復元機能が実装済み。Supabase連携（クラウド同期）が将来の拡張ポイント |
+| データ永続化 | ✅ 実装済み (LocalStorage) | `src/services/storageService.js` にてシフトデータ (`collection_shift_manager_data`) およびマスターデータ (`collection_shift_manager_master`) の自動保存・読み込み・検証・全クリア機能を実装済み。Supabase連携（クラウド同期）が将来の拡張ポイント |
 | タイムライン範囲 | 固定 | 6:00〜18:00（15分刻み）でハードコード |
 | コンポーネント分割 | ✅ 解決済み | `src/components/` へUIコンポーネントが分割され、巨大ファイル問題は解消済み |
 | `document.getElementById` | ✅ 解決済み | React推奨の参照方式(`useRef`等)へ移行完了。現在はマウント用(`main.jsx`)でのみ使用 |
