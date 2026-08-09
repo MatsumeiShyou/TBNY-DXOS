@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import { execSync } from 'child_process';
 
 // コミットメッセージファイルの取得
 const commitMsgFile = process.argv[2];
@@ -21,6 +22,29 @@ if (!commitMsg && !process.env.TEST_MODE) {
     // 空のコミットメッセージはGit自体で弾かれることが多いが、念の為
     console.error('エラー: コミットメッセージが空です。');
     process.exit(1);
+}
+
+// 機能4: README更新漏れ防止ゲート (明示的スキップ宣言強制)
+let stagedFiles = [];
+try {
+    const diffOutput = execSync('git diff --cached --name-only', { encoding: 'utf8' });
+    stagedFiles = diffOutput.split('\n').map(f => f.trim()).filter(Boolean);
+} catch (e) {
+    if (process.env.TEST_STAGED_FILES) {
+        stagedFiles = process.env.TEST_STAGED_FILES.split(',');
+    }
+}
+
+const isSrcChanged = stagedFiles.some(file => file.startsWith('src/'));
+const isReadmeChanged = stagedFiles.includes('README.md');
+
+if (isSrcChanged && !isReadmeChanged) {
+    const skipRegex = /\[README-Skip:[^\]]+\]/i;
+    if (!skipRegex.test(commitMsg)) {
+        console.error('エラー [機能4]: src/ 配下のコードが変更されていますが、README.md が更新されていません。');
+        console.error('解決策: README.md を更新するか、コミットメッセージに [README-Skip: 理由] を含めてください。');
+        process.exit(1);
+    }
 }
 
 // 機能1: コミットメッセージ内に日本語が含まれているかの検証

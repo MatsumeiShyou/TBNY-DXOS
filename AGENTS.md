@@ -72,6 +72,7 @@
 - **[Cognitive Gov]**: ティア比例型の思考ステップを義務付ける。理由なき再設計は制限される。
 - **[Cleanup & Type-Check]**: Hooks（`useEffect`等）のロジックを削除・分離した際は、必ずファイル先頭の `import` 文もセットでクリーンアップせよ。また、Lint確認だけでなく、必ず `npm run type-check` を併用してコンパイルレベルでの検証を義務とする。
 - **[Deep Governance Harmony]**: 理念（本憲法）やルールを変更した際、必ず物理ゲートスクリプト（`.agent/scripts/` 等）と矛盾・デッドロックを起こさないか深部走査し、物理層を同期改修する義務を持つ。
+- **[SSOT Sync Protocol]**: `src/` 配下のコードを変更した際は、必ず `README.md` を最新化して同時コミットせよ。更新が不要な軽微な修正の場合は、物理ゲートの遮断を回避するため、必ずコミットメッセージに `[README-Skip: 理由]` を含めること。
 ---
 
 ## 3. 実装済み物理強制 (Enforced - Already Implemented)
