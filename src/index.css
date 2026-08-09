@@ -1,0 +1,44 @@
+@import "tailwindcss";
+
+/* ============================================
+ * カスタムアニメーション定義
+ * ============================================
+ * 回収アプリソースコード内の未配車リストモーダル (L804) と
+ * 編集モーダル (L848) で使用される非標準Tailwindクラス。
+ * animate-in / fade-in / zoom-in は Tailwind CSS 標準には
+ * 存在しないため、ここで明示的に定義する。
+ * -------------------------------------------- */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes zoomIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-in {
+  animation-duration: 200ms;
+  animation-timing-function: ease-out;
+  animation-fill-mode: both;
+}
+
+.fade-in {
+  animation-name: fadeIn;
+}
+
+.zoom-in {
+  animation-name: zoomIn;
+}

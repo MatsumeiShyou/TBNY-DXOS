@@ -1,0 +1,30 @@
+{
+  "version": "1.0.0",
+  "tiers": {
+    "T1": {
+      "name": "Low Risk / Local Change",
+      "allow_unapproved_execution": true,
+      "require_approval": false,
+      "requires_sdr": false,
+      "require_fact_in_commit": true
+    },
+    "T2": {
+      "name": "Medium Risk / Feature & Refactor",
+      "allow_unapproved_execution": true,
+      "require_approval": false,
+      "requires_sdr": false,
+      "require_fact_in_commit": true
+    },
+    "T3": {
+      "name": "High Risk / Architecture & Governance",
+      "allow_unapproved_execution": false,
+      "require_approval": true,
+      "requires_sdr": true,
+      "approval_password": "y"
+    }
+  },
+  "governance": {
+    "deep_harmony_check": true,
+    "bypass_tag": "// gov-bypass"
+  }
+}
