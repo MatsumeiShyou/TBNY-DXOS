@@ -51,7 +51,7 @@ AI エージェントが本プロジェクトを解析・拡張する際は、�
 | **ビルドツール** | Vite v7 |
 | **フレームワーク** | React 19 (Hooks ベースの関数コンポーネント) |
 | **スタイリング** | Tailwind CSS v4 (`@tailwindcss/vite` プラグイン使用) |
-| **アイコン** | `lucide-react` (15コンポーネント使用) |
+| **アイコン** | `lucide-react` (21コンポーネント使用) |
 | **状態管理** | React 標準の `useState` / `useMemo` / `useCallback` のみ |
 | **ルーティング** | なし（SPA単一画面） |
 | **バックエンド** | なし（モックデータのみ） |
@@ -65,7 +65,8 @@ AI エージェントが本プロジェクトを解析・拡張する際は、�
 ├── src/
 │   ├── main.jsx        # React エントリポイント
 │   ├── index.css       # Tailwind ディレクティブ + カスタムアニメーション
-│   └── App.jsx         # アプリケーション本体 (全UI + 状態管理)
+│   ├── components/     # UIコンポーネント群 (Header, Modals, Sidebar等)
+│   └── App.jsx         # アプリケーション本体 (メインUI + 状態管理)
 └── node_modules/       # 依存パッケージ (gitignore対象)
 ```
 
@@ -96,22 +97,12 @@ AI エージェントが本プロジェクトを解析・拡張する際は、�
 > **[CAUTION] 以下の3項目は、全量分析により発見されたアプリ固有の技術的制約です。**
 > **無視すると UI が破壊されます。コード変更前に必ず確認してください。**
 
-#### 4-1. 🔴 Tailwind 動的クラスの Purge 問題
-`src/App.jsx` 内の未配車リストタブ（旧L815付近）で、テンプレートリテラルにより以下のクラスが動的に生成されています：
-```
-border-${tab.color}-500  text-${tab.color}-700
-```
-Tailwind の JIT/Purge エンジンはこれらを検出できないため、`src/App.jsx` 冒頭にコメントとして safelist が記載されています。**このコメントを削除するとタブの色が消失します。**
-
-対象クラス（8個）:
-`border-emerald-500`, `text-emerald-700`, `border-orange-500`, `text-orange-700`, `border-indigo-500`, `text-indigo-700`, `border-gray-500`, `text-gray-700`
-
-#### 4-2. 🔴 カスタムアニメーション定義
+#### 4-1. 🔴 カスタムアニメーション定義
 `animate-in`, `fade-in`, `zoom-in` は **Tailwind CSS 標準には存在しないクラス** です。
 これらは未配車リストモーダルと編集モーダルで使用されており、`src/index.css` 内にカスタム `@keyframes` として定義されています。**この定義を削除するとモーダルのアニメーションが停止します。**
 
-#### 4-3. 🔴 COLOR_PALETTE の Tailwind クラス（54個）
-`COLOR_PALETTE` 定数内に定義された 18色 × 3プロパティ = 54 の Tailwind クラスは、文字列リテラルとして `src/App.jsx` に存在するため Purge の対象外です。
+#### 4-2. 🔴 COLOR_PALETTE の Tailwind クラス（54個）
+`COLOR_PALETTE` 定数内に定義された 18色 × 3プロパティ = 54 の Tailwind クラスは、文字列リテラルとして `src/data/constants.js` 等に存在するため、Purgeの対象外となるよう注意が必要です。
 ただし、**このデータを外部ファイルや DB に分離する場合は、Tailwind の `content` 設定にそのファイルパスを追加するか、safelist に全クラスを登録する必要があります。**
 
 ### 5. 制約事項と既知の技術的負債
@@ -120,8 +111,8 @@ Tailwind の JIT/Purge エンジンはこれらを検出できないため、`sr
 |------|------|------|
 | データ永続化 | ✅ 実装済み (LocalStorage) | `src/services/storageService.js` にて状態の自動保存・復元機能が実装済み。Supabase連携（クラウド同期）が将来の拡張ポイント |
 | タイムライン範囲 | 固定 | 6:00〜18:00（15分刻み）でハードコード |
-| `document.getElementById` | 技術的負債 | L872相当。`useRef` への移行推奨 |
-| 単一コンポーネント | 技術的負債 | 883行の `App.jsx` 1ファイル。将来的にコンポーネント分割推奨 |
+| コンポーネント分割 | ✅ 解決済み | `src/components/` へUIコンポーネントが分割され、巨大ファイル問題は解消済み |
+| `document.getElementById` | ✅ 解決済み | React推奨の参照方式(`useRef`等)へ移行完了。現在はマウント用(`main.jsx`)でのみ使用 |
 | `INITIAL_DRIVERS.color` | デッドコード | 未使用フィールド。機能に影響なし |
 
 ### 6. 開発時の統治ルール (Governance)
