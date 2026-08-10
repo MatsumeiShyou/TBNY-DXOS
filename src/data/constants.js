@@ -26,6 +26,30 @@ export const COLOR_PALETTE = [
 
 export const MASTER_DRIVERS_LIST = ['畑澤', '菊地', '万里', '片山', '大貴', '鈴木', '佐藤', '田中'];
 export const MASTER_VEHICLES_LIST = ['2025PK', '2267PK', '2618PK', '5122PK', '1111PK', '西濃運輸', '予備車', 'レンタカー'];
+export const MASTER_ITEMS_LIST = [
+  { name: '段ﾎﾞｰﾙ', kana: 'だんぼーる' },
+  { name: '臭付段', kana: 'においつきだん' },
+  { name: '雑がみ', kana: 'ざつがみ' },
+  { name: '雑誌', kana: 'ざっし' },
+  { name: '雑故紙', kana: 'ざつこし' },
+  { name: 'ﾍﾟｯﾄ', kana: 'ぺっと' },
+  { name: '廃ﾌﾟﾗ軟質', kana: 'はいぷらなんしつ' },
+  { name: 'ｽﾄﾚｯﾁ', kana: 'すとれっち' },
+  { name: 'ﾋﾞﾆｰﾙﾊﾞﾗ', kana: 'びにーるばら' },
+  { name: 'ﾐｯｸｽ紙', kana: 'みっくすし' },
+  { name: '紙管', kana: 'しかん' },
+  { name: '上ｹﾝﾄ', kana: 'じょうけんと' },
+  { name: 'ｼｭﾚｯﾀﾞ', kana: 'しゅれっだ' },
+  { name: '雑袋', kana: 'ざつぶくろ' },
+  { name: 'R巻取', kana: 'あーるまきとり' },
+  { name: '模造ﾊﾞﾗ', kana: 'もぞうばら' },
+  { name: 'ﾏﾙﾁﾊﾟｯｸ･ﾊﾞﾗ', kana: 'まるちぱっくばら' },
+  { name: 'ｱﾙﾐ缶', kana: 'あるみかん' },
+  { name: '機密書類', kana: 'きみつしょるい' },
+  { name: 'PPﾊﾞﾝﾄﾞ', kana: 'ぴーぴーばんど' },
+  { name: '新聞', kana: 'しんぶん' },
+  { name: '雑誌/ｼｭﾚｯﾀﾞ', kana: 'ざっし/しゅれっだ' }
+];
 
 export const CUSTOMERS = [
   { 

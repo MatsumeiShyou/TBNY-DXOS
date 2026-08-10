@@ -94,10 +94,10 @@ export const storageService = {
   },
 
   /**
-   * マスターデータを読み込む（workers, vehicles, customers）
+   * マスターデータを読み込む（workers, vehicles, customers, items）
    * 保存データがない・不整合の場合はデフォルト値を返却
    */
-  loadMasterData: (defaultWorkers = [], defaultVehicles = [], defaultCustomers = []) => {
+  loadMasterData: (defaultWorkers = [], defaultVehicles = [], defaultCustomers = [], defaultItems = []) => {
     try {
       const savedData = localStorage.getItem(MASTER_STORAGE_KEY);
       if (savedData) {
@@ -106,22 +106,31 @@ export const storageService = {
           workers: Array.isArray(parsed.workers) ? parsed.workers : defaultWorkers,
           vehicles: Array.isArray(parsed.vehicles) ? parsed.vehicles : defaultVehicles,
           customers: Array.isArray(parsed.customers) ? parsed.customers : defaultCustomers,
+          items: Array.isArray(parsed.items) 
+            ? parsed.items.map(savedItem => {
+                const defaultMatched = defaultItems.find(di => di.name === savedItem.name);
+                return {
+                  ...savedItem,
+                  kana: savedItem.kana || (defaultMatched ? defaultMatched.kana : undefined)
+                };
+              })
+            : defaultItems,
           systemSettings: parsed.systemSettings || { holidays: [] }
         };
       }
     } catch (e) {
       console.error('LocalStorageマスタ読み込みエラー:', e);
     }
-    return { workers: defaultWorkers, vehicles: defaultVehicles, customers: defaultCustomers, systemSettings: { holidays: [] } };
+    return { workers: defaultWorkers, vehicles: defaultVehicles, customers: defaultCustomers, items: defaultItems, systemSettings: { holidays: [] } };
   },
 
   /**
-   * マスターデータを保存する（workers, vehicles, customers）
+   * マスターデータを保存する（workers, vehicles, customers, items）
    * 将来的な Supabase リポジトリ連携時の永続化インターフェースを兼用
    */
-  saveMasterData: ({ workers, vehicles, customers, systemSettings }) => {
+  saveMasterData: ({ workers, vehicles, customers, items, systemSettings }) => {
     try {
-      localStorage.setItem(MASTER_STORAGE_KEY, JSON.stringify({ workers, vehicles, customers, systemSettings }));
+      localStorage.setItem(MASTER_STORAGE_KEY, JSON.stringify({ workers, vehicles, customers, items, systemSettings }));
     } catch (e) {
       console.error('LocalStorageマスタ保存エラー:', e);
     }

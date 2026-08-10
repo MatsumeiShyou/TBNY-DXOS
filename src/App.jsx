@@ -21,6 +21,7 @@ import {
   MASTER_DRIVERS_LIST,
   MASTER_VEHICLES_LIST,
   CUSTOMERS,
+  MASTER_ITEMS_LIST,
   INITIAL_DRIVERS,
   TIME_SLOTS,
   INITIAL_JOBS,
@@ -42,6 +43,7 @@ import CourseManagementModal from './components/CourseManagementModal';
 import WorkerManagementModal from './components/WorkerManagementModal';
 import VehicleManagementModal from './components/VehicleManagementModal';
 import CustomerManagementModal from './components/CustomerManagementModal';
+import ItemManagementModal from './components/ItemManagementModal';
 import Sidebar from './components/Sidebar';
 import CalendarView from './components/CalendarView';
 import SettingsModal from './components/SettingsModal';
@@ -71,8 +73,16 @@ const INITIAL_VEHICLES = [
   { id: 'v_rental', name: 'レンタカー', vehicle_type: 'rental', max_capacity_kg: null },
 ];
 
+const INITIAL_ITEMS = MASTER_ITEMS_LIST.map((item, i) => ({
+  id: `item_init_${i}`,
+  name: item.name,
+  kana: item.kana,
+  requiredVehicle: '',
+  estimatedDuration: 0
+}));
+
 // ==========================================
-// 3. メインコンポ�EネンチE
+// 3. メインコンポEネンチE
 // ==========================================
 export default function App() {
   
@@ -106,12 +116,14 @@ export default function App() {
   const [isWorkerModalOpen, setIsWorkerModalOpen] = useState(false);
   const [isVehicleModalOpen, setIsVehicleModalOpen] = useState(false);
   const [isCustomerModalOpen, setIsCustomerModalOpen] = useState(false);
+  const [isItemModalOpen, setIsItemModalOpen] = useState(false);
 
   // === マスタデータの読み込み ===
-  const initialMaster = storageService.loadMasterData(INITIAL_WORKERS, INITIAL_VEHICLES, CUSTOMERS);
+  const initialMaster = storageService.loadMasterData(INITIAL_WORKERS, INITIAL_VEHICLES, CUSTOMERS, INITIAL_ITEMS);
   const [masterWorkers, setMasterWorkers] = useState(initialMaster.workers);
   const [masterVehicles, setMasterVehicles] = useState(initialMaster.vehicles);
   const [masterCustomers, setMasterCustomers] = useState(initialMaster.customers);
+  const [masterItems, setMasterItems] = useState(initialMaster.items);
   const [systemSettings, setSystemSettings] = useState(initialMaster.systemSettings || { holidays: [] });
 
   // === ビューモード (dispatch | calendar) ===
@@ -151,6 +163,12 @@ export default function App() {
   const handleDeleteCustomer = (id) => {
     setMasterCustomers(prev => prev.filter(c => c.id !== id));
   };
+  const handleSaveItems = (newItems) => {
+    setMasterItems(newItems);
+  };
+  const handleDeleteItem = (id) => {
+    setMasterItems(prev => prev.filter(i => i.id !== id));
+  };
 
   // ドラチE & リサイズ管琁E
   const [draggingJobId, setDraggingJobId] = useState(null);
@@ -168,7 +186,7 @@ export default function App() {
   const driverColRefs = useRef({});
 
   // ----------------------------------------
-  // コース管琁E��ジチE��
+  // コース管琁EジチE
   // ----------------------------------------
   const handleAddCourse = ({ course, name, currentVehicle, color }) => {
     recordHistory();
@@ -215,8 +233,8 @@ export default function App() {
 
   // マスターデータの自動保存
   useEffect(() => {
-    storageService.saveMasterData({ workers: masterWorkers, vehicles: masterVehicles, customers: masterCustomers, systemSettings });
-  }, [masterWorkers, masterVehicles, masterCustomers, systemSettings]);
+    storageService.saveMasterData({ workers: masterWorkers, vehicles: masterVehicles, customers: masterCustomers, items: masterItems, systemSettings });
+  }, [masterWorkers, masterVehicles, masterCustomers, masterItems, systemSettings]);
 
   // ----------------------------------------
   // Smart Coloring Logic
@@ -389,7 +407,7 @@ export default function App() {
   };
 
   // ----------------------------------------
-  // ドロチE�E判定ロジチE��
+  // ドロチEE判定ロジチE
   // ----------------------------------------
   const calculateDropTarget = (currentX, currentY, targetJobId) => {
     const targetJob = jobs.find(j => j.id === targetJobId);
@@ -735,7 +753,7 @@ export default function App() {
 
                         {isSplitPreviewStart && (
                             <div className={`absolute inset-0 z-50 flex items-center justify-center text-xs font-bold border-2 ${dropSplitPreview.isOverlapError ? 'bg-red-600/80 border-red-800 text-white' : 'bg-black/50 border-black text-white'}`}>
-                                {dropSplitPreview.isOverlapError ? <Ban size={14} /> : '移動�E'}
+                                {dropSplitPreview.isOverlapError ? <Ban size={14} /> : '移動E'}
                             </div>
                         )}
 
@@ -800,6 +818,7 @@ export default function App() {
           onOpenWorkerManagement={() => setIsWorkerModalOpen(true)}
           onOpenVehicleManagement={() => setIsVehicleModalOpen(true)}
           onOpenCustomerManagement={() => setIsCustomerModalOpen(true)}
+          onOpenItemManagement={() => setIsItemModalOpen(true)}
         />
 
         {isWorkerModalOpen && (
@@ -843,10 +862,21 @@ export default function App() {
         )}
       </div>
       )}
+      
+      {/* === 各種モーダル === */}
+      {isItemModalOpen && (
+        <ItemManagementModal
+          items={masterItems}
+          onSave={handleSaveItems}
+          onDelete={handleDeleteItem}
+          onClose={() => setIsItemModalOpen(false)}
+        />
+      )}
       {isCustomerModalOpen && (
         <CustomerManagementModal 
           customers={masterCustomers}
           masterVehicles={masterVehicles}
+          masterItems={masterItems}
           onSave={handleSaveCustomer}
           onDelete={handleDeleteCustomer}
           onClose={() => setIsCustomerModalOpen(false)}

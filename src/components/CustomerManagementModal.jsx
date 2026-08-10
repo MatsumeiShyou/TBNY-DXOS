@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { X, Plus, Search, Trash2, Building, Calendar, Settings, AlertCircle } from 'lucide-react';
 import { MASTER_VEHICLES_LIST } from '../data/constants';
 import { parsePreferredTime } from '../utils/timeUtils';
+import SearchableMultiSelect from './SearchableMultiSelect';
 
 const DAYS = [
   { key: 'mon', label: '月' },
@@ -33,7 +34,7 @@ const initialFormState = {
   items: [], note: '', isInvalid: false, preferredTime: ''
 };
 
-export default function CustomerManagementModal({ customers, masterVehicles, onSave, onDelete, onClose }) {
+export default function CustomerManagementModal({ customers, masterVehicles, masterItems = [], onSave, onDelete, onClose }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCustomerId, setSelectedCustomerId] = useState(null);
   const [formData, setFormData] = useState({ ...initialFormState });
@@ -110,18 +111,6 @@ export default function CustomerManagementModal({ customers, masterVehicles, onS
         scheduleRules: { ...prev.scheduleRules, [day]: newRules }
       };
     });
-  };
-
-  const addItemTag = (e) => {
-    e.preventDefault();
-    if (newItemTag.trim() && !formData.items.includes(newItemTag.trim())) {
-      setFormData(prev => ({ ...prev, items: [...prev.items, newItemTag.trim()] }));
-    }
-    setNewItemTag('');
-  };
-
-  const removeItemTag = (tagToRemove) => {
-    setFormData(prev => ({ ...prev, items: prev.items.filter(tag => tag !== tagToRemove) }));
   };
 
   const handleSubmit = (e) => {
@@ -372,26 +361,13 @@ export default function CustomerManagementModal({ customers, masterVehicles, onS
                     </div>
 
                     <div>
-                      <label className="block text-xs font-bold text-gray-600 mb-1">回収品目タグ</label>
-                      <div className="flex flex-wrap gap-2 mb-2">
-                        {(formData.items || []).map(item => (
-                          <span key={item} className="inline-flex items-center gap-1 px-2 py-1 bg-blue-50 text-blue-700 border border-blue-200 rounded text-xs font-bold">
-                            {item}
-                            <button type="button" onClick={() => removeItemTag(item)} className="hover:text-red-500"><X size={12} /></button>
-                          </span>
-                        ))}
-                      </div>
-                      <div className="flex gap-2">
-                        <input 
-                          type="text" 
-                          value={newItemTag} 
-                          onChange={(e) => setNewItemTag(e.target.value)} 
-                          onKeyDown={(e) => e.key === 'Enter' && addItemTag(e)}
-                          className="flex-1 border rounded p-1.5 text-sm" 
-                          placeholder="例: ダンボール (Enterで追加)" 
-                        />
-                        <button type="button" onClick={addItemTag} className="px-3 py-1.5 bg-gray-200 hover:bg-gray-300 rounded text-sm font-bold text-gray-700">追加</button>
-                      </div>
+                      <label className="block text-xs font-bold text-gray-600 mb-2">回収品目設定</label>
+                      <SearchableMultiSelect
+                        options={masterItems}
+                        value={formData.items || []}
+                        onChange={(newItems) => setFormData(prev => ({ ...prev, items: newItems }))}
+                        placeholder="品目を検索・選択..."
+                      />
                     </div>
 
                     <div>
