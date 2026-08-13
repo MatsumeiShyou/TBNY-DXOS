@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Plus, Search, Trash2, Building, Calendar, Settings, AlertCircle } from 'lucide-react';
+import { X, Plus, Search, Trash2, Building, Calendar, Settings, AlertCircle, Grid } from 'lucide-react';
 import { MASTER_VEHICLES_LIST } from '../data/constants';
 import { parsePreferredTime } from '../utils/timeUtils';
 import SearchableMultiSelect from './SearchableMultiSelect';
@@ -25,16 +25,16 @@ const FREQUENCIES = [
 
 const initialFormState = {
   id: '',
-  payeeCode: '', payeeName: '', supplierCode: '', supplierName: '',
+  paymentCode: '', paymentName: '', vendorCode: '',
   name: '', kana: '', area: '', address: '',
   jobType: 'regular',
   scheduleRules: { mon: [], tue: [], wed: [], thu: [], fri: [], sat: [], sun: [] },
   holidayCollection: false,
   defaultDuration: 30, requiredVehicle: '',
-  items: [], note: '', isInvalid: false, preferredTime: ''
+  items: [], note: '', isInvalid: false, preferredTime: '', customSchedule: ''
 };
 
-export default function CustomerManagementModal({ customers, masterVehicles, masterItems = [], onSave, onDelete, onClose }) {
+export default function CustomerManagementModal({ customers, masterVehicles, masterItems = [], onSave, onDelete, onClose, onOpenGridMode }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCustomerId, setSelectedCustomerId] = useState(null);
   const [formData, setFormData] = useState({ ...initialFormState });
@@ -142,12 +142,22 @@ export default function CustomerManagementModal({ customers, masterVehicles, mas
               />
               <Search size={14} className="absolute left-2.5 top-2.5 text-gray-400" />
             </div>
-            <button 
-              onClick={handleCreateNew}
-              className="w-full mt-2 bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100 font-bold py-1.5 px-3 rounded-md text-sm flex items-center justify-center gap-1 transition-colors"
-            >
-              <Plus size={16} /> 新規顧客を追加
-            </button>
+            <div className="flex gap-2 mt-2">
+              <button 
+                onClick={handleCreateNew}
+                className="flex-1 bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100 font-bold py-1.5 px-2 rounded-md text-sm flex items-center justify-center gap-1 transition-colors"
+              >
+                <Plus size={16} /> 新規顧客
+              </button>
+              {onOpenGridMode && (
+                <button 
+                  onClick={onOpenGridMode}
+                  className="flex-1 bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100 font-bold py-1.5 px-2 rounded-md text-[11px] flex items-center justify-center gap-1 transition-colors"
+                >
+                  <Grid size={16} /> 回収スケジュール一括設定
+                </button>
+              )}
+            </div>
           </div>
           <div className="flex-1 overflow-y-auto">
             {filteredCustomers.map(customer => (
@@ -222,20 +232,17 @@ export default function CustomerManagementModal({ customers, masterVehicles, mas
                     <div className="grid grid-cols-2 gap-4 pt-2 border-t">
                       <div>
                         <label className="block text-xs font-bold text-gray-600 mb-1">支払先コード</label>
-                        <input type="text" name="payeeCode" value={formData.payeeCode} onChange={handleChange} className="w-full border rounded p-2 text-sm" />
+                        <input type="text" name="paymentCode" value={formData.paymentCode} onChange={handleChange} className="w-full border rounded p-2 text-sm" />
                       </div>
                       <div>
                         <label className="block text-xs font-bold text-gray-600 mb-1">支払先名 (管理会社等)</label>
-                        <input type="text" name="payeeName" value={formData.payeeName} onChange={handleChange} className="w-full border rounded p-2 text-sm" />
+                        <input type="text" name="paymentName" value={formData.paymentName} onChange={handleChange} className="w-full border rounded p-2 text-sm" />
                       </div>
                       <div>
                         <label className="block text-xs font-bold text-gray-600 mb-1">仕入先コード</label>
-                        <input type="text" name="supplierCode" value={formData.supplierCode} onChange={handleChange} className="w-full border rounded p-2 text-sm" />
+                        <input type="text" name="vendorCode" value={formData.vendorCode} onChange={handleChange} className="w-full border rounded p-2 text-sm" />
                       </div>
-                      <div>
-                        <label className="block text-xs font-bold text-gray-600 mb-1">仕入先名</label>
-                        <input type="text" name="supplierName" value={formData.supplierName} onChange={handleChange} className="w-full border rounded p-2 text-sm" />
-                      </div>
+                      {/* 仕入先名 = 顧客名と同一とするか、必要なら別途フィールドを追加 */}
                     </div>
 
                     <div className="pt-2 border-t space-y-4">
