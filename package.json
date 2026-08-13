@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "done": "node .agent/scripts/done.js",
+    "agent:scan": "node .agent/scripts/scan.js"
   },
   "dependencies": {
     "react": "^19.1.0",
