@@ -36,7 +36,7 @@ import Header from './components/Header';
 import TimeAxis from './components/TimeAxis';
 import DriverColumnHeader from './components/DriverColumnHeader';
 import EditModal from './components/EditModal';
-import PendingJobsModal from './components/PendingJobsModal';
+import PendingJobsDock from './components/PendingJobsDock';
 import JobCard from './components/JobCard';
 import SplitLine from './components/SplitLine';
 import CourseManagementModal from './components/CourseManagementModal';
@@ -614,22 +614,21 @@ export default function App() {
     };
   }, [resizingState, draggingJobId, draggingSplitId, dragOffset, jobs, splits, dragButton, dragMousePos, recordHistory]);
 
-  const handleAddJob = (jobTemplate) => {
-    if (!selectedCell) return;
-    const split = splits.find(s => s.driverId === selectedCell.driverId && s.time === selectedCell.time);
+  const handleAddJobDirect = (jobTemplate, targetDriverId, targetTime) => {
+    const split = splits.find(s => s.driverId === targetDriverId && s.time === targetTime);
     if (split) return;
 
     recordHistory(); 
-    const existingJob = jobs.find(job => job.driverId === selectedCell.driverId && job.startTime === selectedCell.time);
+    const existingJob = jobs.find(job => job.driverId === targetDriverId && job.startTime === targetTime);
     if (existingJob) {
         setPendingJobs(prev => [...prev, existingJob]);
         setJobs(prev => prev.filter(j => j.id !== existingJob.id));
     }
 
-    const newStartMin = timeToMinutes(selectedCell.time);
-    const driver = drivers.find(d => d.id === selectedCell.driverId);
+    const newStartMin = timeToMinutes(targetTime);
+    const driver = drivers.find(d => d.id === targetDriverId);
     let currentVeh = driver?.currentVehicle;
-    const driverSplits = splits.filter(s => s.driverId === selectedCell.driverId).sort((a, b) => timeToMinutes(a.time) - timeToMinutes(b.time));
+    const driverSplits = splits.filter(s => s.driverId === targetDriverId).sort((a, b) => timeToMinutes(a.time) - timeToMinutes(b.time));
     for (const s of driverSplits) {
         if (timeToMinutes(s.time) <= newStartMin) currentVeh = s.vehicle;
         else break; 
@@ -640,8 +639,8 @@ export default function App() {
     const newJob = {
       id: `new_${Date.now()}`,
       title: jobTemplate.title,
-      driverId: selectedCell.driverId,
-      startTime: selectedCell.time,
+      driverId: targetDriverId,
+      startTime: targetTime,
       duration: jobTemplate.duration,
       preferredTime: jobTemplate.preferredTime || null,
       requiredVehicle: jobTemplate.requiredVehicle,
@@ -709,8 +708,9 @@ export default function App() {
           setPendingJobs={setPendingJobs}
         />
       ) : (
-        <div className="flex-1 overflow-auto relative bg-white" onClick={() => setSelectedJobId(null)}>
-        <div className="min-w-max">
+        <div className="flex-1 flex overflow-hidden">
+          <div className="flex-1 overflow-auto relative bg-white" onClick={() => setSelectedJobId(null)}>
+            <div className="min-w-max">
           {/* Sticky Header Row */}
           <div className="flex border-b border-white bg-black text-white sticky top-0 z-40 shadow-sm">
             <div className="w-16 flex-shrink-0 border-r border-white bg-gray-900 flex items-center justify-center font-bold sticky left-0 z-50">時間</div>
@@ -791,7 +791,14 @@ export default function App() {
                           />
                         )}
                         
-                        {!job && !isOccupied && !split && <div className="absolute inset-0 hover:bg-emerald-50 cursor-pointer" onClick={(e) => { e.stopPropagation(); setSelectedCell({ driverId: driver.id, time }); }} />}
+                        {!job && !isOccupied && !split && (
+                          <div 
+                            className="absolute inset-0 hover:bg-emerald-50 cursor-pointer" 
+                            onDragOver={(e) => e.preventDefault()}
+                            onDrop={(e) => handleDropPendingJob(e, driver.id, time)}
+                            onClick={(e) => { e.stopPropagation(); setSelectedCell({ driverId: driver.id, time }); }} 
+                          />
+                        )}
                       </div>
                     );
                   })}
@@ -801,14 +808,7 @@ export default function App() {
           </div>
         </div>
 
-        {/* Pending List Modal */}
-        <PendingJobsModal 
-          selectedCell={selectedCell && !editModal ? selectedCell : null}
-          pendingJobs={pendingJobs}
-          driverName={selectedCell ? drivers.find(d => d.id === selectedCell.driverId)?.name : ''}
-          onAddJob={handleAddJob}
-          onClose={() => setSelectedCell(null)}
-        />
+
 
         {/* Modals & Drawers */}
         <Sidebar 
@@ -860,6 +860,9 @@ export default function App() {
             onClose={() => setEditModal(null)}
           />
         )}
+      </div>
+
+      <PendingJobsDock pendingJobs={pendingJobs} />
       </div>
       )}
       
