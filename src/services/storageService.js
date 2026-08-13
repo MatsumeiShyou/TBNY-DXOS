@@ -44,6 +44,54 @@ const generateInitialState = () => {
 };
 
 export const storageService = {
+  /**
+   * 指定した日付の配車盤状態を読み込む
+   * 保存データがない場合は、マスタから生成した初期状態（未配車リスト）を返す
+   */
+  loadDailyState: (dateString, customers = []) => {
+    try {
+      const dailyKey = `${STORAGE_KEY}_${dateString}`;
+      const savedData = localStorage.getItem(dailyKey);
+      if (savedData) {
+        const parsed = JSON.parse(savedData);
+        // 既存のpendingJobsにkanaがない場合のフォールバック補完
+        if (parsed.pendingJobs) {
+          parsed.pendingJobs = parsed.pendingJobs.map(job => {
+            if (!job.kana) {
+              const cust = customers.find(c => c.id === job.originalCustomerId);
+              return { ...job, kana: cust ? cust.kana : job.title };
+            }
+            return job;
+          });
+        }
+        return parsed;
+      }
+    } catch (e) {
+      console.error(`LocalStorage読み込みエラー(${dateString}):`, e);
+    }
+    
+    // 保存データがない場合は、generateInitialStateをベースにしつつ、
+    // 未配車リストにはその日の生成ジョブをセットする（Phase2ロジック）
+    const baseState = generateInitialState();
+    
+    // ※calendarUtils.generateDailySchedule はApp側で呼び出してマージする設計にするか、
+    // ここで直接呼ぶかの設計方針によるが、今回はApp側に任せるためnullを返し、
+    // App側で「nullなら初期生成する」と判定させるのがクリーン。
+    return null;
+  },
+
+  /**
+   * 指定した日付の配車盤状態を保存する
+   */
+  saveDailyState: (dateString, state) => {
+    try {
+      const dailyKey = `${STORAGE_KEY}_${dateString}`;
+      localStorage.setItem(dailyKey, JSON.stringify(state));
+    } catch (e) {
+      console.error(`LocalStorage保存エラー(${dateString}):`, e);
+    }
+  },
+
   loadState: () => {
     try {
       const savedData = localStorage.getItem(STORAGE_KEY);

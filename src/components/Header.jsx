@@ -1,9 +1,36 @@
-import { Calendar, Undo2, Redo2, Menu, LayoutGrid, Settings } from 'lucide-react';
+import { Calendar, Undo2, Redo2, Menu, LayoutGrid, Settings, ChevronLeft, ChevronRight } from 'lucide-react';
 
 export default function Header({ 
   onUndo, onRedo, canUndo, canRedo, onOpenSidebar, 
-  viewMode, setViewMode, onOpenSettings 
+  viewMode, setViewMode, onOpenSettings,
+  currentDate, onChangeDate, onSave
 }) {
+  
+  // 日付操作ハンドラ
+  const handlePrevDay = () => {
+    if (!currentDate || !onChangeDate) return;
+    const d = new Date(currentDate);
+    d.setDate(d.getDate() - 1);
+    onChangeDate(d);
+  };
+
+  const handleNextDay = () => {
+    if (!currentDate || !onChangeDate) return;
+    const d = new Date(currentDate);
+    d.setDate(d.getDate() + 1);
+    onChangeDate(d);
+  };
+
+  const handleDateChange = (e) => {
+    if (!onChangeDate) return;
+    onChangeDate(new Date(e.target.value));
+  };
+
+  // 表示用のフォーマット文字列 (YYYY-MM-DD)
+  const dateStr = currentDate ? 
+    `${currentDate.getFullYear()}-${String(currentDate.getMonth()+1).padStart(2, '0')}-${String(currentDate.getDate()).padStart(2, '0')}` 
+    : '';
+
   return (
     <header className="bg-gray-900 text-white p-2 flex justify-between items-center shadow-md z-50 relative shrink-0">
       <div className="flex items-center gap-4">
@@ -49,11 +76,39 @@ export default function Header({
           <Settings size={18} />
         </button>
 
-        <div className="bg-gray-700 px-3 py-1 rounded flex items-center gap-2 text-sm hidden sm:flex">
-          <Calendar size={14} />
-          <span>2025年 1月 24日 (金)</span>
+        {/* 日付切り替えUI */}
+        <div className="bg-gray-700 rounded flex items-center text-sm hidden sm:flex border border-gray-600 overflow-hidden">
+          <button 
+            onClick={handlePrevDay} 
+            className="p-1.5 hover:bg-gray-600 transition text-gray-300 hover:text-white"
+            title="前日へ"
+          >
+            <ChevronLeft size={16} />
+          </button>
+          <div className="relative px-2 py-1 flex items-center gap-2 hover:bg-gray-600 transition cursor-pointer">
+            <Calendar size={14} />
+            <input 
+              type="date" 
+              value={dateStr}
+              onChange={handleDateChange}
+              className="bg-transparent text-white font-bold outline-none cursor-pointer [&::-webkit-calendar-picker-indicator]:invert"
+            />
+          </div>
+          <button 
+            onClick={handleNextDay} 
+            className="p-1.5 hover:bg-gray-600 transition text-gray-300 hover:text-white border-l border-gray-600"
+            title="翌日へ"
+          >
+            <ChevronRight size={16} />
+          </button>
         </div>
-        <button className="bg-emerald-600 text-white px-3 py-1 rounded text-sm font-bold hover:bg-emerald-700 transition">保存する</button>
+
+        <button 
+          onClick={onSave}
+          className="bg-emerald-600 text-white px-3 py-1.5 rounded text-sm font-bold hover:bg-emerald-700 transition shadow-sm"
+        >
+          保存する
+        </button>
       </div>
     </header>
   );

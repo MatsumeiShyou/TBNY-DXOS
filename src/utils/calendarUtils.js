@@ -78,3 +78,46 @@ export const generateMonthlySchedule = (year, month, customers) => {
 
   return scheduleMap;
 };
+
+/**
+ * マスタデータに基づいて、指定された単一日のスケジュールを自動生成する
+ * 
+ * @param {string} dateString - 'YYYY-MM-DD' 形式の日付文字列
+ * @param {Array} customers - 顧客マスタ配列
+ * @returns {Array} 生成されたジョブの配列
+ */
+export const generateDailySchedule = (dateString, customers) => {
+  const d = new Date(dateString);
+  const dayOfWeek = DAYS_MAP[d.getDay()];
+  const dateNum = d.getDate();
+  const weekOfMonth = Math.ceil(dateNum / 7);
+  const freqStr = FREQ_MAP[weekOfMonth - 1];
+
+  const dailyJobs = [];
+
+  customers.forEach(customer => {
+    // スポットは自動展開の対象外
+    if (customer.jobType === 'spot' || customer.isInvalid) return;
+
+    const rulesForDay = customer.scheduleRules?.[dayOfWeek] || [];
+    if (rulesForDay.length === 0) return;
+
+    if (rulesForDay.includes('every') || rulesForDay.includes(freqStr)) {
+      dailyJobs.push({
+        id: `gen_${customer.id}_${dateString}_${Math.floor(Math.random()*1000)}`,
+        originalCustomerId: customer.id,
+        title: customer.name,
+        kana: customer.kana || '',
+        area: customer.area || '',
+        duration: customer.defaultDuration || 30,
+        preferredTime: customer.preferredTime || '',
+        requiredVehicle: customer.requiredVehicle || '',
+        note: customer.note || '',
+        items: customer.items || [],
+        holidayCollection: customer.holidayCollection || false
+      });
+    }
+  });
+
+  return dailyJobs;
+};

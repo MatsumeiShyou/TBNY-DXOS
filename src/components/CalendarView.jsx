@@ -10,7 +10,9 @@ export default function CalendarView({
   setMonthlySchedules, 
   masterCustomers, 
   systemSettings, 
-  setPendingJobs 
+  setPendingJobs,
+  onChangeDate,
+  setViewMode
 }) {
   const [currentDate, setCurrentDate] = useState(new Date());
   
@@ -59,23 +61,11 @@ export default function CalendarView({
     });
   };
 
-  const handleTransferToPending = (dateString) => {
-    const jobsToTransfer = monthlySchedules[dateString] || [];
-    if (jobsToTransfer.length === 0) return alert('転送するジョブがありません');
-
-    // IDを振り直して転送（重複防止）
-    const jobsWithNewIds = jobsToTransfer.map(j => ({
-      ...j,
-      id: `p_${j.originalCustomerId}_${Date.now()}_${Math.floor(Math.random()*1000)}`
-    }));
-
-    setPendingJobs(prev => [...prev, ...jobsWithNewIds]);
-    
-    // カレンダー上からは削除
-    setMonthlySchedules(prev => ({
-      ...prev,
-      [dateString]: []
-    }));
+  const handleMoveToDispatch = (dateString) => {
+    if (onChangeDate && setViewMode) {
+      onChangeDate(new Date(dateString));
+      setViewMode('dispatch');
+    }
   };
 
   // カレンダー描画用のグリッド生成
@@ -156,11 +146,11 @@ export default function CalendarView({
                     </div>
                     {dayJobs.length > 0 && (
                       <button 
-                        onClick={() => handleTransferToPending(dateStr)}
-                        className="text-[10px] bg-emerald-100 hover:bg-emerald-200 text-emerald-800 font-bold px-1.5 py-0.5 rounded flex items-center gap-1 border border-emerald-300"
-                        title="この日のジョブを配車盤(未配車リスト)へ送る"
+                        onClick={() => handleMoveToDispatch(dateStr)}
+                        className="text-[10px] bg-blue-100 hover:bg-blue-200 text-blue-800 font-bold px-1.5 py-0.5 rounded flex items-center gap-1 border border-blue-300 transition-colors"
+                        title="この日の配車盤を開く"
                       >
-                        <Send size={10} /> 転送
+                        <Send size={10} /> 配車盤へ
                       </button>
                     )}
                   </div>

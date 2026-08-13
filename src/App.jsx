@@ -30,6 +30,7 @@ import {
   CELL_HEIGHT_PX
 } from './data/constants';
 import { timeToMinutes, minutesToTime } from './utils/timeUtils';
+import { generateDailySchedule } from './utils/calendarUtils';
 import { useHistory } from './hooks/useHistory';
 
 import Header from './components/Header';
@@ -87,6 +88,9 @@ const INITIAL_ITEMS = MASTER_ITEMS_LIST.map((item, i) => ({
 export default function App() {
   
   // --- State ---
+  const [currentDate, setCurrentDate] = useState(new Date());
+
+  // 初期ロード用（マスタ読み込み後に日別ロードを走らせるため、最初は空かデフォルト）
   const initialState = storageService.loadState();
   const [drivers, setDrivers] = useState(initialState.drivers);
   const [jobs, setJobs] = useState(initialState.jobs);
@@ -125,6 +129,28 @@ export default function App() {
   const [masterCustomers, setMasterCustomers] = useState(initialMaster.customers);
   const [masterItems, setMasterItems] = useState(initialMaster.items);
   const [systemSettings, setSystemSettings] = useState(initialMaster.systemSettings || { holidays: [] });
+
+  // === 日別データのバックグラウンドロード＆生成 ===
+  useEffect(() => {
+    if (!masterCustomers || masterCustomers.length === 0) return;
+
+    const dateStr = `${currentDate.getFullYear()}-${String(currentDate.getMonth()+1).padStart(2, '0')}-${String(currentDate.getDate()).padStart(2, '0')}`;
+    const dailyState = storageService.loadDailyState(dateStr, masterCustomers);
+
+    if (dailyState) {
+      setDrivers(dailyState.drivers || initialState.drivers);
+      setJobs(dailyState.jobs || []);
+      setPendingJobs(dailyState.pendingJobs || []);
+      setSplits(dailyState.splits || initialState.splits);
+    } else {
+      // 保存データがない場合、マスタから生成
+      const newDailyJobs = generateDailySchedule(dateStr, masterCustomers);
+      setDrivers(initialState.drivers);
+      setJobs([]);
+      setPendingJobs(newDailyJobs);
+      setSplits(initialState.splits);
+    }
+  }, [currentDate, masterCustomers]);
 
   // === ビューモード (dispatch | calendar) ===
   const [viewMode, setViewMode] = useState('dispatch');
@@ -225,11 +251,13 @@ export default function App() {
   };
 
   // ----------------------------------------
-  // 状態E自動保孁E
+  // 状態の自動保存
   // ----------------------------------------
   useEffect(() => {
-    storageService.saveState({ drivers, jobs, pendingJobs, splits, monthlySchedules });
-  }, [drivers, jobs, pendingJobs, splits, monthlySchedules]);
+    const dateStr = `${currentDate.getFullYear()}-${String(currentDate.getMonth()+1).padStart(2, '0')}-${String(currentDate.getDate()).padStart(2, '0')}`;
+    storageService.saveDailyState(dateStr, { drivers, jobs, pendingJobs, splits });
+    storageService.saveState({ drivers, jobs, pendingJobs, splits, monthlySchedules }); // 下位互換
+  }, [drivers, jobs, pendingJobs, splits, monthlySchedules, currentDate]);
 
   // マスターデータの自動保存
   useEffect(() => {
@@ -696,6 +724,9 @@ export default function App() {
         viewMode={viewMode}
         setViewMode={setViewMode}
         onOpenSettings={() => setIsSettingsModalOpen(true)}
+        currentDate={currentDate}
+        onChangeDate={setCurrentDate}
+        onSave={() => alert('保存しました')}
       />
 
       {/* Main Content Area */}
@@ -706,6 +737,8 @@ export default function App() {
           masterCustomers={masterCustomers}
           systemSettings={systemSettings}
           setPendingJobs={setPendingJobs}
+          onChangeDate={setCurrentDate}
+          setViewMode={setViewMode}
         />
       ) : (
         <div className="flex-1 flex overflow-hidden">
