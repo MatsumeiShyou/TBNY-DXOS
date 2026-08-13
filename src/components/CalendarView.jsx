@@ -94,7 +94,7 @@ export default function CalendarView({
       <div className="bg-white border-b px-4 py-3 flex justify-between items-center shadow-sm z-10 shrink-0">
         <div className="flex items-center gap-4">
           <h2 className="text-xl font-bold text-gray-800 flex items-center gap-2">
-            中長期スケジュール・カレンダー
+            スケジュール調整カレンダー
           </h2>
           <div className="flex items-center gap-2 bg-gray-100 rounded p-1">
             <button onClick={handlePrevMonth} className="p-1 hover:bg-gray-200 rounded"><ChevronLeft size={20}/></button>
