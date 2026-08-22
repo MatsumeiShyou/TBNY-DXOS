@@ -1,0 +1,31 @@
+{
+  "lint-check-on-write": {
+    "PostToolUse": [
+      {
+        "matcher": "write_to_file|replace_file_content|multi_replace_file_content",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node .agents/scripts/post-write-check.js",
+            "timeout": 30
+          }
+        ]
+      }
+    ]
+  },
+  "safety-gate": {
+    "enabled": true,
+    "PreToolUse": [
+      {
+        "matcher": "run_command",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node .agents/scripts/safety-check.js",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}
