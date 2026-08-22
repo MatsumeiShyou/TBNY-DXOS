@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { X, Settings, Truck, Users, Database, FileOutput, Map, Building, Package } from 'lucide-react';
+import { ArrowLeft, Truck, Users, Database, FileOutput, Map, Building, Package, Copy } from 'lucide-react';
 
-export default function Sidebar({ isOpen, onClose, onOpenCourseManagement, onOpenWorkerManagement, onOpenVehicleManagement, onOpenCustomerManagement, onOpenItemManagement }) {
+export default function Sidebar({ isOpen, onClose, onOpenCourseManagement, onOpenWorkerManagement, onOpenVehicleManagement, onOpenCustomerManagement, onOpenItemManagement, onOpenTemplateModal }) {
   // マウント時のアニメーション状態管理
   const [isRendered, setIsRendered] = useState(false);
 
@@ -36,17 +36,17 @@ export default function Sidebar({ isOpen, onClose, onOpenCourseManagement, onOpe
         className={`fixed top-0 left-0 h-full w-72 bg-gray-900 text-gray-300 shadow-2xl z-50 flex flex-col transform transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}
       >
         {/* サイドバーヘッダー */}
-        <div className="flex items-center justify-between p-4 border-b border-gray-800 bg-gray-950">
-          <h2 className="text-white font-bold text-lg flex items-center gap-2">
-            <Settings size={20} className="text-gray-400" /> 
-            システムメニュー
-          </h2>
+        <div className="flex items-center p-4 border-b border-gray-800 bg-gray-950">
           <button 
             onClick={onClose} 
-            className="p-1.5 rounded-md hover:bg-gray-800 hover:text-white transition-colors"
+            className="p-1.5 -ml-1.5 mr-2 rounded-md hover:bg-gray-800 text-gray-400 hover:text-white transition-colors flex items-center justify-center"
+            title="メニューを閉じる"
           >
-            <X size={20} />
+            <ArrowLeft size={20} />
           </button>
+          <h2 className="text-white font-bold text-lg">
+            システムメニュー
+          </h2>
         </div>
 
         {/* メニュー内容 */}
@@ -58,9 +58,10 @@ export default function Sidebar({ isOpen, onClose, onOpenCourseManagement, onOpe
             <ul className="space-y-1">
               <li>
                 <button 
-                  onClick={() => {
-                    onOpenCourseManagement();
+                  onClick={(e) => {
+                    e.stopPropagation();
                     onClose();
+                    setTimeout(() => onOpenCourseManagement(), 0);
                   }}
                   className="w-full flex items-center gap-3 px-3 py-2.5 rounded-md hover:bg-gray-800 hover:text-white transition-colors text-sm text-left group"
                 >
@@ -70,9 +71,10 @@ export default function Sidebar({ isOpen, onClose, onOpenCourseManagement, onOpe
               </li>
               <li>
                 <button 
-                  onClick={() => {
-                    onOpenWorkerManagement();
+                  onClick={(e) => {
+                    e.stopPropagation();
                     onClose();
+                    setTimeout(() => onOpenWorkerManagement(), 0);
                   }}
                   className="w-full flex items-center gap-3 px-3 py-2.5 rounded-md hover:bg-gray-800 hover:text-white transition-colors text-sm text-left group"
                 >
@@ -82,9 +84,10 @@ export default function Sidebar({ isOpen, onClose, onOpenCourseManagement, onOpe
               </li>
               <li>
                 <button 
-                  onClick={() => {
-                    onOpenVehicleManagement();
+                  onClick={(e) => {
+                    e.stopPropagation();
                     onClose();
+                    setTimeout(() => onOpenVehicleManagement(), 0);
                   }}
                   className="w-full flex items-center gap-3 px-3 py-2.5 rounded-md hover:bg-gray-800 hover:text-white transition-colors text-sm text-left group"
                 >
@@ -94,9 +97,10 @@ export default function Sidebar({ isOpen, onClose, onOpenCourseManagement, onOpe
               </li>
               <li>
                 <button 
-                  onClick={() => {
-                    onOpenCustomerManagement();
+                  onClick={(e) => {
+                    e.stopPropagation();
                     onClose();
+                    setTimeout(() => onOpenCustomerManagement(), 0);
                   }}
                   className="w-full flex items-center gap-3 px-3 py-2.5 rounded-md hover:bg-gray-800 hover:text-white transition-colors text-sm text-left group"
                 >
@@ -106,9 +110,10 @@ export default function Sidebar({ isOpen, onClose, onOpenCourseManagement, onOpe
               </li>
               <li>
                 <button 
-                  onClick={() => {
-                    onOpenItemManagement();
+                  onClick={(e) => {
+                    e.stopPropagation();
                     onClose();
+                    setTimeout(() => onOpenItemManagement(), 0);
                   }}
                   className="w-full flex items-center gap-3 px-3 py-2.5 rounded-md hover:bg-gray-800 hover:text-white transition-colors text-sm text-left group"
                 >
@@ -123,6 +128,19 @@ export default function Sidebar({ isOpen, onClose, onOpenCourseManagement, onOpe
           <section>
             <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3 px-2">システム・データ</h3>
             <ul className="space-y-1">
+              <li>
+                <button 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onClose();
+                    setTimeout(() => onOpenTemplateModal(), 0);
+                  }}
+                  className="w-full flex items-center gap-3 px-3 py-2.5 rounded-md hover:bg-gray-800 hover:text-white transition-colors text-sm text-left group"
+                >
+                  <Copy size={18} className="text-indigo-400 group-hover:text-indigo-300" />
+                  <span className="flex-1">テンプレート管理</span>
+                </button>
+              </li>
               <li>
                 <button 
                   disabled

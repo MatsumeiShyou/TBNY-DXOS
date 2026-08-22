@@ -102,8 +102,8 @@ export default function CustomerScheduleGridModal({ customers, onSave, onClose }
 
   return (
     <>
-      <div className="fixed inset-0 bg-gray-900/60 z-[100] backdrop-blur-sm" onClick={onClose}></div>
-      <div className="fixed inset-4 bg-white rounded-xl shadow-2xl z-[110] flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+      <div className="fixed inset-0 bg-black/40 z-[100] animate-in fade-in duration-300" onClick={onClose}></div>
+      <div className="fixed inset-4 bg-white rounded-xl shadow-2xl z-[110] flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200 border border-gray-200">
         
         {/* Header */}
         <div className="flex justify-between items-center px-6 py-4 border-b border-gray-200 bg-gray-50">
@@ -165,10 +165,10 @@ export default function CustomerScheduleGridModal({ customers, onSave, onClose }
         </div>
 
         {/* Grid Area */}
-        <div className="flex-1 overflow-auto bg-gray-100 relative custom-scrollbar p-4">
-          <div className="inline-block min-w-full align-middle border border-gray-300 bg-white shadow-sm">
+        <div className="flex-1 overflow-auto bg-gray-100 relative custom-scrollbar px-4 pb-4 pt-0">
+          <div className="inline-block min-w-full align-middle border-x border-b border-gray-300 bg-white shadow-sm">
             <table className="min-w-full divide-y divide-gray-300 table-fixed">
-              <thead className="bg-gray-200 sticky top-0 z-30 shadow-sm">
+              <thead className="bg-gray-200 sticky -top-[1px] z-30 shadow-sm border-t border-gray-300">
                 <tr>
                   <th scope="col" className="sticky left-0 z-40 bg-gray-200 py-3 pl-4 pr-3 text-left text-xs font-semibold text-gray-700 w-64 border-r border-gray-300 shadow-[1px_0_0_0_#d1d5db]">
                     回収先 (顧客名)
@@ -231,7 +231,7 @@ export default function CustomerScheduleGridModal({ customers, onSave, onClose }
                               )}
                             </div>
                             
-                            {/* ポップアップダイアログ */}
+                              {/* ポップアップダイアログ */}
                             {isDayDialogActive && (
                               <div className="absolute top-full left-1/2 -translate-x-1/2 mt-1 w-48 bg-white border border-gray-200 shadow-xl rounded-lg z-50 p-3 cursor-default" onClick={e => e.stopPropagation()}>
                                 <div className="font-bold text-xs text-gray-700 mb-2 border-b pb-1">{day.label}曜の回収設定</div>
@@ -242,14 +242,32 @@ export default function CustomerScheduleGridModal({ customers, onSave, onClose }
                                       else setDayDialogRules([]);
                                     }} className="rounded text-emerald-500 focus:ring-emerald-500" /> 毎週
                                   </label>
-                                  {['1', '2', '3', '4', '5'].map(num => (
-                                    <label key={num} className={`flex items-center gap-2 py-0.5 rounded px-1 cursor-pointer ${dayDialogRules.includes('every') ? 'opacity-50' : 'hover:bg-gray-50'}`}>
-                                      <input type="checkbox" disabled={dayDialogRules.includes('every')} checked={dayDialogRules.includes(num)} onChange={(e) => {
-                                        if (e.target.checked) setDayDialogRules(p => [...p.filter(x => x !== 'every'), num].sort());
-                                        else setDayDialogRules(p => p.filter(x => x !== num));
-                                      }} className="rounded text-emerald-500 focus:ring-emerald-500" /> 第{num}週
-                                    </label>
-                                  ))}
+                                  {[
+                                    { key: '1st', label: '第1週', num: '1' },
+                                    { key: '2nd', label: '第2週', num: '2' },
+                                    { key: '3rd', label: '第3週', num: '3' },
+                                    { key: '4th', label: '第4週', num: '4' },
+                                    { key: '5th', label: '第5週', num: '5' }
+                                  ].map(w => {
+                                    const isChecked = dayDialogRules.includes(w.key) || dayDialogRules.includes(w.num);
+                                    return (
+                                      <label key={w.key} className={`flex items-center gap-2 py-0.5 rounded px-1 cursor-pointer ${dayDialogRules.includes('every') ? 'opacity-50' : 'hover:bg-gray-50'}`}>
+                                        <input 
+                                          type="checkbox" 
+                                          disabled={dayDialogRules.includes('every')} 
+                                          checked={isChecked} 
+                                          onChange={(e) => {
+                                            if (e.target.checked) {
+                                              setDayDialogRules(p => [...p.filter(x => x !== 'every' && x !== w.num && x !== w.key), w.key].sort());
+                                            } else {
+                                              setDayDialogRules(p => p.filter(x => x !== w.key && x !== w.num));
+                                            }
+                                          }} 
+                                          className="rounded text-emerald-500 focus:ring-emerald-500" 
+                                        /> {w.label}
+                                      </label>
+                                    );
+                                  })}
                                 </div>
                                 <div className="flex justify-between gap-2">
                                   <button onClick={(e) => { e.stopPropagation(); setDayDialogRules([]); }} className="px-2 py-1 text-[10px] text-red-500 hover:bg-red-50 rounded">クリア</button>

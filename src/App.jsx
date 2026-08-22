@@ -30,8 +30,7 @@ import {
   CELL_HEIGHT_PX
 } from './data/constants';
 import { timeToMinutes, minutesToTime } from './utils/timeUtils';
-import { generateDailySchedule } from './utils/calendarUtils';
-import { useHistory } from './hooks/useHistory';
+import { useDataStore } from './hooks/useDataStore';
 
 import Header from './components/Header';
 import TimeAxis from './components/TimeAxis';
@@ -44,43 +43,11 @@ import CourseManagementModal from './components/CourseManagementModal';
 import WorkerManagementModal from './components/WorkerManagementModal';
 import VehicleManagementModal from './components/VehicleManagementModal';
 import CustomerManagementModal from './components/CustomerManagementModal';
+import CustomerScheduleGridModal from './components/CustomerScheduleGridModal';
 import ItemManagementModal from './components/ItemManagementModal';
+import TemplateModal from './components/TemplateModal';
 import Sidebar from './components/Sidebar';
 import CalendarView from './components/CalendarView';
-import SettingsModal from './components/SettingsModal';
-import { storageService } from './services/storageService';
-
-// 初期マスターデータ（workersマスタ）
-const INITIAL_WORKERS = [
-  { id: 'w_hatazawa', name: '畑澤', kana: 'はたざわ', license_types: ['普通', '中型', '大型'], is_active: true },
-  { id: 'w_kikuchi', name: '菊地', kana: 'きくち', license_types: ['普通', '中型'], is_active: true },
-  { id: 'w_banri', name: '万里', kana: 'ばんり', license_types: ['普通', '中型'], is_active: true },
-  { id: 'w_katayama', name: '片山', kana: 'かたやま', license_types: ['普通', '中型', '大型'], is_active: true },
-  { id: 'w_daiki', name: '大貴', kana: 'だいき', license_types: ['普通'], is_active: true },
-  { id: 'w_suzuki', name: '鈴木', kana: 'すずき', license_types: ['普通', '中型'], is_active: true },
-  { id: 'w_sato', name: '佐藤', kana: 'さとう', license_types: ['普通'], is_active: true },
-  { id: 'w_tanaka', name: '田中', kana: 'たなか', license_types: ['普通', '中型'], is_active: true },
-];
-
-// 初期マスターデータ（vehiclesマスタ）
-const INITIAL_VEHICLES = [
-  { id: 'v_2025pk', name: '2025PK', vehicle_type: 'packer_2t', max_capacity_kg: 2000 },
-  { id: 'v_2267pk', name: '2267PK', vehicle_type: 'packer_2t', max_capacity_kg: 2000 },
-  { id: 'v_2618pk', name: '2618PK', vehicle_type: 'packer_2t', max_capacity_kg: 2000 },
-  { id: 'v_5122pk', name: '5122PK', vehicle_type: 'packer_2t', max_capacity_kg: 2000 },
-  { id: 'v_1111pk', name: '1111PK', vehicle_type: 'packer_2t', max_capacity_kg: 2000 },
-  { id: 'v_seino', name: '西濃運輸', vehicle_type: 'flat_4t', max_capacity_kg: 4000 },
-  { id: 'v_spare', name: '予備車', vehicle_type: 'other', max_capacity_kg: null },
-  { id: 'v_rental', name: 'レンタカー', vehicle_type: 'rental', max_capacity_kg: null },
-];
-
-const INITIAL_ITEMS = MASTER_ITEMS_LIST.map((item, i) => ({
-  id: `item_init_${i}`,
-  name: item.name,
-  kana: item.kana,
-  requiredVehicle: '',
-  estimatedDuration: 0
-}));
 
 // ==========================================
 // 3. メインコンポEネンチE
@@ -90,24 +57,51 @@ export default function App() {
   // --- State ---
   const [currentDate, setCurrentDate] = useState(new Date());
 
-  // 初期ロード用（マスタ読み込み後に日別ロードを走らせるため、最初は空かデフォルト）
-  const initialState = storageService.loadState();
-  const [drivers, setDrivers] = useState(initialState.drivers);
-  const [jobs, setJobs] = useState(initialState.jobs);
-  const [pendingJobs, setPendingJobs] = useState(initialState.pendingJobs); 
-  const [splits, setSplits] = useState(initialState.splits);
-  const [monthlySchedules, setMonthlySchedules] = useState(initialState.monthlySchedules || {});
+  // プレビューモード用State
+  const [previewingTemplate, setPreviewingTemplate] = useState(null);
+  const [originalBoardState, setOriginalBoardState] = useState(null);
 
-  // 履歴管琁Etate
-  const { history, recordHistory, undo, redo } = useHistory(
-    { jobs, pendingJobs, splits, drivers, monthlySchedules },
-    { setJobs, setPendingJobs, setSplits, setDrivers, setMonthlySchedules }
-  );
+  const storeDateStr = `${currentDate.getFullYear()}-${String(currentDate.getMonth()+1).padStart(2, '0')}-${String(currentDate.getDate()).padStart(2, '0')}`;
+  const store = useDataStore(storeDateStr, !!previewingTemplate);
+  const {
+    isLoaded,
+    masterWorkers,
+    masterVehicles,
+    masterCustomers,
+    masterItems,
+    drivers,
+    jobs,
+    pendingJobs,
+    splits,
+    monthlyExceptions,
+    saveCustomer,
+    saveBulkCustomers,
+    deleteCustomer,
+    saveWorker,
+    deleteWorker,
+    saveVehicle,
+    deleteVehicle,
+    saveItems,
+    deleteItem,
+    setJobs,
+    setPendingJobs,
+    setSplits,
+    setDrivers,
+    setMonthlyExceptions,
+    history,
+    recordHistory,
+    undo,
+    redo,
+    clearHistory,
+    addSpotJob,
+    deleteJobFromCalendar,
+    moveSpotJob
+  } = store;
 
   const [selectedCell, setSelectedCell] = useState(null);
   const [selectedJobId, setSelectedJobId] = useState(null);
 
-  // 編雁Eーダル用State
+  // 編集モーダル用State
   const [editModal, setEditModal] = useState(null);
   
   // コース管理モーダル用State
@@ -120,81 +114,107 @@ export default function App() {
   const [isWorkerModalOpen, setIsWorkerModalOpen] = useState(false);
   const [isVehicleModalOpen, setIsVehicleModalOpen] = useState(false);
   const [isCustomerModalOpen, setIsCustomerModalOpen] = useState(false);
+  const [customerModalInitialData, setCustomerModalInitialData] = useState(null);
+  const [isCustomerGridModalOpen, setIsCustomerGridModalOpen] = useState(false);
   const [isItemModalOpen, setIsItemModalOpen] = useState(false);
+  
+  // テンプレートモーダル用State
+  const [isTemplateModalOpen, setIsTemplateModalOpen] = useState(false);
 
-  // === マスタデータの読み込み ===
-  const initialMaster = storageService.loadMasterData(INITIAL_WORKERS, INITIAL_VEHICLES, CUSTOMERS, INITIAL_ITEMS);
-  const [masterWorkers, setMasterWorkers] = useState(initialMaster.workers);
-  const [masterVehicles, setMasterVehicles] = useState(initialMaster.vehicles);
-  const [masterCustomers, setMasterCustomers] = useState(initialMaster.customers);
-  const [masterItems, setMasterItems] = useState(initialMaster.items);
-  const [systemSettings, setSystemSettings] = useState(initialMaster.systemSettings || { holidays: [] });
+  // === プレビューアクション ===
+  const startPreview = (templateData) => {
+    // 現在の本番状態を退避
+    setOriginalBoardState({
+      jobs: [...jobs],
+      pendingJobs: [...pendingJobs],
+      splits: [...splits],
+      drivers: [...drivers]
+    });
+    // テンプレートデータを展開
+    setJobs(templateData.state.jobs || []);
+    setPendingJobs(templateData.state.pendingJobs || []);
+    setSplits(templateData.state.splits || []);
+    setDrivers(templateData.state.drivers || drivers); // ドライバーがない場合は既存を利用
+    
+    // 履歴クリアとプレビュー開始
+    clearHistory();
+    setPreviewingTemplate({ id: templateData.id, name: templateData.name });
+    setIsTemplateModalOpen(false);
+    setViewMode('dispatch'); // 強制的に配車盤ビューへ
+  };
 
-  // === 日別データのバックグラウンドロード＆生成 ===
-  useEffect(() => {
-    if (!masterCustomers || masterCustomers.length === 0) return;
-
-    const dateStr = `${currentDate.getFullYear()}-${String(currentDate.getMonth()+1).padStart(2, '0')}-${String(currentDate.getDate()).padStart(2, '0')}`;
-    const dailyState = storageService.loadDailyState(dateStr, masterCustomers);
-
-    if (dailyState) {
-      setDrivers(dailyState.drivers || initialState.drivers);
-      setJobs(dailyState.jobs || []);
-      setPendingJobs(dailyState.pendingJobs || []);
-      setSplits(dailyState.splits || initialState.splits);
-    } else {
-      // 保存データがない場合、マスタから生成
-      const newDailyJobs = generateDailySchedule(dateStr, masterCustomers);
-      setDrivers(initialState.drivers);
-      setJobs([]);
-      setPendingJobs(newDailyJobs);
-      setSplits(initialState.splits);
+  const cancelPreview = () => {
+    if (originalBoardState) {
+      setJobs(originalBoardState.jobs);
+      setPendingJobs(originalBoardState.pendingJobs);
+      setSplits(originalBoardState.splits);
+      setDrivers(originalBoardState.drivers);
     }
-  }, [currentDate, masterCustomers]);
+    setPreviewingTemplate(null);
+    setOriginalBoardState(null);
+    clearHistory(); // プレビュー中の履歴を破棄
+  };
+
+  const applyPreview = () => {
+    // そのまま本番として確定（プレビュー状態の解除）
+    // ※未登録案件のIDや顧客情報をどうするかは今後の課題だが、とりあえずUI上は確定できる。
+    setPreviewingTemplate(null);
+    setOriginalBoardState(null);
+    clearHistory();
+  };
+
+  const savePreviewToTemplate = async () => {
+    if (!previewingTemplate) return;
+    const { storageService } = await import('./services/storageService');
+    
+    const updatedTemplate = {
+      id: previewingTemplate.id,
+      name: previewingTemplate.name,
+      state: {
+        jobs,
+        pendingJobs,
+        splits,
+        drivers
+      }
+    };
+    
+    await storageService.saveTemplate(updatedTemplate);
+    alert(`テンプレート「${previewingTemplate.name}」を上書き保存しました。`);
+    // プレビューは継続するか終わるか？ ここではプレビューモードを維持する
+  };
+
+  const handleDoubleClickJob = (job, cellInfo) => {
+    if (job.isUnregistered) {
+      // 未登録データの場合は、新規顧客登録モーダルを開き、初期値を渡す
+      const titleWithoutWarning = job.title ? job.title.replace('⚠️未登録 ', '') : '';
+      setCustomerModalInitialData({
+        name: titleWithoutWarning,
+        defaultDuration: job.duration,
+        preferredTime: job.preferredTime || '',
+        note: `※テンプレートから展開された未登録案件（元のID: ${job.originalCustomerId}）\n${job.description || ''}`
+      });
+      setIsCustomerModalOpen(true);
+    } else {
+      // 通常の動作
+      if (cellInfo && cellInfo.driverId) {
+        setSelectedCell({ driverId: cellInfo.driverId, time: cellInfo.time });
+      }
+    }
+  };
+
 
   // === ビューモード (dispatch | calendar) ===
   const [viewMode, setViewMode] = useState('dispatch');
-  const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
-
   // --- マスタCRUDハンドラ ---
-  const handleSaveWorker = (workerData, isEdit) => {
-    if (isEdit) {
-      setMasterWorkers(prev => prev.map(w => w.id === workerData.id ? workerData : w));
-    } else {
-      setMasterWorkers(prev => [...prev, workerData]);
-    }
-  };
-  const handleDeleteWorker = (id) => {
-    setMasterWorkers(prev => prev.filter(w => w.id !== id));
-  };
-  const handleSaveVehicle = (vehicleData, isEdit) => {
-    if (isEdit) {
-      setMasterVehicles(prev => prev.map(v => v.id === vehicleData.id ? vehicleData : v));
-    } else {
-      setMasterVehicles(prev => [...prev, vehicleData]);
-    }
-  };
-  const handleDeleteVehicle = (id) => {
-    setMasterVehicles(prev => prev.filter(v => v.id !== id));
-  };
-  const handleSaveCustomer = (customerData) => {
-    setMasterCustomers(prev => {
-      const exists = prev.find(c => c.id === customerData.id);
-      if (exists) {
-        return prev.map(c => c.id === customerData.id ? customerData : c);
-      }
-      return [...prev, customerData];
-    });
-  };
-  const handleDeleteCustomer = (id) => {
-    setMasterCustomers(prev => prev.filter(c => c.id !== id));
-  };
-  const handleSaveItems = (newItems) => {
-    setMasterItems(newItems);
-  };
-  const handleDeleteItem = (id) => {
-    setMasterItems(prev => prev.filter(i => i.id !== id));
-  };
+  const handleSaveWorker = saveWorker;
+  const handleDeleteWorker = deleteWorker;
+  const handleSaveVehicle = saveVehicle;
+  const handleDeleteVehicle = deleteVehicle;
+  const handleSaveCustomer = saveCustomer;
+  const handleSaveBulkCustomers = saveBulkCustomers;
+  const handleDeleteCustomer = deleteCustomer;
+  const handleSaveItems = saveItems;
+  const handleDeleteItem = deleteItem;
 
   // ドラチE & リサイズ管琁E
   const [draggingJobId, setDraggingJobId] = useState(null);
@@ -251,19 +271,9 @@ export default function App() {
   };
 
   // ----------------------------------------
-  // 状態の自動保存
+  // 状態の自動保存 (useDataStore内で処理)
   // ----------------------------------------
-  useEffect(() => {
-    const dateStr = `${currentDate.getFullYear()}-${String(currentDate.getMonth()+1).padStart(2, '0')}-${String(currentDate.getDate()).padStart(2, '0')}`;
-    storageService.saveDailyState(dateStr, { drivers, jobs, pendingJobs, splits });
-    storageService.saveState({ drivers, jobs, pendingJobs, splits, monthlySchedules }); // 下位互換
-  }, [drivers, jobs, pendingJobs, splits, monthlySchedules, currentDate]);
-
-  // マスターデータの自動保存
-  useEffect(() => {
-    storageService.saveMasterData({ workers: masterWorkers, vehicles: masterVehicles, customers: masterCustomers, items: masterItems, systemSettings });
-  }, [masterWorkers, masterVehicles, masterCustomers, masterItems, systemSettings]);
-
+  
   // ----------------------------------------
   // Smart Coloring Logic
   // ----------------------------------------
@@ -642,6 +652,19 @@ export default function App() {
     };
   }, [resizingState, draggingJobId, draggingSplitId, dragOffset, jobs, splits, dragButton, dragMousePos, recordHistory]);
 
+  const handleDropPendingJob = (e, targetDriverId, targetTime) => {
+    e.preventDefault();
+    try {
+      const raw = e.dataTransfer.getData('application/json');
+      if (!raw) return;
+      const data = JSON.parse(raw);
+      if (data.type !== 'PENDING_JOB' || !data.job) return;
+      handleAddJobDirect(data.job, targetDriverId, targetTime);
+    } catch {
+      // ignore invalid data
+    }
+  };
+
   const handleAddJobDirect = (jobTemplate, targetDriverId, targetTime) => {
     const split = splits.find(s => s.driverId === targetDriverId && s.time === targetTime);
     if (split) return;
@@ -665,7 +688,7 @@ export default function App() {
     let isVehicleError = jobTemplate.requiredVehicle && currentVeh && currentVeh !== jobTemplate.requiredVehicle;
 
     const newJob = {
-      id: `new_${Date.now()}`,
+      id: jobTemplate.id || `new_${Date.now()}`,
       title: jobTemplate.title,
       driverId: targetDriverId,
       startTime: targetTime,
@@ -709,10 +732,23 @@ export default function App() {
     return lines;
   };
 
-
+  const displayPendingJobs = useMemo(() => {
+    if (previewingTemplate && originalBoardState) {
+      const realSpotPending = originalBoardState.pendingJobs.filter(j => j.jobType === 'spot' || j.isSpot);
+      const realSpotPlaced = originalBoardState.jobs.filter(j => j.jobType === 'spot' || j.isSpot);
+      const allRealSpotJobs = [...realSpotPending, ...realSpotPlaced].map(j => ({ 
+         ...j, 
+         isReadOnly: true,
+         title: `[本日のスポット] ${j.title}`,
+         note: (j.note ? j.note + '\n' : '') + '※テンプレートには配置できません'
+      }));
+      return [...pendingJobs, ...allRealSpotJobs];
+    }
+    return pendingJobs;
+  }, [previewingTemplate, originalBoardState, pendingJobs]);
 
   return (
-    <div className="flex flex-col h-screen bg-white text-sm font-sans text-gray-800 select-none">
+    <div className={`flex flex-col h-screen ${previewingTemplate ? 'bg-purple-50 border-4 border-purple-500' : 'bg-white'} text-sm font-sans text-gray-800 select-none transition-colors duration-300`}>
       
       {/* Header */}
       <Header 
@@ -723,22 +759,53 @@ export default function App() {
         onOpenSidebar={() => setIsSidebarOpen(true)}
         viewMode={viewMode}
         setViewMode={setViewMode}
-        onOpenSettings={() => setIsSettingsModalOpen(true)}
         currentDate={currentDate}
         onChangeDate={setCurrentDate}
         onSave={() => alert('保存しました')}
+        isPreviewMode={!!previewingTemplate}
       />
+
+      {/* プレビュー用アクションバー */}
+      {previewingTemplate && (
+        <div className="bg-purple-600 text-white px-4 py-2 flex items-center justify-between shadow-md z-50 relative">
+          <div className="flex items-center gap-2 font-bold text-lg">
+            <span>⚠️</span>
+            <span>【プレビュー・編集モード】 {previewingTemplate.name}</span>
+            <span className="text-xs font-normal ml-2 bg-purple-800 px-2 py-1 rounded">※本番データにはまだ影響しません</span>
+          </div>
+          <div className="flex items-center gap-3">
+            <button 
+              onClick={applyPreview}
+              className="px-4 py-1.5 bg-green-500 hover:bg-green-400 text-white font-bold rounded shadow transition-colors"
+            >
+              この状態で本番へ適用
+            </button>
+            <button 
+              onClick={savePreviewToTemplate}
+              className="px-4 py-1.5 bg-blue-500 hover:bg-blue-400 text-white font-bold rounded shadow transition-colors"
+            >
+              テンプレート上書き保存
+            </button>
+            <button 
+              onClick={cancelPreview}
+              className="px-4 py-1.5 bg-gray-600 hover:bg-gray-500 text-white font-bold rounded shadow transition-colors"
+            >
+              キャンセル
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Main Content Area */}
       {viewMode === 'calendar' ? (
         <CalendarView 
-          monthlySchedules={monthlySchedules}
-          setMonthlySchedules={setMonthlySchedules}
+          monthlyExceptions={monthlyExceptions}
           masterCustomers={masterCustomers}
-          systemSettings={systemSettings}
-          setPendingJobs={setPendingJobs}
           onChangeDate={setCurrentDate}
           setViewMode={setViewMode}
+          addSpotJob={addSpotJob}
+          deleteJobFromCalendar={deleteJobFromCalendar}
+          moveSpotJob={moveSpotJob}
         />
       ) : (
         <div className="flex-1 flex overflow-hidden">
@@ -821,12 +888,17 @@ export default function App() {
                             setDragCurrent={setDragCurrent}
                             setDragMousePos={setDragMousePos}
                             renderJobHourLines={renderJobHourLines}
+                            onDoubleClickJob={handleDoubleClickJob}
                           />
                         )}
                         
                         {!job && !isOccupied && !split && (
                           <div 
-                            className="absolute inset-0 hover:bg-emerald-50 cursor-pointer" 
+                            className={`absolute inset-0 cursor-pointer transition-colors ${
+                              selectedCell?.driverId === driver.id && selectedCell?.time === time
+                                ? 'bg-blue-50/50 border-2 border-blue-500 z-10 shadow-inner'
+                                : 'hover:border hover:border-emerald-300 hover:bg-emerald-50'
+                            }`} 
                             onDragOver={(e) => e.preventDefault()}
                             onDrop={(e) => handleDropPendingJob(e, driver.id, time)}
                             onClick={(e) => { e.stopPropagation(); setSelectedCell({ driverId: driver.id, time }); }} 
@@ -843,15 +915,16 @@ export default function App() {
 
 
 
-        {/* Modals & Drawers */}
+        {/* Sidebar */}
         <Sidebar 
           isOpen={isSidebarOpen} 
-          onClose={() => setIsSidebarOpen(false)}
+          onClose={() => setIsSidebarOpen(false)} 
           onOpenCourseManagement={() => setIsCourseModalOpen(true)}
           onOpenWorkerManagement={() => setIsWorkerModalOpen(true)}
           onOpenVehicleManagement={() => setIsVehicleModalOpen(true)}
           onOpenCustomerManagement={() => setIsCustomerModalOpen(true)}
           onOpenItemManagement={() => setIsItemModalOpen(true)}
+          onOpenTemplateModal={() => setIsTemplateModalOpen(true)}
         />
 
         {isWorkerModalOpen && (
@@ -895,7 +968,11 @@ export default function App() {
         )}
       </div>
 
-      <PendingJobsDock pendingJobs={pendingJobs} />
+      <PendingJobsDock 
+        pendingJobs={displayPendingJobs} 
+        selectedCell={selectedCell}
+        onAddJob={handleAddJobDirect}
+      />
       </div>
       )}
       
@@ -908,22 +985,47 @@ export default function App() {
           onClose={() => setIsItemModalOpen(false)}
         />
       )}
-      {isCustomerModalOpen && (
-        <CustomerManagementModal 
+        {isCustomerModalOpen && (
+          <CustomerManagementModal 
+            customers={masterCustomers}
+            masterVehicles={masterVehicles}
+            masterItems={masterItems}
+            initialData={customerModalInitialData}
+            onSave={(newCustomer) => {
+              handleSaveCustomer(newCustomer);
+              // ここでjobのoriginalCustomerIdを置き換える等も可能だが、
+              // ID自動生成等の兼ね合いもあるため、まずは登録完了してプレビューを適用後に
+              // 正規のマスタからアサインし直す運用でもよい。
+            }}
+            onDelete={handleDeleteCustomer}
+            onClose={() => {
+              setIsCustomerModalOpen(false);
+              setCustomerModalInitialData(null);
+            }}
+            onOpenGridMode={() => {
+              setIsCustomerModalOpen(false);
+              setCustomerModalInitialData(null);
+              setIsCustomerGridModalOpen(true);
+            }}
+          />
+        )}
+      {isCustomerGridModalOpen && (
+        <CustomerScheduleGridModal
           customers={masterCustomers}
-          masterVehicles={masterVehicles}
-          masterItems={masterItems}
-          onSave={handleSaveCustomer}
-          onDelete={handleDeleteCustomer}
-          onClose={() => setIsCustomerModalOpen(false)}
+          onSave={(updated) => {
+            handleSaveBulkCustomers(updated);
+            setIsCustomerGridModalOpen(false);
+          }}
+          onClose={() => setIsCustomerGridModalOpen(false)}
         />
       )}
-
-      {isSettingsModalOpen && (
-        <SettingsModal 
-          systemSettings={systemSettings}
-          setSystemSettings={setSystemSettings}
-          onClose={() => setIsSettingsModalOpen(false)}
+      {isTemplateModalOpen && (
+        <TemplateModal 
+          isOpen={isTemplateModalOpen}
+          onClose={() => setIsTemplateModalOpen(false)}
+          onPreviewTemplate={startPreview}
+          currentData={{ jobs, pendingJobs, drivers, splits }}
+          masterCustomers={masterCustomers}
         />
       )}
     </div>

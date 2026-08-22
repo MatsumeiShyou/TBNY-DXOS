@@ -1,9 +1,10 @@
-import { Calendar, Undo2, Redo2, Menu, LayoutGrid, Settings, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Calendar, Undo2, Redo2, Menu, LayoutGrid, ChevronLeft, ChevronRight } from 'lucide-react';
 
 export default function Header({ 
   onUndo, onRedo, canUndo, canRedo, onOpenSidebar, 
-  viewMode, setViewMode, onOpenSettings,
-  currentDate, onChangeDate, onSave
+  viewMode, setViewMode,
+  currentDate, onChangeDate, onSave,
+  isPreviewMode
 }) {
   
   // 日付操作ハンドラ
@@ -37,8 +38,9 @@ export default function Header({
         <div className="flex items-center gap-2">
           <button 
             onClick={onOpenSidebar}
-            className="p-1 hover:bg-gray-700 rounded transition-colors"
+            className={`p-1 rounded transition-colors ${viewMode === 'calendar' || isPreviewMode ? 'invisible' : 'hover:bg-gray-700'}`}
             title="メニューを開く"
+            disabled={viewMode === 'calendar' || isPreviewMode}
           >
             <Menu size={20} />
           </button>
@@ -46,69 +48,66 @@ export default function Header({
         </div>
         
         {/* ビュー切り替え */}
-        <div className="flex bg-gray-800 rounded p-1">
-          <button 
-            onClick={() => setViewMode?.('dispatch')}
-            className={`px-3 py-1 flex items-center gap-1 rounded text-sm font-bold transition-colors ${viewMode === 'dispatch' ? 'bg-blue-600 text-white' : 'text-gray-400 hover:text-white hover:bg-gray-700'}`}
-          >
-            <LayoutGrid size={16} /> <span className="hidden sm:inline">配車盤</span>
-          </button>
-          <button 
-            onClick={() => setViewMode?.('calendar')}
-            className={`px-3 py-1 flex items-center gap-1 rounded text-sm font-bold transition-colors ${viewMode === 'calendar' ? 'bg-blue-600 text-white' : 'text-gray-400 hover:text-white hover:bg-gray-700'}`}
-          >
-            <Calendar size={16} /> <span className="hidden sm:inline">カレンダー</span>
-          </button>
-        </div>
+        {!isPreviewMode && (
+          <div className="flex bg-gray-800 rounded p-1">
+            <button 
+              onClick={() => setViewMode?.('dispatch')}
+              className={`px-3 py-1 flex items-center gap-1 rounded text-sm font-bold transition-colors ${viewMode === 'dispatch' ? 'bg-blue-600 text-white' : 'text-gray-400 hover:text-white hover:bg-gray-700'}`}
+            >
+              <LayoutGrid size={16} /> <span className="hidden sm:inline">配車盤</span>
+            </button>
+            <button 
+              onClick={() => setViewMode?.('calendar')}
+              className={`px-3 py-1 flex items-center gap-1 rounded text-sm font-bold transition-colors ${viewMode === 'calendar' ? 'bg-blue-600 text-white' : 'text-gray-400 hover:text-white hover:bg-gray-700'}`}
+            >
+              <Calendar size={16} /> <span className="hidden sm:inline">予定</span>
+            </button>
+          </div>
+        )}
       </div>
 
-      <div className="flex items-center gap-4">
+      <div className={`flex items-center gap-4 transition-opacity duration-200 ${viewMode === 'calendar' ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
         <div className="flex gap-1">
-          <button onClick={onUndo} disabled={!canUndo} className={`p-1.5 rounded transition ${!canUndo ? 'text-gray-600' : 'text-white hover:bg-gray-700'}`} title="元に戻す (Ctrl+Z)"><Undo2 size={18} /></button>
-          <button onClick={onRedo} disabled={!canRedo} className={`p-1.5 rounded transition ${!canRedo ? 'text-gray-600' : 'text-white hover:bg-gray-700'}`} title="やり直し (Ctrl+Y)"><Redo2 size={18} /></button>
+          <button onClick={onUndo} disabled={!canUndo || isPreviewMode} className={`p-1.5 rounded transition ${!canUndo || isPreviewMode ? 'text-gray-600' : 'text-white hover:bg-gray-700'}`} title={isPreviewMode ? 'プレビュー中は無効' : '元に戻す (Ctrl+Z)'}><Undo2 size={18} /></button>
+          <button onClick={onRedo} disabled={!canRedo || isPreviewMode} className={`p-1.5 rounded transition ${!canRedo || isPreviewMode ? 'text-gray-600' : 'text-white hover:bg-gray-700'}`} title={isPreviewMode ? 'プレビュー中は無効' : 'やり直し (Ctrl+Y)'}><Redo2 size={18} /></button>
         </div>
         
-        <button 
-          onClick={onOpenSettings}
-          className="p-1.5 hover:bg-gray-700 rounded transition-colors text-gray-300 hover:text-white"
-          title="システム休業日設定"
-        >
-          <Settings size={18} />
-        </button>
-
         {/* 日付切り替えUI */}
-        <div className="bg-gray-700 rounded flex items-center text-sm hidden sm:flex border border-gray-600 overflow-hidden">
-          <button 
-            onClick={handlePrevDay} 
-            className="p-1.5 hover:bg-gray-600 transition text-gray-300 hover:text-white"
-            title="前日へ"
-          >
-            <ChevronLeft size={16} />
-          </button>
-          <div className="relative px-2 py-1 flex items-center gap-2 hover:bg-gray-600 transition cursor-pointer">
-            <Calendar size={14} />
-            <input 
-              type="date" 
-              value={dateStr}
-              onChange={handleDateChange}
-              className="bg-transparent text-white font-bold outline-none cursor-pointer [&::-webkit-calendar-picker-indicator]:invert"
-            />
+        {!isPreviewMode && (
+          <div className="bg-gray-700 rounded flex items-center text-sm hidden sm:flex border border-gray-600 overflow-hidden">
+            <button 
+              onClick={handlePrevDay} 
+              className="p-1.5 hover:bg-gray-600 transition text-gray-300 hover:text-white"
+              title="前日へ"
+            >
+              <ChevronLeft size={16} />
+            </button>
+            <div className="relative px-2 py-1 flex items-center gap-2 hover:bg-gray-600 transition cursor-pointer">
+              <input 
+                type="date" 
+                value={dateStr}
+                onChange={handleDateChange}
+                className="bg-transparent text-white font-bold outline-none cursor-pointer [&::-webkit-calendar-picker-indicator]:invert"
+              />
+            </div>
+            <button 
+              onClick={handleNextDay} 
+              className="p-1.5 hover:bg-gray-600 transition text-gray-300 hover:text-white border-l border-gray-600"
+              title="翌日へ"
+            >
+              <ChevronRight size={16} />
+            </button>
           </div>
-          <button 
-            onClick={handleNextDay} 
-            className="p-1.5 hover:bg-gray-600 transition text-gray-300 hover:text-white border-l border-gray-600"
-            title="翌日へ"
-          >
-            <ChevronRight size={16} />
-          </button>
-        </div>
+        )}
 
-        <button 
-          onClick={onSave}
-          className="bg-emerald-600 text-white px-3 py-1.5 rounded text-sm font-bold hover:bg-emerald-700 transition shadow-sm"
-        >
-          保存する
-        </button>
+        {!isPreviewMode && (
+          <button 
+            onClick={onSave}
+            className="bg-emerald-600 text-white px-3 py-1.5 rounded text-sm font-bold hover:bg-emerald-700 transition shadow-sm"
+          >
+            保存する
+          </button>
+        )}
       </div>
     </header>
   );

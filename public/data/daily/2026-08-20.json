@@ -1,0 +1,190 @@
+{
+  "drivers": [
+    {
+      "id": "d1",
+      "name": "畑澤",
+      "currentVehicle": "2025PK",
+      "color": "bg-blue-50 border-blue-200",
+      "defaultSplit": null,
+      "course": "A"
+    },
+    {
+      "id": "d2",
+      "name": "菊地",
+      "currentVehicle": "2267PK",
+      "color": "bg-green-50 border-green-200",
+      "defaultSplit": null,
+      "course": "B"
+    },
+    {
+      "id": "d3",
+      "name": "万里",
+      "currentVehicle": "2618PK",
+      "color": "bg-purple-50 border-purple-200",
+      "defaultSplit": {
+        "time": "13:00",
+        "driverName": "大貴",
+        "vehicle": "西濃運輸"
+      },
+      "course": "C"
+    },
+    {
+      "id": "d4",
+      "name": "片山",
+      "currentVehicle": "5122PK",
+      "color": "bg-orange-50 border-orange-200",
+      "defaultSplit": {
+        "time": "13:00",
+        "driverName": "片山",
+        "vehicle": "1111PK"
+      },
+      "course": "D"
+    }
+  ],
+  "jobs": [],
+  "pendingJobs": [
+    {
+      "id": "gen_c_1075001_2026-08-20_520",
+      "originalCustomerId": "c_1075001",
+      "title": "㈱一全(ダイコー商事)",
+      "kana": "ｲﾁｾﾞﾝ",
+      "area": "",
+      "duration": 30,
+      "preferredTime": "",
+      "requiredVehicle": "",
+      "note": "[Excel連携済] ",
+      "items": [
+        "1000"
+      ],
+      "holidayCollection": false
+    },
+    {
+      "id": "gen_c_1205030_2026-08-20_692",
+      "originalCustomerId": "c_1205030",
+      "title": "鴻池運輸㈱(ＤＳＰ)",
+      "kana": "ｺｳﾉｲｹｳﾝﾕ",
+      "area": "",
+      "duration": 30,
+      "preferredTime": "",
+      "requiredVehicle": "",
+      "note": "[Excel連携済] ",
+      "items": [
+        "1000"
+      ],
+      "holidayCollection": false
+    },
+    {
+      "id": "gen_c_1205136_2026-08-20_456",
+      "originalCustomerId": "c_1205136",
+      "title": "㈱ﾘﾊﾞｰｸﾚｲﾝ（ＤＳＰ）",
+      "kana": "ﾘﾊﾞｰｸﾚｲﾝ",
+      "area": "",
+      "duration": 30,
+      "preferredTime": "",
+      "requiredVehicle": "",
+      "note": "[Excel連携済] ",
+      "items": [
+        "1100",
+        "1000",
+        "1200"
+      ],
+      "holidayCollection": false
+    },
+    {
+      "id": "gen_c_1205142_2026-08-20_11",
+      "originalCustomerId": "c_1205142",
+      "title": "相模原･多摩PF（ＤＳＰ）",
+      "kana": "ﾀﾏﾋﾟｰｴﾌ",
+      "area": "",
+      "duration": 30,
+      "preferredTime": "",
+      "requiredVehicle": "",
+      "note": "[Excel連携済] ",
+      "items": [
+        "1000"
+      ],
+      "holidayCollection": false
+    },
+    {
+      "id": "gen_c_1709068_2026-08-20_756",
+      "originalCustomerId": "c_1709068",
+      "title": "三井倉庫ﾛｼﾞｽﾃｨｸｽ㈱(ﾎﾟｼﾞﾃｨﾌﾞ)",
+      "kana": "ﾐﾂｲｿｳｺ",
+      "area": "",
+      "duration": 30,
+      "preferredTime": "",
+      "requiredVehicle": "",
+      "note": "[Excel連携済] ",
+      "items": [
+        "4128",
+        "1000"
+      ],
+      "holidayCollection": false
+    },
+    {
+      "id": "gen_c_1784000_2026-08-20_622",
+      "originalCustomerId": "c_1784000",
+      "title": "丸駒運輸㈱",
+      "kana": "ﾏﾙｺﾏ",
+      "area": "",
+      "duration": 30,
+      "preferredTime": "",
+      "requiredVehicle": "",
+      "note": "[Excel連携済] ",
+      "items": [
+        "1200",
+        "4103",
+        "1000"
+      ],
+      "holidayCollection": false
+    },
+    {
+      "id": "gen_c_1801607_2026-08-20_106",
+      "originalCustomerId": "c_1801607",
+      "title": "㈱不二家平塚工場（丸紅FR）",
+      "kana": "ﾌｼﾞﾔﾋﾗﾂｶｺｳｼﾞｮｳ",
+      "area": "",
+      "duration": 30,
+      "preferredTime": "",
+      "requiredVehicle": "",
+      "note": "[Excel連携済] ",
+      "items": [
+        "1971",
+        "1000"
+      ],
+      "holidayCollection": true
+    },
+    {
+      "id": "gen_c_0621002_2026-08-20_398",
+      "originalCustomerId": "c_0621002",
+      "title": "ﾀｷﾛﾝｼｰｱｲ㈱(ｸﾘｰﾝｻｰﾋﾞｽ)",
+      "kana": "ﾀｷﾛﾝｼｰｱｲ",
+      "area": "",
+      "duration": 30,
+      "preferredTime": "",
+      "requiredVehicle": "",
+      "note": "[Excel連携済] ",
+      "items": [
+        "1000"
+      ],
+      "holidayCollection": false
+    },
+    {
+      "id": "gen_c_0050000_2026-08-20_116",
+      "originalCustomerId": "c_0050000",
+      "title": "㈱旭運送",
+      "kana": "ｱｻﾋｳﾝｿｳ",
+      "area": "",
+      "duration": 30,
+      "preferredTime": "",
+      "requiredVehicle": "",
+      "note": "[Excel連携済] ",
+      "items": [
+        "1000",
+        "1200"
+      ],
+      "holidayCollection": false
+    }
+  ],
+  "splits": []
+}

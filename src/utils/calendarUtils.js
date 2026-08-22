@@ -31,62 +31,14 @@ export const getDaysInMonth = (year, month) => {
 };
 
 /**
- * マスタデータに基づいて、指定月のスケジュールを自動生成する
- * 
- * @param {number} year - 年
- * @param {number} month - 月 (1-12)
- * @param {Array} customers - 顧客マスタ配列
- * @returns {Object} { '2026-05-01': [job1, job2], ... }
- */
-export const generateMonthlySchedule = (year, month, customers) => {
-  const days = getDaysInMonth(year, month);
-  const scheduleMap = {}; // { 'YYYY-MM-DD': [] }
-
-  days.forEach(dayInfo => {
-    scheduleMap[dayInfo.dateString] = [];
-    
-    customers.forEach(customer => {
-      // スポットは自動展開の対象外
-      if (customer.jobType === 'spot' || customer.isInvalid) return;
-
-      const rulesForDay = customer.scheduleRules?.[dayInfo.dayOfWeek] || [];
-      if (rulesForDay.length === 0) return;
-
-      const freqStr = FREQ_MAP[dayInfo.weekOfMonth - 1]; // '1st', '2nd' ...
-
-      // 'every' (毎週) か、指定された週 (例: '1st') が含まれていれば対象
-      if (rulesForDay.includes('every') || rulesForDay.includes(freqStr)) {
-        // ジョブを生成
-        const job = {
-          id: `gen_${customer.id}_${dayInfo.dateString}_${Math.floor(Math.random()*1000)}`,
-          originalCustomerId: customer.id,
-          title: customer.name,
-          kana: customer.kana || '',
-          area: customer.area || '',
-          duration: customer.defaultDuration || 30,
-          preferredTime: customer.preferredTime || '',
-          requiredVehicle: customer.requiredVehicle || '',
-          note: customer.note || '',
-          items: customer.items || [],
-          // 祝日休業設定などを引き継ぐ
-          holidayCollection: customer.holidayCollection || false
-        };
-        scheduleMap[dayInfo.dateString].push(job);
-      }
-    });
-  });
-
-  return scheduleMap;
-};
-
-/**
  * マスタデータに基づいて、指定された単一日のスケジュールを自動生成する
  * 
  * @param {string} dateString - 'YYYY-MM-DD' 形式の日付文字列
  * @param {Array} customers - 顧客マスタ配列
+ * @param {Array} cancellations - 休止する顧客IDの配列 (オプション)
  * @returns {Array} 生成されたジョブの配列
  */
-export const generateDailySchedule = (dateString, customers) => {
+export const generateDailySchedule = (dateString, customers, cancellations = []) => {
   const d = new Date(dateString);
   const dayOfWeek = DAYS_MAP[d.getDay()];
   const dateNum = d.getDate();
@@ -96,8 +48,8 @@ export const generateDailySchedule = (dateString, customers) => {
   const dailyJobs = [];
 
   customers.forEach(customer => {
-    // スポットは自動展開の対象外
-    if (customer.jobType === 'spot' || customer.isInvalid) return;
+    // スポット、無効化済み、またはキャンセル(休止)に指定されている顧客は除外
+    if (customer.jobType === 'spot' || customer.isInvalid || cancellations.includes(customer.id)) return;
 
     const rulesForDay = customer.scheduleRules?.[dayOfWeek] || [];
     if (rulesForDay.length === 0) return;
@@ -114,7 +66,8 @@ export const generateDailySchedule = (dateString, customers) => {
         requiredVehicle: customer.requiredVehicle || '',
         note: customer.note || '',
         items: customer.items || [],
-        holidayCollection: customer.holidayCollection || false
+        holidayCollection: customer.holidayCollection || false,
+        jobType: 'regular'
       });
     }
   });

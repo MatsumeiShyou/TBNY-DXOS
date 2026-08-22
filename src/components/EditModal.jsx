@@ -10,9 +10,9 @@ export default function EditModal({ editModal, masterWorkers = [], masterVehicle
   const activeWorkers = masterWorkers.filter(w => w.is_active !== false);
 
   return (
-    <>
-      <div className="fixed inset-0 z-50 bg-black/30" onClick={onClose}></div>
-      <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 bg-white rounded-lg shadow-xl border border-gray-200 z-50 p-4 animate-in fade-in zoom-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div className="absolute inset-0 bg-black/30 animate-in fade-in duration-300" onClick={onClose}></div>
+      <div className="relative w-full max-w-sm bg-white rounded-lg shadow-xl border border-gray-200 p-4 flex flex-col h-auto max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in-95 duration-200">
         <div className="flex justify-between items-center mb-4">
           <h3 className="font-bold flex items-center gap-2">
             <Edit3 size={18} />
@@ -66,6 +66,6 @@ export default function EditModal({ editModal, masterWorkers = [], masterVehicle
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }

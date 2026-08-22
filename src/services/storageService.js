@@ -1,92 +1,109 @@
-import { INITIAL_DRIVERS, INITIAL_JOBS, CUSTOMERS } from '../data/constants';
-
 const STORAGE_KEY = 'collection_shift_manager_data';
 const MASTER_STORAGE_KEY = 'collection_shift_manager_master';
-
-// =========================================
-// デフォルト初期データの生成処理
-// (App.jsxの初期化ロジックを移行)
-// =========================================
-const generateInitialState = () => {
-  const generatedPendingJobs = [];
-  const targetCustomerIds = ['c1_am', 'c1_pm', 'c2', 'c3', 'c4', 'c5'];
-  const targetCustomers = CUSTOMERS.filter(c => targetCustomerIds.includes(c.id));
-
-  targetCustomers.forEach(customer => {
-    generatedPendingJobs.push({
-      id: `p_${customer.id}_0`,
-      title: customer.name,
-      kana: customer.kana || '',
-      duration: customer.defaultDuration,
-      note: customer.note || '',
-      area: customer.area,
-      preferredTime: customer.preferredTime || null,
-      originalCustomerId: customer.id,
-      requiredVehicle: customer.requiredVehicle || ''
-    });
-  });
-
-  const initialSplits = INITIAL_DRIVERS.map((d) => {
-    const base = { id: `split_${d.id}_init`, driverId: d.id }; 
-    if (d.defaultSplit) {
-      return { ...base, time: d.defaultSplit.time, driverName: d.defaultSplit.driverName, vehicle: d.defaultSplit.vehicle };
-    }
-    return { ...base, time: '13:00', driverName: d.name, vehicle: d.currentVehicle }; 
-  });
-
-  return {
-    drivers: INITIAL_DRIVERS,
-    jobs: INITIAL_JOBS,
-    pendingJobs: generatedPendingJobs,
-    splits: initialSplits,
-    monthlySchedules: {}
-  };
-};
+const EXCEPTIONS_STORAGE_KEY = 'collection_shift_manager_exceptions';
+const TEMPLATES_STORAGE_KEY = 'collection_shift_manager_templates';
 
 export const storageService = {
-  /**
-   * 指定した日付の配車盤状態を読み込む
-   * 保存データがない場合は、マスタから生成した初期状態（未配車リスト）を返す
-   */
-  loadDailyState: (dateString, customers = []) => {
+  loadTemplates: async () => {
     try {
+      let fileTemplates = null;
+      try {
+        const response = await fetch('/data/templates.json?t=' + new Date().getTime());
+        if (response.ok) {
+          fileTemplates = await response.json();
+        }
+      } catch (err) {
+        console.warn('ローカルの templates.json 読み込みに失敗しました', err);
+      }
+      
+      const savedData = localStorage.getItem(TEMPLATES_STORAGE_KEY);
+      let parsed = savedData ? JSON.parse(savedData) : null;
+      
+      return fileTemplates || parsed || [];
+    } catch (e) {
+      console.error('LocalStorageテンプレート読み込みエラー:', e);
+    }
+    return [];
+  },
+
+  saveTemplates: (templates) => {
+    try {
+      localStorage.setItem(TEMPLATES_STORAGE_KEY, JSON.stringify(templates));
+      fetch('/api/save-templates', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(templates)
+      }).catch(err => console.error('テンプレートデータファイル保存エラー:', err));
+    } catch (e) {
+      console.error('LocalStorageテンプレート保存エラー:', e);
+    }
+  },
+
+  saveTemplate: async (template) => {
+    const currentTemplates = await storageService.loadTemplates();
+    const index = currentTemplates.findIndex(t => t.id === template.id);
+    if (index >= 0) {
+      currentTemplates[index] = template;
+    } else {
+      currentTemplates.push(template);
+    }
+    storageService.saveTemplates(currentTemplates);
+  },
+
+  deleteTemplate: async (id) => {
+    const currentTemplates = await storageService.loadTemplates();
+    const filtered = currentTemplates.filter(t => t.id !== id);
+    storageService.saveTemplates(filtered);
+  },
+
+  loadDailyState: async (dateString) => {
+    try {
+      // 1. ファイルからのフェッチを試みる
+      let fileState = null;
+      try {
+        const response = await fetch(`/data/daily/${dateString}.json?t=${new Date().getTime()}`);
+        if (response.ok) {
+          fileState = await response.json();
+        }
+      } catch (err) {
+        console.warn(`ローカルの daily/${dateString}.json 読み込みに失敗しました`, err);
+      }
+
+      // 2. LocalStorage も確認
       const dailyKey = `${STORAGE_KEY}_${dateString}`;
       const savedData = localStorage.getItem(dailyKey);
-      if (savedData) {
-        const parsed = JSON.parse(savedData);
-        // 既存のpendingJobsにkanaがない場合のフォールバック補完
-        if (parsed.pendingJobs) {
-          parsed.pendingJobs = parsed.pendingJobs.map(job => {
-            if (!job.kana) {
-              const cust = customers.find(c => c.id === job.originalCustomerId);
-              return { ...job, kana: cust ? cust.kana : job.title };
-            }
-            return job;
-          });
-        }
-        return parsed;
-      }
+      let parsed = savedData ? JSON.parse(savedData) : null;
+      
+      // ファイルを優先
+      return fileState || parsed || null;
     } catch (e) {
       console.error(`LocalStorage読み込みエラー(${dateString}):`, e);
     }
-    
-    // 保存データがない場合は、generateInitialStateをベースにしつつ、
-    // 未配車リストにはその日の生成ジョブをセットする（Phase2ロジック）
-    const baseState = generateInitialState();
-    
-    // ※calendarUtils.generateDailySchedule はApp側で呼び出してマージする設計にするか、
-    // ここで直接呼ぶかの設計方針によるが、今回はApp側に任せるためnullを返し、
-    // App側で「nullなら初期生成する」と判定させるのがクリーン。
     return null;
   },
 
-  /**
-   * 指定した日付の配車盤状態を保存する
-   */
+  loadDailyStateSync: (dateString) => {
+    try {
+      const dailyKey = `${STORAGE_KEY}_${dateString}`;
+      const savedData = localStorage.getItem(dailyKey);
+      return savedData ? JSON.parse(savedData) : null;
+    } catch (e) {
+      console.error(`LocalStorage同期読み込みエラー(${dateString}):`, e);
+    }
+    return null;
+  },
+
   saveDailyState: (dateString, state) => {
     try {
       const dailyKey = `${STORAGE_KEY}_${dateString}`;
       localStorage.setItem(dailyKey, JSON.stringify(state));
+
+      // ローカルファイルへの同期保存
+      fetch('/api/save-daily', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ date: dateString, state })
+      }).catch(err => console.error('日次データファイル保存エラー:', err));
     } catch (e) {
       console.error(`LocalStorage保存エラー(${dateString}):`, e);
     }
@@ -96,43 +113,22 @@ export const storageService = {
     try {
       const savedData = localStorage.getItem(STORAGE_KEY);
       if (savedData) {
-        const parsed = JSON.parse(savedData);
-        // 既存のpendingJobsにkanaがない場合のフォールバック補完
-        if (parsed.pendingJobs) {
-          parsed.pendingJobs = parsed.pendingJobs.map(job => {
-            if (!job.kana) {
-              const cust = CUSTOMERS.find(c => c.id === job.originalCustomerId);
-              return { ...job, kana: cust ? cust.kana : job.title };
-            }
-            return job;
-          });
-        }
-        if (!parsed.monthlySchedules) {
-          parsed.monthlySchedules = {};
-        }
-        return parsed;
+        return JSON.parse(savedData);
       }
     } catch (e) {
       console.error('LocalStorage読み込みエラー:', e);
     }
-    return generateInitialState();
+    return null;
   },
 
-  /**
-   * データを保存する
-   */
   saveState: (state) => {
     try {
-      // { drivers, jobs, pendingJobs, splits } のセットを保存
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
     } catch (e) {
       console.error('LocalStorage保存エラー:', e);
     }
   },
 
-  /**
-   * 保存されたデータを消去し、初期状態にリセットする
-   */
   clearState: () => {
     try {
       localStorage.removeItem(STORAGE_KEY);
@@ -141,52 +137,73 @@ export const storageService = {
     }
   },
 
-  /**
-   * マスターデータを読み込む（workers, vehicles, customers, items）
-   * 保存データがない・不整合の場合はデフォルト値を返却
-   */
-  loadMasterData: (defaultWorkers = [], defaultVehicles = [], defaultCustomers = [], defaultItems = []) => {
+  loadMasterData: async (defaultWorkers = [], defaultVehicles = [], defaultCustomers = [], defaultItems = []) => {
     try {
-      const savedData = localStorage.getItem(MASTER_STORAGE_KEY);
-      if (savedData) {
-        const parsed = JSON.parse(savedData);
-        return {
-          workers: Array.isArray(parsed.workers) ? parsed.workers : defaultWorkers,
-          vehicles: Array.isArray(parsed.vehicles) ? parsed.vehicles : defaultVehicles,
-          customers: Array.isArray(parsed.customers) ? parsed.customers : defaultCustomers,
-          items: Array.isArray(parsed.items) 
-            ? parsed.items.map(savedItem => {
-                const defaultMatched = defaultItems.find(di => di.name === savedItem.name);
-                return {
-                  ...savedItem,
-                  kana: savedItem.kana || (defaultMatched ? defaultMatched.kana : undefined)
-                };
-              })
-            : defaultItems,
-          systemSettings: parsed.systemSettings || { holidays: [] }
-        };
+      // 1. まずローカルのJSONファイルから最新のマスタをフェッチ
+      let fileMaster = null;
+      try {
+        const response = await fetch('/data/master.json?t=' + new Date().getTime());
+        if (response.ok) {
+          fileMaster = await response.json();
+        }
+      } catch (err) {
+        console.warn('ローカルのmaster.json読み込みに失敗しました', err);
       }
+
+      // 2. LocalStorage も確認
+      const savedData = localStorage.getItem(MASTER_STORAGE_KEY);
+      let parsed = savedData ? JSON.parse(savedData) : null;
+      
+      // JSONファイルと LocalStorage でマージ（LocalStorageがあればそれを優先する過渡期の安全策）
+      // ただし、今回は「ファイルから読み込んだデータを優先」するか「LocalStorageを優先」するか。
+      // 基本はファイル（master.json）を正としつつ、LocalStorageにあればそこからもマージする。
+      const baseCustomers = fileMaster?.customers || (parsed?.customers) || defaultCustomers;
+      const baseWorkers = fileMaster?.workers || (parsed?.workers) || defaultWorkers;
+      const baseVehicles = fileMaster?.vehicles || (parsed?.vehicles) || defaultVehicles;
+      const baseItems = fileMaster?.items || (parsed?.items) || defaultItems;
+
+      // 既存データの kana が空、または全角カタカナを含む場合にデフォルトデータ(半角)で上書きするマイグレーション
+      const mergedCustomers = (Array.isArray(baseCustomers) ? baseCustomers : defaultCustomers).map(c => {
+        const hasFullWidthKatakana = /[\u30A1-\u30F6]/.test(c.kana || '');
+        if (!c.kana || hasFullWidthKatakana) {
+          const defaultMatch = defaultCustomers.find(d => d.id === c.id);
+          if (defaultMatch && defaultMatch.kana) {
+            return { ...c, kana: defaultMatch.kana };
+          }
+        }
+        return c;
+      });
+
+      return {
+        workers: Array.isArray(baseWorkers) ? baseWorkers : defaultWorkers,
+        vehicles: Array.isArray(baseVehicles) ? baseVehicles : defaultVehicles,
+        customers: mergedCustomers,
+        items: Array.isArray(baseItems) ? baseItems : defaultItems
+      };
+      
     } catch (e) {
       console.error('LocalStorageマスタ読み込みエラー:', e);
     }
-    return { workers: defaultWorkers, vehicles: defaultVehicles, customers: defaultCustomers, items: defaultItems, systemSettings: { holidays: [] } };
+    return { workers: defaultWorkers, vehicles: defaultVehicles, customers: defaultCustomers, items: defaultItems };
   },
 
-  /**
-   * マスターデータを保存する（workers, vehicles, customers, items）
-   * 将来的な Supabase リポジトリ連携時の永続化インターフェースを兼用
-   */
-  saveMasterData: ({ workers, vehicles, customers, items, systemSettings }) => {
+  saveMasterData: ({ workers, vehicles, customers, items }) => {
     try {
-      localStorage.setItem(MASTER_STORAGE_KEY, JSON.stringify({ workers, vehicles, customers, items, systemSettings }));
+      const data = { workers, vehicles, customers, items };
+      localStorage.setItem(MASTER_STORAGE_KEY, JSON.stringify(data));
+      
+      // ローカルファイルへの同期保存（ViteのローカルAPIへ非同期送信）
+      fetch('/api/save-master', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      }).catch(err => console.error('ローカルファイル保存エラー:', err));
+      
     } catch (e) {
       console.error('LocalStorageマスタ保存エラー:', e);
     }
   },
 
-  /**
-   * 保存されたマスターデータを消去する
-   */
   clearMasterData: () => {
     try {
       localStorage.removeItem(MASTER_STORAGE_KEY);
@@ -195,12 +212,48 @@ export const storageService = {
     }
   },
 
-  /**
-   * 全ての保存データ（シフト配置およびマスターデータ）を初期化する
-   */
   clearAll: () => {
     storageService.clearState();
     storageService.clearMasterData();
+    try { localStorage.removeItem(EXCEPTIONS_STORAGE_KEY); } catch (e) {}
+  },
+
+  loadExceptions: async () => {
+    try {
+      // 1. ファイルからのフェッチ
+      let fileExceptions = null;
+      try {
+        const response = await fetch('/data/exceptions.json?t=' + new Date().getTime());
+        if (response.ok) {
+          fileExceptions = await response.json();
+        }
+      } catch (err) {
+        console.warn('ローカルの exceptions.json 読み込みに失敗しました', err);
+      }
+
+      // 2. LocalStorage も確認
+      const savedData = localStorage.getItem(EXCEPTIONS_STORAGE_KEY);
+      let parsed = savedData ? JSON.parse(savedData) : null;
+      
+      return fileExceptions || parsed || {};
+    } catch (e) {
+      console.error('LocalStorage例外データ読み込みエラー:', e);
+    }
+    return {};
+  },
+
+  saveExceptions: (exceptions) => {
+    try {
+      localStorage.setItem(EXCEPTIONS_STORAGE_KEY, JSON.stringify(exceptions));
+      
+      // ローカルファイルへの同期保存
+      fetch('/api/save-exceptions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(exceptions)
+      }).catch(err => console.error('例外データファイル保存エラー:', err));
+    } catch (e) {
+      console.error('LocalStorage例外データ保存エラー:', e);
+    }
   },
 };
-

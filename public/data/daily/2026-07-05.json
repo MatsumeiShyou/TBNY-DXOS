@@ -1,0 +1,47 @@
+{
+  "drivers": [
+    {
+      "id": "d1",
+      "name": "畑澤",
+      "currentVehicle": "2025PK",
+      "color": "bg-blue-50 border-blue-200",
+      "defaultSplit": null,
+      "course": "A"
+    },
+    {
+      "id": "d2",
+      "name": "菊地",
+      "currentVehicle": "2267PK",
+      "color": "bg-green-50 border-green-200",
+      "defaultSplit": null,
+      "course": "B"
+    },
+    {
+      "id": "d3",
+      "name": "万里",
+      "currentVehicle": "2618PK",
+      "color": "bg-purple-50 border-purple-200",
+      "defaultSplit": {
+        "time": "13:00",
+        "driverName": "大貴",
+        "vehicle": "西濃運輸"
+      },
+      "course": "C"
+    },
+    {
+      "id": "d4",
+      "name": "片山",
+      "currentVehicle": "5122PK",
+      "color": "bg-orange-50 border-orange-200",
+      "defaultSplit": {
+        "time": "13:00",
+        "driverName": "片山",
+        "vehicle": "1111PK"
+      },
+      "course": "D"
+    }
+  ],
+  "jobs": [],
+  "pendingJobs": [],
+  "splits": []
+}

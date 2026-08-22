@@ -1,0 +1,147 @@
+{
+  "drivers": [
+    {
+      "id": "d1",
+      "name": "畑澤",
+      "currentVehicle": "2025PK",
+      "color": "bg-blue-50 border-blue-200",
+      "defaultSplit": null,
+      "course": "A"
+    },
+    {
+      "id": "d2",
+      "name": "菊地",
+      "currentVehicle": "2267PK",
+      "color": "bg-green-50 border-green-200",
+      "defaultSplit": null,
+      "course": "B"
+    },
+    {
+      "id": "d3",
+      "name": "万里",
+      "currentVehicle": "2618PK",
+      "color": "bg-purple-50 border-purple-200",
+      "defaultSplit": {
+        "time": "13:00",
+        "driverName": "大貴",
+        "vehicle": "西濃運輸"
+      },
+      "course": "C"
+    },
+    {
+      "id": "d4",
+      "name": "片山",
+      "currentVehicle": "5122PK",
+      "color": "bg-orange-50 border-orange-200",
+      "defaultSplit": {
+        "time": "13:00",
+        "driverName": "片山",
+        "vehicle": "1111PK"
+      },
+      "course": "D"
+    }
+  ],
+  "jobs": [],
+  "pendingJobs": [
+    {
+      "id": "gen_c_1075001_2026-08-03_519",
+      "originalCustomerId": "c_1075001",
+      "title": "㈱一全(ダイコー商事)",
+      "kana": "ｲﾁｾﾞﾝ",
+      "area": "",
+      "duration": 30,
+      "preferredTime": "",
+      "requiredVehicle": "",
+      "note": "[Excel連携済] ",
+      "items": [
+        "1000"
+      ],
+      "holidayCollection": false,
+      "jobType": "regular"
+    },
+    {
+      "id": "gen_c_1205136_2026-08-03_676",
+      "originalCustomerId": "c_1205136",
+      "title": "㈱ﾘﾊﾞｰｸﾚｲﾝ（ＤＳＰ）",
+      "kana": "ﾘﾊﾞｰｸﾚｲﾝ",
+      "area": "",
+      "duration": 30,
+      "preferredTime": "",
+      "requiredVehicle": "",
+      "note": "[Excel連携済] ",
+      "items": [
+        "1100",
+        "1000",
+        "1200"
+      ],
+      "holidayCollection": false,
+      "jobType": "regular"
+    },
+    {
+      "id": "gen_c_1205152_2026-08-03_177",
+      "originalCustomerId": "c_1205152",
+      "title": "英海商事㈱（DSP）",
+      "kana": "ｴｲｶｲｼｮｳｼﾞ",
+      "area": "",
+      "duration": 30,
+      "preferredTime": "",
+      "requiredVehicle": "",
+      "note": "[Excel連携済] ",
+      "items": [
+        "1000"
+      ],
+      "holidayCollection": false,
+      "jobType": "regular"
+    },
+    {
+      "id": "gen_c_1352011_2026-08-03_999",
+      "originalCustomerId": "c_1352011",
+      "title": "東京冷機神奈川ＳＳ(ナカダイ)",
+      "kana": "ﾄｳﾚｲ ｻｶﾞﾐﾊﾗ ｶﾅｶﾞﾜ",
+      "area": "",
+      "duration": 30,
+      "preferredTime": "",
+      "requiredVehicle": "",
+      "note": "[Excel連携済] ",
+      "items": [
+        "1000"
+      ],
+      "holidayCollection": false,
+      "jobType": "regular"
+    },
+    {
+      "id": "gen_c_1352017_2026-08-03_260",
+      "originalCustomerId": "c_1352017",
+      "title": "東京冷機湘南(ナカダイ)",
+      "kana": "ﾄｳﾚｲ ｼｮｳﾅﾝ",
+      "area": "",
+      "duration": 30,
+      "preferredTime": "",
+      "requiredVehicle": "",
+      "note": "[Excel連携済] ",
+      "items": [
+        "1000"
+      ],
+      "holidayCollection": false,
+      "jobType": "regular"
+    },
+    {
+      "id": "gen_c_1801607_2026-08-03_918",
+      "originalCustomerId": "c_1801607",
+      "title": "㈱不二家平塚工場（丸紅FR）",
+      "kana": "ﾌｼﾞﾔﾋﾗﾂｶｺｳｼﾞｮｳ",
+      "area": "",
+      "duration": 30,
+      "preferredTime": "",
+      "requiredVehicle": "",
+      "note": "[Excel連携済] ",
+      "items": [
+        "1971",
+        "1000"
+      ],
+      "holidayCollection": true,
+      "jobType": "regular"
+    }
+  ],
+  "splits": []
+}

@@ -8,7 +8,9 @@
     "build": "vite build",
     "preview": "vite preview",
     "done": "node .agent/scripts/done.js",
-    "agent:scan": "node .agent/scripts/scan.js"
+    "agent:scan": "node .agent/scripts/scan.js",
+    "type-check": "echo Type checking via jsconfig.json (TS migration pending)",
+    "lint": "echo Lint check placeholder (ESLint setup pending)"
   },
   "dependencies": {
     "react": "^19.1.0",

@@ -4,7 +4,7 @@ const xlsx = require('xlsx');
 
 const CSV_PATH = path.join(__dirname, '../仕入日報_UTF8.csv');
 const EXCEL_PATH = path.join(__dirname, '../kannri2.xlsm');
-const OUTPUT_PATH = path.join(__dirname, '../../.gemini/antigravity/brain/f0fc4d11-33d0-4465-ab52-0be669b6b34e/scratch/customers_draft.json');
+const OUTPUT_PATH = path.join(__dirname, '../src/data/customers_draft.json');
 
 // --- 1. CSVの読み込みとパース (UTF-8) ---
 console.log('Reading CSV...');
@@ -70,9 +70,10 @@ for (let i = 1; i < records.length; i++) {
   if (!csvCustomers[code]) {
     csvCustomers[code] = {
       id: `c_${code}`,
-      vendorCode: code,
-      paymentCode: payCode,
-      paymentName: payName,
+      supplierCode: code,
+      supplierName: name, // CSVから抽出した名称を仕入先名としても設定
+      payeeCode: payCode,
+      payeeName: payName,
       name: name,
       kana: '',
       area: '',

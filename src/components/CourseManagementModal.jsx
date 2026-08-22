@@ -42,9 +42,9 @@ export default function CourseManagementModal({ drivers, masterWorkers, masterVe
   };
 
   return (
-    <>
-      <div className="fixed inset-0 bg-black/30 z-40" onClick={onClose}></div>
-      <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 bg-white rounded-lg shadow-2xl border border-gray-200 z-50 overflow-hidden flex flex-col animate-in fade-in zoom-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div className="absolute inset-0 bg-black/40 animate-in fade-in duration-300" onClick={onClose}></div>
+      <div className="relative w-full max-w-md bg-white rounded-xl shadow-2xl flex flex-col h-auto max-h-[90vh] overflow-hidden animate-in fade-in zoom-in-95 duration-200">
         
         <div className="bg-gray-800 text-white p-3 flex justify-between items-center">
           <div className="font-bold flex items-center gap-2"><Settings size={18} /> コース管理</div>
@@ -129,6 +129,6 @@ export default function CourseManagementModal({ drivers, masterWorkers, masterVe
         </div>
 
       </div>
-    </>
+    </div>
   );
 }

@@ -40,7 +40,7 @@ export default function SearchableMultiSelect({
   }, []);
 
   const filteredOptions = options.filter(option => {
-    const matchText = option.name.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchText = (option.name || '').toLowerCase().includes(searchTerm.toLowerCase());
     
     let matchKana = true;
     if (activeKanaFilter) {

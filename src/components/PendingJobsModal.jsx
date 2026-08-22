@@ -15,9 +15,9 @@ export default function PendingJobsModal({ selectedCell, pendingJobs, driverName
   }, [pendingJobs]);
 
   return (
-    <>
-      <div className="fixed inset-0 z-40" onClick={onClose}></div>
-      <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 bg-white rounded-lg shadow-2xl border border-gray-200 z-50 overflow-hidden flex flex-col max-h-[80vh] animate-in fade-in zoom-in duration-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div className="absolute inset-0 bg-transparent animate-in fade-in duration-300" onClick={onClose}></div>
+      <div className="relative w-full max-w-md bg-white rounded-lg shadow-2xl border border-gray-200 flex flex-col h-auto max-h-[90vh] overflow-hidden animate-in fade-in zoom-in-95 duration-200">
         <div className="bg-gray-800 text-white p-3 flex justify-between items-center">
           <div>
             <div className="text-xs text-gray-300">{driverName} / {selectedCell.time}〜</div>
@@ -25,11 +25,8 @@ export default function PendingJobsModal({ selectedCell, pendingJobs, driverName
           </div>
           <button onClick={onClose} className="text-gray-400 hover:text-white"><X size={18} /></button>
         </div>
-        <div className="px-3 py-2 border-b bg-gray-50 flex items-center justify-between text-xs text-gray-600 font-bold">
-          <span className="flex items-center gap-1.5 text-blue-700 bg-blue-50 border border-blue-200 px-2 py-1 rounded shadow-xs">
-            <ArrowUpDown size={13} /> 50音順 (かなソート済み)
-          </span>
-          <span className="text-gray-400">全 {sortedJobs.length} 件</span>
+        <div className="px-3 py-2 border-b bg-gray-50 flex items-center justify-end text-xs text-gray-600 font-bold">
+          <span className="text-gray-500">全 {sortedJobs.length} 件</span>
         </div>
         <div className="overflow-y-auto flex-1 bg-white">
           {sortedJobs.length === 0 && <div className="p-8 text-center text-gray-400 text-xs">未配車の案件はありません</div>}
@@ -37,11 +34,16 @@ export default function PendingJobsModal({ selectedCell, pendingJobs, driverName
             <div key={job.id} onClick={() => onAddJob(job)} className="p-3 border-b border-gray-100 hover:bg-blue-50 cursor-pointer transition-colors group">
               <div className="flex justify-between items-start">
                 <div className="flex items-center gap-2 overflow-hidden">
-                  {job.preferredTime ? (
-                    <span className="text-[10px] px-1.5 py-0.5 rounded font-bold border bg-gray-100 text-gray-600 border-gray-200 flex items-center gap-0.5 whitespace-nowrap"><Clock size={10} /> {formatPreferredTime(job.preferredTime)}</span>
-                  ) : (
-                    <span className="text-[10px] px-1.5 py-0.5 rounded font-bold border bg-gray-100 text-gray-500 border-gray-200 whitespace-nowrap">⭐ スポット</span>
-                  )}
+                  <div className="flex items-center gap-1">
+                    {job.jobType === 'spot' ? (
+                      <span className="text-[10px] bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded font-bold whitespace-nowrap">スポット</span>
+                    ) : (
+                      <span className="text-[10px] bg-emerald-100 text-emerald-700 px-1.5 py-0.5 rounded font-bold whitespace-nowrap">定期</span>
+                    )}
+                    {job.preferredTime && (
+                      <span className="text-[10px] px-1.5 py-0.5 rounded font-bold border bg-gray-100 text-gray-600 border-gray-200 flex items-center gap-0.5 whitespace-nowrap"><Clock size={10} /> {formatPreferredTime(job.preferredTime)}</span>
+                    )}
+                  </div>
                   <span className="font-bold text-gray-800 group-hover:text-blue-700 truncate">{job.title}</span>
                 </div>
                 <span className="text-xs bg-gray-200 px-1.5 py-0.5 rounded text-gray-600 whitespace-nowrap ml-2">{job.duration}分</span>
@@ -55,7 +57,7 @@ export default function PendingJobsModal({ selectedCell, pendingJobs, driverName
           ))}
         </div>
       </div>
-    </>
+    </div>
   );
 }
 

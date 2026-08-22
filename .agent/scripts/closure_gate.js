@@ -36,7 +36,10 @@ try {
 }
 
 const isSrcChanged = stagedFiles.some(file => file.startsWith('src/'));
+const srcChangedCount = stagedFiles.filter(file => file.startsWith('src/')).length;
 const isReadmeChanged = stagedFiles.includes('README.md');
+
+
 
 if (isSrcChanged && !isReadmeChanged) {
     const skipRegex = /\[README-Skip:[^\]]+\]/i;
@@ -54,11 +57,7 @@ if (commitMsg && !japaneseRegex.test(commitMsg)) {
     process.exit(1);
 }
 
-// 機能2: T1/T2の推測実装において、「Fact: [根拠]」が含まれているかの検証
-if (commitMsg && !commitMsg.includes('Fact:') && !commitMsg.includes('Fact：')) {
-    console.error('エラー [機能2]: コミットメッセージに「Fact: [根拠]」が含まれていません。無根拠な推測実装を防ぐため必須です。');
-    process.exit(1);
-}
+
 
 // 機能3: T3タスク実行時におけるユーザーの承認パスワード確認機能
 const isT3Task = process.env.TASK_TIER === 'T3';

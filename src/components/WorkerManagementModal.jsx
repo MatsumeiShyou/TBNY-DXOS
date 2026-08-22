@@ -62,9 +62,9 @@ export default function WorkerManagementModal({ workers, onSave, onDelete, onClo
   const isFormOpen = isAdding || editingId;
 
   return (
-    <>
-      <div className="fixed inset-0 bg-black/40 z-40" onClick={onClose}></div>
-      <div className="fixed left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[480px] max-h-[80vh] bg-white rounded-lg shadow-2xl border border-gray-200 z-50 overflow-hidden flex flex-col">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div className="absolute inset-0 bg-black/40 animate-in fade-in duration-300" onClick={onClose}></div>
+      <div className="relative w-full max-w-lg bg-white rounded-lg shadow-2xl border border-gray-200 flex flex-col h-auto max-h-[90vh] overflow-hidden animate-in fade-in zoom-in-95 duration-200">
         
         {/* ヘッダー */}
         <div className="bg-gray-800 text-white p-3 flex justify-between items-center flex-shrink-0">
@@ -217,6 +217,6 @@ export default function WorkerManagementModal({ workers, onSave, onDelete, onClo
           </div>
         )}
       </div>
-    </>
+    </div>
   );
 }
