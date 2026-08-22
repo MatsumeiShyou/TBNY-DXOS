@@ -97,6 +97,22 @@ if (fs.existsSync(agentsDir)) {
     } else {
         console.warn('⚠️  .agents/skills/ — 存在しません');
     }
+
+    // Check agents (Subagents)
+    const subagentsDir = path.join(agentsDir, 'agents');
+    if (fs.existsSync(subagentsDir)) {
+        const agents = fs.readdirSync(subagentsDir).filter(f => f.endsWith('.md'));
+        if (agents.length > 0) {
+            console.log(`✅ .agents/agents/ — ${agents.length} 件のSubagent定義が存在`);
+            for (const agent of agents) {
+                console.log(`   └─ ${agent}`);
+            }
+        } else {
+            console.warn('⚠️  .agents/agents/ — 空です');
+        }
+    } else {
+        console.warn('⚠️  .agents/agents/ — 存在しません');
+    }
 } else {
     console.error('❌ .agents/ ディレクトリが見つかりません。Antigravity基盤が破損しています。');
     issues++;

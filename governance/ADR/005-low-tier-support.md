@@ -14,7 +14,7 @@ Accepted
 最高憲法 `AGENTS.md` v11.0 として、以下の3つのルールと物理強制を導入する。
 
 ### 1. [State Dumping Protocol (記憶の外部化)]
-- **ルール**: Analyzerフェーズ終了後、実装着手前に `.agent/scratch/current_context.md` にタスク要件や対象ファイルのパス、変数マッピングなどを記録することを義務付ける。
+- **ルール**: Analyzerフェーズ終了後、実装着手前に `.agents/scratch/current_context.md` にタスク要件や対象ファイルのパス、変数マッピングなどを記録することを義務付ける。
 - **物理強制**: `done.js`（完了報告前監査）にて、同ファイルの存在をチェックする。
 
 ### 2. [Micro-Tasking Gate (歩幅の制限)]
@@ -22,7 +22,7 @@ Accepted
 - **物理強制**: `closure_gate.js`（コミットフック）にて、`src/` 配下の変更ファイル数が「3ファイル以上」の場合、強制的にエラーを出してコミットをブロックする。
 
 ### 3. [Forced Re-evaluation (物理的セルフレビュー)]
-- **ルール**: 実装完了後、報告前に `.agent/scratch/self_review.md` を作成し、自身のコードを批判的に検証することを義務付ける。
+- **ルール**: 実装完了後、報告前に `.agents/scratch/self_review.md` を作成し、自身のコードを批判的に検証することを義務付ける。
 - **物理強制**: `done.js` にて、同ファイルが存在し、かつファイル内に `[REVIEW_PASSED]` が明記されていない場合は、GSEAL（完了証明）の発行を拒否する。
 
 ## Consequences

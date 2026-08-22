@@ -13,7 +13,7 @@ AIのテキスト生成内容（対話）そのものをスクリプトで完全
 最高憲法 `AGENTS.md` v12.0 として、以下のルールと物理強制を導入する。
 
 ### 1. [Governance Compliance Report (統治遵守報告の義務)]
-- **ルール**: 実装完了後、報告の直前に必ず `.agent/scratch/compliance_report.md` を作成し、AGENTS.mdに規定された主要プロトコルの遵守状況を自己点検せよ。
+- **ルール**: 実装完了後、報告の直前に必ず `.agents/scratch/compliance_report.md` を作成し、AGENTS.mdに規定された主要プロトコルの遵守状況を自己点検せよ。
   また、完了報告（SDR）を行う際は、必ずこのレポートの内容（チェックリスト）をユーザーに提示せよ。
   レポート内には `[COMPLIANCE_CLEARED]` の明記を必須とする。
 - **物理強制**: `done.js`（完了前監査）にて、同ファイルの存在と `[COMPLIANCE_CLEARED]` 文字列の有無をチェックし、満たさない場合は GSEAL（完了証明）の発行をブロックする。
