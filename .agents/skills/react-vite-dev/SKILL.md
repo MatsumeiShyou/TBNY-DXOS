@@ -25,7 +25,6 @@ components/ → hooks/ / utils/ / services/ → data/
 ```
 
 - この一方向を厳守し、循環参照を作らない
-- `components/` が `data/` を直接参照してはならない
 
 ## 状態管理パターン
 

@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node .agents/scripts/post-write-check.js",
+            "command": "node scripts/post-write-check.js",
             "timeout": 30
           }
         ]
@@ -21,7 +21,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node .agents/scripts/safety-check.js",
+            "command": "node scripts/safety-check.js",
             "timeout": 10
           }
         ]

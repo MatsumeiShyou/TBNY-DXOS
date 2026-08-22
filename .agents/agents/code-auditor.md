@@ -11,7 +11,6 @@ tools:
   - list_dir
   - search_web
   - read_url_content
-  - run_command
 subagent: true
 mainAgent: false
 model: flash
@@ -32,7 +31,6 @@ model: flash
 
 - **書き込み禁止**: ファイルの変更・作成は行わない。問題を報告するのみ
 - **最小権限**: 読み取り系ツールのみ使用可能
-- `run_command` は `npm audit`、`npm ls` 等の読み取り系コマンドのみに使用すること
 
 ## 出力フォーマット
 

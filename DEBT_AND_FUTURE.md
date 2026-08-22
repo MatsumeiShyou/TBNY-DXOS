@@ -3,7 +3,7 @@
 技術的負債と未解決課題、将来の対応タスクを記録する借金リスト。
 
 ## 現在の負債 (Debt Loan)
-- なし
+- **Antigravity post-write-checkの不完全性**: `hooks.json` の `post-write-check.js` が現時点ではダミーのログ出力のみ（Linter未設定のため）。Phase 5でESLintを導入後、これを本格的な構文チェックまたは自動修正（lint-fix）に置き換える必要がある。
 
 ## 将来の課題 (Future Tasks)
 - **コース管理モーダルとのマスタ参照連携**: コース設定・追加画面における担当者・車両入力のドロップダウンを、マスタデータ（`masterWorkers`, `masterVehicles`）に連動させる。（※完全持ち回り制という前提に基づき、仕様の再定義が必要な可能性あり）
@@ -13,3 +13,4 @@
 - **[Phase 5] ESLint / TypeScript 導入**: 静的解析の本格導入。jsconfig.json を tsconfig.json に移行し、段階的に型安全性を向上させる。
 - **[Phase 6] Supabase連携とスキーママイグレーション**: ローカル環境で確立した単一のデータ管理層（`useDataStore.js` / `storageService.js`）をバックエンドのSupabaseに接続し、DBマイグレーションと実運用環境への移行を行う。
 - ~~**[CAVR Bypass]**: ヘッダーアイコンのUI整理時（最短の解決策）、ブラウザのデバッグ接続タイムアウトが発生したため実機検証をバイパス。対象が単一アイコンの削除のみでリスク極小のため。~~ ✅ 解消 — 次回以降はAdaptive Verification Level A として正式に処理。
+- **統治スクリプトの拡張 (`.agents/` 対応)**: `scan.js` や `done.js` が、AGENTS.md だけでなく `.agents/` 側のAntigravityカスタマイゼーション（Skills, Hooks, Subagents）の整合性も検証できるようにする。
