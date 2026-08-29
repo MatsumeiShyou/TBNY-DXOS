@@ -46,8 +46,8 @@
     {
       "id": "gen_c_1075001_2026-08-20_520",
       "originalCustomerId": "c_1075001",
-      "title": "㈱一全(ダイコー商事)",
-      "kana": "ｲﾁｾﾞﾝ",
+      "title": "⚠️ 顧客マスタ不在",
+      "kana": "",
       "area": "",
       "duration": 30,
       "preferredTime": "",
@@ -56,13 +56,15 @@
       "items": [
         "1000"
       ],
-      "holidayCollection": false
+      "holidayCollection": false,
+      "isOrphan": true,
+      "isError": true
     },
     {
       "id": "gen_c_1205030_2026-08-20_692",
       "originalCustomerId": "c_1205030",
-      "title": "鴻池運輸㈱(ＤＳＰ)",
-      "kana": "ｺｳﾉｲｹｳﾝﾕ",
+      "title": "⚠️ 顧客マスタ不在",
+      "kana": "",
       "area": "",
       "duration": 30,
       "preferredTime": "",
@@ -71,13 +73,15 @@
       "items": [
         "1000"
       ],
-      "holidayCollection": false
+      "holidayCollection": false,
+      "isOrphan": true,
+      "isError": true
     },
     {
       "id": "gen_c_1205136_2026-08-20_456",
       "originalCustomerId": "c_1205136",
-      "title": "㈱ﾘﾊﾞｰｸﾚｲﾝ（ＤＳＰ）",
-      "kana": "ﾘﾊﾞｰｸﾚｲﾝ",
+      "title": "⚠️ 顧客マスタ不在",
+      "kana": "",
       "area": "",
       "duration": 30,
       "preferredTime": "",
@@ -88,13 +92,15 @@
         "1000",
         "1200"
       ],
-      "holidayCollection": false
+      "holidayCollection": false,
+      "isOrphan": true,
+      "isError": true
     },
     {
       "id": "gen_c_1205142_2026-08-20_11",
       "originalCustomerId": "c_1205142",
-      "title": "相模原･多摩PF（ＤＳＰ）",
-      "kana": "ﾀﾏﾋﾟｰｴﾌ",
+      "title": "⚠️ 顧客マスタ不在",
+      "kana": "",
       "area": "",
       "duration": 30,
       "preferredTime": "",
@@ -103,13 +109,15 @@
       "items": [
         "1000"
       ],
-      "holidayCollection": false
+      "holidayCollection": false,
+      "isOrphan": true,
+      "isError": true
     },
     {
       "id": "gen_c_1709068_2026-08-20_756",
       "originalCustomerId": "c_1709068",
-      "title": "三井倉庫ﾛｼﾞｽﾃｨｸｽ㈱(ﾎﾟｼﾞﾃｨﾌﾞ)",
-      "kana": "ﾐﾂｲｿｳｺ",
+      "title": "⚠️ 顧客マスタ不在",
+      "kana": "",
       "area": "",
       "duration": 30,
       "preferredTime": "",
@@ -119,13 +127,15 @@
         "4128",
         "1000"
       ],
-      "holidayCollection": false
+      "holidayCollection": false,
+      "isOrphan": true,
+      "isError": true
     },
     {
       "id": "gen_c_1784000_2026-08-20_622",
       "originalCustomerId": "c_1784000",
-      "title": "丸駒運輸㈱",
-      "kana": "ﾏﾙｺﾏ",
+      "title": "⚠️ 顧客マスタ不在",
+      "kana": "",
       "area": "",
       "duration": 30,
       "preferredTime": "",
@@ -136,13 +146,15 @@
         "4103",
         "1000"
       ],
-      "holidayCollection": false
+      "holidayCollection": false,
+      "isOrphan": true,
+      "isError": true
     },
     {
       "id": "gen_c_1801607_2026-08-20_106",
       "originalCustomerId": "c_1801607",
-      "title": "㈱不二家平塚工場（丸紅FR）",
-      "kana": "ﾌｼﾞﾔﾋﾗﾂｶｺｳｼﾞｮｳ",
+      "title": "⚠️ 顧客マスタ不在",
+      "kana": "",
       "area": "",
       "duration": 30,
       "preferredTime": "",
@@ -152,13 +164,15 @@
         "1971",
         "1000"
       ],
-      "holidayCollection": true
+      "holidayCollection": true,
+      "isOrphan": true,
+      "isError": true
     },
     {
       "id": "gen_c_0621002_2026-08-20_398",
       "originalCustomerId": "c_0621002",
-      "title": "ﾀｷﾛﾝｼｰｱｲ㈱(ｸﾘｰﾝｻｰﾋﾞｽ)",
-      "kana": "ﾀｷﾛﾝｼｰｱｲ",
+      "title": "⚠️ 顧客マスタ不在",
+      "kana": "",
       "area": "",
       "duration": 30,
       "preferredTime": "",
@@ -167,13 +181,15 @@
       "items": [
         "1000"
       ],
-      "holidayCollection": false
+      "holidayCollection": false,
+      "isOrphan": true,
+      "isError": true
     },
     {
       "id": "gen_c_0050000_2026-08-20_116",
       "originalCustomerId": "c_0050000",
-      "title": "㈱旭運送",
-      "kana": "ｱｻﾋｳﾝｿｳ",
+      "title": "⚠️ 顧客マスタ不在",
+      "kana": "",
       "area": "",
       "duration": 30,
       "preferredTime": "",
@@ -183,7 +199,192 @@
         "1000",
         "1200"
       ],
-      "holidayCollection": false
+      "holidayCollection": false,
+      "isOrphan": true,
+      "isError": true
+    },
+    {
+      "id": "gen_4d4a49f3-3c35-4c72-bd16-f2a4c51e3e95_2026-08-20_776",
+      "originalCustomerId": "4d4a49f3-3c35-4c72-bd16-f2a4c51e3e95",
+      "title": "鴻池運輸㈱(ＤＳＰ)",
+      "kana": "",
+      "area": "",
+      "duration": 30,
+      "preferredTime": "",
+      "requiredVehicle": "",
+      "note": "[Excel連携済] ",
+      "items": [
+        "1000"
+      ],
+      "holidayCollection": false,
+      "jobType": "regular"
+    },
+    {
+      "id": "gen_b6291f60-6922-4b7e-8728-20e016b67af6_2026-08-20_114",
+      "originalCustomerId": "b6291f60-6922-4b7e-8728-20e016b67af6",
+      "title": "ﾀｷﾛﾝｼｰｱｲ㈱(ｸﾘｰﾝｻｰﾋﾞｽ)",
+      "kana": "",
+      "area": "",
+      "duration": 30,
+      "preferredTime": "",
+      "requiredVehicle": "",
+      "note": "[Excel連携済] ",
+      "items": [
+        "1000"
+      ],
+      "holidayCollection": false,
+      "jobType": "regular"
+    },
+    {
+      "id": "gen_c1c595f7-a5c3-4946-a703-5b4c239a7e1e_2026-08-20_542",
+      "originalCustomerId": "c1c595f7-a5c3-4946-a703-5b4c239a7e1e",
+      "title": "三井倉庫ﾛｼﾞｽﾃｨｸｽ㈱(ﾎﾟｼﾞﾃｨﾌﾞ)",
+      "kana": "",
+      "area": "",
+      "duration": 30,
+      "preferredTime": "",
+      "requiredVehicle": "",
+      "note": "[Excel連携済] ",
+      "items": [
+        "4128",
+        "1000"
+      ],
+      "holidayCollection": false,
+      "jobType": "regular"
+    },
+    {
+      "id": "gen_e3d0b153-f5fc-4b78-8dff-1211d85e95b1_2026-08-20_214",
+      "originalCustomerId": "e3d0b153-f5fc-4b78-8dff-1211d85e95b1",
+      "title": "㈱ﾘﾊﾞｰｸﾚｲﾝ（ＤＳＰ）",
+      "kana": "",
+      "area": "",
+      "duration": 30,
+      "preferredTime": "",
+      "requiredVehicle": "",
+      "note": "[Excel連携済] ",
+      "items": [
+        "1100",
+        "1000",
+        "1200"
+      ],
+      "holidayCollection": false,
+      "jobType": "regular"
+    },
+    {
+      "id": "gen_5e333b2a-5373-40ae-aa22-684c2fe141d0_2026-08-20_657",
+      "originalCustomerId": "5e333b2a-5373-40ae-aa22-684c2fe141d0",
+      "title": "相模原･多摩PF（ＤＳＰ）",
+      "kana": "",
+      "area": "",
+      "duration": 30,
+      "preferredTime": "",
+      "requiredVehicle": "",
+      "note": "[Excel連携済] ",
+      "items": [
+        "1000"
+      ],
+      "holidayCollection": false,
+      "jobType": "regular"
+    },
+    {
+      "id": "gen_39823a34-cc91-4455-afe8-de2e5980462c_2026-08-20_143",
+      "originalCustomerId": "39823a34-cc91-4455-afe8-de2e5980462c",
+      "title": "㈱不二家平塚工場（丸紅FR）",
+      "kana": "",
+      "area": "",
+      "duration": 30,
+      "preferredTime": "",
+      "requiredVehicle": "",
+      "note": "[Excel連携済] ",
+      "items": [
+        "1971",
+        "1000"
+      ],
+      "holidayCollection": true,
+      "jobType": "regular"
+    },
+    {
+      "id": "gen_813baa5b-5b28-42d4-8158-5cfb2dbd4f6d_2026-08-20_735",
+      "originalCustomerId": "813baa5b-5b28-42d4-8158-5cfb2dbd4f6d",
+      "title": "㈱旭運送",
+      "kana": "",
+      "area": "",
+      "duration": 30,
+      "preferredTime": "",
+      "requiredVehicle": "",
+      "note": "[Excel連携済] ",
+      "items": [
+        "1000",
+        "1200"
+      ],
+      "holidayCollection": false,
+      "jobType": "regular"
+    },
+    {
+      "id": "gen_1f4e18be-8d2a-41ed-bfad-c8d4bb45a80c_2026-08-20_180",
+      "originalCustomerId": "1f4e18be-8d2a-41ed-bfad-c8d4bb45a80c",
+      "title": "㈱一全(ダイコー商事)",
+      "kana": "",
+      "area": "",
+      "duration": 30,
+      "preferredTime": "",
+      "requiredVehicle": "",
+      "note": "[Excel連携済] ",
+      "items": [
+        "1000"
+      ],
+      "holidayCollection": false,
+      "jobType": "regular"
+    },
+    {
+      "id": "gen_2b230de8-0036-41cb-a015-afa30a79e686_2026-08-20_201",
+      "originalCustomerId": "2b230de8-0036-41cb-a015-afa30a79e686",
+      "title": "ＥＳＰＯＴ（ﾊﾞｯｸﾔｰﾄﾞ）PM",
+      "kana": "",
+      "area": "",
+      "duration": 60,
+      "preferredTime": "",
+      "requiredVehicle": "",
+      "note": "",
+      "items": [
+        "1000"
+      ],
+      "holidayCollection": false,
+      "jobType": "regular"
+    },
+    {
+      "id": "gen_87ee1e7d-d492-4b3b-8994-9db029e42e60_2026-08-20_93",
+      "originalCustomerId": "87ee1e7d-d492-4b3b-8994-9db029e42e60",
+      "title": "ＥＳＰＯＴ（ﾊﾞｯｸﾔｰﾄﾞ）(田丸)AM",
+      "kana": "",
+      "area": "",
+      "duration": 60,
+      "preferredTime": "",
+      "requiredVehicle": "",
+      "note": "[Excel未紐付] ",
+      "items": [
+        "1000"
+      ],
+      "holidayCollection": false,
+      "jobType": "regular"
+    },
+    {
+      "id": "gen_d5466fd1-2217-42f7-a7dd-923a1f51a53c_2026-08-20_358",
+      "originalCustomerId": "d5466fd1-2217-42f7-a7dd-923a1f51a53c",
+      "title": "丸駒運輸㈱",
+      "kana": "",
+      "area": "",
+      "duration": 30,
+      "preferredTime": "",
+      "requiredVehicle": "",
+      "note": "[Excel連携済] ",
+      "items": [
+        "1200",
+        "4103",
+        "1000"
+      ],
+      "holidayCollection": false,
+      "jobType": "regular"
     }
   ],
   "splits": []

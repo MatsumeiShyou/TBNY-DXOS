@@ -1,27 +1,38 @@
 {
-  "version": "1.0.0",
+  "version": "1.1.0",
   "tiers": {
     "T1": {
-      "name": "Low Risk / Local Change",
+      "name": "Light / 軽微",
       "allow_unapproved_execution": true,
       "require_approval": false,
       "requires_sdr": false,
-      "require_fact_in_commit": true
+      "require_fact_in_commit": false,
+      "require_minimal_trace": true
     },
     "T2": {
-      "name": "Medium Risk / Feature & Refactor",
+      "name": "Standard / 標準",
       "allow_unapproved_execution": true,
       "require_approval": false,
       "requires_sdr": false,
-      "require_fact_in_commit": true
+      "require_fact_in_commit": false,
+      "require_regression_test": true
     },
     "T3": {
-      "name": "High Risk / Architecture & Governance",
+      "name": "Strict / 厳格",
       "allow_unapproved_execution": false,
       "require_approval": true,
       "requires_sdr": true,
       "approval_password": "y"
     }
+  },
+  "triage_rules": {
+    "T3_force_paths": [
+      "src/components/Login.tsx",
+      "src/lib/supabase.ts",
+      "supabase/",
+      "AGENTS.md",
+      "governance/core_config.json"
+    ]
   },
   "governance": {
     "deep_harmony_check": true,

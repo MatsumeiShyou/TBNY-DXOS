@@ -10,7 +10,8 @@
 - ~~**[Phase 2] データ初期化ロジックの統合**~~: ✅ 完了 — `generateDailySchedule` として `App.jsx` に統合済み。
 - ~~**[Phase 3] カレンダービューの改修**~~: ✅ 完了 — `CalendarView.jsx` を定期ルート以外の「スポット・休止・振替」管理UIへ特化・改修済み。ヘッダーのボタン名称も「予定」へ変更済み。
 - ~~**[Phase 4] CustomerScheduleGridModal のフルUX統合 & 顧客マスタカスケード同期**~~: ✅ 完了 — 顧客マスタからの呼び出し連携、週指定形式の統一、およびマスタ保存時のジョブ/未配車/月間スケジュールへのリアルタイムカスケード同期を実装済み。
-- **[Phase 5] ESLint / TypeScript 導入**: 静的解析の本格導入。jsconfig.json を tsconfig.json に移行し、段階的に型安全性を向上させる。
+- ~~**[Phase 5] ESLint 導入**~~: ✅ 完了 — 統治構造改善（自己修復ループ）の前提として ESLint (Flat Config) を導入済み。
+- **[Phase 5.5] TypeScript 導入**: 静的解析の本格導入。jsconfig.json を tsconfig.json に移行し、段階的に型安全性を向上させる。
 - **[Phase 6] Supabase連携とスキーママイグレーション**: ローカル環境で確立した単一のデータ管理層（`useDataStore.js` / `storageService.js`）をバックエンドのSupabaseに接続し、DBマイグレーションと実運用環境への移行を行う。
 - ~~**[CAVR Bypass]**: ヘッダーアイコンのUI整理時（最短の解決策）、ブラウザのデバッグ接続タイムアウトが発生したため実機検証をバイパス。対象が単一アイコンの削除のみでリスク極小のため。~~ ✅ 解消 — 次回以降はAdaptive Verification Level A として正式に処理。
 - **統治スクリプトの拡張 (`.agents/` 対応)**: `scan.js` や `done.js` が、AGENTS.md だけでなく `.agents/` 側のAntigravityカスタマイゼーション（Skills, Hooks, Subagents）の整合性も検証できるようにする。

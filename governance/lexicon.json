@@ -4,16 +4,24 @@
     "AMP": "AGENTS.md Protocol — AGENTS.md に定義された統治プロトコルの総称",
     "SDR": "State-Decision-Reason — 応答の3要素フォーマット。T3では5層（+Risk+Unknown）に拡張",
     "SSOT": "Single Source of Truth — 単一真実源。情報の正規化された唯一の出典",
-    "CAVR": "Change Approval Verification Route — 変更の承認・検証ルート（A: UI/UX実機確認、B: ロジック自動テスト、C: ドキュメント/設定のみ）",
     "GaC": "Governance as Code — コードとしての統治。Analyzer（計画: コード変更禁止）と Executor（実装: 計画外変更禁止）の役割分離",
     "GSEAL": "Governance Seal — done.js が発行する完了証明コード",
     "F-SSOT": "Functional SSOT — useState による派生状態保存の禁止。useMemo による純粋導出を義務付け",
     "SVP": "Single Version Policy — プロジェクト全体で同一バージョンのライブラリを使用する方針",
-    "Tier": "リスクティア。T1(低: 文字修正、CSS調整等)、T2(中: 新コンポーネント、Props変更等)、T3(高: 統治変更、スキーマ変更等)の3段階",
+    "Tier": "リスクティア  E軽微(T1)/標準(T2)/厳格(T3)の3段階のリスクベースルート。",
     "Locker": "統治違反時の強制停止・記録メカニズム",
     "ADR": "Architecture Decision Record — アーキテクチャ決定の記録文書",
     "Post-Execution Audit": "完了前監査プロトコル — npm run done 実行直前に行う監査チェックリスト（build確認、README同期、DEBT記録）",
     "Orphan Data": "孤児データ（破損データ） — マスタへの参照が失われ、かつ顧客名等の詳細も不明なバグデータ。AGENTS.md 第9条により自動破棄の対象となる",
-    "Unregistered Data": "未登録データ（仮案件） — マスタには未登録だが、顧客名等は保持されており人間が判別可能なデータ。孤児には該当せず、システムの警告・選択の対象となる"
+    "Unregistered Data": "未登録データ（仮案件） — マスタには未登録だが、顧客名等は保持されており人間が判別可能なデータ。孤児には該当せず、システムの警告・選択の対象となる",
+    "Multilayer Gateway Pattern": "多層ゲートウェイパターン — PreToolUse/PostToolUse/Closure Gateの3層でツール実行を制御するアーキテクチャ。ADR-008で導入",
+    "Shadow Mode": "シャドーモード — フックを観測専用（allow固定）で配置し、イベント発火状況を事実として確定する手法",
+    "Context Isolation": "コンテキスト隔離 — 親エージェントの調査・計画とサブエージェントの実装を分離し、コンテキスト肥大化を防止する委譲パターン",
+    "Self-Healing Loop": "自己修復ループ — PostToolUseフックで検出されたエラーをエージェントのコンテキストに注入し、次の推論ループで自律的に修正させる仕組み",
+    "MDU": "Minimum Decentralizable Units — 最小分散化ユニット。統治構造の移行を一度に行わず、安全に確認できる最小単位に分割してスライダーを上げるように段階適用するアプローチ",
+    "Write Safety Shield": "書き込み安全シールド — write_to_file/replace_file_contentのPreToolUseフックでシークレットや破壊的コードのハードコードをブロックする機構",
+    "Condition C": "独立検証基準  E厳格ルート（T3）でのみ要求される、人間または別エージェントによる独立した検証・承認の条件。",
+    "20% ROI Guardrail": "20% ROI ガードレール  E修正にかかった手間の20%以上のコストを「証拠作成（スクショ・ログ等）」に費やしてはならないとする原則。超える場合は軽微ルートへ格下げ。",
+    "Self-verification loop": "自己検証ループ  E標準ルート（T2）において、AIエージェントが既存のCI（ビルド・テスト）を利用して自律的に修正・検証を完結させるプロセス。"
   }
 }

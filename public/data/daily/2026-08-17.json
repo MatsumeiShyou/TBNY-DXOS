@@ -46,8 +46,8 @@
     {
       "id": "gen_c_1075001_2026-08-17_495",
       "originalCustomerId": "c_1075001",
-      "title": "㈱一全(ダイコー商事)",
-      "kana": "ｲﾁｾﾞﾝ",
+      "title": "⚠️ 顧客マスタ不在",
+      "kana": "",
       "area": "",
       "duration": 30,
       "preferredTime": "",
@@ -57,13 +57,15 @@
         "1000"
       ],
       "holidayCollection": false,
-      "jobType": "regular"
+      "jobType": "regular",
+      "isOrphan": true,
+      "isError": true
     },
     {
       "id": "gen_c_1205136_2026-08-17_161",
       "originalCustomerId": "c_1205136",
-      "title": "㈱ﾘﾊﾞｰｸﾚｲﾝ（ＤＳＰ）",
-      "kana": "ﾘﾊﾞｰｸﾚｲﾝ",
+      "title": "⚠️ 顧客マスタ不在",
+      "kana": "",
       "area": "",
       "duration": 30,
       "preferredTime": "",
@@ -75,13 +77,15 @@
         "1200"
       ],
       "holidayCollection": false,
-      "jobType": "regular"
+      "jobType": "regular",
+      "isOrphan": true,
+      "isError": true
     },
     {
       "id": "gen_c_1205152_2026-08-17_319",
       "originalCustomerId": "c_1205152",
-      "title": "英海商事㈱（DSP）",
-      "kana": "ｴｲｶｲｼｮｳｼﾞ",
+      "title": "⚠️ 顧客マスタ不在",
+      "kana": "",
       "area": "",
       "duration": 30,
       "preferredTime": "",
@@ -91,13 +95,15 @@
         "1000"
       ],
       "holidayCollection": false,
-      "jobType": "regular"
+      "jobType": "regular",
+      "isOrphan": true,
+      "isError": true
     },
     {
       "id": "gen_c_1352011_2026-08-17_878",
       "originalCustomerId": "c_1352011",
-      "title": "東京冷機神奈川ＳＳ(ナカダイ)",
-      "kana": "ﾄｳﾚｲ ｻｶﾞﾐﾊﾗ ｶﾅｶﾞﾜ",
+      "title": "⚠️ 顧客マスタ不在",
+      "kana": "",
       "area": "",
       "duration": 30,
       "preferredTime": "",
@@ -107,13 +113,15 @@
         "1000"
       ],
       "holidayCollection": false,
-      "jobType": "regular"
+      "jobType": "regular",
+      "isOrphan": true,
+      "isError": true
     },
     {
       "id": "gen_c_1352017_2026-08-17_240",
       "originalCustomerId": "c_1352017",
-      "title": "東京冷機湘南(ナカダイ)",
-      "kana": "ﾄｳﾚｲ ｼｮｳﾅﾝ",
+      "title": "⚠️ 顧客マスタ不在",
+      "kana": "",
       "area": "",
       "duration": 30,
       "preferredTime": "",
@@ -123,13 +131,15 @@
         "1000"
       ],
       "holidayCollection": false,
-      "jobType": "regular"
+      "jobType": "regular",
+      "isOrphan": true,
+      "isError": true
     },
     {
       "id": "gen_c_1801607_2026-08-17_197",
       "originalCustomerId": "c_1801607",
-      "title": "㈱不二家平塚工場（丸紅FR）",
-      "kana": "ﾌｼﾞﾔﾋﾗﾂｶｺｳｼﾞｮｳ",
+      "title": "⚠️ 顧客マスタ不在",
+      "kana": "",
       "area": "",
       "duration": 30,
       "preferredTime": "",
@@ -140,13 +150,15 @@
         "1000"
       ],
       "holidayCollection": true,
-      "jobType": "regular"
+      "jobType": "regular",
+      "isOrphan": true,
+      "isError": true
     },
     {
       "id": "gen_c_1161004_2026-08-17_361",
       "originalCustomerId": "c_1161004",
-      "title": "ＥＳＰＯＴ（ﾊﾞｯｸﾔｰﾄﾞ）PM",
-      "kana": "ｴｽﾎﾟｯﾄ ﾊﾞｯｸﾔｰﾄﾞ ﾀﾏﾙﾋﾟｰｴﾑ",
+      "title": "⚠️ 顧客マスタ不在",
+      "kana": "",
       "area": "",
       "duration": 60,
       "preferredTime": "13:00~",
@@ -156,13 +168,15 @@
         "1000"
       ],
       "holidayCollection": false,
-      "jobType": "regular"
+      "jobType": "regular",
+      "isOrphan": true,
+      "isError": true
     },
     {
       "id": "gen_C_1786997410519_2026-08-17_11",
       "originalCustomerId": "C_1786997410519",
-      "title": "ＥＳＰＯＴ（ﾊﾞｯｸﾔｰﾄﾞ）(田丸)AM",
-      "kana": "ｴｽﾎﾟｯﾄ ﾊﾞｯｸﾔｰﾄﾞ ﾀﾏﾙｴｰｴﾑ",
+      "title": "⚠️ 顧客マスタ不在",
+      "kana": "",
       "area": "",
       "duration": 60,
       "preferredTime": "~12:00",
@@ -172,7 +186,156 @@
         "1000"
       ],
       "holidayCollection": false,
-      "jobType": "regular"
+      "jobType": "regular",
+      "isOrphan": true,
+      "isError": true
+    },
+    {
+      "id": "gen_e3d0b153-f5fc-4b78-8dff-1211d85e95b1_2026-08-17_244",
+      "originalCustomerId": "e3d0b153-f5fc-4b78-8dff-1211d85e95b1",
+      "title": "㈱ﾘﾊﾞｰｸﾚｲﾝ（ＤＳＰ）",
+      "kana": "",
+      "area": "",
+      "duration": 30,
+      "preferredTime": "",
+      "requiredVehicle": "",
+      "note": "[Excel連携済] ",
+      "items": [
+        "1100",
+        "1000",
+        "1200"
+      ],
+      "holidayCollection": false,
+      "jobType": "regular",
+      "isOrphan": false,
+      "isError": false
+    },
+    {
+      "id": "gen_39823a34-cc91-4455-afe8-de2e5980462c_2026-08-17_340",
+      "originalCustomerId": "39823a34-cc91-4455-afe8-de2e5980462c",
+      "title": "㈱不二家平塚工場（丸紅FR）",
+      "kana": "",
+      "area": "",
+      "duration": 30,
+      "preferredTime": "",
+      "requiredVehicle": "",
+      "note": "[Excel連携済] ",
+      "items": [
+        "1971",
+        "1000"
+      ],
+      "holidayCollection": true,
+      "jobType": "regular",
+      "isOrphan": false,
+      "isError": false
+    },
+    {
+      "id": "gen_5d303eff-c5ef-43a3-a742-f7bb189e1729_2026-08-17_901",
+      "originalCustomerId": "5d303eff-c5ef-43a3-a742-f7bb189e1729",
+      "title": "英海商事㈱（DSP）",
+      "kana": "",
+      "area": "",
+      "duration": 30,
+      "preferredTime": "",
+      "requiredVehicle": "",
+      "note": "[Excel連携済] ",
+      "items": [
+        "1000"
+      ],
+      "holidayCollection": false,
+      "jobType": "regular",
+      "isOrphan": false,
+      "isError": false
+    },
+    {
+      "id": "gen_1f4e18be-8d2a-41ed-bfad-c8d4bb45a80c_2026-08-17_901",
+      "originalCustomerId": "1f4e18be-8d2a-41ed-bfad-c8d4bb45a80c",
+      "title": "㈱一全(ダイコー商事)",
+      "kana": "",
+      "area": "",
+      "duration": 30,
+      "preferredTime": "",
+      "requiredVehicle": "",
+      "note": "[Excel連携済] ",
+      "items": [
+        "1000"
+      ],
+      "holidayCollection": false,
+      "jobType": "regular",
+      "isOrphan": false,
+      "isError": false
+    },
+    {
+      "id": "gen_1bae9d9f-9b60-4904-af37-2fffb294c121_2026-08-17_440",
+      "originalCustomerId": "1bae9d9f-9b60-4904-af37-2fffb294c121",
+      "title": "東京冷機湘南(ナカダイ)",
+      "kana": "",
+      "area": "",
+      "duration": 30,
+      "preferredTime": "",
+      "requiredVehicle": "",
+      "note": "[Excel連携済] ",
+      "items": [
+        "1000"
+      ],
+      "holidayCollection": false,
+      "jobType": "regular",
+      "isOrphan": false,
+      "isError": false
+    },
+    {
+      "id": "gen_d8084a91-9d63-4973-8599-cfb0ec7726ee_2026-08-17_321",
+      "originalCustomerId": "d8084a91-9d63-4973-8599-cfb0ec7726ee",
+      "title": "東京冷機神奈川ＳＳ(ナカダイ)",
+      "kana": "",
+      "area": "",
+      "duration": 30,
+      "preferredTime": "",
+      "requiredVehicle": "",
+      "note": "[Excel連携済] ",
+      "items": [
+        "1000"
+      ],
+      "holidayCollection": false,
+      "jobType": "regular",
+      "isOrphan": false,
+      "isError": false
+    },
+    {
+      "id": "gen_2b230de8-0036-41cb-a015-afa30a79e686_2026-08-17_174",
+      "originalCustomerId": "2b230de8-0036-41cb-a015-afa30a79e686",
+      "title": "ＥＳＰＯＴ（ﾊﾞｯｸﾔｰﾄﾞ）PM",
+      "kana": "",
+      "area": "",
+      "duration": 60,
+      "preferredTime": "",
+      "requiredVehicle": "",
+      "note": "",
+      "items": [
+        "1000"
+      ],
+      "holidayCollection": false,
+      "jobType": "regular",
+      "isOrphan": false,
+      "isError": false
+    },
+    {
+      "id": "gen_87ee1e7d-d492-4b3b-8994-9db029e42e60_2026-08-17_922",
+      "originalCustomerId": "87ee1e7d-d492-4b3b-8994-9db029e42e60",
+      "title": "ＥＳＰＯＴ（ﾊﾞｯｸﾔｰﾄﾞ）(田丸)AM",
+      "kana": "",
+      "area": "",
+      "duration": 60,
+      "preferredTime": "",
+      "requiredVehicle": "",
+      "note": "[Excel未紐付] ",
+      "items": [
+        "1000"
+      ],
+      "holidayCollection": false,
+      "jobType": "regular",
+      "isOrphan": false,
+      "isError": false
     }
   ],
   "splits": []

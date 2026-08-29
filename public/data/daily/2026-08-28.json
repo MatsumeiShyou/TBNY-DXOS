@@ -58,7 +58,11 @@
         "1200"
       ],
       "holidayCollection": false,
-      "jobType": "regular"
+      "jobType": "regular",
+      "isDeleted": false,
+      "isSuspended": false,
+      "isOrphan": false,
+      "isError": false
     },
     {
       "id": "gen_c_1205097_2026-08-28_147",
@@ -75,7 +79,11 @@
         "1000"
       ],
       "holidayCollection": false,
-      "jobType": "regular"
+      "jobType": "regular",
+      "isDeleted": false,
+      "isSuspended": false,
+      "isOrphan": false,
+      "isError": false
     },
     {
       "id": "gen_c_1205129_2026-08-28_115",
@@ -92,7 +100,11 @@
         "1000"
       ],
       "holidayCollection": false,
-      "jobType": "regular"
+      "jobType": "regular",
+      "isDeleted": false,
+      "isSuspended": false,
+      "isOrphan": false,
+      "isError": false
     },
     {
       "id": "gen_c_1205136_2026-08-28_9",
@@ -110,7 +122,11 @@
         "1200"
       ],
       "holidayCollection": false,
-      "jobType": "regular"
+      "jobType": "regular",
+      "isDeleted": false,
+      "isSuspended": false,
+      "isOrphan": false,
+      "isError": false
     },
     {
       "id": "gen_c_1205152_2026-08-28_22",
@@ -126,7 +142,11 @@
         "1000"
       ],
       "holidayCollection": false,
-      "jobType": "regular"
+      "jobType": "regular",
+      "isDeleted": false,
+      "isSuspended": false,
+      "isOrphan": false,
+      "isError": false
     },
     {
       "id": "gen_c_1801607_2026-08-28_781",
@@ -143,7 +163,11 @@
         "1000"
       ],
       "holidayCollection": true,
-      "jobType": "regular"
+      "jobType": "regular",
+      "isDeleted": false,
+      "isSuspended": false,
+      "isOrphan": false,
+      "isError": false
     },
     {
       "id": "gen_c_2095000_2026-08-28_81",
@@ -160,7 +184,11 @@
         "1000"
       ],
       "holidayCollection": false,
-      "jobType": "regular"
+      "jobType": "regular",
+      "isDeleted": false,
+      "isSuspended": false,
+      "isOrphan": false,
+      "isError": false
     },
     {
       "id": "gen_c_2539000_2026-08-28_878",
@@ -176,7 +204,11 @@
         "1000"
       ],
       "holidayCollection": false,
-      "jobType": "regular"
+      "jobType": "regular",
+      "isDeleted": false,
+      "isSuspended": false,
+      "isOrphan": false,
+      "isError": false
     },
     {
       "id": "gen_c_0033001_2026-08-28_144",
@@ -193,7 +225,11 @@
         "1000"
       ],
       "holidayCollection": false,
-      "jobType": "regular"
+      "jobType": "regular",
+      "isDeleted": false,
+      "isSuspended": false,
+      "isOrphan": false,
+      "isError": false
     }
   ],
   "splits": []

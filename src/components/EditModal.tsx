@@ -1,0 +1,88 @@
+import { useState } from 'react';
+import { Edit3, X, Trash2 } from 'lucide-react';
+import type { MasterWorker, MasterVehicle } from '../types';
+
+interface EditModalData {
+  type: 'header' | 'split';
+  initialDriverName?: string;
+  initialVehicle?: string;
+  time?: string;
+}
+
+interface EditModalProps {
+  editModal: EditModalData | null;
+  masterWorkers?: MasterWorker[];
+  masterVehicles?: MasterVehicle[];
+  onSave: (driverName: string, vehicleName: string) => void;
+  onDelete?: () => void;
+  onClose: () => void;
+}
+
+export default function EditModal({ editModal, masterWorkers = [], masterVehicles = [], onSave, onDelete, onClose }: EditModalProps) {
+  const [driverName, setDriverName] = useState(editModal?.initialDriverName || '');
+  const [vehicleName, setVehicleName] = useState(editModal?.initialVehicle || '');
+
+  if (!editModal) return null;
+
+  const activeWorkers = masterWorkers.filter(w => w.is_active !== false);
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div className="absolute inset-0 bg-black/30 animate-in fade-in duration-300" onClick={onClose}></div>
+      <div className="relative w-full max-w-sm bg-white rounded-lg shadow-xl border border-gray-200 p-4 flex flex-col h-auto max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in-95 duration-200">
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="font-bold flex items-center gap-2">
+            <Edit3 size={18} />
+            {editModal.type === 'header' ? '担当者・車両の変更' : '区切り線(交代)の編集'}
+          </h3>
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-600"><X size={18} /></button>
+        </div>
+        <div className="space-y-3">
+          {editModal.type === 'split' && (
+            <div className="text-xs text-gray-500 mb-2">
+              時間: <span className="font-bold text-gray-800">{editModal.time}</span> 以降
+            </div>
+          )}
+          <div>
+            <label className="block text-xs font-bold text-gray-500 mb-1">ドライバー名</label>
+            <select 
+              className="w-full border border-gray-300 rounded p-2 text-sm focus:ring-2 focus:ring-emerald-500 outline-none bg-white" 
+              value={driverName} 
+              onChange={(e) => setDriverName(e.target.value)}
+            >
+              <option value="">選択してください</option>
+              {activeWorkers.map(w => <option key={w.id} value={w.name}>{w.name}</option>)}
+            </select>
+          </div>
+          <div>
+            <label className="block text-xs font-bold text-gray-500 mb-1">車両名</label>
+            <select 
+              className="w-full border border-gray-300 rounded p-2 text-sm focus:ring-2 focus:ring-emerald-500 outline-none bg-white" 
+              value={vehicleName} 
+              onChange={(e) => setVehicleName(e.target.value)}
+            >
+              <option value="">選択してください</option>
+              {masterVehicles.map(v => <option key={v.id} value={v.name}>{v.name}</option>)}
+            </select>
+          </div>
+          <div className="pt-2 flex gap-2">
+            {editModal.type === 'split' && (
+              <button onClick={onDelete} className="px-3 py-2 border border-red-200 bg-red-50 text-red-600 rounded text-sm hover:bg-red-100 flex items-center justify-center" title="削除">
+                <Trash2 size={16} />
+              </button>
+            )}
+            <button onClick={onClose} className="flex-1 py-2 border border-gray-300 rounded text-sm text-gray-600 hover:bg-gray-50">
+              キャンセル
+            </button>
+            <button 
+              onClick={() => onSave(driverName, vehicleName)} 
+              className="flex-1 py-2 bg-emerald-600 text-white rounded text-sm font-bold hover:bg-emerald-700 shadow-sm"
+            >
+              保存する
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

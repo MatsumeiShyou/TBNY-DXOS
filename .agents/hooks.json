@@ -1,4 +1,32 @@
 {
+  "hook-observer": {
+    "PreToolUse": [
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node scripts/hook-observer.js",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  },
+  "write-safety-gate": {
+    "PreToolUse": [
+      {
+        "matcher": "write_to_file|replace_file_content",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node scripts/write-safety-check.js",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  },
   "lint-check-on-write": {
     "PostToolUse": [
       {

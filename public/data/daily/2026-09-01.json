@@ -1,0 +1,231 @@
+{
+  "drivers": [
+    {
+      "id": "d1",
+      "name": "畑澤",
+      "currentVehicle": "2025PK",
+      "color": "bg-blue-50 border-blue-200",
+      "defaultSplit": null,
+      "course": "A"
+    },
+    {
+      "id": "d2",
+      "name": "菊地",
+      "currentVehicle": "2267PK",
+      "color": "bg-green-50 border-green-200",
+      "defaultSplit": null,
+      "course": "B"
+    },
+    {
+      "id": "d3",
+      "name": "万里",
+      "currentVehicle": "2618PK",
+      "color": "bg-purple-50 border-purple-200",
+      "defaultSplit": {
+        "time": "13:00",
+        "driverName": "大貴",
+        "vehicle": "西濃運輸"
+      },
+      "course": "C"
+    },
+    {
+      "id": "d4",
+      "name": "片山",
+      "currentVehicle": "5122PK",
+      "color": "bg-orange-50 border-orange-200",
+      "defaultSplit": {
+        "time": "13:00",
+        "driverName": "片山",
+        "vehicle": "1111PK"
+      },
+      "course": "D"
+    }
+  ],
+  "jobs": [],
+  "pendingJobs": [
+    {
+      "id": "gen_b6291f60-6922-4b7e-8728-20e016b67af6_2026-09-01_172",
+      "originalCustomerId": "b6291f60-6922-4b7e-8728-20e016b67af6",
+      "title": "ﾀｷﾛﾝｼｰｱｲ㈱(ｸﾘｰﾝｻｰﾋﾞｽ)",
+      "kana": "",
+      "area": "",
+      "duration": 30,
+      "preferredTime": "",
+      "requiredVehicle": "",
+      "note": "[Excel連携済] ",
+      "items": [
+        "1000"
+      ],
+      "holidayCollection": false,
+      "jobType": "regular"
+    },
+    {
+      "id": "gen_c1c595f7-a5c3-4946-a703-5b4c239a7e1e_2026-09-01_921",
+      "originalCustomerId": "c1c595f7-a5c3-4946-a703-5b4c239a7e1e",
+      "title": "三井倉庫ﾛｼﾞｽﾃｨｸｽ㈱(ﾎﾟｼﾞﾃｨﾌﾞ)",
+      "kana": "",
+      "area": "",
+      "duration": 30,
+      "preferredTime": "",
+      "requiredVehicle": "",
+      "note": "[Excel連携済] ",
+      "items": [
+        "4128",
+        "1000"
+      ],
+      "holidayCollection": false,
+      "jobType": "regular"
+    },
+    {
+      "id": "gen_e3d0b153-f5fc-4b78-8dff-1211d85e95b1_2026-09-01_496",
+      "originalCustomerId": "e3d0b153-f5fc-4b78-8dff-1211d85e95b1",
+      "title": "㈱ﾘﾊﾞｰｸﾚｲﾝ（ＤＳＰ）",
+      "kana": "",
+      "area": "",
+      "duration": 30,
+      "preferredTime": "",
+      "requiredVehicle": "",
+      "note": "[Excel連携済] ",
+      "items": [
+        "1100",
+        "1000",
+        "1200"
+      ],
+      "holidayCollection": false,
+      "jobType": "regular"
+    },
+    {
+      "id": "gen_39823a34-cc91-4455-afe8-de2e5980462c_2026-09-01_935",
+      "originalCustomerId": "39823a34-cc91-4455-afe8-de2e5980462c",
+      "title": "㈱不二家平塚工場（丸紅FR）",
+      "kana": "",
+      "area": "",
+      "duration": 30,
+      "preferredTime": "",
+      "requiredVehicle": "",
+      "note": "[Excel連携済] ",
+      "items": [
+        "1971",
+        "1000"
+      ],
+      "holidayCollection": true,
+      "jobType": "regular"
+    },
+    {
+      "id": "gen_2d1a4b2d-b191-42b0-a766-61f0363c84ab_2026-09-01_340",
+      "originalCustomerId": "2d1a4b2d-b191-42b0-a766-61f0363c84ab",
+      "title": "有隣堂(ＤＳＰ)",
+      "kana": "",
+      "area": "",
+      "duration": 30,
+      "preferredTime": "",
+      "requiredVehicle": "",
+      "note": "[Excel連携済] ",
+      "items": [
+        "1000",
+        "1200"
+      ],
+      "holidayCollection": false,
+      "jobType": "regular"
+    },
+    {
+      "id": "gen_1f4e18be-8d2a-41ed-bfad-c8d4bb45a80c_2026-09-01_127",
+      "originalCustomerId": "1f4e18be-8d2a-41ed-bfad-c8d4bb45a80c",
+      "title": "㈱一全(ダイコー商事)",
+      "kana": "",
+      "area": "",
+      "duration": 30,
+      "preferredTime": "",
+      "requiredVehicle": "",
+      "note": "[Excel連携済] ",
+      "items": [
+        "1000"
+      ],
+      "holidayCollection": false,
+      "jobType": "regular"
+    },
+    {
+      "id": "gen_2b230de8-0036-41cb-a015-afa30a79e686_2026-09-01_358",
+      "originalCustomerId": "2b230de8-0036-41cb-a015-afa30a79e686",
+      "title": "ＥＳＰＯＴ（ﾊﾞｯｸﾔｰﾄﾞ）PM",
+      "kana": "",
+      "area": "",
+      "duration": 60,
+      "preferredTime": "",
+      "requiredVehicle": "",
+      "note": "",
+      "items": [
+        "1000"
+      ],
+      "holidayCollection": false,
+      "jobType": "regular"
+    },
+    {
+      "id": "gen_87ee1e7d-d492-4b3b-8994-9db029e42e60_2026-09-01_727",
+      "originalCustomerId": "87ee1e7d-d492-4b3b-8994-9db029e42e60",
+      "title": "ＥＳＰＯＴ（ﾊﾞｯｸﾔｰﾄﾞ）(田丸)AM",
+      "kana": "",
+      "area": "",
+      "duration": 60,
+      "preferredTime": "",
+      "requiredVehicle": "",
+      "note": "[Excel未紐付] ",
+      "items": [
+        "1000"
+      ],
+      "holidayCollection": false,
+      "jobType": "regular"
+    },
+    {
+      "id": "gen_8edf1eda-71c1-4fbf-871c-aaa775c835d8_2026-09-01_164",
+      "originalCustomerId": "8edf1eda-71c1-4fbf-871c-aaa775c835d8",
+      "title": "小山㈱戸塚事業所",
+      "kana": "",
+      "area": "",
+      "duration": 30,
+      "preferredTime": "",
+      "requiredVehicle": "",
+      "note": "[Excel連携済] ",
+      "items": [
+        "1000"
+      ],
+      "holidayCollection": false,
+      "jobType": "regular"
+    },
+    {
+      "id": "gen_4f107550-916e-4728-96c5-e89810d531c8_2026-09-01_113",
+      "originalCustomerId": "4f107550-916e-4728-96c5-e89810d531c8",
+      "title": "㈲ﾀﾞﾌﾞｻｰﾌｨﾝｸﾞｳｪｯﾄｽｰﾂ（ＤＳＰ）",
+      "kana": "",
+      "area": "",
+      "duration": 30,
+      "preferredTime": "",
+      "requiredVehicle": "",
+      "note": "[Excel連携済] ",
+      "items": [
+        "1000",
+        "1200"
+      ],
+      "holidayCollection": false,
+      "jobType": "regular"
+    },
+    {
+      "id": "gen_90fdb34a-7bca-4e29-936a-d0dee63e846b_2026-09-01_962",
+      "originalCustomerId": "90fdb34a-7bca-4e29-936a-d0dee63e846b",
+      "title": "㈱武部鉄工所（ＤＳＰ）",
+      "kana": "",
+      "area": "",
+      "duration": 30,
+      "preferredTime": "",
+      "requiredVehicle": "",
+      "note": "[Excel連携済] ",
+      "items": [
+        "1200",
+        "1000"
+      ],
+      "holidayCollection": false,
+      "jobType": "regular"
+    }
+  ],
+  "splits": []
+}

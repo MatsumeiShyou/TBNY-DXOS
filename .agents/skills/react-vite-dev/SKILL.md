@@ -32,6 +32,13 @@ components/ → hooks/ / utils/ / services/ → data/
 2. **カスタムフック**: ビジネスロジックは `src/hooks/` に集約する
 3. **サービス層**: データI/Oは `src/services/` に集約する
 
+
+
+## サブエージェント受託時の必須確認
+
+- ブリーフィングに絶対原則が含まれていない場合は、実装開始前にAGENTS.mdを自律的に読み込むこと
+- 変更完了後は必ず npm run build を実行し、結果を報告すること
+
 ## ディレクトリ構成
 
 ```
@@ -66,3 +73,26 @@ src/
 | `npm run dev` | 開発サーバー起動 |
 | `npm run build` | 本番ビルド |
 | `npm run preview` | ビルド結果プレビュー |
+
+## 実装上の注意点 (Pitfalls)
+
+### Vite環境でのローカルJSONフェッチ時のエラーハンドリング
+Vite開発サーバーはSPAフォールバックとして、存在しないファイルへのリクエストに対して `index.html` を `200 OK` で返却します。
+そのため、ローカルのJSONファイルを `fetch` する際、単に `response.ok` を確認するだけでは、欠損時にHTMLを `response.json()` でパースしようとして `SyntaxError` (Unexpected token '<') が発生します。
+
+**【ルール】**
+ローカルのJSONを `fetch` する場合は、必ず `Content-Type` が `application/json` であることを確認してからパースすること。
+
+```javascript
+// ❌ 悪い例 (ファイルが存在しないと SyntaxError になる)
+const response = await fetch('/data/local.json');
+if (response.ok) {
+  const data = await response.json();
+}
+
+// ✅ 良い例 (Content-Typeを確認する)
+const response = await fetch('/data/local.json');
+if (response.ok && response.headers.get('content-type')?.includes('application/json')) {
+  const data = await response.json();
+}
+```

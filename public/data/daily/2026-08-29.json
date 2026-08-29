@@ -1,0 +1,147 @@
+{
+  "drivers": [
+    {
+      "id": "d1",
+      "name": "畑澤",
+      "currentVehicle": "2025PK",
+      "color": "bg-blue-50 border-blue-200",
+      "defaultSplit": null,
+      "course": "A"
+    },
+    {
+      "id": "d2",
+      "name": "菊地",
+      "currentVehicle": "2267PK",
+      "color": "bg-green-50 border-green-200",
+      "defaultSplit": null,
+      "course": "B"
+    },
+    {
+      "id": "d3",
+      "name": "万里",
+      "currentVehicle": "2618PK",
+      "color": "bg-purple-50 border-purple-200",
+      "defaultSplit": {
+        "time": "13:00",
+        "driverName": "大貴",
+        "vehicle": "西濃運輸"
+      },
+      "course": "C"
+    },
+    {
+      "id": "d4",
+      "name": "片山",
+      "currentVehicle": "5122PK",
+      "color": "bg-orange-50 border-orange-200",
+      "defaultSplit": {
+        "time": "13:00",
+        "driverName": "片山",
+        "vehicle": "1111PK"
+      },
+      "course": "D"
+    }
+  ],
+  "jobs": [
+    {
+      "id": "gen_c_1124000_2026-08-29_628",
+      "title": "高山 藤沢センター",
+      "driverId": "d1",
+      "startTime": "8:15",
+      "duration": 30,
+      "preferredTime": "~09:00",
+      "requiredVehicle": "",
+      "isVehicleError": "",
+      "originalCustomerId": "c_1124000",
+      "kana": "ﾀｶﾔﾏ ﾌｼﾞｻﾜｾﾝﾀｰ",
+      "isDeleted": false,
+      "isSuspended": false,
+      "isOrphan": false,
+      "isError": false
+    }
+  ],
+  "pendingJobs": [
+    {
+      "id": "gen_c_1205057_2026-08-29_976",
+      "originalCustomerId": "c_1205057",
+      "title": "西多摩運送㈱(ＤＳＰ)",
+      "kana": "ﾆｼﾀﾏｳﾝﾕ",
+      "area": "",
+      "duration": 30,
+      "preferredTime": "",
+      "requiredVehicle": "",
+      "note": "[Excel連携済] ",
+      "items": [
+        "1000"
+      ],
+      "holidayCollection": false,
+      "jobType": "regular",
+      "isDeleted": false,
+      "isSuspended": false,
+      "isOrphan": false,
+      "isError": false
+    },
+    {
+      "id": "gen_c_1709068_2026-08-29_545",
+      "originalCustomerId": "c_1709068",
+      "title": "三井倉庫ﾛｼﾞｽﾃｨｸｽ㈱(ﾎﾟｼﾞﾃｨﾌﾞ)",
+      "kana": "ﾐﾂｲｿｳｺ",
+      "area": "",
+      "duration": 30,
+      "preferredTime": "",
+      "requiredVehicle": "",
+      "note": "[Excel連携済] ",
+      "items": [
+        "4128",
+        "1000"
+      ],
+      "holidayCollection": false,
+      "jobType": "regular",
+      "isDeleted": false,
+      "isSuspended": false,
+      "isOrphan": false,
+      "isError": false
+    },
+    {
+      "id": "gen_c_1801607_2026-08-29_349",
+      "originalCustomerId": "c_1801607",
+      "title": "㈱不二家平塚工場（丸紅FR）",
+      "kana": "ﾌｼﾞﾔﾋﾗﾂｶｺｳｼﾞｮｳ",
+      "area": "",
+      "duration": 30,
+      "preferredTime": "",
+      "requiredVehicle": "",
+      "note": "[Excel連携済] ",
+      "items": [
+        "1971",
+        "1000"
+      ],
+      "holidayCollection": true,
+      "jobType": "regular",
+      "isDeleted": false,
+      "isSuspended": false,
+      "isOrphan": false,
+      "isError": false
+    },
+    {
+      "id": "gen_c_0621001_2026-08-29_354",
+      "originalCustomerId": "c_0621001",
+      "title": "ｵｰﾄﾊﾞｯｸｽ伊勢原店(ｸﾘｰﾝｻｰﾋﾞｽ)",
+      "kana": "ｵｰﾄﾊﾞｯｸｽｲｾﾊﾗ",
+      "area": "",
+      "duration": 30,
+      "preferredTime": "",
+      "requiredVehicle": "",
+      "note": "[Excel連携済] ",
+      "items": [
+        "1000"
+      ],
+      "holidayCollection": true,
+      "jobType": "regular",
+      "isDeleted": false,
+      "isSuspended": false,
+      "isOrphan": false,
+      "isError": false
+    }
+  ],
+  "splits": []
+}
