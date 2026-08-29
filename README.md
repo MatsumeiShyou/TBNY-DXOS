@@ -1,141 +1,141 @@
-# 回収シフト管理 (配車管理) アプリケーション
+# Collection Shift Manager (回収アプリ)
 
-本プロジェクトは、ドラッグ＆ドロップで直感的に操作できる「回収シフト（配車）管理アプリケーション」です。
-この README は、人間（開発者・エンドユーザー）向けの**利用マニュアル**と、他 AI（自律エージェント）向けの**技術・構造仕様書**の双方を兼ねる単一真実源（SSOT）として機能します。
+本プロジェクトは、廃棄物回収等における配車・シフト管理を最適化・支援するためのSPA（Single Page Application）です。人間の配車オペレーターによる直感的なドラッグ＆ドロップ操作と、顧客マスタに基づく動的なテンプレート展開を組み合わせることで、柔軟かつ確実な配車計画の策定を実現します。
 
 ---
 
-## 👤 人間向けマニュアル (User Manual)
+## 1. システムアーキテクチャ (System Architecture)
 
-### 概要
-本アプリは、複数のドライバーと車両の1日のスケジュール（6:00〜18:00）をタイムライン形式で可視化し、回収案件（ジョブ）の割り当て、時間調整、ドライバーの途中交代などを効率的に管理するためのツールです。
+本アプリケーションは、**Offline-First / Optimistic UI** の思想に基づき、フロントエンド側で強力な状態管理（Repository Pattern）を持ち、バックエンド（Supabase）と非同期で同期するハイブリッドアーキテクチャを採用しています。
 
-### セットアップ手順
+```mermaid
+graph TD
+    subgraph Frontend [Frontend - React 19 / Vite]
+        UI[UI Components]
+        Store[useDataStore (Hooks)]
+        Storage[storageService.ts]
+    end
+
+    subgraph Backend [Backend - Supabase]
+        Auth[GoTrue Auth]
+        DB[(PostgreSQL)]
+        RLS[Row Level Security]
+    end
+
+    subgraph Local [Local Fallback]
+        LS[(Local Storage)]
+        FS[(JSON Files/Vite API)]
+    end
+
+    UI <-->|State Updates| Store
+    Store <-->|Auto-save / Load| Storage
+    Storage -->|Sync / Upsert| DB
+    Storage -->|Fallback / Daily| LS
+    Storage -->|Daily State| FS
+    Auth -->|JWT Token| Storage
+    RLS -.->|Access Control| DB
+```
+
+---
+
+## 2. 技術スタック (Tech Stack)
+
+| 領域 | 技術 / ライブラリ | バージョン・備考 |
+|---|---|---|
+| **Language** | TypeScript | 厳格な型推論による堅牢な開発。 |
+| **Framework** | React | v19 (Hooksベース、Concurrent Rendering互換) |
+| **Build Tool** | Vite | v7 (高速なHMRとビルド) |
+| **Styling** | Tailwind CSS | v4 (`@tailwindcss/vite` プラグイン採用) |
+| **Icons** | lucide-react | 軽量かつ一貫性のあるSVGアイコン群 |
+| **Backend** | Supabase | PostgreSQLベース。認証とデータ永続化を担当。 |
+| **Drag & Drop** | 自前実装 | ブラウザネイティブのDnD APIを活用した高度な座標計算。 |
+
+---
+
+## 3. データベーススキーマ (Database Schema)
+
+マスタデータはSupabase上のPostgreSQLでリレーショナルに管理されています。全てのテーブルは **RLS (Row Level Security)** により保護されており、認証済みユーザーのみがアクセス可能です。
+
+```mermaid
+erDiagram
+    master_collection_points ||--o{ daily_jobs : "has many"
+    master_collection_points }o--|| master_contractors : "belongs to"
+    master_contractors }o--|| master_payers : "belongs to"
+
+    master_collection_points {
+        uuid id PK
+        text name
+        text address
+        jsonb schedule_rules
+        boolean is_active
+        boolean is_deleted
+    }
+    master_items {
+        uuid id PK
+        text item_code UK
+        text name
+    }
+    master_workers {
+        uuid id PK
+        text name
+        text role_label
+    }
+    master_vehicles {
+        uuid id PK
+        text vehicle_no
+        integer capacity_kg
+    }
+```
+
+> 💡 **補足:** 案件（Job）データは現在、日次単位でフロントエンドローカルおよびローカルJSONにシリアライズされ、マスタデータ（顧客、品目など）のみがSupabaseへ正規化されて保存されるハイブリッド構成（ADR-001）をとっています。
+
+---
+
+## 4. プロジェクトの実行方法 (Getting Started)
+
+### 4.1. 前提条件
+- Node.js (v20+ 推奨)
+- Supabaseプロジェクト（クラウドまたはローカルエミュレータ）
+
+### 4.2. 環境変数の設定
+プロジェクト直下に `.env` ファイルを作成し、以下の値を設定してください。
+```env
+VITE_SUPABASE_URL=https://<YOUR_PROJECT_ID>.supabase.co
+VITE_SUPABASE_ANON_KEY=<YOUR_ANON_KEY>
+SUPABASE_SERVICE_ROLE_KEY=<YOUR_SERVICE_ROLE_KEY> # マイグレーション等スクリプト用
+```
+
+### 4.3. データベースの初期化
+`scripts/` ディレクトリ内のSQLファイルを用いて、SupabaseにテーブルとRLSを構築します。
 ```bash
-# 1. 依存関係のインストール
-npm install
-
-# 2. 開発サーバーの起動
-npm run dev
-
-# 3. ブラウザで表示（デフォルト: http://localhost:5173）
+# ※ 実際の運用では Supabase CLI (supabase db push) 等を利用
+node scripts/002_migrate_master_data.mjs
 ```
 
-### 主な機能と操作方法
-1. **タイムライン表示とジョブ管理**
-   - **ドラッグ＆ドロップ**: タイムライン上の案件（ジョブ）をドラッグして、開始時間や担当ドライバーを変更できます。
-   - **リサイズ（時間調整）**: 案件ブロックの上部・下部をドラッグすることで、作業時間（15分単位）を延長・短縮できます。
-   - **クリックで新規追加**: 空のタイムスロットをクリックすると、未配車リストが開き、その時間帯に案件を追加できます。
-2. **配車盤（メイン画面）と日付切り替え**
-   - ヘッダーから日付（年月日）を切り替えることができます。
-   - **バックグラウンド自動生成**: 日付を切り替えると、その日の基本ルート（定期スケジュール）がマスタから自動生成され、画面右側の「未配車リスト」に待機状態としてセットされます。
-   - **未配車リストの役割（抜け漏れ防止）**: 未配車リストは、その日に必ず回収に行かなければならない案件を一覧化し、**配車の抜け漏れを防ぐこと**を主目的としています。そのため、顧客マスタでスケジュール設定から外れた（配車不要になった）定期案件は、ノイズによる見落としを防ぐために自動的にリストから除外されます。一方で、手動で追加したスポット案件や既に配車済みの案件は、人間の意思決定を尊重し自動削除の対象外として保護されます。
-   - タイムラインからドラッグ＆ドロップで案件を直接配車盤へ割り当てることができます。
-   - 必要な車両指定（例: `2025PK` 限定）がある場合、アイコンで警告が表示されます。
-   - 不要なジョブは再度未配車リストへ戻すことも可能です。
-   - **データ整合性の保護機能**: 大元の顧客マスタが削除される等によりデータが孤立（マスタ不在）した場合、ジョブは非表示にならず「⚠️ 顧客マスタ不在」として赤色のエラー状態で可視化されます。ユーザーは手動でこのエラー案件を削除し、配車盤を自己修復することができます。
-3. **予定画面（例外・スポット管理カレンダー）**
-   - ヘッダーの切り替えボタン「予定」からアクセスできます。
-   - *(設計背景: 当初「中長期スケジュールカレンダー」として全自動配車を目的に実装されましたが、過剰な自動化を避け、人間のイレギュラー対応を支援する「例外対応・手動調整」特化のUIへと役割と名称が「予定」に変更されました [ADR-003参照])*
-   - 定期ジョブは表示されず、「スポット案件」「休止された定期案件」「別日への振替案件」のみがバッジとして表示されます。
-   - スポット案件の追加（ホバー時の「+スポット」ボタン）、例外情報の一元管理、および各日の日付数字をクリックすることによる該当日の配車盤へのクイックジャンプが可能です。
-   - **同期機能**: カレンダー上でスポット案件を追加・キャンセル・移動すると、即座に該当日の日次配車盤（未配車リスト）に反映され、双方向にデータが同期（SSOT）する設計になっています。
-4. **全体休業日設定**
-   - 設定画面（歯車アイコン）から、GWやお盆などの全社休業日を登録できます。この休業日はカレンダー展開時にアラートとして表示されます。
-5. **区切り線 (交代ライン) の管理**
-   - 1日の途中でドライバーや車両が変更になる場合、「区切り線」を設定できます。
-   - 空のスロットを **右クリック** することで、新たな交代ラインを追加可能です。
-   - 交代ラインをクリックすると、交代後の担当者・車両を編集できます。
-6. **履歴管理 (Undo / Redo)**
-   - 操作を間違えた場合は、`Ctrl + Z`（元に戻す）および `Ctrl + Y`（やり直し）キーボードショートカットが利用可能です。
-8. **顧客マスタ管理と回収スケジュール一括設定**
-   - **個別設定**: 顧客マスタ編集画面で、基本情報（ID・名称・支払先/仕入先コード・住所）に加え、回収条件・スケジュール（定期回収/スポット、曜日・週別回収ルール、希望時間帯、所要時間、必須車両、品目、祝日回収等）を設定・保存できます。
-   - **リアルタイム・カスケード同期**: マスタ保存時、配車表上の配置済みジョブ、当日の未配車リスト、および月間カレンダー内の属性が即座に最新状態へ自動同期されます。
-   - **回収スケジュール一括設定**: 顧客マスタ一覧上部の「回収スケジュール一括設定」ボタンから、全顧客の曜日・週別回収ルール（第1〜第5週・毎週）やスポット区分をグリッド形式で俯瞰・一括編集・保存できます。
+### 4.4. 開発サーバーの起動
+```bash
+npm install
+npm run dev
+```
+ブラウザで `http://localhost:5173` にアクセスし、ログイン画面から認証を行ってください。
 
 ---
 
-## 🤖 他AI向け技術・構造仕様 (Technical Specs for AI/Agents)
+## 5. AIエージェント開発統治 (Governance for AI Agents)
 
-AI エージェントが本プロジェクトを解析・拡張する際は、推測（Guessing）を排し、以下の事実（State）を前提として行動してください。
+本プロジェクトは複数のAIエージェント（Antigravity等）が自律的に開発・修正を行うことを想定した **リスクベースの統治構造 (Risk-based Governance)** を敷いています。
 
-### 1. ファイル構成と技術スタック
+- **SSOT (単一真実源)**: リポジトリ直下の `AGENTS.md` が最高憲法であり、全てのAIエージェントは作業開始前に必ずこれを熟読・遵守しなければなりません。
+- **ADR (Architecture Decision Records)**: `governance/ADR/` ディレクトリに、過去の技術的決定事項（なぜそのアーキテクチャを選んだのか）が記録されています。AIは推測による破壊的変更を避け、ADRを参照して文脈を維持してください。
+- **保護機構**: `.agents/scripts/` などのゲートウェイスクリプトにより、破壊的コマンドの実行やハッキング行為（APIキーの露出など）を物理的に遮断します。
 
-| 項目 | 内容 |
-|------|------|
-| **ビルドツール** | Vite v7 |
-| **フレームワーク** | React 19 (Hooks ベースの関数コンポーネント) |
-| **スタイリング** | Tailwind CSS v4 (`@tailwindcss/vite` プラグイン使用) |
-| **アイコン** | `lucide-react` (21コンポーネント使用) |
-| **状態管理** | `src/hooks/useDataStore.js` (Repository Pattern) による集中管理 |
-| **ルーティング** | なし（SPA単一画面） |
-| **バックエンド** | Supabase（連携準備中/現在はLocalStorageベースのRepository層で抽象化） |
+### 開発フロー (Development Workflow)
+1. **実装完了時**: `npm run type-check` で型の整合性を確認。
+2. **監査出力**: `npm run done` を実行し、完了コード (GSEAL) を取得。
+3. **コミット**: `README.md` や `SCHEMA_HISTORY.md` の更新漏れがないか確認し、単一の論理的単位でコミットしてください。
 
-```
-回収アプリ/
-├── index.html          # Vite エントリ HTML
-├── package.json        # プロジェクト定義・依存関係
-├── vite.config.js      # Vite + Tailwind v4 設定
-├── README.md           # 本ファイル (SSOT)
-├── src/
-│   ├── main.jsx        # React エントリポイント
-│   ├── index.css       # Tailwind ディレクティブ + カスタムアニメーション
-│   ├── components/     # UIコンポーネント群 (Header, Modals, Sidebar等)
-│   └── App.jsx         # アプリケーション本体 (メインUI + 状態管理)
-└── node_modules/       # 依存パッケージ (gitignore対象)
-```
+---
 
-### 2. 主要な状態管理 (State)
-| State 名 | 説明 |
-|----------|------|
-| `drivers` | タイムラインの列を形成するドライバーのリスト。(`id`, `name`, `currentVehicle`, `course` 等を含む) |
-| `jobs` | タイムライン上に配置済みの回収案件のリスト。開始時間 (`startTime`) と所要時間 (`duration`) で管理される。 |
-| `pendingJobs` | 未配車の回収案件リスト。画面追加時にここから `jobs` へ移動する。 |
-| `splits` | ドライバーや車両の途中交代を示す「区切り線」のリスト。 |
-| `masterWorkers` | ドライバー（作業員）マスタの全データ。氏名、かな、保有免許バッジ、ステータス等を保持。 |
-| `masterVehicles` | 車両マスタの全データ。車両名、車種タイプ、最大積載量(kg)、車高制限(m)等を保持。 |
-| `history` | Undo/Redo を実現するためのスナップショット (`past`, `future`)。 |
+## 6. 技術的負債と今後の課題 (Technical Debt & Future Work)
 
-
-### 3. データ構造 (モックデータ)
-バックエンド（DB等）は現在未接続であり、以下の初期定数から動的に State が生成されます。
-
-| 定数名 | 件数 | 構造 |
-|--------|------|------|
-| `COLOR_PALETTE` | 18色 | `{ name, bg, border, text }` |
-| `MASTER_DRIVERS_LIST` | 8名 | `string[]` |
-| `MASTER_VEHICLES_LIST` | 8台 | `string[]` |
-| `CUSTOMERS` | 7件 | `{ id, name, area, defaultDuration, requiredVehicle?, visits[] }` |
-| `INITIAL_DRIVERS` | 4件 | `{ id, name, currentVehicle, color(未使用), defaultSplit, course }` |
-| `TIME_SLOTS` | 48個 | `string[]` (6:00〜17:45, 15分刻み, 動的生成) |
-| `INITIAL_JOBS` | 2件 | `{ id, title, driverId, startTime, duration, bucket, originalCustomerId }` |
-
-### 4. ⚠️ 技術的注意事項（変更時に必ず確認すること）
-
-> **[CAUTION] 以下の3項目は、全量分析により発見されたアプリ固有の技術的制約です。**
-> **無視すると UI が破壊されます。コード変更前に必ず確認してください。**
-
-#### 4-1. 🔴 カスタムアニメーション定義
-`animate-in`, `fade-in`, `zoom-in` は **Tailwind CSS 標準には存在しないクラス** です。
-これらは未配車リストモーダルと編集モーダルで使用されており、`src/index.css` 内にカスタム `@keyframes` として定義されています。**この定義を削除するとモーダルのアニメーションが停止します。**
-
-#### 4-2. 🔴 COLOR_PALETTE の Tailwind クラス（54個）
-`COLOR_PALETTE` 定数内に定義された 18色 × 3プロパティ = 54 の Tailwind クラスは、文字列リテラルとして `src/data/constants.js` 等に存在するため、Purgeの対象外となるよう注意が必要です。
-ただし、**このデータを外部ファイルや DB に分離する場合は、Tailwind の `content` 設定にそのファイルパスを追加するか、safelist に全クラスを登録する必要があります。**
-
-### 5. 制約事項と既知の技術的負債
-
-| 項目 | 状態 | 備考 |
-|------|------|------|
-| データ永続化 | ✅ 実装済み (LocalStorage) | `src/services/storageService.js` にてシフトデータ (`collection_shift_manager_data`) およびマスターデータ (`collection_shift_manager_master`) の自動保存・読み込み・検証・全クリア機能を実装済み。Supabase連携（クラウド同期）が将来の拡張ポイント |
-| タイムライン範囲 | 固定 | 6:00〜18:00（15分刻み）でハードコード |
-| コンポーネント分割 | ✅ 解決済み | `src/components/` へUIコンポーネントが分割され、巨大ファイル問題は解消済み |
-| `document.getElementById` | ✅ 解決済み | React推奨の参照方式(`useRef`等)へ移行完了。現在はマウント用(`main.jsx`)でのみ使用 |
-| `INITIAL_DRIVERS.color` | デッドコード | 未使用フィールド。機能に影響なし |
-
-### 6. AI 統治構造 (Governance)
-
-本プロジェクトは `.agents/hooks.json` 等を用いた「多層ゲートウェイパターン」によって保護されています。
-- **PreToolUse**: 破壊的SQLやAPIキーのハードコードを物理的にブロックします（Write Safety Shield）。
-- **PostToolUse**: 書き込み直後に ESLint による自己修復ループが作動します。
-- **完了条件**: タスク完了時には必ず `npm run done` を実行し、生成された `GSEAL` コードを報告してください。
+未解決の課題や将来的な展望については、`DEBT_AND_FUTURE.md` に一元管理されています。新機能を実装する前には、既存の負債との干渉がないか確認してください。
