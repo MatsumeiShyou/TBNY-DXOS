@@ -52,6 +52,9 @@ export default function EditModal({ editModal, masterWorkers = [], masterVehicle
             >
               <option value="">選択してください</option>
               {activeWorkers.map(w => <option key={w.id} value={w.name}>{w.name}</option>)}
+              {driverName && !activeWorkers.find(w => w.name === driverName) && (
+                <option value={driverName}>{driverName} (未登録)</option>
+              )}
             </select>
           </div>
           <div>
@@ -63,6 +66,9 @@ export default function EditModal({ editModal, masterWorkers = [], masterVehicle
             >
               <option value="">選択してください</option>
               {masterVehicles.map(v => <option key={v.id} value={v.name}>{v.name}</option>)}
+              {vehicleName && !masterVehicles.find(v => v.name === vehicleName) && (
+                <option value={vehicleName}>{vehicleName} (未登録)</option>
+              )}
             </select>
           </div>
           <div className="pt-2 flex gap-2">

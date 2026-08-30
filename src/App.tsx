@@ -1151,7 +1151,6 @@ export default function App() {
               // ID自動生成等の兼ね合いもあるため、まずは登録完了してプレビューを適用後に
               // 正規のマスタからアサインし直す運用でもよい。
             }}
-            onDelete={handleDeleteCustomer}
             onClose={() => {
               setIsCustomerModalOpen(false);
               setCustomerModalInitialData(null);

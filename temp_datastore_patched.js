@@ -89,8 +89,8 @@ export function useDataStore(dateStr: string | null | undefined, isPreviewMode: 
   useEffect(() => {
     if (!isLoaded || !dateStr || isPreviewMode) return; // プレビュー中は自動保存を完全にブロック
     if (saveDailyTimeout.current) clearTimeout(saveDailyTimeout.current);
-    saveDailyTimeout.current = setTimeout(async () => {
-      await storageService.saveDailyState(dateStr, { drivers, jobs, pendingJobs, splits });
+    saveDailyTimeout.current = setTimeout(() => {
+      storageService.saveDailyState(dateStr, { drivers, jobs, pendingJobs, splits });
       storageService.saveState({ drivers, jobs, pendingJobs, splits }); 
       storageService.saveExceptions(monthlyExceptions);
     }, 500);
@@ -105,7 +105,7 @@ export function useDataStore(dateStr: string | null | undefined, isPreviewMode: 
       const master = await storageService.loadMasterData(INITIAL_WORKERS, INITIAL_VEHICLES, CUSTOMERS, INITIAL_ITEMS);
       setMasterWorkers(master.workers);
       setMasterVehicles(master.vehicles);
-      console.log('master customers:', master.customers?.length); setMasterCustomers(master.customers);
+      setMasterCustomers(master.customers);
       setMasterItems(master.items);
 
       // 2. 日次データのロードと孤児データの判定
@@ -125,10 +125,9 @@ export function useDataStore(dateStr: string | null | undefined, isPreviewMode: 
             const customer = customerMap.get(j.originalCustomerId);
             if (!customer || customer.isDeleted) {
               const cleanTitle = String(j.title || '').replace(/^⚠️(削除済|停止中)\s*/, '');
-              const displayName = customer ? customer.name : cleanTitle;
               return {
                 ...j,
-                title: displayName,
+                title: `⚠️削除済 ${cleanTitle}`,
                 kana: '',
                 isDeleted: true,
                 isSuspended: false,
@@ -140,7 +139,7 @@ export function useDataStore(dateStr: string | null | undefined, isPreviewMode: 
             if (customer.isInvalid) {
               return {
                 ...j,
-                title: customer.name,
+                title: `⚠️停止中 ${customer.name}`,
                 kana: customer.kana || '',
                 isDeleted: false,
                 isSuspended: true,
@@ -162,8 +161,8 @@ export function useDataStore(dateStr: string | null | undefined, isPreviewMode: 
           };
 
           // 絶対的マスタ登録の原則: 孤児データをサイレントキルせず、エラーとして可視化する
-          const filteredJobs = (dailyState.jobs || []).filter(j => customerMap.has(j.originalCustomerId)).map(refreshJob);
-          const filteredPending = (dailyState.pendingJobs || []).filter(j => customerMap.has(j.originalCustomerId)).map(refreshJob);
+          const filteredJobs = (dailyState.jobs || []).map(refreshJob);
+          const filteredPending = (dailyState.pendingJobs || []).map(refreshJob);
 
           // 既存ジョブのIDセット
           const existingJobIds = new Set([
@@ -223,7 +222,7 @@ export function useDataStore(dateStr: string | null | undefined, isPreviewMode: 
 
           setDrivers(dailyState.drivers || (INITIAL_DRIVERS as any));
           setJobs(finalJobs);
-          console.log('setting pending:', finalPendingWithMissing.length); setPendingJobs(finalPendingWithMissing);
+          setPendingJobs(finalPendingWithMissing);
           setSplits(dailyState.splits || []);
         } else {
           // 保存データがない日付の初期生成
@@ -236,12 +235,12 @@ export function useDataStore(dateStr: string | null | undefined, isPreviewMode: 
 
           setDrivers(INITIAL_DRIVERS as any);
           setJobs([]);
-          console.log('setting pending initial:', [...newDailyJobs, ...spotAndReschedules].length); setPendingJobs(uniqueJobs([...newDailyJobs, ...spotAndReschedules]));
+          setPendingJobs(uniqueJobs([...newDailyJobs, ...spotAndReschedules]));
           setSplits([]);
         }
       }
       
-      const exceptionsData = await storageService.loadExceptions() || {};
+      const exceptionsData = storageService.loadExceptions() || {};
       
       const validCustomerIds = new Set(master.customers.map((c: Customer) => c.id));
       const filteredExceptions: MonthlyExceptions = {};
@@ -309,8 +308,7 @@ export function useDataStore(dateStr: string | null | undefined, isPreviewMode: 
       setJobs(prev => prev.map(updateJobAttributes));
       
       if (dateStr) {
-        const currentExceptions = await storageService.loadExceptions() || {};
-        const dailyJobsForToday = generateDailySchedule(dateStr, [customerData], [], (currentExceptions?.[dateStr]?.spotJobs || []));
+        const dailyJobsForToday = generateDailySchedule(dateStr, [customerData], [], (storageService.loadExceptions()?.[dateStr]?.spotJobs || []));
         const shouldBeInScheduleToday = dailyJobsForToday.length > 0;
 
         setPendingJobs(prev => {
@@ -357,10 +355,10 @@ export function useDataStore(dateStr: string | null | undefined, isPreviewMode: 
       let isSuspended = false;
       
       if (c.isDeleted) {
-        newTitle = String(newTitle).replace(/^⚠️(削除済|停止中)\s*/, '');
+        newTitle = `⚠️削除済 ${String(newTitle).replace(/^⚠️(削除済|停止中)\s*/, '')}`;
         isDeleted = true;
       } else if (c.isInvalid) {
-        newTitle = String(newTitle).replace(/^⚠️(削除済|停止中)\s*/, '');
+        newTitle = `⚠️停止中 ${String(newTitle).replace(/^⚠️(削除済|停止中)\s*/, '')}`;
         isSuspended = true;
       } else {
         newTitle = String(newTitle).replace(/^⚠️(削除済|停止中)\s*/, '');
@@ -382,17 +380,16 @@ export function useDataStore(dateStr: string | null | undefined, isPreviewMode: 
       };
     };
 
-    setJobs(prev => prev.filter(j => customerMap.has(j.originalCustomerId)).map(syncJob));
+    setJobs(prev => prev.map(syncJob));
     
     if (dateStr) {
-      const bulkExceptions = await storageService.loadExceptions() || {};
       setPendingJobs(prev => {
-        let newPending = prev.filter(j => customerMap.has(j.originalCustomerId)).map(syncJob);
+        let newPending = prev.map(syncJob);
         
         for (const customer of updatedCustomers) {
           if (customer.isInvalid) continue;
 
-          const dailyJobsForToday = generateDailySchedule(dateStr, [customer], [], (bulkExceptions?.[dateStr]?.spotJobs || []));
+          const dailyJobsForToday = generateDailySchedule(dateStr, [customer], [], (storageService.loadExceptions()?.[dateStr]?.spotJobs || []));
           const shouldBeInScheduleToday = dailyJobsForToday.length > 0;
           const isCurrentlyInPending = newPending.some(j => j.originalCustomerId === customer.id);
           
@@ -407,16 +404,16 @@ export function useDataStore(dateStr: string | null | undefined, isPreviewMode: 
         return newPending;
       });
     } else {
-      setPendingJobs(prev => prev.filter(j => customerMap.has(j.originalCustomerId)).map(syncJob));
+      setPendingJobs(prev => prev.filter(j => validIds.has(j.originalCustomerId || '')).map(syncJob));
     }
 
     setMonthlyExceptions(prev => {
       const updated: MonthlyExceptions = {};
       for (const [d, exp] of Object.entries(prev)) {
         updated[d] = {
-          spotJobs: (exp.spotJobs || []).filter(j => customerMap.has(j.originalCustomerId)).map(syncJob),
-          cancellations: (exp.cancellations || []),
-          reschedules: (exp.reschedules || []).filter(j => customerMap.has(j.originalCustomerId)).map(syncJob)
+          spotJobs: (exp.spotJobs || []).filter(j => validIds.has(j.originalCustomerId || '')).map(syncJob),
+          cancellations: (exp.cancellations || []).filter(id => validIds.has(id)),
+          reschedules: (exp.reschedules || []).filter(j => validIds.has(j.originalCustomerId || '')).map(syncJob)
         };
       }
       return updated;
@@ -479,29 +476,29 @@ export function useDataStore(dateStr: string | null | undefined, isPreviewMode: 
 
     setMonthlyExceptions(prev => {
       const next = { ...prev };
-      for (const d of dates) {
+      dates.forEach(d => {
         const exp = next[d] || { spotJobs: [], cancellations: [], reschedules: [] };
         const newJob = dates.length > 1 ? { ...spotJob, id: `${spotJob.id}_${d}` } : spotJob;
         next[d] = {
           ...exp,
           spotJobs: [...exp.spotJobs, newJob]
         };
-      }
+      });
       return next;
     });
 
-    for (const d of dates) {
+    dates.forEach(d => {
       const newJob = dates.length > 1 ? { ...spotJob, id: `${spotJob.id}_${d}` } : spotJob;
-      const dailyState = await storageService.loadDailyState(d);
+      const dailyState = storageService.loadDailyStateSync(d);
       if (dailyState) {
         dailyState.pendingJobs = uniqueJobs([...(dailyState.pendingJobs || []), newJob]);
-        await storageService.saveDailyState(d, dailyState);
+        storageService.saveDailyState(d, dailyState);
       }
       
       if (dateStr === d) {
         setPendingJobs(prev => uniqueJobs([...prev, newJob]));
       }
-    }
+    });
   };
 
   const deleteJobFromCalendar = async (targetDateStr: string, jobId: string, scope = 'this', seriesId = null) => {
@@ -517,11 +514,11 @@ export function useDataStore(dateStr: string | null | undefined, isPreviewMode: 
         };
       });
 
-      const dailyState = await storageService.loadDailyState(targetDateStr);
+      const dailyState = storageService.loadDailyStateSync(targetDateStr);
       if (dailyState) {
         dailyState.jobs = (dailyState.jobs || []).filter((j: any) => j.id !== jobId);
         dailyState.pendingJobs = (dailyState.pendingJobs || []).filter((j: any) => j.id !== jobId);
-        await storageService.saveDailyState(targetDateStr, dailyState);
+        storageService.saveDailyState(targetDateStr, dailyState);
       }
 
       if (dateStr === targetDateStr) {
@@ -546,21 +543,21 @@ export function useDataStore(dateStr: string | null | undefined, isPreviewMode: 
         return next;
       });
 
-      const allExceptions = await storageService.loadExceptions() || {};
-      for (const d of Object.keys(allExceptions)) {
-        if (isFuture && d < targetDateStr) continue;
+      const allExceptions = storageService.loadExceptions() || {};
+      Object.keys(allExceptions).forEach(d => {
+        if (isFuture && d < targetDateStr) return;
         
-        const dailyState = await storageService.loadDailyState(d);
+        const dailyState = storageService.loadDailyStateSync(d);
         if (dailyState) {
           const hasTarget = (dailyState.jobs || []).some((j: any) => j.seriesId === seriesId) || 
                             (dailyState.pendingJobs || []).some((j: any) => j.seriesId === seriesId);
           if (hasTarget) {
             dailyState.jobs = (dailyState.jobs || []).filter((j: any) => j.seriesId !== seriesId);
             dailyState.pendingJobs = (dailyState.pendingJobs || []).filter((j: any) => j.seriesId !== seriesId);
-            await storageService.saveDailyState(d, dailyState);
+            storageService.saveDailyState(d, dailyState);
           }
         }
-      }
+      });
 
       if (!isFuture || (dateStr && dateStr >= targetDateStr)) {
         setJobs(prev => prev.filter((j: any) => j.seriesId !== seriesId));
@@ -597,7 +594,7 @@ export function useDataStore(dateStr: string | null | undefined, isPreviewMode: 
     jobToMove = jobToMove || currentExp.spotJobs.find((j: any) => j.id === jobId);
     if (!jobToMove) return;
 
-    const sourceDaily = await storageService.loadDailyState(sourceDateStr);
+    const sourceDaily = storageService.loadDailyStateSync(sourceDateStr);
     if (sourceDaily) {
       const jobInJobs = (sourceDaily.jobs || []).find((j: any) => j.id === jobId);
       const jobInPending = (sourceDaily.pendingJobs || []).find((j: any) => j.id === jobId);
@@ -607,15 +604,15 @@ export function useDataStore(dateStr: string | null | undefined, isPreviewMode: 
 
       sourceDaily.jobs = (sourceDaily.jobs || []).filter((j: any) => j.id !== jobId);
       sourceDaily.pendingJobs = (sourceDaily.pendingJobs || []).filter((j: any) => j.id !== jobId);
-      await storageService.saveDailyState(sourceDateStr, sourceDaily);
+      storageService.saveDailyState(sourceDateStr, sourceDaily);
     } else {
       jobToMove = { ...jobToMove, driverId: undefined, startTime: undefined };
     }
 
-    const targetDaily = await storageService.loadDailyState(targetDateStr);
+    const targetDaily = storageService.loadDailyStateSync(targetDateStr);
     if (targetDaily) {
       targetDaily.pendingJobs = uniqueJobs([...(targetDaily.pendingJobs || []), jobToMove]);
-      await storageService.saveDailyState(targetDateStr, targetDaily);
+      storageService.saveDailyState(targetDateStr, targetDaily);
     }
 
     if (dateStr === sourceDateStr) {

@@ -143,6 +143,8 @@ CREATE TABLE master_workers (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   name TEXT NOT NULL,
   role_label TEXT,
+  kana TEXT,
+  license_types TEXT[],
   can_drive BOOLEAN DEFAULT TRUE,
   can_collect BOOLEAN DEFAULT TRUE,
   is_active BOOLEAN DEFAULT TRUE,
@@ -185,7 +187,28 @@ CREATE TRIGGER tr_audit_resource_availability
 -- STEP 5: トランザクション層 (日次配車・実績)
 -- ===========================================
 
+CREATE TABLE monthly_exceptions (
+  target_date DATE PRIMARY KEY,
+  spot_jobs JSONB DEFAULT '[]'::jsonb,
+  cancellations JSONB DEFAULT '[]'::jsonb,
+  reschedules JSONB DEFAULT '[]'::jsonb,
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+GRANT ALL ON TABLE public.monthly_exceptions TO service_role;
+GRANT ALL ON TABLE public.monthly_exceptions TO authenticated;
+GRANT ALL ON TABLE public.monthly_exceptions TO anon;
+
 -- 5-1. 案件管理（日次の配車計画）
+CREATE TABLE daily_configs (
+  planned_date DATE PRIMARY KEY,
+  drivers JSONB DEFAULT '[]'::jsonb,
+  splits JSONB DEFAULT '[]'::jsonb,
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+GRANT ALL ON TABLE public.daily_configs TO service_role;
+GRANT ALL ON TABLE public.daily_configs TO authenticated;
+GRANT ALL ON TABLE public.daily_configs TO anon;
+
 CREATE TABLE daily_jobs (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   collection_point_id UUID NOT NULL REFERENCES master_collection_points(id),
@@ -243,6 +266,9 @@ CREATE TABLE templates (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   name TEXT NOT NULL,
   description TEXT,
+  target_week TEXT,
+  target_day TEXT,
+  ui_state JSONB DEFAULT '{"jobs":[],"pendingJobs":[],"splits":[]}'::jsonb,
   created_by UUID REFERENCES master_workers(id),
   is_active BOOLEAN DEFAULT TRUE,
   created_at TIMESTAMPTZ DEFAULT NOW(),

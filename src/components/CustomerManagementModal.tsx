@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useOptimistic, useActionState, startTransition } from 'react';
 import { Customer, MasterVehicle } from '../types';
 import { Item } from './ItemManagementModal';
 import { X, Plus, Search, Trash2, Building, Calendar, Settings, AlertCircle, Grid, Check, Copy } from 'lucide-react';
@@ -56,22 +56,80 @@ interface CustomerManagementModalProps {
   customers: Customer[];
   masterVehicles: MasterVehicle[];
   masterItems?: Item[];
-  onSave: (customer: any) => void;
-  onDelete: (id: string) => void;
+  onSave: (customer: any) => Promise<void> | void;
   onClose: () => void;
   onOpenGridMode?: () => void;
   initialData?: any;
 }
 
-export default function CustomerManagementModal({ customers, masterVehicles, masterItems = [], onSave, onDelete, onClose, onOpenGridMode, initialData }: CustomerManagementModalProps) {
+export default function CustomerManagementModal({ customers, masterVehicles, masterItems = [], onSave, onClose, onOpenGridMode, initialData }: CustomerManagementModalProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [showDeleted, setShowDeleted] = useState(false);
   const [selectedCustomerId, setSelectedCustomerId] = useState<string | null>(null);
   const [formData, setFormData] = useState(initialData || { ...initialFormState });
   const [activeTab, setActiveTab] = useState('basic');
-  const [isEditing, setIsEditing] = useState(!!initialData); // 初期データがあれば編集モード(新規フォーム状態)
+  const [isEditing, setIsEditing] = useState(!!initialData);
+  const [validationErrors, setValidationErrors] = useState<{name?: string, kana?: string}>({});
 
-  // initialDataがあれば初期フォームにセットする
+  const [optimisticCustomers, setOptimisticCustomer] = useOptimistic<Customer[], any>(
+    customers,
+    (state, updatedCustomer) => {
+      const exists = state.find(c => c.id === updatedCustomer.id);
+      if (exists) {
+        return state.map(c => c.id === updatedCustomer.id ? updatedCustomer : c);
+      }
+      return [...state, updatedCustomer];
+    }
+  );
+
+  const [saveStatus, formAction, isPending] = useActionState(
+    async (prevState: string, _payload: any) => {
+      const errors: { name?: string; kana?: string } = {};
+      if (!formData.name || !formData.name.trim()) errors.name = '回収先名は必須です';
+      if (!formData.kana || !formData.kana.trim()) errors.kana = 'フリガナは必須です';
+      
+      if (Object.keys(errors).length > 0) {
+        setValidationErrors(errors);
+        return 'idle';
+      }
+      setValidationErrors({});
+
+      const customerToSave = {
+        ...formData,
+        name: formData.name.trim(),
+        defaultDuration: Number(formData.defaultDuration) || 30,
+        scheduleRules: formData.scheduleRules || { mon: [], tue: [], wed: [], thu: [], fri: [], sat: [], sun: [] }
+      };
+
+      try {
+        startTransition(() => {
+          setOptimisticCustomer({ ...customerToSave, syncStatus: 'saving' });
+        });
+        
+        await onSave({ ...customerToSave, syncStatus: 'active' });
+        
+        if (selectedCustomerId === 'new') setSelectedCustomerId(customerToSave.id);
+        
+        return 'saved';
+      } catch (err) {
+        startTransition(() => {
+          setOptimisticCustomer({ ...customerToSave, syncStatus: 'error', syncError: '保存に失敗しました' });
+        });
+        return 'error';
+      }
+    },
+    'idle'
+  );
+
+  useEffect(() => {
+    if (saveStatus === 'saved') {
+      const timer = setTimeout(() => {
+         // reset logic here if needed
+      }, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [saveStatus]);
+
   useEffect(() => {
     if (initialData) {
       setFormData(prev => ({ ...prev, ...initialData }));
@@ -79,8 +137,6 @@ export default function CustomerManagementModal({ customers, masterVehicles, mas
     }
   }, [initialData]);
 
-  // モーダルオープン時のスクロールロック
-  const [saveStatus, setSaveStatus] = useState('idle'); // 'idle' | 'saved'
   const [activeRowFilter, setActiveRowFilter] = useState('all');
   
   // フリガナ自動入力用のIMEバッファと制御
@@ -106,7 +162,7 @@ export default function CustomerManagementModal({ customers, masterVehicles, mas
   };
   
   // フィルターとソート
-  const filteredCustomers = customers
+  const filteredCustomers = optimisticCustomers
     .filter(c => (showDeleted ? c.isDeleted : !c.isDeleted))
     .filter(c => {
       // 1. フリーワード検索
@@ -142,14 +198,14 @@ export default function CustomerManagementModal({ customers, masterVehicles, mas
       defaultDuration: Number(customer.defaultDuration) || 30
     });
     setActiveTab('basic');
-    setSaveStatus('idle');
+    setValidationErrors({});
   };
 
   const handleCreateNew = () => {
     setSelectedCustomerId('new');
     setFormData({ ...initialFormState, id: crypto.randomUUID() });
     setActiveTab('basic');
-    setSaveStatus('idle');
+    setValidationErrors({});
   };
 
   const handleDuplicate = () => {
@@ -160,7 +216,7 @@ export default function CustomerManagementModal({ customers, masterVehicles, mas
       name: prev.name ? `${prev.name} (コピー)` : ''
     }));
     setActiveTab('basic');
-    setSaveStatus('idle');
+    setValidationErrors({});
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -170,6 +226,13 @@ export default function CustomerManagementModal({ customers, masterVehicles, mas
       ...prev,
       [name]: type === 'checkbox' ? checked : (name === 'defaultDuration' ? (parseInt(value, 10) || 0) : value)
     }));
+    
+    if (name === 'name') {
+      setValidationErrors(prev => ({ ...prev, name: !value.trim() ? '回収先名は必須です' : undefined }));
+    }
+    if (name === 'kana') {
+      setValidationErrors(prev => ({ ...prev, kana: !value.trim() ? 'フリガナは必須です' : undefined }));
+    }
   };
 
   const handlePrefTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -220,39 +283,13 @@ export default function CustomerManagementModal({ customers, masterVehicles, mas
     });
   };
 
-  const handleSubmit = (e?: React.FormEvent | React.MouseEvent, shouldClose = false) => {
-    if (e && e.preventDefault) e.preventDefault();
-    if (!formData.name || !formData.name.trim()) return alert('回収先名は必須です');
-    if (!formData.kana || !formData.kana.trim()) return alert('フリガナは必須です（五十音フィルターに使用されます）');
-
-    const customerToSave = {
-      ...formData,
-      name: formData.name.trim(),
-      defaultDuration: Number(formData.defaultDuration) || 30,
-      scheduleRules: formData.scheduleRules || { mon: [], tue: [], wed: [], thu: [], fri: [], sat: [], sun: [] }
-    };
-
-    onSave(customerToSave);
-    
-    // If it was new, we stay on it but it becomes an existing one in the list
-    if (selectedCustomerId === 'new') setSelectedCustomerId(customerToSave.id);
-
-    setSaveStatus('saved');
-    setTimeout(() => {
-      setSaveStatus('idle');
-      if (shouldClose && onClose) {
-        onClose();
-      }
-    }, 800);
-  };
-
   return (
     <>
       <div className="fixed inset-0 bg-black/40 z-40 animate-in fade-in duration-300" onClick={onClose}></div>
-      <div className="fixed top-0 right-0 h-screen w-[900px] bg-white shadow-2xl z-50 flex overflow-hidden animate-in slide-in-from-right duration-300 border-l border-gray-200">
+      <div className="@container fixed top-0 right-0 h-screen w-full max-w-5xl bg-white shadow-2xl z-50 flex flex-col @4xl:flex-row overflow-hidden animate-in slide-in-from-right duration-300 border-l border-gray-200">
         
         {/* 左カラム: リスト */}
-        <div className="w-[280px] shrink-0 border-r border-gray-200 bg-gray-50 flex flex-col h-full">
+        <div className="w-full @4xl:w-[280px] shrink-0 border-b @4xl:border-b-0 @4xl:border-r border-gray-200 bg-gray-50 flex flex-col h-[40vh] @4xl:h-full">
           <div className="px-4 py-3.5 border-b border-gray-200 bg-gray-100">
             <h2 className="font-bold text-gray-800 flex items-center gap-2"><Building size={16} className="text-emerald-600" /> 顧客マスタ</h2>
           </div>
@@ -314,7 +351,12 @@ export default function CustomerManagementModal({ customers, masterVehicles, mas
                 }`}
               >
                 <div className="flex justify-between items-start mb-0.5">
-                  <div className="font-bold text-sm text-gray-800 truncate">{customer.name}</div>
+                  <div className="font-bold text-sm text-gray-800 truncate flex items-center gap-1">
+                    {customer.name}
+                    {customer.syncStatus === 'saving' && <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse ml-1" title="保存中..."></span>}
+                    {customer.syncStatus === 'error' && <span className="w-2 h-2 rounded-full bg-red-500 ml-1" title="保存エラー"></span>}
+                    {customer.syncStatus === 'draft' && <span className="w-2 h-2 rounded-full bg-amber-500 ml-1" title="未同期"></span>}
+                  </div>
                   {customer.isInvalid && <span className="text-[10px] bg-red-100 text-red-600 px-1.5 py-0.5 rounded whitespace-nowrap">停止中</span>}
                 </div>
                 <div className="text-xs text-gray-500 truncate">{customer.area || 'エリア未定'} · {customer.jobType === 'regular' ? '定期' : 'スポット'}</div>
@@ -327,30 +369,32 @@ export default function CustomerManagementModal({ customers, masterVehicles, mas
         </div>
 
         {/* 右カラム: フォーム */}
-        <div className="w-2/3 flex flex-col h-full bg-white relative">
+        <div className="flex-1 flex flex-col h-[60vh] @4xl:h-full bg-white relative">
           {!selectedCustomerId ? (
             <div className="flex-1 flex flex-col items-center justify-center text-gray-300 gap-3">
               <Building size={44} className="opacity-20" />
               <p className="text-sm">左のリストから顧客を選択するか、新規追加してください</p>
             </div>
           ) : (
-            <>
+            <form action={formAction} className="flex flex-col h-full overflow-hidden">
               {/* Header & Tabs */}
               <div className="px-6 pt-5 pb-0 border-b border-gray-200">
                 <div className="flex justify-between items-start mb-4">
                   <h3 className="text-lg font-bold text-gray-800">
                     {selectedCustomerId === 'new' ? '新規顧客の登録' : '顧客情報の編集'}
                   </h3>
-                  <button onClick={onClose} className="text-gray-400 hover:text-gray-600"><X size={20} /></button>
+                  <button type="button" onClick={onClose} className="text-gray-400 hover:text-gray-600"><X size={20} /></button>
                 </div>
                 <div className="flex gap-4">
                   <button 
+                    type="button"
                     onClick={() => setActiveTab('basic')}
                     className={`pb-2 text-sm font-bold border-b-2 transition-colors ${activeTab === 'basic' ? 'border-emerald-500 text-emerald-700' : 'border-transparent text-gray-500 hover:text-gray-700'}`}
                   >
                     基本情報
                   </button>
                   <button 
+                    type="button"
                     onClick={() => setActiveTab('condition')}
                     className={`pb-2 text-sm font-bold border-b-2 transition-colors ${activeTab === 'condition' ? 'border-emerald-500 text-emerald-700' : 'border-transparent text-gray-500 hover:text-gray-700'}`}
                   >
@@ -371,20 +415,26 @@ export default function CustomerManagementModal({ customers, masterVehicles, mas
                       </div>
                       <div className="flex items-center gap-2">
                         <label className="text-xs font-bold text-gray-600 whitespace-nowrap w-20 shrink-0">回収先名 <span className="text-red-500">*</span></label>
-                        <input 
-                          type="text" 
-                          name="name" 
-                          value={formData.name} 
-                          onChange={handleChange} 
-                          onCompositionUpdate={handleCompositionUpdate}
-                          onCompositionEnd={handleCompositionEnd}
-                          className="flex-1 border rounded px-2 py-1.5 text-sm" 
-                          placeholder="例: 富士ロジ長沼 AM" 
-                        />
+                        <div className="flex-1">
+                          <input 
+                            type="text" 
+                            name="name" 
+                            value={formData.name} 
+                            onChange={handleChange} 
+                            onCompositionUpdate={handleCompositionUpdate}
+                            onCompositionEnd={handleCompositionEnd}
+                            className={`w-full border rounded px-2 py-1.5 text-sm ${validationErrors.name ? 'border-red-500 bg-red-50' : ''}`} 
+                            placeholder="例: 富士ロジ長沼 AM" 
+                          />
+                          {validationErrors.name && <div className="text-red-500 text-[10px] font-bold mt-1">{validationErrors.name}</div>}
+                        </div>
                       </div>
                       <div className="flex items-center gap-2">
                         <label className="text-xs font-bold text-gray-600 whitespace-nowrap w-20 shrink-0">フリガナ <span className="text-red-500">*</span></label>
-                        <input type="text" name="kana" value={formData.kana} onChange={handleChange} className="flex-1 border rounded px-2 py-1.5 text-sm" placeholder="カタカナで入力" />
+                        <div className="flex-1">
+                          <input type="text" name="kana" value={formData.kana} onChange={handleChange} className={`w-full border rounded px-2 py-1.5 text-sm ${validationErrors.kana ? 'border-red-500 bg-red-50' : ''}`} placeholder="カタカナで入力" />
+                          {validationErrors.kana && <div className="text-red-500 text-[10px] font-bold mt-1">{validationErrors.kana}</div>}
+                        </div>
                       </div>
                       <div className="flex items-center gap-2">
                         <label className="text-xs font-bold text-gray-600 whitespace-nowrap w-20 shrink-0">回収先ID <span className="text-red-500">*</span></label>
@@ -433,6 +483,7 @@ export default function CustomerManagementModal({ customers, masterVehicles, mas
                       <h4 className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-3">案件タイプ</h4>
                       <div className="grid grid-cols-2 gap-3">
                         <button
+                          type="button"
                           onClick={() => setFormData(prev => ({ ...prev, jobType: 'regular' }))}
                           className={`p-4 rounded-lg border-2 text-left transition-all ${
                             formData.jobType === 'regular'
@@ -450,6 +501,7 @@ export default function CustomerManagementModal({ customers, masterVehicles, mas
                           <div className="text-xs text-gray-500">曜日・週次スケジュールを自動展開</div>
                         </button>
                         <button
+                          type="button"
                           onClick={() => setFormData(prev => ({ ...prev, jobType: 'spot' }))}
                           className={`p-4 rounded-lg border-2 text-left transition-all ${
                             formData.jobType === 'spot'
@@ -496,6 +548,7 @@ export default function CustomerManagementModal({ customers, masterVehicles, mas
                                 return (
                                   <div key={day.key} className="flex justify-center py-2">
                                     <button
+                                      type="button"
                                       onClick={(e) => { e.preventDefault(); handleScheduleChange(day.key, freq.value); }}
                                       className={`w-8 h-8 rounded-md text-xs font-bold transition-all ${
                                         isActive
@@ -609,9 +662,14 @@ export default function CustomerManagementModal({ customers, masterVehicles, mas
                   {selectedCustomerId !== 'new' && (
                     <>
                       <button 
-                        onClick={() => {
-                          if(window.confirm('この顧客を削除しますか？')) {
-                            onDelete(formData.id);
+                        type="button"
+                        onClick={async () => {
+                          if(window.confirm('この顧客をアーカイブ（論理削除）しますか？')) {
+                            const deletedCustomer = { ...formData, isDeleted: true };
+                            startTransition(() => {
+                              setOptimisticCustomer({ ...deletedCustomer, syncStatus: 'saving' });
+                            });
+                            await onSave(deletedCustomer);
                             setSelectedCustomerId(null);
                           }
                         }}
@@ -621,6 +679,7 @@ export default function CustomerManagementModal({ customers, masterVehicles, mas
                       </button>
 
                       <button 
+                        type="button"
                         onClick={handleDuplicate}
                         className="text-blue-600 hover:text-blue-800 text-sm font-bold flex items-center gap-1"
                       >
@@ -635,24 +694,19 @@ export default function CustomerManagementModal({ customers, masterVehicles, mas
                       <Check size={16} /> 保存しました
                     </span>
                   )}
-                  <button onClick={onClose} className="px-4 py-2 border border-gray-300 rounded text-sm text-gray-600 hover:bg-gray-100 font-bold bg-white shadow-sm">
+                  <button type="button" onClick={onClose} className="px-4 py-2 border border-gray-300 rounded text-sm text-gray-600 hover:bg-gray-100 font-bold bg-white shadow-sm">
                     閉じる
                   </button>
                   <button 
-                    onClick={(e) => handleSubmit(e, false)} 
-                    className={`px-5 py-2 rounded text-sm font-bold shadow-sm flex items-center gap-2 transition-all ${saveStatus === 'saved' ? 'bg-emerald-700 text-white' : 'bg-emerald-600 text-white hover:bg-emerald-700'}`}
+                    type="submit"
+                    disabled={isPending}
+                    className={`px-5 py-2 rounded text-sm font-bold shadow-sm flex items-center gap-2 transition-all ${(saveStatus === 'saved' && !isPending) ? 'bg-emerald-700 text-white' : 'bg-emerald-600 text-white hover:bg-emerald-700'} ${isPending ? 'opacity-70 cursor-not-allowed' : ''}`}
                   >
-                    {saveStatus === 'saved' ? (
-                      <>
-                        <Check size={16} /> 保存完了
-                      </>
-                    ) : (
-                      '保存する'
-                    )}
+                    {isPending ? '保存中...' : (saveStatus === 'saved' ? <><Check size={16} /> 保存完了</> : '保存する')}
                   </button>
                 </div>
               </div>
-            </>
+            </form>
           )}
         </div>
       </div>

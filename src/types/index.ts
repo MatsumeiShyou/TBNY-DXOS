@@ -50,6 +50,9 @@ export interface Customer {
   isDeleted?: boolean;
   holidayCollection?: boolean;
   customSchedule?: string;
+  // 楽観的UI・Draft管理用の一時状態
+  syncStatus?: 'draft' | 'saving' | 'active' | 'error';
+  syncError?: string;
   [key: string]: any;
 }
 

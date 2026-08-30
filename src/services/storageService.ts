@@ -1,102 +1,91 @@
-const STORAGE_KEY = 'collection_shift_manager_data';
-const MASTER_STORAGE_KEY = 'collection_shift_manager_master';
-const EXCEPTIONS_STORAGE_KEY = 'collection_shift_manager_exceptions';
-const TEMPLATES_STORAGE_KEY = 'collection_shift_manager_templates';
+// Supabase移行完了: すべてのデータは Supabase を単一の真実源（SSOT）として保存・読み込みする。
 
 export const storageService = {
   loadTemplates: async () => {
     try {
-      let fileTemplates = null;
-      try {
-        const response = await fetch('/data/templates.json?t=' + new Date().getTime());
-        if (response.ok && response.headers.get('content-type')?.includes('application/json')) {
-          fileTemplates = await response.json();
-        }
-      } catch (err) {
-        console.warn('ローカルの templates.json 読み込みに失敗しました', err);
+      const { supabase } = await import('../lib/supabase');
+      const { data, error } = await supabase.from('templates').select('*').eq('is_active', true);
+      if (error) console.error('Supabase loadTemplates Error:', error);
+
+      if (data) {
+        return data.map((t: any) => ({
+          id: t.id,
+          name: t.name,
+          targetWeek: t.target_week,
+          targetDay: t.target_day,
+          state: t.ui_state || { jobs: [], pendingJobs: [], splits: [] }
+        }));
       }
-      
-      const savedData = localStorage.getItem(TEMPLATES_STORAGE_KEY);
-      let parsed = savedData ? JSON.parse(savedData) : null;
-      
-      return fileTemplates || parsed || [];
     } catch (e) {
-      console.error('LocalStorageテンプレート読み込みエラー:', e);
+      console.error('Supabaseテンプレート読み込みエラー:', e);
     }
     return [];
   },
 
-  saveTemplates: (templates) => {
-    try {
-      localStorage.setItem(TEMPLATES_STORAGE_KEY, JSON.stringify(templates));
-      fetch('/api/save-templates', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(templates)
-      }).catch(err => console.error('テンプレートデータファイル保存エラー:', err));
-    } catch (e) {
-      console.error('LocalStorageテンプレート保存エラー:', e);
-    }
-  },
 
-  saveTemplate: async (template) => {
-    const currentTemplates = await storageService.loadTemplates();
-    const index = currentTemplates.findIndex(t => t.id === template.id);
-    if (index >= 0) {
-      currentTemplates[index] = template;
-    } else {
-      currentTemplates.push(template);
-    }
-    storageService.saveTemplates(currentTemplates);
-  },
 
-  deleteTemplate: async (id) => {
-    const currentTemplates = await storageService.loadTemplates();
-    const filtered = currentTemplates.filter(t => t.id !== id);
-    storageService.saveTemplates(filtered);
-  },
-
-  loadDailyState: async (dateString) => {
+  saveTemplate: async (template: any) => {
     try {
       const { supabase } = await import('../lib/supabase');
-      
-      const { data, error } = await supabase
-        .from('daily_jobs')
-        .select(`
-          *,
-          weighing_records (
-            net_weight, operator_id
-          ),
-          actuals (
-            actual_quantity, quantity_unit, is_finalized
-          )
-        `)
-        .eq('planned_date', dateString);
+      const payload = {
+        id: template.id,
+        name: template.name,
+        target_week: template.targetWeek,
+        target_day: template.targetDay,
+        ui_state: template.state,
+        is_active: true
+      };
+      const { error } = await supabase.from('templates').upsert(payload, { onConflict: 'id' });
+      if (error) console.error('Supabase Template save error:', error);
+    } catch (e) {
+      console.error('Supabase Template save exception:', e);
+    }
+  },
 
-      if (error) {
-        console.error('Supabase loadDailyState Error:', error);
-      }
+  deleteTemplate: async (id: string) => {
+    try {
+      const { supabase } = await import('../lib/supabase');
+      const { error } = await supabase.from('templates').update({ is_active: false }).eq('id', id);
+      if (error) console.error('Supabase Template delete error:', error);
+    } catch (e) {
+      console.error('Supabase Template delete exception:', e);
+    }
+  },
 
-      // 既存の LocalStorage も一応読み込んでおく (splits等の復元用)
-      const dailyKey = `${STORAGE_KEY}_${dateString}`;
-      const savedData = localStorage.getItem(dailyKey);
-      let parsed = savedData ? JSON.parse(savedData) : null;
+  loadDailyState: async (dateString: string) => {
+    try {
+      const { supabase } = await import('../lib/supabase');
+      const [ { data, error }, { data: configData, error: configError } ] = await Promise.all([
+        supabase
+          .from('daily_jobs')
+          .select(`
+            *,
+            weighing_records (
+              net_weight, operator_id
+            ),
+            actuals (
+              actual_quantity, quantity_unit, is_finalized
+            )
+          `)
+          .eq('planned_date', dateString),
+        supabase
+          .from('daily_configs')
+          .select('drivers, splits')
+          .eq('planned_date', dateString)
+          .maybeSingle()
+      ]);
+      if (configError) console.error('Supabase loadDailyConfigs Error:', configError);
+      if (error) console.error('Supabase loadDailyState Error:', error);
 
       if (data && data.length > 0) {
-        // Supabase のデータがある場合はそれを優先してフロントエンド形式に変換
-        const jobs = [];
-        const pendingJobs = [];
-
-        // sequence_order 順にソート
-        const sortedData = data.sort((a, b) => (a.sequence_order || 0) - (b.sequence_order || 0));
+        const jobs: any[] = [];
+        const pendingJobs: any[] = [];
+        const sortedData = data.sort((a: any, b: any) => (a.sequence_order || 0) - (b.sequence_order || 0));
 
         for (const row of sortedData) {
-          // 論理削除(is_skipped等)の除外
           if (row.is_skipped || row.status === 'DELETED') continue;
-          
           const weighing = row.weighing_records?.[0] || {};
           const actual = row.actuals?.[0] || {};
-
           const job = {
             id: row.front_id || row.id,
             dbId: row.id,
@@ -105,125 +94,99 @@ export const storageService = {
             startTime: row.planned_time ? row.planned_time.substring(0, 5) : undefined,
             status: row.status,
             is_skipped: row.is_skipped,
-            netWeight: weighing.net_weight,
-            actualQuantity: actual.actual_quantity,
-            quantityUnit: actual.quantity_unit,
-            isFinalized: actual.is_finalized
+            weight: weighing.net_weight || null,
+            quantity: actual.actual_quantity || null,
+            operator_id: weighing.operator_id || null,
+            item_id: row.item_id || null
           };
-
           if (row.vehicle_id) {
             jobs.push(job);
           } else {
             pendingJobs.push(job);
           }
         }
-
-        return {
-          jobs,
-          pendingJobs,
-          splits: parsed?.splits || [],
-          drivers: parsed?.drivers || null
+        return { 
+          jobs, 
+          pendingJobs, 
+          splits: configData?.splits || [], 
+          drivers: configData?.drivers?.length ? configData.drivers : undefined 
         };
       }
-
-      // Supabase にデータがない場合、かつローカルにデータがあればそれを返す (移行期対応)
-      let fileState = null;
-      try {
-        const response = await fetch(`/data/daily/${dateString}.json?t=${new Date().getTime()}`);
-        if (response.ok && response.headers.get('content-type')?.includes('application/json')) {
-          fileState = await response.json();
-        }
-      } catch (err) {}
-
-      return fileState || parsed || null;
+      
+      if (configData) {
+        return { 
+          jobs: [], 
+          pendingJobs: [], 
+          splits: configData.splits || [], 
+          drivers: configData.drivers?.length ? configData.drivers : undefined 
+        };
+      }
+      
+      return null;
     } catch (e) {
-      console.error(`Supabase daily_jobs 読み込みエラー(${dateString}):`, e);
+      console.error(`Supabase読み込みエラー(${dateString}):`, e);
     }
     return null;
   },
 
-  loadDailyStateSync: (dateString) => {
-    try {
-      const dailyKey = `${STORAGE_KEY}_${dateString}`;
-      const savedData = localStorage.getItem(dailyKey);
-      return savedData ? JSON.parse(savedData) : null;
-    } catch (e) {
-      console.error(`LocalStorage同期読み込みエラー(${dateString}):`, e);
-    }
-    return null;
-  },
 
-  saveDailyState: async (dateString, state) => {
+
+  saveDailyState: async (dateString: string, state: any) => {
     try {
       const { supabase } = await import('../lib/supabase');
-      const dailyKey = `${STORAGE_KEY}_${dateString}`;
-      localStorage.setItem(dailyKey, JSON.stringify(state));
-
-      // ローカルファイルへの同期保存（後方互換）
-      fetch('/api/save-daily', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ date: dateString, state })
-      }).catch(err => console.error('日次データファイル保存エラー:', err));
+      
+      if (state.drivers || state.splits) {
+        const { error: configErr } = await supabase.from('daily_configs').upsert({
+          planned_date: dateString,
+          drivers: state.drivers || [],
+          splits: state.splits || []
+        }, { onConflict: 'planned_date' });
+        if (configErr) console.error('Supabase saveDailyConfigs Error:', configErr);
+      }
 
       const allJobs = [...(state.jobs || []), ...(state.pendingJobs || [])];
       
       if (allJobs.length > 0) {
-        // 既存のレコードを取得してIDをマッピング
         const { data: existing } = await supabase
           .from('daily_jobs')
           .select('id, front_id')
           .eq('planned_date', dateString);
           
-        const existingMap = new Map((existing || []).map(r => [r.front_id || '', r.id]));
+        const existingMap = new Map((existing || []).map((r: any) => [r.front_id || '', r.id]));
         const currentFrontIds = new Set();
+        const inserts: any[] = [];
+        const updates: any[] = [];
 
-        const inserts = [];
-        const updates = [];
-
-        for (let i = 0; i < allJobs.length; i++) {
-          const j = allJobs[i];
-          if (!j.originalCustomerId) continue; // 不正データはスキップ
-          
-          currentFrontIds.add(j.id);
-          
-          const record = {
-            front_id: j.id,
-            collection_point_id: j.originalCustomerId,
+        for (const job of allJobs) {
+          currentFrontIds.add(job.id);
+          const payload = {
             planned_date: dateString,
-            vehicle_id: j.driverId || null,
-            planned_time: j.startTime ? (j.startTime.length === 5 ? `${j.startTime}:00` : (j.startTime.length === 4 ? `0${j.startTime}:00` : j.startTime)) : null,
-            sequence_order: i,
-            status: j.status || 'PLANNED',
-            is_skipped: !!j.is_skipped
+            front_id: job.id,
+            collection_point_id: job.originalCustomerId,
+            vehicle_id: job.driverId || null,
+            planned_time: job.startTime || null,
+            status: job.status || 'PENDING'
           };
 
-          const existingId = existingMap.get(j.id);
-          if (existingId) {
-            updates.push({ ...record, id: existingId });
+          if (existingMap.has(job.id)) {
+            updates.push({ ...payload, id: existingMap.get(job.id) });
           } else {
-            inserts.push(record);
+            inserts.push(payload);
           }
         }
 
-        // フロントエンドから削除されたジョブを論理削除（is_skipped = true, status = 'DELETED' など）
-        const deletedUpdates = [];
-        for (const [frontId, id] of existingMap.entries()) {
-          if (!currentFrontIds.has(frontId)) {
-            deletedUpdates.push({ id, status: 'DELETED', is_skipped: true });
+        if (existing) {
+          for (const row of existing) {
+            if (!currentFrontIds.has(row.front_id)) {
+              updates.push({ id: row.id, status: 'DELETED' });
+            }
           }
         }
-        if (deletedUpdates.length > 0) {
-          updates.push(...deletedUpdates);
-        }
 
-        // 新規登録
         if (inserts.length > 0) {
           const { error: insertErr } = await supabase.from('daily_jobs').insert(inserts);
           if (insertErr) console.error('Supabase saveDailyState INSERT Error:', insertErr);
         }
-
-        // 更新と論理削除 (upsert)
         if (updates.length > 0) {
           const { error: updateErr } = await supabase.from('daily_jobs').upsert(updates, { onConflict: 'id' });
           if (updateErr) console.error('Supabase saveDailyState UPDATE/DELETE Error:', updateErr);
@@ -235,31 +198,21 @@ export const storageService = {
   },
 
   loadState: () => {
-    try {
-      const savedData = localStorage.getItem(STORAGE_KEY);
-      if (savedData) {
-        return JSON.parse(savedData);
-      }
-    } catch (e) {
-      console.error('LocalStorage読み込みエラー:', e);
-    }
+    // Supabase移行完了: loadDailyStateが正規のロード処理を担うため、この関数は不要。
     return null;
   },
 
-  saveState: (state) => {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-    } catch (e) {
-      console.error('LocalStorage保存エラー:', e);
-    }
+  saveState: (_state: any) => {
+    // Supabase移行完了: saveDailyStateが正規の保存処理を担うため、この関数は不要。
+    // 呼び出し元との互換性のためシグネチャのみ維持。
   },
 
   clearState: () => {
-    try {
-      localStorage.removeItem(STORAGE_KEY);
-    } catch (e) {
-      console.error('LocalStorage削除エラー:', e);
-    }
+    // Supabase移行完了: ローカルキャッシュは使用しないため、no-op。
+  },
+
+  clearMasterData: () => {
+    // Supabase移行完了: ローカルキャッシュは使用しないため、no-op。
   },
 
   loadMasterData: async (defaultWorkers = [], defaultVehicles = [], defaultCustomers = [], defaultItems = []) => {
@@ -277,7 +230,7 @@ export const storageService = {
         supabase.from('master_workers').select('*'),
         supabase.from('master_vehicles').select('*'),
         supabase.from('master_collection_points').select(`
-          id, name, address, target_item_codes, time_pattern, preferred_time, vehicle_lock, required_vehicle_id, schedule_rules, holiday_collection, default_duration, note, is_active, is_deleted,
+          id, name, address, target_item_codes, time_pattern, preferred_time, vehicle_lock, required_vehicle_id, schedule_rules, holiday_collection, default_duration, note, is_active,
           master_contractors (
             id, contractor_code, name,
             master_payers (
@@ -298,7 +251,8 @@ export const storageService = {
       const workers = (workersData || []).map(w => ({
         id: w.id,
         name: w.name,
-        kana: w.role_label,
+        kana: w.kana || w.role_label, // Fallback to role_label for older data
+        license_types: w.license_types || [],
         is_active: w.is_active
       }));
 
@@ -327,7 +281,7 @@ export const storageService = {
           defaultDuration: p.default_duration || 30,
           note: p.note || '',
           isInvalid: !p.is_active,
-          isDeleted: !!p.is_deleted
+          isDeleted: false
         };
       });
 
@@ -360,7 +314,7 @@ export const storageService = {
       // 2. Workersの保存
       if (workers && workers.length > 0) {
         const { error } = await supabase.from('master_workers').upsert(
-          workers.map(w => ({ id: w.id, name: w.name, role_label: w.kana, is_active: w.is_active })),
+          workers.map(w => ({ id: w.id, name: w.name, kana: w.kana, license_types: w.license_types, is_active: w.is_active })),
           { onConflict: 'id' }
         );
         if (error) console.error('Supabase Workers save error:', error);
@@ -444,56 +398,95 @@ export const storageService = {
     }
   },
 
-  clearMasterData: () => {
+
+
+  deleteWorker: async (id: string) => {
     try {
-      localStorage.removeItem(MASTER_STORAGE_KEY);
+      const { supabase } = await import('../lib/supabase');
+      const { error } = await supabase.from('master_workers').delete().eq('id', id);
+      if (error) {
+        console.error('Supabase Worker delete error:', error);
+        return { success: false, error };
+      }
+      return { success: true };
     } catch (e) {
-      console.error('LocalStorageマスタ削除エラー:', e);
+      console.error('deleteWorker exception:', e);
+      return { success: false, error: e };
     }
   },
-
+  deleteVehicle: async (id: string) => {
+    try {
+      const { supabase } = await import('../lib/supabase');
+      const { error } = await supabase.from('master_vehicles').delete().eq('id', id);
+      if (error) {
+        console.error('Supabase Vehicle delete error:', error);
+        return { success: false, error };
+      }
+      return { success: true };
+    } catch (e) {
+      console.error('deleteVehicle exception:', e);
+      return { success: false, error: e };
+    }
+  },
+  deleteItem: async (id: string) => {
+    try {
+      const { supabase } = await import('../lib/supabase');
+      const { error } = await supabase.from('master_items').delete().eq('id', id);
+      if (error) {
+        console.error('Supabase Item delete error:', error);
+        return { success: false, error };
+      }
+      return { success: true };
+    } catch (e) {
+      console.error('deleteItem exception:', e);
+      return { success: false, error: e };
+    }
+  },
   clearAll: () => {
     storageService.clearState();
     storageService.clearMasterData();
-    try { localStorage.removeItem(EXCEPTIONS_STORAGE_KEY); } catch (e) {}
+    // Supabase移行完了: ローカルキャッシュは使用しないため、no-op。
   },
 
   loadExceptions: async () => {
     try {
-      // 1. ファイルからのフェッチ
-      let fileExceptions = null;
-      try {
-        const response = await fetch('/data/exceptions.json?t=' + new Date().getTime());
-        if (response.ok && response.headers.get('content-type')?.includes('application/json')) {
-          fileExceptions = await response.json();
-        }
-      } catch (err) {
-        console.warn('ローカルの exceptions.json 読み込みに失敗しました', err);
-      }
-
-      // 2. LocalStorage も確認
-      const savedData = localStorage.getItem(EXCEPTIONS_STORAGE_KEY);
-      let parsed = savedData ? JSON.parse(savedData) : null;
+      const { supabase } = await import('../lib/supabase');
+      const { data, error } = await supabase.from('monthly_exceptions').select('*');
+      if (error) console.error('Supabase loadExceptions Error:', error);
       
-      return fileExceptions || parsed || {};
+      const exceptions: any = {};
+      if (data) {
+        for (const row of data) {
+          exceptions[row.target_date] = {
+            spotJobs: row.spot_jobs || [],
+            cancellations: row.cancellations || [],
+            reschedules: row.reschedules || []
+          };
+        }
+      }
+      return exceptions;
     } catch (e) {
-      console.error('LocalStorage例外データ読み込みエラー:', e);
+      console.error('Supabase例外データ読み込みエラー:', e);
     }
     return {};
   },
 
-  saveExceptions: (exceptions) => {
+  saveExceptions: async (exceptions: any) => {
     try {
-      localStorage.setItem(EXCEPTIONS_STORAGE_KEY, JSON.stringify(exceptions));
+      const { supabase } = await import('../lib/supabase');
+      const upserts = Object.entries(exceptions).map(([date, exp]: [string, any]) => ({
+        target_date: date,
+        spot_jobs: exp.spotJobs || [],
+        cancellations: exp.cancellations || [],
+        reschedules: exp.reschedules || []
+      }));
       
-      // ローカルファイルへの同期保存
-      fetch('/api/save-exceptions', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(exceptions)
-      }).catch(err => console.error('例外データファイル保存エラー:', err));
+      if (upserts.length > 0) {
+        const { error } = await supabase.from('monthly_exceptions').upsert(upserts, { onConflict: 'target_date' });
+        if (error) console.error('Supabase Exceptions save error:', error);
+      }
     } catch (e) {
-      console.error('LocalStorage例外データ保存エラー:', e);
+      console.error('Supabase例外データ保存エラー:', e);
     }
   },
 };

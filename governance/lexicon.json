@@ -12,7 +12,7 @@
     "Locker": "統治違反時の強制停止・記録メカニズム",
     "ADR": "Architecture Decision Record — アーキテクチャ決定の記録文書",
     "Post-Execution Audit": "完了前監査プロトコル — npm run done 実行直前に行う監査チェックリスト（build確認、README同期、DEBT記録）",
-    "Orphan Data": "孤児データ（破損データ） — マスタへの参照が失われ、かつ顧客名等の詳細も不明なバグデータ。AGENTS.md 第9条により自動破棄の対象となる",
+    "Orphan Data": "孤児データ(親データが削除され参照を失った不要データ)",
     "Unregistered Data": "未登録データ（仮案件） — マスタには未登録だが、顧客名等は保持されており人間が判別可能なデータ。孤児には該当せず、システムの警告・選択の対象となる",
     "Multilayer Gateway Pattern": "多層ゲートウェイパターン — PreToolUse/PostToolUse/Closure Gateの3層でツール実行を制御するアーキテクチャ。ADR-008で導入",
     "Shadow Mode": "シャドーモード — フックを観測専用（allow固定）で配置し、イベント発火状況を事実として確定する手法",

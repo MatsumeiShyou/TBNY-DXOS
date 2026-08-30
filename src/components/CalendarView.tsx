@@ -162,16 +162,7 @@ export default function CalendarView({
               const exp = monthlyExceptions[dateStr] || { spotJobs: [], cancellations: [], reschedules: [] };
               const { spotJobs, cancellations, reschedules } = exp;
               
-              const dailyState = storageService.loadDailyStateSync(dateStr);
-              const actualSpotJobs = spotJobs.map(job => {
-                if (dailyState) {
-                   const jobInJobs = (dailyState.jobs || []).find(j => j.id === job.id);
-                   if (jobInJobs) return { ...job, driverId: jobInJobs.driverId };
-                   const jobInPending = (dailyState.pendingJobs || []).find(j => j.id === job.id);
-                   if (jobInPending) return { ...job, driverId: undefined };
-                }
-                return job;
-              });
+              const actualSpotJobs = spotJobs;
 
               return (
                 <div 
