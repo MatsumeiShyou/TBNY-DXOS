@@ -224,7 +224,12 @@ export default function CustomerScheduleGridModal({ customers, masterVehicles = 
                   return (
                     <tr key={customer.id} className="hover:bg-emerald-50/50 transition-colors group">
                       <td className="sticky left-0 z-20 bg-white group-hover:bg-emerald-50/50 py-2 pl-4 pr-3 text-sm font-bold text-gray-900 border-r border-gray-300 shadow-[1px_0_0_0_#e5e7eb] truncate">
-                        {customer.name}
+                        <input 
+                          type="text" 
+                          className="w-full border border-transparent hover:border-gray-300 focus:border-emerald-500 rounded px-1 py-1 text-sm font-bold text-gray-800 outline-none bg-transparent"
+                          value={customer.name}
+                          onChange={e => setLocalCustomers(prev => prev.map(c => c.id === customer.id ? {...c, name: e.target.value} : c))}
+                        />
                         <div className="text-[10px] font-normal text-gray-400 mt-0.5 truncate">{customer.requiredVehicle || '車番未定'}</div>
                       </td>
                       <td className="px-3 py-2 text-center border-r border-gray-200 cursor-pointer" onClick={() => handleToggleSpot(customer.id)}>
