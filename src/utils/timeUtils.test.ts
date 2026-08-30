@@ -1,19 +1,17 @@
+﻿import { describe, it, expect } from 'vitest';
 import { timeToMinutes, minutesToTime, isTimeWarning } from './timeUtils';
 
-// T2ルートの要件（回帰テストの追加）を満たすためのテストファイル
-// 現在の環境には test ランナーがないため、関数での簡易チェックとして実装します。
+describe('timeUtils', () => {
+  it('timeToMinutes converts string to minutes', () => {
+    expect(timeToMinutes('06:30')).toBe(390);
+  });
 
-export function runTests() {
-  const result1 = timeToMinutes('06:30');
-  if (result1 !== 390) throw new Error('timeToMinutes failed');
+  it('minutesToTime converts minutes to string', () => {
+    expect(minutesToTime(390)).toBe('6:30');
+  });
 
-  const result2 = minutesToTime(390);
-  if (result2 !== '6:30') throw new Error('minutesToTime failed');
-
-  // Exact match
-  if (isTimeWarning('09:00', 30, '09:00')) throw new Error('isTimeWarning failed');
-  
-  // > 15 mins off
-  if (!isTimeWarning('09:30', 30, '09:00')) throw new Error('isTimeWarning failed');
-}
-// Checked Step 3 Integration
+  it('isTimeWarning works correctly', () => {
+    expect(isTimeWarning('09:00', 30, '09:00')).toBe(false);
+    expect(isTimeWarning('09:30', 30, '09:00')).toBe(true);
+  });
+});

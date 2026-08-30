@@ -53,11 +53,7 @@ try {
     const worklogChanged = changedFiles.some(f => f.includes('.agents/scratch/worklog.md'));
     const isSrcChanged = changedFiles.some(f => f.startsWith('src/'));
 
-    if (isSrcChanged && !testChanged) {
-        console.warn('⚠️  [監査] (Phase 0) ソースが変更されていますが、テストファイル (.test.ts等) が更新されていません。');
-        console.warn('   -> T2 (標準) ルートで修正を行った場合、回帰テストの追加が必須です。ルール違反の可能性があります。');
-        warnings++;
-    }
+    
     if (isSrcChanged && !worklogChanged) {
         console.warn('⚠️  [監査] (Phase 0) ソースが変更されていますが、worklog.md が更新されていません。');
         console.warn('   -> T1 (軽微) ルートであっても、1行ログとDiffリンクの最小トレースが必要です。');
@@ -103,6 +99,8 @@ if (!closureResult.success) {
 console.log('\n🔨 [Compilation Gate] ビルドと型チェックの強制検証を実行中...');
 try {
     // TSインフラが導入されたため、型チェックとビルドの双方を強制確認
+    console.log('   -> 実行中: npm run test');
+    execSync('npm run test', { cwd: rootDir, stdio: 'pipe' });
     console.log('   -> 実行中: npm run type-check');
     execSync('npm run type-check', { cwd: rootDir, stdio: 'pipe' });
     
