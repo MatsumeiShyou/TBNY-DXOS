@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { X, Plus, Edit3, Trash2, UserCheck, UserX, Shield } from 'lucide-react';
 import { MasterWorker } from '../types';
+import { toHalfWidthKatakana } from '../utils/textUtils';
 
 const LICENSE_OPTIONS = ['普通', '中型', '大型'];
 
@@ -171,7 +172,7 @@ export default function WorkerManagementModal({ workers, onSave, onDelete, onClo
                 <div className="flex-1">
                   <label className="block text-[10px] text-gray-500 mb-1">かな（ソート用）</label>
                   <input 
-                    type="text" value={formKana} onChange={(e) => setFormKana(e.target.value)}
+                    type="text" value={formKana} onChange={(e) => setFormKana(toHalfWidthKatakana(e.target.value))}
                     placeholder="例: たなか たろう"
                     className="w-full border rounded px-2 py-1.5 text-sm focus:ring-2 focus:ring-blue-500 outline-none"
                   />

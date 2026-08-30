@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { X, Search, CheckCircle, Minus, Filter, Save } from 'lucide-react';
 import type { Customer } from '../types';
+import { toHalfWidthKatakana } from '../utils/textUtils';
 
 const DAYS = [
   { key: 'mon', label: '月' },
@@ -369,7 +370,7 @@ export default function CustomerScheduleGridModal({ customers, masterVehicles = 
                           type="text" 
                           className="w-full border border-transparent hover:border-gray-300 focus:border-emerald-500 rounded px-2 py-1 text-xs outline-none"
                           value={customer.kana || ''}
-                          onChange={e => setLocalCustomers(prev => prev.map(c => c.id === customer.id ? {...c, kana: e.target.value} : c))}
+                          onChange={e => setLocalCustomers(prev => prev.map(c => c.id === customer.id ? {...c, kana: toHalfWidthKatakana(e.target.value)} : c))}
                         />
                       </td>
                       <td className="px-2 py-1 border-r border-gray-200">

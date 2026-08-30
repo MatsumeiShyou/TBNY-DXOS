@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, Search, RefreshCw } from 'lucide-react';
 import { Customer } from '../types';
+import { toHalfWidthKatakana } from '../utils/textUtils';
 
 // 日付フォーマット YYYY-MM-DD
 const formatDate = (date: Date) => {

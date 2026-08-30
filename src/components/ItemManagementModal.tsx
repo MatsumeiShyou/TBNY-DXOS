@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { X, Trash2, Plus, Edit2, Check, AlertCircle } from 'lucide-react';
+import { toHalfWidthKatakana } from '../utils/textUtils';
 
 export interface Item {
   id: string;
@@ -117,7 +118,7 @@ export default function ItemManagementModal({ items = [], onSave, onDelete, onCl
                       placeholder="フリガナ (例: だんぼーる)"
                       className="w-full sm:w-1/2 border rounded p-2"
                       value={addForm.kana}
-                      onChange={e => setAddForm({...addForm, kana: e.target.value})}
+                      onChange={e => setAddForm({...addForm, kana: toHalfWidthKatakana(e.target.value)})}
                     />
                   </div>
                   <div className="flex gap-2">
@@ -194,7 +195,7 @@ export default function ItemManagementModal({ items = [], onSave, onDelete, onCl
                                 placeholder="フリガナ"
                                 className="w-full sm:w-1/2 border rounded p-2 bg-blue-50"
                                 value={editForm.kana}
-                                onChange={e => setEditForm({...editForm, kana: e.target.value})}
+                                onChange={e => setEditForm({...editForm, kana: toHalfWidthKatakana(e.target.value)})}
                               />
                             </div>
                             <div className="flex gap-2">
