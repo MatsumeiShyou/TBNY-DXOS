@@ -870,6 +870,28 @@ export default function App() {
     return pendingJobs;
   }, [previewingTemplate, originalBoardState, pendingJobs]);
 
+  
+  if (isCustomerModalOpen) {
+    return (
+      <CustomerManagementModal 
+        customers={masterCustomers}
+        masterVehicles={masterVehicles}
+        masterItems={masterItems}
+        initialData={customerModalInitialData}
+        onSave={handleSaveCustomer}
+        onClose={() => {
+          setCustomerModalInitialData(null);
+          window.location.hash = ''; // 戻る
+        }}
+        onOpenGridMode={() => {
+          setCustomerModalInitialData(null);
+          window.location.hash = ''; 
+          setIsCustomerGridModalOpen(true);
+        }}
+      />
+    );
+  }
+
   return (
     <div className={`flex flex-col h-screen ${previewingTemplate ? 'bg-purple-50 border-4 border-purple-500' : 'bg-white'} text-sm font-sans text-gray-800 select-none transition-colors duration-300`}>
       
@@ -1162,6 +1184,7 @@ export default function App() {
       {isCustomerGridModalOpen && (
         <CustomerScheduleGridModal
           customers={masterCustomers}
+          masterVehicles={masterVehicles}
           onSave={(updated) => {
             handleSaveBulkCustomers(updated);
             setIsCustomerGridModalOpen(false);
