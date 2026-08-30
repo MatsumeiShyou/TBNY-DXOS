@@ -355,7 +355,6 @@ export default function CustomerScheduleGridModal({ customers, masterVehicles = 
                     <th className="px-3 py-3 text-left text-xs font-semibold text-gray-700 border-r border-gray-300 w-32">エリア</th>
                     <th className="px-3 py-3 text-left text-xs font-semibold text-gray-700 border-r border-gray-300 w-40">必須車両</th>
                     <th className="px-3 py-3 text-center text-xs font-semibold text-gray-700 border-r border-gray-300 w-24">所要時間(分)</th>
-                    <th className="px-3 py-3 text-center text-xs font-semibold text-gray-700 border-r border-gray-300 w-24">祝日回収</th>
                     <th className="px-3 py-3 text-center text-xs font-semibold text-gray-700 w-24">停止中</th>
                   </tr>
                 </thead>
@@ -399,14 +398,6 @@ export default function CustomerScheduleGridModal({ customers, masterVehicles = 
                           className="w-full border border-transparent hover:border-gray-300 focus:border-emerald-500 rounded px-2 py-1 text-xs outline-none text-center"
                           value={customer.defaultDuration || 0}
                           onChange={e => setLocalCustomers(prev => prev.map(c => c.id === customer.id ? {...c, defaultDuration: parseInt(e.target.value) || 0} : c))}
-                        />
-                      </td>
-                      <td className="px-2 py-1 border-r border-gray-200 text-center">
-                        <input 
-                          type="checkbox" 
-                          className="rounded text-emerald-500 focus:ring-emerald-500 cursor-pointer"
-                          checked={!!customer.holidayCollection}
-                          onChange={e => setLocalCustomers(prev => prev.map(c => c.id === customer.id ? {...c, holidayCollection: e.target.checked} : c))}
                         />
                       </td>
                       <td className="px-2 py-1 text-center">
