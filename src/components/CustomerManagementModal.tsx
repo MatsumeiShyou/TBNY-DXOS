@@ -294,16 +294,17 @@ export default function CustomerManagementModal({ customers, masterVehicles, mas
   };
 
   return (
-    <>
-      <div className="fixed inset-0 bg-black/40 z-40 animate-in fade-in duration-300" onClick={onClose}></div>
-      <div className="@container fixed top-0 right-0 h-screen w-full max-w-5xl bg-white shadow-2xl z-50 flex flex-col @4xl:flex-row overflow-hidden animate-in slide-in-from-right duration-300 border-l border-gray-200">
-        
-        {/* 左カラム: リスト */}
-        <div className="w-full @4xl:w-[280px] shrink-0 border-b @4xl:border-b-0 @4xl:border-r border-gray-200 bg-gray-50 flex flex-col h-[40vh] @4xl:h-full">
-          <div className="px-4 py-3.5 border-b border-gray-200 bg-gray-100">
-            <h2 className="font-bold text-gray-800 flex items-center gap-2"><Building size={16} className="text-emerald-600" /> 顧客マスタ</h2>
-          </div>
-          <div className="px-3 pt-3 pb-2 border-b border-gray-200 bg-white">
+    <div className="flex flex-row w-full h-screen bg-white overflow-hidden">
+      
+      {/* 左カラム: リスト */}
+      <div className="w-[320px] shrink-0 border-r border-gray-200 bg-gray-50 flex flex-col h-full shadow-[2px_0_8px_-3px_rgba(0,0,0,0.1)] z-10">
+        <div className="px-4 py-3.5 border-b border-gray-200 bg-gray-100 flex items-center justify-between">
+          <h2 className="font-bold text-gray-800 flex items-center gap-2"><Building size={16} className="text-emerald-600" /> 顧客マスタ</h2>
+          <button type="button" onClick={onClose} className="text-gray-600 hover:text-gray-900 text-[11px] font-bold flex items-center gap-1 bg-white px-2.5 py-1 rounded border border-gray-300 shadow-sm transition-colors">
+            ← 戻る
+          </button>
+        </div>
+        <div className="px-3 pt-3 pb-2 border-b border-gray-200 bg-white">
             <div className="relative">
               <input 
                 type="text" 
@@ -379,23 +380,23 @@ export default function CustomerManagementModal({ customers, masterVehicles, mas
         </div>
 
         {/* 右カラム: フォーム */}
-        <div className="flex-1 flex flex-col h-[60vh] @4xl:h-full bg-white relative">
+        <div className="flex-1 flex flex-col h-full bg-white relative">
           {!selectedCustomerId ? (
-            <div className="flex-1 flex flex-col items-center justify-center text-gray-300 gap-3">
+            <div className="flex-1 flex flex-col items-center justify-center text-gray-400 gap-4 bg-gray-50/50">
               <Building size={44} className="opacity-20" />
-              <p className="text-sm">左のリストから顧客を選択するか、新規追加してください</p>
+              <p className="text-sm font-bold">左のリストから顧客を選択するか、新規追加してください</p>
             </div>
           ) : (
             <form action={formAction} className="flex flex-col h-full overflow-hidden">
               {/* Header & Tabs */}
               <div className="px-6 pt-5 pb-0 border-b border-gray-200">
-                <div className="flex justify-between items-start mb-4">
-                  <h3 className="text-lg font-bold text-gray-800">
-                    {selectedCustomerId === 'new' ? '新規顧客の登録' : '顧客情報の編集'}
-                  </h3>
-                  <button type="button" onClick={onClose} className="text-gray-400 hover:text-gray-600"><X size={20} /></button>
-                </div>
-                <div className="flex gap-4">
+                <div className="max-w-4xl mx-auto w-full">
+                  <div className="flex justify-between items-start mb-4">
+                    <h3 className="text-lg font-bold text-gray-800">
+                      {selectedCustomerId === 'new' ? '新規顧客の登録' : '顧客情報の編集'}
+                    </h3>
+                  </div>
+                  <div className="flex gap-4">
                   <button 
                     type="button"
                     onClick={() => setActiveTab('basic')}
@@ -412,9 +413,11 @@ export default function CustomerManagementModal({ customers, masterVehicles, mas
                   </button>
                 </div>
               </div>
+              </div>
 
               {/* Form Content */}
-              <div className="flex-1 overflow-y-auto p-6 bg-gray-50/30">
+              <div className="flex-1 overflow-y-auto bg-gray-50/30">
+                <div className="max-w-4xl mx-auto w-full p-6">
                 
                 {activeTab === 'basic' && (
                   <div className="space-y-4 animate-in fade-in slide-in-from-right-4 duration-200">
@@ -665,16 +668,18 @@ export default function CustomerManagementModal({ customers, masterVehicles, mas
                   </div>
                 )}
               </div>
+            </div>
 
               {/* Footer Actions */}
-              <div className="p-4 border-t border-gray-200 bg-gray-50 flex justify-between items-center">
-                <div className="flex items-center gap-6">
-                  {selectedCustomerId !== 'new' && (
-                    <>
+              <div className="p-4 border-t border-gray-200 bg-gray-50">
+                <div className="max-w-4xl mx-auto w-full flex justify-between items-center">
+                  <div className="flex items-center gap-6">
+                    {selectedCustomerId !== 'new' && (
+                      <>
                       <button 
                         type="button"
                         onClick={() => {
-                          if(window.confirm('この顧客をアーカイブ（論理削除）しますか？\\n※紐づく配車データは安全のために保持されます。')) {
+                          if(window.confirm('この顧客をアーカイブ（論理削除）しますか？\n※紐づく配車データは安全のために保持されます。')) {
                             const deletedCustomer = { ...formData, isDeleted: true, syncStatus: 'active' };
                             startTransition(() => {
                               setOptimisticCustomer({ ...deletedCustomer, syncStatus: 'saving' });
@@ -720,11 +725,11 @@ export default function CustomerManagementModal({ customers, masterVehicles, mas
                     {isPending ? '保存中...' : (saveStatus === 'saved' ? <><Check size={16} /> 保存完了</> : '保存する')}
                   </button>
                 </div>
+                </div>
               </div>
             </form>
           )}
         </div>
       </div>
-    </>
   );
 }

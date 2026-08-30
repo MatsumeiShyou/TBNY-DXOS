@@ -128,6 +128,25 @@ export default function App() {
   const [customerModalInitialData, setCustomerModalInitialData] = useState(null);
   const [isCustomerGridModalOpen, setIsCustomerGridModalOpen] = useState(false);
   const [isItemModalOpen, setIsItemModalOpen] = useState(false);
+
+  // URLハッシュによるルーティング管理
+  useEffect(() => {
+    const handleHashChange = () => {
+      const hash = window.location.hash;
+      if (hash === '#customers') {
+        setIsCustomerModalOpen(true);
+      } else {
+        setIsCustomerModalOpen(false);
+      }
+    };
+    
+    // 初期ロード時にも判定
+    handleHashChange();
+    
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
+
   
   // テンプレートモーダル用State
   const [isTemplateModalOpen, setIsTemplateModalOpen] = useState(false);
@@ -1069,7 +1088,7 @@ export default function App() {
           onOpenCourseManagement={() => setIsCourseModalOpen(true)}
           onOpenWorkerManagement={() => setIsWorkerModalOpen(true)}
           onOpenVehicleManagement={() => setIsVehicleModalOpen(true)}
-          onOpenCustomerManagement={() => setIsCustomerModalOpen(true)}
+          onOpenCustomerManagement={() => { window.location.hash = "customers"; }}
           onOpenItemManagement={() => setIsItemModalOpen(true)}
         />
 
@@ -1139,29 +1158,7 @@ export default function App() {
           onClose={() => setIsItemModalOpen(false)}
         />
       )}
-        {isCustomerModalOpen && (
-          <CustomerManagementModal 
-            customers={masterCustomers}
-            masterVehicles={masterVehicles}
-            masterItems={masterItems}
-            initialData={customerModalInitialData}
-            onSave={(newCustomer) => {
-              handleSaveCustomer(newCustomer);
-              // ここでjobのoriginalCustomerIdを置き換える等も可能だが、
-              // ID自動生成等の兼ね合いもあるため、まずは登録完了してプレビューを適用後に
-              // 正規のマスタからアサインし直す運用でもよい。
-            }}
-            onClose={() => {
-              setIsCustomerModalOpen(false);
-              setCustomerModalInitialData(null);
-            }}
-            onOpenGridMode={() => {
-              setIsCustomerModalOpen(false);
-              setCustomerModalInitialData(null);
-              setIsCustomerGridModalOpen(true);
-            }}
-          />
-        )}
+        
       {isCustomerGridModalOpen && (
         <CustomerScheduleGridModal
           customers={masterCustomers}
