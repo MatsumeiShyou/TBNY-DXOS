@@ -62,6 +62,10 @@ interface CustomerManagementModalProps {
   initialData?: any;
 }
 
+function generateId() {
+  return (typeof crypto !== 'undefined' && crypto.randomUUID) ? crypto.randomUUID() : 'temp-' + Date.now();
+}
+
 export default function CustomerManagementModal({ customers, masterVehicles, masterItems = [], onSave, onClose, onOpenGridMode, initialData }: CustomerManagementModalProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [showDeleted, setShowDeleted] = useState(false);
@@ -203,20 +207,26 @@ export default function CustomerManagementModal({ customers, masterVehicles, mas
 
   const handleCreateNew = () => {
     setSelectedCustomerId('new');
-    setFormData({ ...initialFormState, id: crypto.randomUUID() });
-    setActiveTab('basic');
+    setIsEditing(true);
     setValidationErrors({});
+    setFormData({
+      ...initialFormState,
+      id: generateId(),
+      scheduleRules: { mon: [], tue: [], wed: [], thu: [], fri: [], sat: [], sun: [] }
+    });
+    setActiveTab('basic');
   };
 
   const handleDuplicate = () => {
     setSelectedCustomerId('new');
+    setIsEditing(true);
+    setValidationErrors({});
     setFormData(prev => ({
       ...prev,
-      id: crypto.randomUUID(),
+      id: generateId(),
       name: prev.name ? `${prev.name} (コピー)` : ''
     }));
     setActiveTab('basic');
-    setValidationErrors({});
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -345,7 +355,7 @@ export default function CustomerManagementModal({ customers, masterVehicles, mas
                 key={customer.id}
                 onClick={() => handleSelectCustomer(customer)}
                 className={`px-3 py-2.5 cursor-pointer transition-colors border-l-2 border-b border-b-gray-100 ${
-                  selectedCustomerId === customer.id
+                  (selectedCustomerId === customer.id || (selectedCustomerId === 'new' && formData.id === customer.id))
                     ? 'bg-emerald-50 border-l-emerald-500'
                     : 'border-l-transparent hover:bg-emerald-50/50'
                 }`}
@@ -663,14 +673,19 @@ export default function CustomerManagementModal({ customers, masterVehicles, mas
                     <>
                       <button 
                         type="button"
-                        onClick={async () => {
-                          if(window.confirm('この顧客をアーカイブ（論理削除）しますか？')) {
-                            const deletedCustomer = { ...formData, isDeleted: true };
+                        onClick={() => {
+                          if(window.confirm('この顧客をアーカイブ（論理削除）しますか？\\n※紐づく配車データは安全のために保持されます。')) {
+                            const deletedCustomer = { ...formData, isDeleted: true, syncStatus: 'active' };
                             startTransition(() => {
                               setOptimisticCustomer({ ...deletedCustomer, syncStatus: 'saving' });
                             });
-                            await onSave(deletedCustomer);
-                            setSelectedCustomerId(null);
+                            Promise.resolve(onSave(deletedCustomer)).then(() => {
+                              setSelectedCustomerId(null);
+                            }).catch(() => {
+                              startTransition(() => {
+                                setOptimisticCustomer({ ...deletedCustomer, syncStatus: 'error', isDeleted: false, syncError: '削除に失敗しました' });
+                              });
+                            });
                           }
                         }}
                         className="text-red-600 hover:text-red-800 text-sm font-bold flex items-center gap-1"
