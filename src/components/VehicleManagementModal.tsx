@@ -54,7 +54,7 @@ export default function VehicleManagementModal({ vehicles, onSave, onDelete, onC
     if (!formName.trim()) return;
 
     const vehicleData: MasterVehicle = {
-      id: editingId || `v_${Date.now()}`,
+      id: editingId || crypto.randomUUID(),
       name: formName.trim(),
       vehicle_type: formType,
       max_capacity_kg: formCapacity ? parseInt(formCapacity, 10) : null,

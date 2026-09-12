@@ -65,6 +65,7 @@ erDiagram
     master_collection_points {
         uuid id PK
         text name
+        text kana
         text address
         jsonb schedule_rules
         boolean is_active

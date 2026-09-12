@@ -230,7 +230,7 @@ export const storageService = {
         supabase.from('master_workers').select('*'),
         supabase.from('master_vehicles').select('*'),
         supabase.from('master_collection_points').select(`
-          id, name, address, target_item_codes, time_pattern, preferred_time, vehicle_lock, required_vehicle_id, schedule_rules, holiday_collection, default_duration, note, is_active,
+          id, name, kana, address, target_item_codes, time_pattern, preferred_time, vehicle_lock, required_vehicle_id, schedule_rules, holiday_collection, default_duration, note, is_active, is_deleted,
           master_contractors (
             id, contractor_code, name,
             master_payers (
@@ -272,6 +272,7 @@ export const storageService = {
           payeeCode: payer.payee_code || '',
           payeeName: payer.name || '',
           name: p.name,
+          kana: p.kana || '',
           address: p.address || '',
           items: p.target_item_codes || [],
           preferredTime: p.preferred_time || '',
@@ -281,7 +282,7 @@ export const storageService = {
           defaultDuration: p.default_duration || 30,
           note: p.note || '',
           isInvalid: !p.is_active,
-          isDeleted: false
+          isDeleted: !!p.is_deleted
         };
       });
 
@@ -374,6 +375,7 @@ export const storageService = {
         const pointsToUpsert = customers.map(c => ({
           id: c.id.startsWith('c_') ? undefined : c.id, // 新規の場合はUUID自動生成
           name: c.name,
+          kana: c.kana,
           address: c.address,
           target_item_codes: c.items,
           time_pattern: 'FREE',

@@ -104,6 +104,9 @@ try {
     console.log('   -> 実行中: npm run type-check');
     execSync('npm run type-check', { cwd: rootDir, stdio: 'pipe' });
     
+    console.log('   -> 実行中: npm run lint (--quiet)');
+    execSync('npm run lint -- --quiet', { cwd: rootDir, stdio: 'pipe' });
+    
     console.log('   -> 実行中: npm run build');
     execSync('npm run build', { cwd: rootDir, stdio: 'pipe' });
     

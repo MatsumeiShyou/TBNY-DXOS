@@ -61,7 +61,7 @@ export default function ItemManagementModal({ items = [], onSave, onDelete, onCl
       return;
     }
     const newItem: Item = {
-      id: `item_${Date.now()}`,
+      id: crypto.randomUUID(),
       ...addForm
     };
     onSave([...items, newItem]);

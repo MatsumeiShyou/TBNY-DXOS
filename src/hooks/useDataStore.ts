@@ -423,9 +423,51 @@ export function useDataStore(dateStr: string | null | undefined, isPreviewMode: 
     });
   };
 
-  const deleteCustomer = async (id: string) => {
-    setMasterCustomers(prev => prev.map(c => c.id === id ? { ...c, isDeleted: true } : c));
-    if (clearHistory) clearHistory();
+  const deleteCustomer = async (id: string): Promise<'hard' | 'soft' | 'error'> => {
+    try {
+      // UUID形式かチェック (Postgresエラー 22P02 回避用)
+      const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(id);
+      
+      if (!isUUID) {
+        // 未保存またはローカル専用IDのため、DBには存在しない -> 即時物理削除
+        setMasterCustomers(prev => prev.filter(c => c.id !== id));
+        if (clearHistory) clearHistory();
+        return 'hard';
+      }
+
+      const { supabase } = await import('../lib/supabase');
+      // 依存チェック (過去の配車実績があるか)
+      const { count, error } = await supabase
+        .from('daily_jobs')
+        .select('*', { count: 'exact', head: true })
+        .eq('collection_point_id', id);
+
+      if (error) throw error;
+
+      if (count === 0) {
+        // 過去実績なし: 物理削除
+        const { error: delErr } = await supabase
+          .from('master_collection_points')
+          .delete()
+          .eq('id', id);
+        if (delErr) throw delErr;
+
+        setMasterCustomers(prev => prev.filter(c => c.id !== id));
+        if (clearHistory) clearHistory();
+        return 'hard';
+      } else {
+        // 過去実績あり: 論理削除
+        setMasterCustomers(prev => prev.map(c => c.id === id ? { ...c, isDeleted: true } : c));
+        if (clearHistory) clearHistory();
+        return 'soft';
+      }
+    } catch (e) {
+      console.error('Customer deletion error:', e);
+      // オフライン時などは安全のため論理削除にフォールバック
+      setMasterCustomers(prev => prev.map(c => c.id === id ? { ...c, isDeleted: true } : c));
+      if (clearHistory) clearHistory();
+      return 'error';
+    }
   };
 
   const saveWorker = async (workerData: MasterWorker, isEdit: boolean) => {

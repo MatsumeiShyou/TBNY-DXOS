@@ -7,6 +7,41 @@ import { parsePreferredTime } from '../utils/timeUtils';
 import { toHalfWidthKatakana } from '../utils/textUtils';
 import SearchableMultiSelect from './SearchableMultiSelect';
 
+const TIME_OPTIONS = (() => {
+  const options = [];
+  for (let h = 0; h < 24; h++) {
+    for (let m = 0; m < 60; m += 15) {
+      options.push(`${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}`);
+    }
+  }
+  return options;
+})();
+
+const TimeSelect = ({
+  value,
+  onChange,
+  className = '',
+}: {
+  value: string;
+  onChange: (val: string) => void;
+  className?: string;
+}) => {
+  return (
+    <select
+      value={value || ''}
+      onChange={(e) => onChange(e.target.value)}
+      className={`border rounded px-2 py-1.5 text-sm bg-white focus:outline-none focus:border-blue-500 ${className}`}
+    >
+      <option value="" disabled>--:--</option>
+      {TIME_OPTIONS.map((time) => (
+        <option key={time} value={time}>
+          {time}
+        </option>
+      ))}
+    </select>
+  );
+};
+
 const DAYS = [
   { key: 'mon', label: '月' },
   { key: 'tue', label: '火' },
@@ -57,6 +92,7 @@ interface CustomerManagementModalProps {
   masterVehicles: MasterVehicle[];
   masterItems?: Item[];
   onSave: (customer: any) => Promise<void> | void;
+  onDelete?: (id: string) => Promise<'hard' | 'soft' | 'error'>;
   onClose: () => void;
   onOpenGridMode?: () => void;
   initialData?: any;
@@ -66,7 +102,7 @@ function generateId() {
   return (typeof crypto !== 'undefined' && crypto.randomUUID) ? crypto.randomUUID() : 'temp-' + Date.now();
 }
 
-export default function CustomerManagementModal({ customers, masterVehicles, masterItems = [], onSave, onClose, onOpenGridMode, initialData }: CustomerManagementModalProps) {
+export default function CustomerManagementModal({ customers, masterVehicles, masterItems = [], onSave, onDelete, onClose, onOpenGridMode, initialData }: CustomerManagementModalProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [showDeleted, setShowDeleted] = useState(false);
   const [selectedCustomerId, setSelectedCustomerId] = useState<string | null>(null);
@@ -349,8 +385,24 @@ export default function CustomerManagementModal({ customers, masterVehicles, mas
                 </button>
               )}
             </div>
+            <button
+              onClick={() => {
+                setShowDeleted(!showDeleted);
+                setSelectedCustomerId(null);
+              }}
+              className={`mt-2 w-full flex items-center justify-center gap-1 py-1 text-xs font-bold rounded transition-colors ${
+                showDeleted ? 'bg-gray-700 text-white' : 'text-gray-500 hover:bg-gray-100'
+              }`}
+            >
+              <Trash2 size={13} /> {showDeleted ? 'ゴミ箱を閉じる' : 'ゴミ箱を表示'}
+            </button>
           </div>
-          <div className="flex-1 overflow-y-auto">
+          <div className={`flex-1 overflow-y-auto ${showDeleted ? 'bg-gray-100' : ''}`}>
+            {showDeleted && (
+              <div className="bg-gray-800 text-white text-xs font-bold text-center py-1 flex items-center justify-center gap-1">
+                <Trash2 size={12} /> アーカイブ済み
+              </div>
+            )}
             {filteredCustomers.map(customer => (
               <div
                 key={customer.id}
@@ -608,15 +660,15 @@ export default function CustomerManagementModal({ customers, masterVehicles, mas
                               const parsed = parsePreferredTime(formData.preferredTime);
                               if (parsed.type === 'between') return (
                                 <div className="flex items-center gap-1">
-                                  <input type="time" value={parsed.start || ''} onChange={e => handlePrefTimeChange('start', e.target.value)} className="border rounded px-2 py-1.5 text-sm w-[110px]" />
+                                  <TimeSelect value={parsed.start || ''} onChange={val => handlePrefTimeChange('start', val)} className="w-[110px]" />
                                   <span className="text-gray-400 text-sm">〜</span>
-                                  <input type="time" value={parsed.end || ''} onChange={e => handlePrefTimeChange('end', e.target.value)} className="border rounded px-2 py-1.5 text-sm w-[110px]" />
+                                  <TimeSelect value={parsed.end || ''} onChange={val => handlePrefTimeChange('end', val)} className="w-[110px]" />
                                 </div>
                               );
                               if (parsed.type === 'before' || parsed.type === 'after' || parsed.type === 'exact') return (
                                 <div className="flex items-center gap-1">
                                   {parsed.type === 'before' && <span className="text-sm text-gray-500">遅くとも</span>}
-                                  <input type="time" value={parsed.time || ''} onChange={e => handlePrefTimeChange('time', e.target.value)} className="border rounded px-2 py-1.5 text-sm w-[110px]" />
+                                  <TimeSelect value={parsed.time || ''} onChange={val => handlePrefTimeChange('time', val)} className="w-[110px]" />
                                   {parsed.type === 'before' && <span className="text-sm text-gray-500">までに</span>}
                                   {parsed.type === 'after' && <span className="text-sm text-gray-500">以降</span>}
                                   {parsed.type === 'exact' && <span className="text-sm text-gray-500">頃</span>}
@@ -678,33 +730,51 @@ export default function CustomerManagementModal({ customers, masterVehicles, mas
                       <>
                       <button 
                         type="button"
-                        onClick={() => {
-                          if(window.confirm('この顧客をアーカイブ（論理削除）しますか？\n※紐づく配車データは安全のために保持されます。')) {
-                            const deletedCustomer = { ...formData, isDeleted: true, syncStatus: 'active' };
+                        onClick={async () => {
+                          const confirmMsg = formData.isDeleted 
+                            ? 'この顧客を完全に削除しますか？\n※過去に配車実績がある場合は削除できません。'
+                            : 'この顧客を削除しますか？\n※過去の配車実績がある場合は、安全のため自動的にアーカイブ（論理削除）されます。';
+                          
+                          if(window.confirm(confirmMsg)) {
+                            const deletedCustomer = { ...formData, isDeleted: true, syncStatus: 'saving' };
                             startTransition(() => {
-                              setOptimisticCustomer({ ...deletedCustomer, syncStatus: 'saving' });
+                              setOptimisticCustomer(deletedCustomer as any);
                             });
-                            Promise.resolve(onSave(deletedCustomer)).then(() => {
+                            try {
+                              if (onDelete) {
+                                const result = await onDelete(formData.id);
+                                if (result === 'hard') {
+                                  window.alert('完全に削除しました。');
+                                } else if (result === 'soft') {
+                                  window.alert(formData.isDeleted ? '過去に配車実績があるため完全削除はできません。' : '過去に配車実績があるため完全削除はできません。代わりにアーカイブしました。');
+                                } else {
+                                  window.alert('通信エラーのため削除できませんでした。');
+                                }
+                              } else {
+                                await Promise.resolve(onSave({ ...formData, isDeleted: true }));
+                              }
                               setSelectedCustomerId(null);
-                            }).catch(() => {
+                            } catch (e) {
                               startTransition(() => {
-                                setOptimisticCustomer({ ...deletedCustomer, syncStatus: 'error', isDeleted: false, syncError: '削除に失敗しました' });
+                                setOptimisticCustomer({ ...formData, syncStatus: 'error', syncError: '削除に失敗しました' } as any);
                               });
-                            });
+                            }
                           }
                         }}
                         className="text-red-600 hover:text-red-800 text-sm font-bold flex items-center gap-1"
                       >
-                        <Trash2 size={16} /> 削除
+                        <Trash2 size={16} /> {formData.isDeleted ? '完全に削除' : '削除'}
                       </button>
 
-                      <button 
-                        type="button"
-                        onClick={handleDuplicate}
-                        className="text-blue-600 hover:text-blue-800 text-sm font-bold flex items-center gap-1"
-                      >
-                        <Copy size={16} /> コピーを作成
-                      </button>
+                      {!formData.isDeleted && (
+                        <button 
+                          type="button"
+                          onClick={handleDuplicate}
+                          className="text-blue-600 hover:text-blue-800 text-sm font-bold flex items-center gap-1"
+                        >
+                          <Copy size={16} /> コピーを作成
+                        </button>
+                      )}
                     </>
                   )}
                 </div>
@@ -717,13 +787,39 @@ export default function CustomerManagementModal({ customers, masterVehicles, mas
                   <button type="button" onClick={onClose} className="px-4 py-2 border border-gray-300 rounded text-sm text-gray-600 hover:bg-gray-100 font-bold bg-white shadow-sm">
                     閉じる
                   </button>
-                  <button 
-                    type="submit"
-                    disabled={isPending}
-                    className={`px-5 py-2 rounded text-sm font-bold shadow-sm flex items-center gap-2 transition-all ${(saveStatus === 'saved' && !isPending) ? 'bg-emerald-700 text-white' : 'bg-emerald-600 text-white hover:bg-emerald-700'} ${isPending ? 'opacity-70 cursor-not-allowed' : ''}`}
-                  >
-                    {isPending ? '保存中...' : (saveStatus === 'saved' ? <><Check size={16} /> 保存完了</> : '保存する')}
-                  </button>
+                  
+                  {formData.isDeleted ? (
+                    <button 
+                      type="button"
+                      disabled={isPending}
+                      onClick={async () => {
+                        const restoredCustomer = { ...formData, isDeleted: false, syncStatus: 'saving' };
+                        startTransition(() => {
+                          setOptimisticCustomer(restoredCustomer as any);
+                        });
+                        try {
+                          await Promise.resolve(onSave(restoredCustomer));
+                          window.alert('復元しました。');
+                          setSelectedCustomerId(null);
+                        } catch (e) {
+                          startTransition(() => {
+                            setOptimisticCustomer({ ...formData, syncStatus: 'error', syncError: '復元に失敗しました' } as any);
+                          });
+                        }
+                      }}
+                      className="px-5 py-2 rounded text-sm font-bold shadow-sm flex items-center gap-2 transition-all bg-emerald-600 text-white hover:bg-emerald-700"
+                    >
+                      {isPending ? '復元中...' : '復元する'}
+                    </button>
+                  ) : (
+                    <button 
+                      type="submit"
+                      disabled={isPending}
+                      className={`px-5 py-2 rounded text-sm font-bold shadow-sm flex items-center gap-2 transition-all ${(saveStatus === 'saved' && !isPending) ? 'bg-emerald-700 text-white' : 'bg-emerald-600 text-white hover:bg-emerald-700'} ${isPending ? 'opacity-70 cursor-not-allowed' : ''}`}
+                    >
+                      {isPending ? '保存中...' : (saveStatus === 'saved' ? <><Check size={16} /> 保存完了</> : '保存する')}
+                    </button>
+                  )}
                 </div>
                 </div>
               </div>

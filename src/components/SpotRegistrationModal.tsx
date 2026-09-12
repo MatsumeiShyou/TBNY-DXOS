@@ -62,6 +62,14 @@ export default function SpotRegistrationModal({ isOpen, onClose, onSave, targetD
     }
   }, [isOpen, targetDate]);
 
+  // 12ヶ月後の日付を計算 (inputのmax属性用)
+  const maxDateStr = React.useMemo(() => {
+    if(!targetDate) return '';
+    const d = new Date(targetDate);
+    d.setMonth(d.getMonth() + 12);
+    return formatDate(d);
+  }, [targetDate]);
+
   if (!isOpen) return null;
 
   const filteredCustomers = masterCustomers.filter(c => 
@@ -172,14 +180,6 @@ export default function SpotRegistrationModal({ isOpen, onClose, onSave, targetD
     onSave(targetDates, baseSpotJob);
     onClose();
   };
-
-  // 12ヶ月後の日付を計算 (inputのmax属性用)
-  const maxDateStr = React.useMemo(() => {
-    if(!targetDate) return '';
-    const d = new Date(targetDate);
-    d.setMonth(d.getMonth() + 12);
-    return formatDate(d);
-  }, [targetDate]);
 
   return (
     <>

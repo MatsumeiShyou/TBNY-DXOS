@@ -42,3 +42,18 @@
 .zoom-in {
   animation-name: zoomIn;
 }
+
+/* ============================================
+ * 印刷用スタイル
+ * ============================================ */
+@media print {
+  /* 通常画面を非表示化 (Portal で出力した印刷用 DOM のみを残す) */
+  #root {
+    display: none !important;
+  }
+
+  @page {
+    size: A4 portrait;
+    margin: 10mm;
+  }
+}

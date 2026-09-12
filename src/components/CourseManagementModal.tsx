@@ -18,8 +18,6 @@ export default function CourseManagementModal({ drivers, masterWorkers, masterVe
   const allVehicles = masterVehicles;
 
   const [newCourse, setNewCourse] = useState('');
-  const [newName, setNewName] = useState(activeWorkers.length > 0 ? activeWorkers[0].name : '');
-  const [newVehicle, setNewVehicle] = useState(allVehicles.length > 0 ? allVehicles[0].name : '');
   
   // 次のアルファベットを自動提案するヘルパー
   const suggestNextCourse = () => {
@@ -42,14 +40,12 @@ export default function CourseManagementModal({ drivers, masterWorkers, masterVe
     onAddCourse({
       id: `driver_${Date.now()}`,
       course: newCourse || suggestNextCourse(),
-      name: newName,
-      currentVehicle: newVehicle,
+      name: '未定',
+      currentVehicle: '未定',
       color: colorStr
     });
 
     setNewCourse('');
-    setNewName(activeWorkers.length > 0 ? activeWorkers[0].name : '');
-    setNewVehicle(allVehicles.length > 0 ? allVehicles[0].name : '');
   };
 
   return (
@@ -96,38 +92,16 @@ export default function CourseManagementModal({ drivers, masterWorkers, masterVe
         <div className="p-4 bg-gray-50 border-t border-gray-200">
           <h3 className="text-sm font-bold text-gray-700 mb-3">新しいコースを追加</h3>
           <div className="space-y-3">
-            <div className="flex gap-2">
-              <div className="w-1/3">
-                <label className="block text-[10px] text-gray-500 mb-1">コース名</label>
-                <input 
-                  type="text" 
-                  value={newCourse}
-                  onChange={(e) => setNewCourse(e.target.value.toUpperCase())}
-                  placeholder={suggestNextCourse()}
-                  className="w-full border rounded px-2 py-1.5 text-sm"
-                  maxLength={2}
-                />
-              </div>
-              <div className="w-2/3">
-                <label className="block text-[10px] text-gray-500 mb-1">標準担当者</label>
-                <select 
-                  value={newName} 
-                  onChange={(e) => setNewName(e.target.value)}
-                  className="w-full border rounded px-2 py-1.5 text-sm bg-white"
-                >
-                  {activeWorkers.map(w => <option key={w.id} value={w.name}>{w.name}</option>)}
-                </select>
-              </div>
-            </div>
             <div>
-              <label className="block text-[10px] text-gray-500 mb-1">標準車両</label>
-              <select 
-                value={newVehicle} 
-                onChange={(e) => setNewVehicle(e.target.value)}
-                className="w-full border rounded px-2 py-1.5 text-sm bg-white"
-              >
-                {allVehicles.map(v => <option key={v.id} value={v.name}>{v.name}</option>)}
-              </select>
+              <label className="block text-[10px] text-gray-500 mb-1">コース名</label>
+              <input 
+                type="text" 
+                value={newCourse}
+                onChange={(e) => setNewCourse(e.target.value.toUpperCase())}
+                placeholder={suggestNextCourse()}
+                className="w-full border rounded px-2 py-1.5 text-sm"
+                maxLength={2}
+              />
             </div>
             
             <button 

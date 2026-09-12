@@ -50,6 +50,7 @@ import TemplateModal from './components/TemplateModal';
 import Sidebar from './components/Sidebar';
 import CalendarView from './components/CalendarView';
 import { useToast } from './components/Toast';
+import { PrintableDispatchSheet } from './components/PrintableDispatchSheet';
 
 // ==========================================
 // 3. メインコンポーネント
@@ -147,7 +148,42 @@ export default function App() {
     return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
 
-  
+  // 印刷用State
+  const [printingDriverId, setPrintingDriverId] = useState<string | null>(null);
+  const [isPrinting, setIsPrinting] = useState(false);
+
+  const startPrint = useCallback((driverId: string) => {
+    const targetJobs = jobs.filter(j => j.driverId === driverId);
+    if (targetJobs.length === 0) return;
+
+    setPrintingDriverId(driverId);
+    setIsPrinting(true);
+  }, [jobs]);
+
+  useEffect(() => {
+    if (isPrinting && printingDriverId) {
+      const handleAfterPrint = () => {
+        setIsPrinting(false);
+        setPrintingDriverId(null);
+      };
+      window.addEventListener('afterprint', handleAfterPrint);
+
+      const timer = setTimeout(() => {
+        window.print();
+      }, 500);
+
+      return () => {
+        window.removeEventListener('afterprint', handleAfterPrint);
+        clearTimeout(timer);
+      };
+    }
+  }, [isPrinting, printingDriverId]);
+
+  const handleCancelPrint = useCallback(() => {
+    setIsPrinting(false);
+    setPrintingDriverId(null);
+  }, []);
+
   // テンプレートモーダル用State
   const [isTemplateModalOpen, setIsTemplateModalOpen] = useState(false);
 
@@ -879,6 +915,7 @@ export default function App() {
         masterItems={masterItems}
         initialData={customerModalInitialData}
         onSave={handleSaveCustomer}
+        onDelete={handleDeleteCustomer}
         onClose={() => {
           setCustomerModalInitialData(null);
           window.location.hash = ''; // 戻る
@@ -942,6 +979,32 @@ export default function App() {
         </div>
       )}
 
+      {/* 印刷用フェイルセーフボタン (afterprintが効かなかった時用) */}
+      {isPrinting && (
+        <div className="bg-yellow-500 text-black px-4 py-2 flex items-center justify-between shadow-md z-50 relative print:hidden">
+          <div className="flex items-center gap-2 font-bold">
+            <span>印刷プレビューモード</span>
+          </div>
+          <button 
+            onClick={handleCancelPrint}
+            className="px-4 py-1.5 bg-gray-900 hover:bg-gray-800 text-white font-bold rounded shadow transition-colors"
+          >
+            印刷モードを終了する
+          </button>
+        </div>
+      )}
+
+      {/* 印刷用コンポーネント (Portalでマウント) */}
+      {isPrinting && printingDriverId && (
+        <PrintableDispatchSheet
+          driverId={printingDriverId}
+          drivers={drivers}
+          jobs={jobs}
+          customers={masterCustomers}
+          onCancel={handleCancelPrint}
+        />
+      )}
+
       {/* Main Content Area */}
       {viewMode === 'calendar' ? (
         <CalendarView 
@@ -961,9 +1024,18 @@ export default function App() {
           <div className="flex border-b border-white bg-black text-white sticky top-0 z-40 shadow-sm">
             <div className="w-16 flex-shrink-0 border-r border-white bg-gray-900 flex items-center justify-center font-bold sticky left-0 z-50">時間</div>
             <div className="flex">
-              {drivers.map(driver => (
-                <DriverColumnHeader key={driver.id} driver={driver} onEdit={openHeaderEdit} />
-              ))}
+              {drivers.map(driver => {
+                const driverJobCount = jobs.filter(j => j.driverId === driver.id).length;
+                return (
+                  <DriverColumnHeader 
+                    key={driver.id} 
+                    driver={driver} 
+                    jobCount={driverJobCount}
+                    onEdit={openHeaderEdit} 
+                    onPrint={startPrint}
+                  />
+                );
+              })}
             </div>
           </div>
 

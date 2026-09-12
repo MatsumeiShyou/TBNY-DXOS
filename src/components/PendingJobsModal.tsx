@@ -12,8 +12,6 @@ interface PendingJobsModalProps {
 }
 
 export default function PendingJobsModal({ selectedCell, pendingJobs, driverName, onAddJob, onClose }: PendingJobsModalProps) {
-  if (!selectedCell) return null;
-
   // 50音順 (かな読み) で自動ソート
   const sortedJobs = useMemo(() => {
     return [...pendingJobs].sort((a, b) => {
@@ -22,6 +20,8 @@ export default function PendingJobsModal({ selectedCell, pendingJobs, driverName
       return kanaA.localeCompare(kanaB, 'ja');
     });
   }, [pendingJobs]);
+
+  if (!selectedCell) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">

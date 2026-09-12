@@ -28,3 +28,11 @@ ALTER TABLE daily_jobs
 ## 2026-08-24 RLSポリシーの適用 (Step 5)
 
 anonフルアクセスポリシーを削除し、authenticated(ログイン済み)のみ全許可するポリシーを全テーブルに適用。
+
+## 2026-09-12 master_collection_points テーブルへの kana カラム追加
+
+```sql
+ALTER TABLE master_collection_points ADD COLUMN kana TEXT;
+```
+
+顧客のフリガナ（五十音ソート、行フィルター用）を保持するための追加。

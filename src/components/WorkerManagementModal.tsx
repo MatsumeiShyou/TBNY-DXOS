@@ -57,7 +57,7 @@ export default function WorkerManagementModal({ workers, onSave, onDelete, onClo
     if (!formName.trim()) return;
     
     const workerData: MasterWorker = {
-      id: editingId || `w_${Date.now()}`,
+      id: editingId || crypto.randomUUID(),
       name: formName.trim(),
       kana: formKana.trim(),
       license_types: formLicenses,

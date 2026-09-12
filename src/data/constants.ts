@@ -54,27 +54,27 @@ export const MASTER_ITEMS_LIST = [
 
 // 初期マスターデータ（workersマスタ）
 export const INITIAL_WORKERS = [
-  { id: 'w_hatazawa', name: '畑澤', kana: 'はたざわ', license_types: ['普通', '中型', '大型'], is_active: true },
-  { id: 'w_kikuchi', name: '菊地', kana: 'きくち', license_types: ['普通', '中型'], is_active: true },
-  { id: 'w_banri', name: '万里', kana: 'ばんり', license_types: ['普通', '中型'], is_active: true },
-  { id: 'w_katayama', name: '片山', kana: 'かたやま', license_types: ['普通', '中型', '大型'], is_active: true },
-  { id: 'w_daiki', name: '大貴', kana: 'だいき', license_types: ['普通'], is_active: true },
-  { id: 'w_suzuki', name: '鈴木', kana: 'すずき', license_types: ['普通', '中型'], is_active: true },
-  { id: 'w_sato', name: '佐藤', kana: 'さとう', license_types: ['普通'], is_active: true },
-  { id: 'w_tanaka', name: '田中', kana: 'たなか', license_types: ['普通', '中型'], is_active: true },
+  { id: '4d4acc0d-13ec-4e3d-a345-c497604dfb97', name: '畑澤', kana: 'はたざわ', license_types: ['普通', '中型', '大型'], is_active: true },
+  { id: 'bd18c658-ac8f-46ec-a7eb-504320e1377f', name: '菊地', kana: 'きくち', license_types: ['普通', '中型'], is_active: true },
+  { id: 'a49eea90-4fcb-43cf-8c42-7ea37d978236', name: '万里', kana: 'ばんり', license_types: ['普通', '中型'], is_active: true },
+  { id: '6886f1ed-2769-427c-bdd2-33bf93b476bb', name: '片山', kana: 'かたやま', license_types: ['普通', '中型', '大型'], is_active: true },
+  { id: 'fa468431-4e5d-4140-892c-741d8b24be27', name: '大貴', kana: 'だいき', license_types: ['普通'], is_active: true },
+  { id: 'e5b3311d-6c13-4686-b85f-b65de84470b1', name: '鈴木', kana: 'すずき', license_types: ['普通', '中型'], is_active: true },
+  { id: 'fbe4f8c4-889f-4723-b46b-e57f76bc7537', name: '佐藤', kana: 'さとう', license_types: ['普通'], is_active: true },
+  { id: '57beed03-99f9-4681-9022-fd9d1eb44b75', name: '田中', kana: 'たなか', license_types: ['普通', '中型'], is_active: true },
 ];
 
 
 // 初期マスターデータ（vehiclesマスタ）
 export const INITIAL_VEHICLES = [
-  { id: 'v_2025pk', name: '2025PK', vehicle_type: 'packer_2t', max_capacity_kg: 2000 },
-  { id: 'v_2267pk', name: '2267PK', vehicle_type: 'packer_2t', max_capacity_kg: 2000 },
-  { id: 'v_2618pk', name: '2618PK', vehicle_type: 'packer_2t', max_capacity_kg: 2000 },
-  { id: 'v_5122pk', name: '5122PK', vehicle_type: 'packer_2t', max_capacity_kg: 2000 },
-  { id: 'v_1111pk', name: '1111PK', vehicle_type: 'packer_2t', max_capacity_kg: 2000 },
-  { id: 'v_seino', name: '西濃運輸', vehicle_type: 'flat_4t', max_capacity_kg: 4000 },
-  { id: 'v_spare', name: '予備車', vehicle_type: 'other', max_capacity_kg: null },
-  { id: 'v_rental', name: 'レンタカー', vehicle_type: 'rental', max_capacity_kg: null },
+  { id: '283dc293-7961-44a7-b675-3c76ed0a4222', name: '2025PK', vehicle_type: 'packer_2t', max_capacity_kg: 2000 },
+  { id: '96019ef0-d815-4a96-866c-c9639f03090f', name: '2267PK', vehicle_type: 'packer_2t', max_capacity_kg: 2000 },
+  { id: '2d7fcb8f-4320-4d8a-b1f9-a9e8d648a511', name: '2618PK', vehicle_type: 'packer_2t', max_capacity_kg: 2000 },
+  { id: 'f625c6eb-9fb1-44e1-9e1b-6f6761f6f2dd', name: '5122PK', vehicle_type: 'packer_2t', max_capacity_kg: 2000 },
+  { id: '03a4e1de-f59d-4462-a615-af8d90f9b3cc', name: '1111PK', vehicle_type: 'packer_2t', max_capacity_kg: 2000 },
+  { id: '1f9e97fd-06ba-4c61-a9c3-5bff3f33a61d', name: '西濃運輸', vehicle_type: 'flat_4t', max_capacity_kg: 4000 },
+  { id: '2e0c46aa-a437-4cd5-89f5-e0cb9d193a93', name: '予備車', vehicle_type: 'other', max_capacity_kg: null },
+  { id: '3d794c1a-9b3f-4e7f-9af1-8a3e4d379195', name: 'レンタカー', vehicle_type: 'rental', max_capacity_kg: null },
 ];
 
 
@@ -90,7 +90,7 @@ export const INITIAL_ITEMS = MASTER_ITEMS_LIST.map((item, i) => ({
 
 export const CUSTOMERS = [
   {
-    "id": "c_1036000",
+    "id": "3df2fafe-7b0e-449b-a783-bb8793c17a34",
     "supplierCode": "1036000",
     "supplierName": "㈱セフティ",
     "payeeCode": "1036000",
@@ -119,7 +119,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_1075001",
+    "id": "2d384904-07fc-4e70-858e-9f4ee1424922",
     "supplierCode": "1075001",
     "supplierName": "㈱一全(ダイコー商事)",
     "payeeCode": "1075000",
@@ -157,7 +157,7 @@ export const CUSTOMERS = [
     "customSchedule": ""
   },
   {
-    "id": "c_1124000",
+    "id": "a5597f6b-0dd4-484d-bed1-dda0107e8764",
     "supplierCode": "1124000",
     "supplierName": "高山 藤沢センター",
     "payeeCode": "1124000",
@@ -187,7 +187,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_1124100",
+    "id": "a4687fcf-bbe8-4d1a-8261-5c11475edf4a",
     "supplierCode": "1124100",
     "supplierName": "㈱高山　東名支店大和ｾﾝﾀｰ",
     "payeeCode": "1124100",
@@ -219,7 +219,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_1130000",
+    "id": "9eca3c0f-364c-4f0f-b0d0-a3c646b8a461",
     "supplierCode": "1130000",
     "supplierName": "タキゲン製造㈱厚木支店",
     "payeeCode": "1130000",
@@ -248,7 +248,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_1161003",
+    "id": "cc3734e9-81f1-488d-87e7-97cf7f751398",
     "supplierCode": "1161003",
     "supplierName": "ＥＳＰＯＴ（ﾎﾟｲﾝﾄ）(田丸)",
     "payeeCode": "1161000",
@@ -279,7 +279,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_1161004",
+    "id": "688f70c9-843f-4fbb-ba16-7929be65d320",
     "supplierCode": "1161004",
     "supplierName": "ＥＳＰＯＴ（ﾊﾞｯｸﾔｰﾄﾞ）(田丸)",
     "payeeCode": "1161000",
@@ -308,7 +308,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_1203001",
+    "id": "f874b88b-3634-496e-818e-44b325c303ae",
     "supplierCode": "1203001",
     "supplierName": "オートバックス座間店(ﾃｨｰｴｽ)",
     "payeeCode": "1203000",
@@ -337,7 +337,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_1204000",
+    "id": "e2d29897-347f-4b4f-8c34-6d433b7a09c5",
     "supplierCode": "1204000",
     "supplierName": "ＴＳ環境リサイクル㈱",
     "payeeCode": "1204000",
@@ -367,7 +367,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_1205023",
+    "id": "acf3acb7-cc13-400d-ab23-3ff4942ab38f",
     "supplierCode": "1205023",
     "supplierName": "カンナミアクアシステム(ＤＳＰ)",
     "payeeCode": "1205000",
@@ -396,7 +396,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_1205027",
+    "id": "3b3cdd2b-0271-4a62-aa8d-19d323d7c974",
     "supplierCode": "1205027",
     "supplierName": "クリナップ南関東テクノ(ＤＳＰ)",
     "payeeCode": "1205000",
@@ -426,7 +426,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_1205030",
+    "id": "592442b5-ee42-4086-bb1d-69d46647dc6f",
     "supplierCode": "1205030",
     "supplierName": "鴻池運輸㈱(ＤＳＰ)",
     "payeeCode": "1205000",
@@ -458,7 +458,7 @@ export const CUSTOMERS = [
     "customSchedule": ""
   },
   {
-    "id": "c_1205031",
+    "id": "949e5a69-5212-46dd-a445-73027cf0bfa9",
     "supplierCode": "1205031",
     "supplierName": "広陽(ＤＳＰ)",
     "payeeCode": "1205000",
@@ -490,7 +490,7 @@ export const CUSTOMERS = [
     "customSchedule": "第２月曜日"
   },
   {
-    "id": "c_1205034",
+    "id": "af29233f-7216-491c-9b7a-7732cdfa8ac5",
     "supplierCode": "1205034",
     "supplierName": "小山㈱(ＤＳＰ)",
     "payeeCode": "1205000",
@@ -520,7 +520,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_1205052",
+    "id": "837f383b-5220-4c0d-a627-d533c84acebf",
     "supplierCode": "1205052",
     "supplierName": "東京研文社(ＤＳＰ)",
     "payeeCode": "1205000",
@@ -549,7 +549,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_1205057",
+    "id": "ce2eff8f-c33a-4772-baf2-e82f001edb77",
     "supplierCode": "1205057",
     "supplierName": "西多摩運送㈱(ＤＳＰ)",
     "payeeCode": "1205000",
@@ -581,7 +581,7 @@ export const CUSTOMERS = [
     "customSchedule": ""
   },
   {
-    "id": "c_1205065",
+    "id": "ad93c6df-d941-4d61-85ce-ceec1c8be681",
     "supplierCode": "1205065",
     "supplierName": "ピアノ運送厚木共配(ＤＳＰ)",
     "payeeCode": "1205000",
@@ -611,7 +611,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_1205069",
+    "id": "350ddc63-8900-4f09-ba48-28d99e533532",
     "supplierCode": "1205069",
     "supplierName": "㈱ブリヂストン横浜工場(ＤＳＰ)",
     "payeeCode": "1205000",
@@ -640,7 +640,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_1205075",
+    "id": "7bef292e-f65d-4ee3-860f-b569e4be551b",
     "supplierCode": "1205075",
     "supplierName": "本間ゴルフ藤沢店(ＤＳＰ)",
     "payeeCode": "1205000",
@@ -669,7 +669,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_1205084",
+    "id": "51bbb12b-974f-4542-b246-a2e09f9ca98b",
     "supplierCode": "1205084",
     "supplierName": "有隣堂(ＤＳＰ)",
     "payeeCode": "1205000",
@@ -704,7 +704,7 @@ export const CUSTOMERS = [
     "customSchedule": ""
   },
   {
-    "id": "c_1205093",
+    "id": "956dc0e3-778a-4df7-a7fc-e972d93b0647",
     "supplierCode": "1205093",
     "supplierName": "ﾕﾆﾏｯﾄﾗｲﾌ厚木営業所(ＤＳＰ)",
     "payeeCode": "1205000",
@@ -734,7 +734,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_1205097",
+    "id": "129854d0-458a-4825-b3cd-93af9959780d",
     "supplierCode": "1205097",
     "supplierName": "ﾕﾆﾏｯﾄﾚﾝﾀﾙ厚木(ＤＳＰ)",
     "payeeCode": "1205000",
@@ -767,7 +767,7 @@ export const CUSTOMERS = [
     "customSchedule": ""
   },
   {
-    "id": "c_1205098",
+    "id": "0a4f4dea-add5-4d6c-b601-c7bc0a9b9370",
     "supplierCode": "1205098",
     "supplierName": "ユニマットレンタル藤沢(ＤＳＰ)",
     "payeeCode": "1205000",
@@ -796,7 +796,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_1205110",
+    "id": "403d3481-75e0-4f5c-9f98-4bbd93bb6c0e",
     "supplierCode": "1205110",
     "supplierName": "㈱エディスタ（ＤＳＰ）",
     "payeeCode": "1205000",
@@ -827,7 +827,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_1205114",
+    "id": "c4819fa4-aa8a-472c-8a25-3d3ec364716f",
     "supplierCode": "1205114",
     "supplierName": "陸上自衛隊久里浜駐屯地(ＤＳＰ)",
     "payeeCode": "1205000",
@@ -860,7 +860,7 @@ export const CUSTOMERS = [
     "customSchedule": "第２,第４水曜日,他"
   },
   {
-    "id": "c_1205115",
+    "id": "7eb1b830-8902-4654-b7a3-da0944a4a629",
     "supplierCode": "1205115",
     "supplierName": "小山㈱戸塚事業所",
     "payeeCode": "1205000",
@@ -892,7 +892,7 @@ export const CUSTOMERS = [
     "customSchedule": ""
   },
   {
-    "id": "c_1205125",
+    "id": "9c44e5b7-e5d4-4033-b47e-ef271922e3e0",
     "supplierCode": "1205125",
     "supplierName": "㈲ﾀﾞﾌﾞｻｰﾌｨﾝｸﾞｳｪｯﾄｽｰﾂ（ＤＳＰ）",
     "payeeCode": "1205000",
@@ -925,7 +925,7 @@ export const CUSTOMERS = [
     "customSchedule": ""
   },
   {
-    "id": "c_1205129",
+    "id": "a4cde9b9-2f81-4144-b913-c23c039a64af",
     "supplierCode": "1205129",
     "supplierName": "㈱武部鉄工所（ＤＳＰ）",
     "payeeCode": "1205000",
@@ -960,7 +960,7 @@ export const CUSTOMERS = [
     "customSchedule": ""
   },
   {
-    "id": "c_1205136",
+    "id": "f235c980-ec89-4b7b-a011-9f6e7ed7a480",
     "supplierCode": "1205136",
     "supplierName": "㈱ﾘﾊﾞｰｸﾚｲﾝ（ＤＳＰ）",
     "payeeCode": "1205000",
@@ -1002,7 +1002,7 @@ export const CUSTOMERS = [
     "customSchedule": ""
   },
   {
-    "id": "c_1205142",
+    "id": "2977ff66-d020-4868-b7b0-cffac54417f5",
     "supplierCode": "1205142",
     "supplierName": "相模原･多摩PF（ＤＳＰ）",
     "payeeCode": "1205000",
@@ -1034,7 +1034,7 @@ export const CUSTOMERS = [
     "customSchedule": ""
   },
   {
-    "id": "c_1205146",
+    "id": "6ca192f6-95e1-4dc9-8d23-c6267bade44b",
     "supplierCode": "1205146",
     "supplierName": "㈱E.F.C",
     "payeeCode": "1205000",
@@ -1066,7 +1066,7 @@ export const CUSTOMERS = [
     "customSchedule": "自衛隊のない水曜日"
   },
   {
-    "id": "c_1205151",
+    "id": "dfc59b0a-e9e0-49e2-a674-d0b6ba801f35",
     "supplierCode": "1205151",
     "supplierName": "㈱マルナカ（ＤＳＰ）",
     "payeeCode": "1205000",
@@ -1095,7 +1095,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_1205152",
+    "id": "06c37234-2e0d-4e16-923d-132aeef32d8a",
     "supplierCode": "1205152",
     "supplierName": "英海商事㈱（DSP）",
     "payeeCode": "1205000",
@@ -1131,7 +1131,7 @@ export const CUSTOMERS = [
     "customSchedule": ""
   },
   {
-    "id": "c_1205156",
+    "id": "3fa15502-16b9-43a0-9397-d5a0ae86bb6a",
     "supplierCode": "1205156",
     "supplierName": "㈱ﾘﾗｲｽﾞ（DSP）",
     "payeeCode": "1205000",
@@ -1160,7 +1160,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_1205177",
+    "id": "e24dea20-50dd-4c49-a47f-876226ccaa31",
     "supplierCode": "1205177",
     "supplierName": "ｹｲﾌﾞﾗﾝﾄﾞ㈱（DSP）",
     "payeeCode": "1205000",
@@ -1189,7 +1189,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_1205182",
+    "id": "b188b123-19e0-45a6-908c-bdf786c4f740",
     "supplierCode": "1205182",
     "supplierName": "㈱厚木ﾐｸﾛ（DSP）",
     "payeeCode": "1205000",
@@ -1219,7 +1219,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_1253000",
+    "id": "c05a451c-04e1-4949-a31e-89e66bbef49a",
     "supplierCode": "1253000",
     "supplierName": "東京ロジファクトリー㈱",
     "payeeCode": "1253000",
@@ -1248,7 +1248,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_1352007",
+    "id": "e4b53690-0ffa-4e18-b171-4aa50de3c336",
     "supplierCode": "1352007",
     "supplierName": "東京冷機厚木(ナカダイ)",
     "payeeCode": "1352000",
@@ -1281,7 +1281,7 @@ export const CUSTOMERS = [
     "customSchedule": "第２,第４火曜日"
   },
   {
-    "id": "c_1352011",
+    "id": "2e11c0d2-bf81-4bc6-a98e-179b614648f7",
     "supplierCode": "1352011",
     "supplierName": "東京冷機神奈川ＳＳ(ナカダイ)",
     "payeeCode": "1352000",
@@ -1313,7 +1313,7 @@ export const CUSTOMERS = [
     "customSchedule": ""
   },
   {
-    "id": "c_1352017",
+    "id": "e304f5d7-5868-40c8-80ec-2691cb99ec54",
     "supplierCode": "1352017",
     "supplierName": "東京冷機湘南(ナカダイ)",
     "payeeCode": "1352000",
@@ -1345,7 +1345,7 @@ export const CUSTOMERS = [
     "customSchedule": ""
   },
   {
-    "id": "c_1533000",
+    "id": "80ed970b-fb1e-423c-b471-e3d39b322a57",
     "supplierCode": "1533000",
     "supplierName": "㈱春うららかな書房",
     "payeeCode": "1533000",
@@ -1375,7 +1375,7 @@ export const CUSTOMERS = [
     "customSchedule": ""
   },
   {
-    "id": "c_1535002",
+    "id": "0f886e4d-79e1-4c9e-9ba8-dcc099333955",
     "supplierCode": "1535002",
     "supplierName": "パルシステム相模青果センター",
     "payeeCode": "1535000",
@@ -1404,7 +1404,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_1535003",
+    "id": "ec6ca078-945b-4dd9-b52d-22b466d33fdc",
     "supplierCode": "1535003",
     "supplierName": "パルシステム相模センター",
     "payeeCode": "1535000",
@@ -1433,7 +1433,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_1556000",
+    "id": "1ec86170-47fd-4f4a-85f7-933afa8133ca",
     "supplierCode": "1556000",
     "supplierName": "東日本協同パレット㈱",
     "payeeCode": "1556000",
@@ -1462,7 +1462,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_1709031",
+    "id": "fc767c3c-0920-48ad-b3d2-9a6471401970",
     "supplierCode": "1709031",
     "supplierName": "ﾁｸﾌﾞP上依知事業所(ﾎﾟｼﾞﾃｨﾌﾞ)",
     "payeeCode": "1709000",
@@ -1493,7 +1493,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_1709032",
+    "id": "16e48118-174f-4fda-b213-dfd928993837",
     "supplierCode": "1709032",
     "supplierName": "ﾁｸﾌﾞP上溝事業所(ﾎﾟｼﾞﾃｨﾌﾞ)",
     "payeeCode": "1709000",
@@ -1525,7 +1525,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_1709043",
+    "id": "7cbc83c6-8fc8-4112-86c3-3b9ca7cb3729",
     "supplierCode": "1709043",
     "supplierName": "富士ロジ厚木金田(ﾎﾟｼﾞﾃｨﾌﾞ)",
     "payeeCode": "1709000",
@@ -1555,7 +1555,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_1709053",
+    "id": "34cfe2d2-44d5-40f4-b0dd-2691f72d4f2c",
     "supplierCode": "1709053",
     "supplierName": "富士ロジ東名厚木(ﾎﾟｼﾞﾃｨﾌﾞ)",
     "payeeCode": "1709000",
@@ -1586,7 +1586,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_1709054",
+    "id": "5244e522-dfc1-410d-ae09-105b83e45f9e",
     "supplierCode": "1709054",
     "supplierName": "富士ロジ長沼/神奈川(ﾎﾟｼﾞﾃｨﾌﾞ)",
     "payeeCode": "1709000",
@@ -1617,7 +1617,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_1709064",
+    "id": "62229912-8861-481e-a039-446fdc36aec8",
     "supplierCode": "1709064",
     "supplierName": "富士ロジ横浜町田(ﾎﾟｼﾞﾃｨﾌﾞ)",
     "payeeCode": "1709000",
@@ -1648,7 +1648,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_1709068",
+    "id": "ef563b39-74d2-4d96-8b23-95e26879e9d2",
     "supplierCode": "1709068",
     "supplierName": "三井倉庫ﾛｼﾞｽﾃｨｸｽ㈱(ﾎﾟｼﾞﾃｨﾌﾞ)",
     "payeeCode": "1709000",
@@ -1685,7 +1685,7 @@ export const CUSTOMERS = [
     "customSchedule": ""
   },
   {
-    "id": "c_1709087",
+    "id": "b59b9077-7733-4e8e-8742-7c428c75047e",
     "supplierCode": "1709087",
     "supplierName": "富士ﾛｼﾞ厚木三田第二ﾛｼﾞ(ﾎﾟｼﾞﾃ)",
     "payeeCode": "1709000",
@@ -1716,7 +1716,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_1784000",
+    "id": "e7a38491-b6ac-452b-bf2a-fb06fdd225df",
     "supplierCode": "1784000",
     "supplierName": "丸駒運輸㈱",
     "payeeCode": "1784000",
@@ -1750,7 +1750,7 @@ export const CUSTOMERS = [
     "customSchedule": ""
   },
   {
-    "id": "c_1801607",
+    "id": "410f3890-b439-49a0-82ba-c8db978c1f5f",
     "supplierCode": "1801607",
     "supplierName": "㈱不二家平塚工場（丸紅FR）",
     "payeeCode": "1801600",
@@ -1793,7 +1793,7 @@ export const CUSTOMERS = [
     "customSchedule": "不二家ｶﾚﾝﾀﾞｰ参照"
   },
   {
-    "id": "c_1946000",
+    "id": "80880ce2-d74a-4e60-b5c3-d4ede431fe92",
     "supplierCode": "1946000",
     "supplierName": "㈱山崎歯車製作所",
     "payeeCode": "1946000",
@@ -1823,7 +1823,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_1975000",
+    "id": "7282b3ea-ffa8-45c9-8341-c362f77a3d2a",
     "supplierCode": "1975000",
     "supplierName": "㈱裕源",
     "payeeCode": "1975000",
@@ -1855,7 +1855,7 @@ export const CUSTOMERS = [
     "customSchedule": ""
   },
   {
-    "id": "c_2042000",
+    "id": "2820887f-3070-4f21-80e7-af73451f0e13",
     "supplierCode": "2042000",
     "supplierName": "㈱ロジスティクス・ネットワーク",
     "payeeCode": "2042000",
@@ -1884,7 +1884,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_2095000",
+    "id": "1b7ae661-880a-4d13-86cb-b94b4202ed79",
     "supplierCode": "2095000",
     "supplierName": "㈱上神谷運送厚木",
     "payeeCode": "2095000",
@@ -1917,7 +1917,7 @@ export const CUSTOMERS = [
     "customSchedule": ""
   },
   {
-    "id": "c_2539000",
+    "id": "433710b1-2aa9-4779-965a-783fcf5a955c",
     "supplierCode": "2539000",
     "supplierName": "小泉機器工業㈱厚木営業所",
     "payeeCode": "2539000",
@@ -1949,7 +1949,7 @@ export const CUSTOMERS = [
     "customSchedule": ""
   },
   {
-    "id": "c_2554000",
+    "id": "fe075f2a-b30d-4610-8642-07d950fe2c3a",
     "supplierCode": "2554000",
     "supplierName": "㈱横浜DeNAﾍﾞｲｽﾀｰｽﾞ",
     "payeeCode": "2554000",
@@ -1981,7 +1981,7 @@ export const CUSTOMERS = [
     "customSchedule": ""
   },
   {
-    "id": "c_2569000",
+    "id": "69595ee7-4700-463f-b6b3-053c0693434f",
     "supplierCode": "2569000",
     "supplierName": "日本加工機材㈱",
     "payeeCode": "2569000",
@@ -2010,7 +2010,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_2734000",
+    "id": "61d1e3f8-c2ba-4f54-bcbc-3452087dfb14",
     "supplierCode": "2734000",
     "supplierName": "㈱ｱｸﾃｨｵ EG横浜営業所",
     "payeeCode": "2734000",
@@ -2042,7 +2042,7 @@ export const CUSTOMERS = [
     "customSchedule": "第１月曜日"
   },
   {
-    "id": "c_2772000",
+    "id": "2a76fed0-8652-4b6b-9d15-5014410f4b78",
     "supplierCode": "2772000",
     "supplierName": "湘南寝台社",
     "payeeCode": "2772000",
@@ -2071,7 +2071,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_3021000",
+    "id": "f8a66a0d-03d6-4ed4-b3a5-21d570cff13c",
     "supplierCode": "3021000",
     "supplierName": "トナミ運輸㈱相模支店",
     "payeeCode": "3021000",
@@ -2100,7 +2100,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_3146000",
+    "id": "9a72643e-b697-42a1-ad2c-d43b1a829129",
     "supplierCode": "3146000",
     "supplierName": "㈱ディーミング",
     "payeeCode": "3146000",
@@ -2129,7 +2129,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_3168001",
+    "id": "c7ae8cb8-1816-45ea-bf59-b7554ce5251f",
     "supplierCode": "3168001",
     "supplierName": "小田急電鉄㈱（都市環境ｻｰﾋﾞｽ）",
     "payeeCode": "3168000",
@@ -2159,7 +2159,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_0384098",
+    "id": "6c13a171-c128-421d-914e-0ed78662f3e9",
     "supplierCode": "0384098",
     "supplierName": "ｳｴﾙｼｱ平塚中原店（大本）",
     "payeeCode": "0384000",
@@ -2188,7 +2188,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_0557006",
+    "id": "71fb097e-3885-481a-8f6f-c91b369a064b",
     "supplierCode": "0557006",
     "supplierName": "㈱ｽﾄﾘｯｸｽｺﾝｻﾙﾃｨﾝｸﾞ(共栄商社)",
     "payeeCode": "0557000",
@@ -2217,7 +2217,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_0384112",
+    "id": "a130ca96-38ff-473d-b9df-446e6c435be1",
     "supplierCode": "0384112",
     "supplierName": "資さんうどん倉見店（大本）",
     "payeeCode": "0384000",
@@ -2246,7 +2246,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_0383273",
+    "id": "260b37a5-1651-4c00-b666-7b07cad127b5",
     "supplierCode": "0383273",
     "supplierName": "SBSﾌﾚｯｸ㈱厚木低温DC（大本）",
     "payeeCode": "0383000",
@@ -2278,7 +2278,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_0383090",
+    "id": "164f4ec5-dd88-495f-bd0a-38d4e672351b",
     "supplierCode": "0383090",
     "supplierName": "ｸﾘｴｲﾄSD相模原当麻店(大本)",
     "payeeCode": "0383000",
@@ -2307,7 +2307,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_0002000",
+    "id": "1a61c5b2-d324-4a36-8d98-245d44fbeb75",
     "supplierCode": "0002000",
     "supplierName": "㈱アークル海老名営業所",
     "payeeCode": "0002000",
@@ -2336,7 +2336,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_0774062",
+    "id": "a06023a5-32bb-413d-8df7-8baeaed6787d",
     "supplierCode": "0774062",
     "supplierName": "早稲田アカデミー本厚木校(SFI)",
     "payeeCode": "0774000",
@@ -2366,7 +2366,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_0083051",
+    "id": "e74e1903-de84-4519-b292-17116aa04ae9",
     "supplierCode": "0083051",
     "supplierName": "伊藤ﾋﾞﾙ（神奈中商事）",
     "payeeCode": "0083050",
@@ -2398,7 +2398,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_0024000",
+    "id": "032ca829-a77f-418a-8fdb-9a92033a7e05",
     "supplierCode": "0024000",
     "supplierName": "㈱ＩＷＤ",
     "payeeCode": "0024000",
@@ -2427,7 +2427,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_0621002",
+    "id": "b5dd8039-7879-4bd2-9315-44ed2215c830",
     "supplierCode": "0621002",
     "supplierName": "ﾀｷﾛﾝｼｰｱｲ㈱(ｸﾘｰﾝｻｰﾋﾞｽ)",
     "payeeCode": "0621000",
@@ -2461,7 +2461,7 @@ export const CUSTOMERS = [
     "customSchedule": ""
   },
   {
-    "id": "c_0383251",
+    "id": "d532c954-7547-4de8-84df-4c74f30b901b",
     "supplierCode": "0383251",
     "supplierName": "大創産業 神奈川RDC（大本）",
     "payeeCode": "0383000",
@@ -2491,7 +2491,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_0135000",
+    "id": "3d77b357-c547-4b8b-b14e-eadf499749df",
     "supplierCode": "0135000",
     "supplierName": "イシダ製作所",
     "payeeCode": "0135000",
@@ -2520,7 +2520,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_0050000",
+    "id": "d921d186-5ba9-4aa5-870d-6a9f81fb4f80",
     "supplierCode": "0050000",
     "supplierName": "㈱旭運送",
     "payeeCode": "0050000",
@@ -2553,7 +2553,7 @@ export const CUSTOMERS = [
     "customSchedule": ""
   },
   {
-    "id": "c_0033001",
+    "id": "b78256f2-b451-46da-af7e-b97b2c58a836",
     "supplierCode": "0033001",
     "supplierName": "富士電線(アオイ)",
     "payeeCode": "0033000",
@@ -2586,7 +2586,7 @@ export const CUSTOMERS = [
     "customSchedule": ""
   },
   {
-    "id": "c_0863000",
+    "id": "06b20258-4ffd-4180-bb28-3ac958e1ee14",
     "supplierCode": "0863000",
     "supplierName": "敷島製パン㈱",
     "payeeCode": "0863000",
@@ -2615,7 +2615,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_0621001",
+    "id": "6c87b64b-3e87-455a-b7d5-9a2cfd14d15d",
     "supplierCode": "0621001",
     "supplierName": "ｵｰﾄﾊﾞｯｸｽ伊勢原店(ｸﾘｰﾝｻｰﾋﾞｽ)",
     "payeeCode": "0621000",
@@ -2647,7 +2647,7 @@ export const CUSTOMERS = [
     "customSchedule": ""
   },
   {
-    "id": "c_0774073",
+    "id": "f5ed5fc9-ed96-4c20-afdc-ce9dffd52c17",
     "supplierCode": "0774073",
     "supplierName": "㈱ﾛｼﾞｽﾃｨｸｽﾈｯﾄﾜｰｸ（ｻﾃｨｽﾌｧｸﾄﾘｰ）",
     "payeeCode": "0774000",
@@ -2676,7 +2676,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_0903000",
+    "id": "4224afa9-7427-450a-acac-90c3b00ad003",
     "supplierCode": "0903000",
     "supplierName": "ｼﾞｬｸｿﾝ･ﾗﾎﾞﾗﾄﾘｰ･ｼﾞｬﾊﾟﾝ㈱",
     "payeeCode": "0903000",
@@ -2709,7 +2709,7 @@ export const CUSTOMERS = [
     "customSchedule": ""
   },
   {
-    "id": "c_0000027",
+    "id": "a0de48f6-b58a-409c-a939-1e98fc104c91",
     "supplierCode": "0000027",
     "supplierName": "ゑびす興運　有限会社",
     "payeeCode": "0000027",
@@ -2739,7 +2739,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_0239000",
+    "id": "e98ae4c4-673d-49a2-9369-1a0f010e8d71",
     "supplierCode": "0239000",
     "supplierName": "宇都宮螺子㈱",
     "payeeCode": "0239000",
@@ -2772,7 +2772,7 @@ export const CUSTOMERS = [
     "customSchedule": "第３木曜日"
   },
   {
-    "id": "c_0774060",
+    "id": "c460c46b-8219-49a5-a48f-42488a718634",
     "supplierCode": "0774060",
     "supplierName": "㈱LIXIL厚木営業所(SFI)",
     "payeeCode": "0774000",
@@ -2806,7 +2806,7 @@ export const CUSTOMERS = [
   }
 ,
   {
-    "id": "c_1968000",
+    "id": "1bc7fea3-4b56-452d-affb-a02b7ba495d8",
     "supplierCode": "1968000",
     "supplierName": "ﾕｱｻﾌﾅｼｮｸ㈱厚木物流ｾﾝﾀｰ",
     "payeeCode": "1968000",
@@ -2835,7 +2835,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_0383153",
+    "id": "e45e1e9f-b252-48dd-85b8-20157f8a63bf",
     "supplierCode": "0383153",
     "supplierName": "ｸﾘｴｲﾄSD平塚中原店(大本)",
     "payeeCode": "0383000",
@@ -2864,7 +2864,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_0383154",
+    "id": "a3d245f4-a56f-4eba-9450-1cd3e4bad3cb",
     "supplierCode": "0383154",
     "supplierName": "ｸﾘｴｲﾄSD平塚長持店(大本)",
     "payeeCode": "0383000",
@@ -2893,7 +2893,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_1551001",
+    "id": "15006803-543c-442b-b55e-497b2b350d08",
     "supplierCode": "1551001",
     "supplierName": "ビギ(ビートレーディング)",
     "payeeCode": "1551000",
@@ -2922,7 +2922,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_0621003",
+    "id": "28d4538c-c784-4259-b2e6-620a40f95130",
     "supplierCode": "0621003",
     "supplierName": "㈱ｻｰﾄﾞｳｪｰﾌﾞ（ｸﾘｰﾝｻｰﾋﾞｽ）",
     "payeeCode": "0621000",
@@ -2951,7 +2951,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_0384055",
+    "id": "c16f449d-3ecc-4674-85ed-3c73e8d772de",
     "supplierCode": "0384055",
     "supplierName": "ウエルシア相模原田名店(大本)",
     "payeeCode": "0384000",
@@ -2980,7 +2980,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_1709041",
+    "id": "3c26f905-6ece-4f8b-a74f-a6a8bf9a5cbe",
     "supplierCode": "1709041",
     "supplierName": "ハートロジスティクス(ﾎﾟｼﾞﾃｨﾌﾞ)",
     "payeeCode": "1709000",
@@ -3009,7 +3009,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_2085003",
+    "id": "c730f916-3647-4bf8-a6da-0d8db166bff0",
     "supplierCode": "2085003",
     "supplierName": "大和ハウス工業㈱伊勢原現場",
     "payeeCode": "2085000",
@@ -3038,7 +3038,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_0000027",
+    "id": "7f600072-d51a-4388-94d5-d8741e808a33",
     "supplierCode": "0000027",
     "supplierName": "都市環境サービス（株）",
     "payeeCode": "0000027",
@@ -3067,7 +3067,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_1426000",
+    "id": "35bfa49f-b867-4bbe-b87c-4cb16b17f91b",
     "supplierCode": "1426000",
     "supplierName": "日本紙パルプ商事㈱（1）",
     "payeeCode": "1426000",
@@ -3096,7 +3096,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_2537000",
+    "id": "d61341f3-7063-4a4a-925b-edc8bacb60bd",
     "supplierCode": "2537000",
     "supplierName": "厚木市環境センター",
     "payeeCode": "2537000",
@@ -3127,7 +3127,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_1772000",
+    "id": "467f9d65-345b-4fa5-8474-ab739a1104fe",
     "supplierCode": "1772000",
     "supplierName": "㈱マルイチ",
     "payeeCode": "1772000",
@@ -3156,7 +3156,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_1038002",
+    "id": "418cbda4-5b9a-4a52-9b61-904131bdf9d8",
     "supplierCode": "1038002",
     "supplierName": "デジタルプロセス(JSE-NET)",
     "payeeCode": "1038000",
@@ -3186,7 +3186,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_1205007",
+    "id": "ea3063ff-1951-4e3f-87e3-9b8d52b3141d",
     "supplierCode": "1205007",
     "supplierName": "㈱エバネクスト(ＤＳＰ)",
     "payeeCode": "1205000",
@@ -3215,7 +3215,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_0523000",
+    "id": "5dadfab3-6ea0-49db-8134-ca5e6a661009",
     "supplierCode": "0523000",
     "supplierName": "関包スチール㈱",
     "payeeCode": "0523000",
@@ -3245,7 +3245,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_2085004",
+    "id": "55fe327a-21de-42f9-986e-8d31f2c59576",
     "supplierCode": "2085004",
     "supplierName": "大和ハウス工業㈱綾瀬現場",
     "payeeCode": "2085004",
@@ -3274,7 +3274,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_2706000",
+    "id": "7e4bd2d6-96de-4a79-b219-b56334366274",
     "supplierCode": "2706000",
     "supplierName": "HUMAN MADE㈱",
     "payeeCode": "2706000",
@@ -3304,7 +3304,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_1950000",
+    "id": "5054ad31-12c4-4a4f-9e05-2e3f4c963dba",
     "supplierCode": "1950000",
     "supplierName": "㈱山櫻八王子の森工場",
     "payeeCode": "1950000",
@@ -3334,7 +3334,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_0024001",
+    "id": "aa13b072-0d13-4797-901c-854b06afdaf2",
     "supplierCode": "0024001",
     "supplierName": "㈱ｵﾉｺﾑ（ＩＷＤ）",
     "payeeCode": "0024000",
@@ -3363,7 +3363,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_1024001",
+    "id": "150ccd2d-30b7-4d08-a6f4-baf7ddc615c8",
     "supplierCode": "1024001",
     "supplierName": "㈱セイミツ平塚工場",
     "payeeCode": "1024000",
@@ -3392,7 +3392,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_1205053",
+    "id": "b0bf14d4-6431-46f3-9b56-803212a01aaf",
     "supplierCode": "1205053",
     "supplierName": "東京スチールセンター(ＤＳＰ)",
     "payeeCode": "1205000",
@@ -3422,7 +3422,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_1205163",
+    "id": "a755200d-ae20-4ea6-9096-267423c79bf1",
     "supplierCode": "1205163",
     "supplierName": "関東ｾｲﾜ（DSP）",
     "payeeCode": "1205000",
@@ -3451,7 +3451,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_1709000",
+    "id": "67ee08db-c18e-44cc-8687-47496a1e11ae",
     "supplierCode": "1709000",
     "supplierName": "(合)ポジティブ",
     "payeeCode": "1709000",
@@ -3480,7 +3480,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_3051000",
+    "id": "9c36487d-64e1-4ec0-8a44-50f0d65f19b8",
     "supplierCode": "3051000",
     "supplierName": "ＭＦ物流㈱",
     "payeeCode": "3051000",
@@ -3509,7 +3509,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_1205060",
+    "id": "0950494c-411f-40d4-b547-37f48353789d",
     "supplierCode": "1205060",
     "supplierName": "ハーゼスト(ＤＳＰ)",
     "payeeCode": "1205000",
@@ -3538,7 +3538,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_0630058",
+    "id": "56e4dc89-1b42-4501-8850-b43b24532ee1",
     "supplierCode": "0630058",
     "supplierName": "近代ｾｰﾙｽ社（ＧＬＴ）",
     "payeeCode": "0630000",
@@ -3568,7 +3568,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_2145001",
+    "id": "4fa766d6-bf91-4070-b561-837fb3632e80",
     "supplierCode": "2145001",
     "supplierName": "東京ｱﾙﾌｧﾗｲﾝ相模原",
     "payeeCode": "2145000",
@@ -3597,7 +3597,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_2145000",
+    "id": "6c1ac0b9-f321-4f2c-8e7d-4c59157dab38",
     "supplierCode": "2145000",
     "supplierName": "㈱東京アルファライン",
     "payeeCode": "2145000",
@@ -3626,7 +3626,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_1521000",
+    "id": "74195eda-2c2b-4f88-961b-d797434f2db2",
     "supplierCode": "1521000",
     "supplierName": "㈱浜田東京リサイクルセンター",
     "payeeCode": "1521000",
@@ -3655,7 +3655,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_2711000",
+    "id": "3e9dab82-bfd6-44ad-a575-721d894675e9",
     "supplierCode": "2711000",
     "supplierName": "横浜ｺﾞﾑ㈱平塚製造所",
     "payeeCode": "2711000",
@@ -3684,7 +3684,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_1024000",
+    "id": "b4b5763c-0d88-4a20-93d1-99dc98ae93b2",
     "supplierCode": "1024000",
     "supplierName": "㈱セイミツ",
     "payeeCode": "1024000",
@@ -3713,7 +3713,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_1161007",
+    "id": "d1c6f043-f727-401c-a2c7-f9345aea1551",
     "supplierCode": "1161007",
     "supplierName": "ﾏｯｸｽﾊﾞﾘｭ秦野渋沢店(田丸)",
     "payeeCode": "1161000",
@@ -3743,7 +3743,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_0697002",
+    "id": "a0ed686e-8f11-4727-890b-b18ce13486a6",
     "supplierCode": "0697002",
     "supplierName": "横浜国立大学（後藤）",
     "payeeCode": "0697000",
@@ -3772,7 +3772,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_1623000",
+    "id": "5bca35fb-e6fd-4885-accc-fae3bd16ef3c",
     "supplierCode": "1623000",
     "supplierName": "藤産商㈱",
     "payeeCode": "1623000",
@@ -3801,7 +3801,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_0383000",
+    "id": "37f646b2-507a-4f66-9d4e-abda2064ef97",
     "supplierCode": "0383000",
     "supplierName": "大本紙料㈱",
     "payeeCode": "0383000",
@@ -3830,7 +3830,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_0384117",
+    "id": "44f0c8f6-c064-420d-a786-40eebfb39b3b",
     "supplierCode": "0384117",
     "supplierName": "資さんうどん平塚店（大本）",
     "payeeCode": "0384000",
@@ -3859,7 +3859,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_1205201",
+    "id": "9ef2c349-ff98-4f78-9631-740650bcde56",
     "supplierCode": "1205201",
     "supplierName": "鴻池運輸㈱厚木流通ｾﾝﾀｰ",
     "payeeCode": "1205000",
@@ -3888,7 +3888,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_0502029",
+    "id": "96dc9c7d-0990-4ff7-bba2-9de976f17478",
     "supplierCode": "0502029",
     "supplierName": "ｶｲﾝｽﾞ鎌倉梶原店ﾊﾞｯｸﾔｰﾄﾞ(河村)",
     "payeeCode": "0502000",
@@ -3920,7 +3920,7 @@ export const CUSTOMERS = [
     "isInvalid": false
   },
   {
-    "id": "c_0859000",
+    "id": "a22b1d0a-16ab-4678-a52b-b38109b49788",
     "supplierCode": "0859000",
     "supplierName": "ＪＰロジネット㈱",
     "payeeCode": "0859000",
