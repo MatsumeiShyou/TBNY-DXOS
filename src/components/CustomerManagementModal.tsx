@@ -315,6 +315,13 @@ export default function CustomerManagementModal({ customers, masterVehicles, mas
     setActiveTab('basic');
   };
 
+  const handleKanaBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    setFormData(prev => ({
+      ...prev,
+      kana: toHalfWidthKatakana(e.target.value)
+    }));
+  };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const target = e.target as HTMLInputElement;
     const { name, value, type, checked } = target;
@@ -610,7 +617,7 @@ export default function CustomerManagementModal({ customers, masterVehicles, mas
                       <div className="flex items-center gap-2">
                         <label className="text-xs font-bold text-gray-600 whitespace-nowrap w-20 shrink-0">フリガナ <span className="text-red-500">*</span></label>
                         <div className="flex-1">
-                          <input type="text" name="kana" value={formData.kana} onChange={handleChange} className={`w-full border rounded px-2 py-1.5 text-sm ${validationErrors.kana ? 'border-red-500 bg-red-50' : ''}`} placeholder="カタカナで入力" />
+                          <input type="text" name="kana" value={formData.kana} onChange={handleChange} onBlur={handleKanaBlur} className={`w-full border rounded px-2 py-1.5 text-sm ${validationErrors.kana ? 'border-red-500 bg-red-50' : ''}`} placeholder="カタカナで入力" />
                           {validationErrors.kana && <div className="text-red-500 text-[10px] font-bold mt-1">{validationErrors.kana}</div>}
                         </div>
                       </div>
