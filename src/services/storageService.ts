@@ -485,12 +485,25 @@ export const storageService = {
   deleteWorker: async (id: string) => {
     try {
       const { supabase } = await import('../lib/supabase');
-      const { error } = await supabase.from('master_workers').update({ is_active: false }).eq('id', id);
-      if (error) {
-        console.error('Supabase Worker logical delete error:', error);
-        return { success: false, error };
+      
+      const { count, error: countErr } = await supabase
+        .from('daily_jobs')
+        .select('*', { count: 'exact', head: true })
+        .eq('worker_id', id);
+      if (countErr) throw countErr;
+
+      if (count === 0) {
+        const { error } = await supabase.from('master_workers').delete().eq('id', id);
+        if (error) throw error;
+        return { success: true, deleted: 'hard' };
+      } else {
+        const { error } = await supabase.from('master_workers').update({ is_active: false }).eq('id', id);
+        if (error) {
+          console.error('Supabase Worker logical delete error:', error);
+          return { success: false, error };
+        }
+        return { success: true, deleted: 'soft' };
       }
-      return { success: true };
     } catch (e) {
       console.error('deleteWorker exception:', e);
       return { success: false, error: e };
@@ -499,12 +512,25 @@ export const storageService = {
   deleteVehicle: async (id: string) => {
     try {
       const { supabase } = await import('../lib/supabase');
-      const { error } = await supabase.from('master_vehicles').update({ is_active: false }).eq('id', id);
-      if (error) {
-        console.error('Supabase Vehicle logical delete error:', error);
-        return { success: false, error };
+
+      const { count, error: countErr } = await supabase
+        .from('daily_jobs')
+        .select('*', { count: 'exact', head: true })
+        .eq('vehicle_id', id);
+      if (countErr) throw countErr;
+
+      if (count === 0) {
+        const { error } = await supabase.from('master_vehicles').delete().eq('id', id);
+        if (error) throw error;
+        return { success: true, deleted: 'hard' };
+      } else {
+        const { error } = await supabase.from('master_vehicles').update({ is_active: false }).eq('id', id);
+        if (error) {
+          console.error('Supabase Vehicle logical delete error:', error);
+          return { success: false, error };
+        }
+        return { success: true, deleted: 'soft' };
       }
-      return { success: true };
     } catch (e) {
       console.error('deleteVehicle exception:', e);
       return { success: false, error: e };
@@ -514,12 +540,25 @@ export const storageService = {
     try {
       const { supabase } = await import('../lib/supabase');
       // master_itemsの主キーは item_code (DB設計による) なので注意
-      const { error } = await supabase.from('master_items').update({ is_active: false }).eq('item_code', id);
-      if (error) {
-        console.error('Supabase Item logical delete error:', error);
-        return { success: false, error };
+      
+      const { count, error: countErr } = await supabase
+        .from('master_collection_points')
+        .select('*', { count: 'exact', head: true })
+        .contains('target_item_codes', [id]);
+      if (countErr) throw countErr;
+
+      if (count === 0) {
+        const { error } = await supabase.from('master_items').delete().eq('item_code', id);
+        if (error) throw error;
+        return { success: true, deleted: 'hard' };
+      } else {
+        const { error } = await supabase.from('master_items').update({ is_active: false }).eq('item_code', id);
+        if (error) {
+          console.error('Supabase Item logical delete error:', error);
+          return { success: false, error };
+        }
+        return { success: true, deleted: 'soft' };
       }
-      return { success: true };
     } catch (e) {
       console.error('deleteItem exception:', e);
       return { success: false, error: e };
