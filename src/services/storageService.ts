@@ -296,10 +296,10 @@ export const storageService = {
       });
 
       return {
-        workers,
-        vehicles,
-        customers,
-        items
+        workers: workers.length > 0 ? workers : defaultWorkers,
+        vehicles: vehicles.length > 0 ? vehicles : defaultVehicles,
+        customers: customers.length > 0 ? customers : defaultCustomers,
+        items: items.length > 0 ? items : defaultItems
       };
       
     } catch (e) {
@@ -416,12 +416,39 @@ export const storageService = {
   saveSingleCustomer: async (customer: any) => {
     try {
       const { supabase } = await import('../lib/supabase');
-      // A single lookup for the contractor
+      
+      let payer_id = null;
+      if (customer.payeeCode) {
+        const { data: dbPayers, error: pErr } = await supabase.from('master_payers').upsert(
+          { payee_code: customer.payeeCode, name: customer.payeeName || customer.payeeCode, is_active: true },
+          { onConflict: 'payee_code' }
+        ).select('id').single();
+        
+        if (pErr && pErr.code !== '23505') console.error('Supabase Payer save error:', pErr);
+        if (!pErr && dbPayers) payer_id = dbPayers.id;
+        else {
+          const { data: exPayer } = await supabase.from('master_payers').select('id').eq('payee_code', customer.payeeCode).single();
+          payer_id = exPayer?.id || null;
+        }
+      }
+
       let contractor_id = null;
       if (customer.supplierCode) {
-        const { data: dbContractors } = await supabase.from('master_contractors').select('id').eq('contractor_code', customer.supplierCode).limit(1);
-        if (dbContractors && dbContractors.length > 0) {
-          contractor_id = dbContractors[0].id;
+        const { data: dbContractors, error: cErr } = await supabase.from('master_contractors').upsert(
+          { 
+            contractor_code: customer.supplierCode, 
+            name: customer.supplierName || customer.supplierCode,
+            payer_id: payer_id,
+            is_active: true
+          },
+          { onConflict: 'contractor_code' }
+        ).select('id').single();
+
+        if (cErr) console.error('Supabase Contractor save error:', cErr);
+        if (!cErr && dbContractors) contractor_id = dbContractors.id;
+        else {
+          const { data: exCont } = await supabase.from('master_contractors').select('id').eq('contractor_code', customer.supplierCode).single();
+          contractor_id = exCont?.id || null;
         }
       }
 
@@ -442,11 +469,12 @@ export const storageService = {
         contractor_id: contractor_id
       };
       
-      const { error } = await supabase.from('master_collection_points').upsert(payload, { onConflict: 'id' });
+      const { data, error } = await supabase.from('master_collection_points').upsert(payload, { onConflict: 'id' }).select('id').single();
       if (error) {
         console.error('Supabase saveSingleCustomer Error:', error);
         throw error;
       }
+      return { success: true, id: data.id };
     } catch (e) {
       console.error('Supabase単体顧客保存エラー:', e);
       throw e;

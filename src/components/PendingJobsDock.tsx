@@ -1,5 +1,5 @@
-import React, { useMemo } from 'react';
-import { Database, ArrowUpDown, Clock, AlertTriangle, GripVertical } from 'lucide-react';
+import React, { useMemo, useState, useEffect, useRef } from 'react';
+import { Database, ArrowUpDown, Clock, AlertTriangle, GripVertical, ChevronRight, ChevronLeft } from 'lucide-react';
 import { formatPreferredTime } from '../utils/timeUtils';
 import { Job } from '../types';
 
@@ -12,6 +12,38 @@ interface PendingJobsDockProps {
 }
 
 export default function PendingJobsDock({ pendingJobs, selectedCell, onAddJob, onDragStartJob, onDragEndJob }: PendingJobsDockProps) {
+  const [isExpanded, setIsExpanded] = useState(true);
+  const [width, setWidth] = useState(320);
+  const isDragging = useRef(false);
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!isDragging.current) return;
+      const newWidth = document.body.clientWidth - e.clientX;
+      if (newWidth >= 200 && newWidth <= 600) {
+        setWidth(newWidth);
+      }
+    };
+    const handleMouseUp = () => {
+      if (isDragging.current) {
+        isDragging.current = false;
+        document.body.style.cursor = '';
+      }
+    };
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, []);
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    e.preventDefault();
+    isDragging.current = true;
+    document.body.style.cursor = 'col-resize';
+  };
+
   // 50音順 (かな読み) で自動ソート
   const sortedJobs = useMemo(() => {
     return [...pendingJobs].sort((a, b) => {
@@ -37,8 +69,34 @@ export default function PendingJobsDock({ pendingJobs, selectedCell, onAddJob, o
   };
 
   return (
-    <div id="pending-jobs-dock" className="w-80 bg-white border-l border-gray-200 flex flex-col h-full shadow-[-4px_0_15px_-3px_rgba(0,0,0,0.05)] z-20 shrink-0">
-      <div className="bg-gray-800 text-white p-3 flex justify-between items-center shrink-0">
+    <div 
+      id="pending-jobs-dock" 
+      className={`bg-white border-l border-gray-200 flex flex-col h-full shadow-[-4px_0_15px_-3px_rgba(0,0,0,0.05)] z-20 shrink-0 transition-all duration-300 relative ${isExpanded ? '' : 'w-12 cursor-pointer hover:bg-gray-50'}`}
+      style={isExpanded ? { width: `${width}px` } : undefined}
+      onClick={!isExpanded ? () => setIsExpanded(true) : undefined}
+    >
+      {/* リサイズハンドル */}
+      {isExpanded && (
+        <div 
+          className="absolute left-0 top-0 bottom-0 w-2 cursor-col-resize hover:bg-blue-400 hover:opacity-20 opacity-0 z-10 transition-colors"
+          onMouseDown={handleMouseDown}
+        />
+      )}
+
+      {/* 開閉ボタン */}
+      <button
+        onClick={(e) => {
+          e.stopPropagation();
+          setIsExpanded(!isExpanded);
+        }}
+        className="absolute -left-4 top-1/2 -translate-y-1/2 bg-white border border-gray-200 rounded-full p-1 shadow-md hover:bg-gray-50 z-30 flex items-center justify-center text-gray-500 transition-colors"
+      >
+        {isExpanded ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
+      </button>
+
+      {isExpanded ? (
+        <>
+          <div className="bg-gray-800 text-white p-3 flex justify-between items-center shrink-0">
         <div className="font-bold flex items-center gap-2"><Database size={16} />未配車リスト</div>
       </div>
       
@@ -126,6 +184,15 @@ export default function PendingJobsDock({ pendingJobs, selectedCell, onAddJob, o
           </div>
         ))}
       </div>
+        </>
+      ) : (
+        <div className="flex flex-col items-center py-4 h-full text-gray-400 gap-4 mt-10">
+          <Database size={20} />
+          <div style={{ writingMode: 'vertical-rl' }} className="tracking-widest font-bold text-sm">
+            未配車 ({sortedJobs.length})
+          </div>
+        </div>
+      )}
     </div>
   );
 }

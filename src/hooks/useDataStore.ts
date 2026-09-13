@@ -287,83 +287,101 @@ export function useDataStore(dateStr: string | null | undefined, isPreviewMode: 
   // ==========================================
 
   const saveCustomer = async (customerData: Customer & { isInvalid?: boolean; kana?: string; preferredTime?: string; items?: any[]; note?: string; holidayCollection?: boolean }) => {
-    // 確実な保存のための個別保存処理 (UIループ等によるタイマーキャンセルを防ぐ)
-    await storageService.saveSingleCustomer(customerData);
-
-    setMasterCustomers(prev => {
-      const exists = prev.find(c => c.id === customerData.id);
-      if (exists) {
-        return prev.map(c => c.id === customerData.id ? customerData : c);
-      }
-      return [...prev, customerData];
-    });
-
-    const updateJobAttributes = (job: Job | any): Job => {
-      if (job.originalCustomerId !== customerData.id) return job;
-      return {
-        ...job,
-        title: customerData.name || job.title,
-        kana: customerData.kana !== undefined ? customerData.kana : job.kana,
-        area: customerData.area !== undefined ? customerData.area : job.area,
-        duration: Number(customerData.defaultDuration) || job.duration || 30,
-        preferredTime: customerData.preferredTime !== undefined ? customerData.preferredTime : job.preferredTime,
-        requiredVehicle: customerData.requiredVehicle !== undefined ? customerData.requiredVehicle : job.requiredVehicle,
-        items: customerData.items || job.items || [],
-        note: customerData.note !== undefined ? customerData.note : job.note,
-        holidayCollection: customerData.holidayCollection !== undefined ? customerData.holidayCollection : job.holidayCollection
-      };
-    };
-
-    if (customerData.isInvalid) {
-      setJobs(prev => prev.filter(j => j.originalCustomerId !== customerData.id));
-      setPendingJobs(prev => prev.filter(j => j.originalCustomerId !== customerData.id));
-      setMonthlyExceptions(prev => {
-        const updated: MonthlyExceptions = {};
-        for (const [d, exp] of Object.entries(prev)) {
-          updated[d] = {
-            spotJobs: (exp.spotJobs || []).filter(j => j.originalCustomerId !== customerData.id),
-            cancellations: (exp.cancellations || []).filter(id => id !== customerData.id),
-            reschedules: (exp.reschedules || []).filter(j => j.originalCustomerId !== customerData.id)
-          };
-        }
-        return updated;
-      });
-    } else {
-      setJobs(prev => prev.map(updateJobAttributes));
+    try {
+      const res = await storageService.saveSingleCustomer(customerData);
+      const newId = res.id;
+      const oldId = customerData.id;
       
-      if (dateStr) {
-        const currentExceptions = await storageService.loadExceptions() || {};
-        const dailyJobsForToday = generateDailySchedule(dateStr, [customerData], [], (currentExceptions?.[dateStr]?.spotJobs || []));
-        const shouldBeInScheduleToday = dailyJobsForToday.length > 0;
+      const updatedCustomer = { ...customerData, id: newId };
 
-        setPendingJobs(prev => {
-          const isCurrentlyInPending = prev.some(j => j.originalCustomerId === customerData.id);
-          
-          if (shouldBeInScheduleToday) {
-            if (isCurrentlyInPending) {
-              return prev.map(updateJobAttributes);
-            } else {
-              return uniqueJobs([...prev, ...dailyJobsForToday]);
-            }
-          } else {
-            return prev.filter(j => j.originalCustomerId !== customerData.id || !j.id.startsWith('gen_'));
+      setMasterCustomers(prev => {
+        const exists = prev.find(c => c.id === oldId || c.id === newId);
+        if (exists) {
+          return prev.map(c => (c.id === oldId || c.id === newId) ? updatedCustomer : c);
+        }
+        return [...prev, updatedCustomer];
+      });
+
+      const updateJobAttributes = (job: Job | any): Job => {
+        if (job.originalCustomerId !== oldId && job.originalCustomerId !== newId) return job;
+        
+        let newJobId = job.id;
+        if (job.id.startsWith('gen_') && job.originalCustomerId === oldId) {
+          newJobId = job.id.replace(oldId, newId);
+        }
+        
+        return {
+          ...job,
+          id: newJobId,
+          originalCustomerId: newId,
+          title: updatedCustomer.name || job.title,
+          kana: updatedCustomer.kana !== undefined ? updatedCustomer.kana : job.kana,
+          area: updatedCustomer.area !== undefined ? updatedCustomer.area : job.area,
+          duration: Number(updatedCustomer.defaultDuration) || job.duration || 30,
+          preferredTime: updatedCustomer.preferredTime !== undefined ? updatedCustomer.preferredTime : job.preferredTime,
+          requiredVehicle: updatedCustomer.requiredVehicle !== undefined ? updatedCustomer.requiredVehicle : job.requiredVehicle,
+          items: updatedCustomer.items || job.items || [],
+          note: updatedCustomer.note !== undefined ? updatedCustomer.note : job.note,
+          holidayCollection: updatedCustomer.holidayCollection !== undefined ? updatedCustomer.holidayCollection : job.holidayCollection
+        };
+      };
+
+      if (updatedCustomer.isInvalid) {
+        setJobs(prev => prev.filter(j => j.originalCustomerId !== oldId && j.originalCustomerId !== newId));
+        setPendingJobs(prev => prev.filter(j => j.originalCustomerId !== oldId && j.originalCustomerId !== newId));
+        setMonthlyExceptions(prev => {
+          const updated: MonthlyExceptions = {};
+          for (const [d, exp] of Object.entries(prev)) {
+            updated[d] = {
+              spotJobs: (exp.spotJobs || []).filter(j => j.originalCustomerId !== oldId && j.originalCustomerId !== newId),
+              cancellations: (exp.cancellations || []).filter(id => id !== oldId && id !== newId),
+              reschedules: (exp.reschedules || []).filter(j => j.originalCustomerId !== oldId && j.originalCustomerId !== newId)
+            };
           }
+          return updated;
         });
       } else {
-        setPendingJobs(prev => prev.map(updateJobAttributes));
-      }
+        setJobs(prev => prev.map(updateJobAttributes));
+        
+        if (dateStr) {
+          const currentExceptions = await storageService.loadExceptions() || {};
+          const dailyJobsForToday = generateDailySchedule(dateStr, [updatedCustomer], [], (currentExceptions?.[dateStr]?.spotJobs || []));
+          const shouldBeInScheduleToday = dailyJobsForToday.length > 0;
 
-      setMonthlyExceptions(prev => {
-        const updated: MonthlyExceptions = {};
-        for (const [d, exp] of Object.entries(prev)) {
-          updated[d] = {
-            ...exp,
-            spotJobs: (exp.spotJobs || []).map(updateJobAttributes),
-            reschedules: (exp.reschedules || []).map(updateJobAttributes)
-          };
+          setPendingJobs(prev => {
+            const isCurrentlyInPending = prev.some(j => j.originalCustomerId === oldId || j.originalCustomerId === newId);
+            
+            if (shouldBeInScheduleToday) {
+              if (isCurrentlyInPending) {
+                return prev.map(updateJobAttributes);
+              } else {
+                return uniqueJobs([...prev, ...dailyJobsForToday]);
+              }
+            } else {
+              return prev.filter(j => j.originalCustomerId !== oldId && j.originalCustomerId !== newId || !j.id.startsWith('gen_'));
+            }
+          });
+        } else {
+          setPendingJobs(prev => prev.map(updateJobAttributes));
         }
-        return updated;
-      });
+
+        setMonthlyExceptions(prev => {
+          const updated: MonthlyExceptions = {};
+          for (const [d, exp] of Object.entries(prev)) {
+            updated[d] = {
+              ...exp,
+              spotJobs: (exp.spotJobs || []).map(updateJobAttributes),
+              reschedules: (exp.reschedules || []).map(updateJobAttributes),
+              cancellations: (exp.cancellations || []).map(id => id === oldId ? newId : id)
+            };
+          }
+          return updated;
+        });
+      }
+    } catch (err) {
+      console.error("Failed to save customer:", err);
+      // In a real app we might show a toast error here
+      throw err;
     }
   };
 
@@ -501,7 +519,12 @@ export function useDataStore(dateStr: string | null | undefined, isPreviewMode: 
   };
 
   const deleteWorker = async (id: string) => {
-    setMasterWorkers(prev => prev.filter(w => w.id !== id));
+    const res = await storageService.deleteWorker(id);
+    if (res.success) {
+      setMasterWorkers(prev => prev.filter(w => w.id !== id));
+    } else {
+      console.error("Failed to delete worker:", res.error);
+    }
   };
 
   const saveVehicle = async (vehicleData: MasterVehicle, isEdit: boolean) => {
@@ -512,7 +535,12 @@ export function useDataStore(dateStr: string | null | undefined, isPreviewMode: 
   };
 
   const deleteVehicle = async (id: string) => {
-    setMasterVehicles(prev => prev.filter(v => v.id !== id));
+    const res = await storageService.deleteVehicle(id);
+    if (res.success) {
+      setMasterVehicles(prev => prev.filter(v => v.id !== id));
+    } else {
+      console.error("Failed to delete vehicle:", res.error);
+    }
   };
 
   const saveItems = async (newItems: MasterItem[]) => {
@@ -520,7 +548,12 @@ export function useDataStore(dateStr: string | null | undefined, isPreviewMode: 
   };
 
   const deleteItem = async (id: string) => {
-    setMasterItems(prev => prev.filter(i => i.id !== id));
+    const res = await storageService.deleteItem(id);
+    if (res.success) {
+      setMasterItems(prev => prev.filter(i => i.id !== id));
+    } else {
+      console.error("Failed to delete item:", res.error);
+    }
   };
 
   const saveJobs = async (newJobs: Job[]) => {
