@@ -67,14 +67,36 @@ try {
         warnings++;
     }
 
-    // [3] 未コミット変更の警告
+    // [3] コミットとPushの物理強制
     if (changedFiles.length > 0) {
-        console.warn(`⚠️ [監査3] ${changedFiles.length} 件の未コミット変更があります。`);
-        warnings++;
+        const actualChanges = changedFiles.filter(f => !f.includes('.agents/scratch/') && !f.includes('Artifact/'));
+        if (actualChanges.length > 0) {
+            console.error('\n🚨 [違反] 未コミットの変更があります。');
+            console.error('タスク完了前に `git commit` を実行して変更を確定させてください。');
+            console.error(`(未コミット対象: ${actualChanges.length}件)\n`);
+            process.exit(1);
+        }
     } else {
-        console.log('✅ [監査3] ワーキングツリーはクリーンです。');
+        console.log('✅ [監査3] ワーキングツリーはクリーンです（コミット済み）。');
     }
+
+    // [3.1] Pushの物理強制
+    try {
+        const unpushed = execSync('git log @{u}..HEAD --oneline', { cwd: rootDir, encoding: 'utf8' }).trim();
+        if (unpushed) {
+            console.error('\n🚨 [違反] 未Pushのコミットがあります。');
+            console.error('タスク完了前に `git push` を実行してリモートへ反映させてください。\n');
+            process.exit(1);
+        } else {
+            console.log('✅ [監査3.1] リモートへのPushが完了しています。');
+        }
+    } catch (e) {
+        // リモート追跡ブランチが設定されていない場合などのエラーはスキップ
+        console.warn('⚠️ [監査3.1] Push状態の確認をスキップしました。');
+    }
+
 } catch (e) {
+    if (e.status === 1 || e.code === 1) process.exit(1); // 意図的なExitはそのまま落とす
     console.warn('⚠️ [監査2/3] Git コマンドの実行に失敗しました。スキップします。');
 }
 
