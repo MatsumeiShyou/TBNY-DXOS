@@ -4927,3 +4927,8 @@
 {"timestamp":"2026-09-13T13:39:03.164Z","event":"hook_observed","tool":"unknown","isSubagent":false,"conversation_id":"parent","argsSummary":[]}
 {"timestamp":"2026-09-13T13:39:09.349Z","event":"hook_observed","tool":"unknown","isSubagent":false,"conversation_id":"parent","argsSummary":[]}
 {"timestamp":"2026-09-13T13:39:18.639Z","event":"hook_observed","tool":"unknown","isSubagent":false,"conversation_id":"parent","argsSummary":[]}
+{"timestamp":"2026-09-13T13:39:29.197Z","event":"hook_observed","tool":"unknown","isSubagent":false,"conversation_id":"parent","argsSummary":[]}
+{"timestamp":"2026-09-13T13:41:59.017Z","event":"hook_observed","tool":"unknown","isSubagent":false,"conversation_id":"parent","argsSummary":[]}
+{"timestamp":"2026-09-13T13:42:11.006Z","event":"hook_observed","tool":"unknown","isSubagent":false,"conversation_id":"parent","argsSummary":[]}
+{"timestamp":"2026-09-13T13:42:17.162Z","event":"hook_observed","tool":"unknown","isSubagent":false,"conversation_id":"parent","argsSummary":[]}
+{"timestamp":"2026-09-13T13:42:27.781Z","event":"hook_observed","tool":"unknown","isSubagent":false,"conversation_id":"parent","argsSummary":[]}

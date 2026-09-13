@@ -240,7 +240,7 @@ export default function CustomerManagementModal({ customers, masterVehicles, mas
   const handleCompositionEnd = (e: any) => {
     const reading = compositionBuffer.current;
     if (reading) {
-      if (!IGNORE_KANA_LIST.includes(reading)) {
+      if (!IGNORE_KANA_LIST.includes(reading) && /^[ぁ-んァ-ヶー]+$/.test(reading)) {
         const halfKana = toHalfWidthKatakana(reading);
         setFormData(prev => ({
           ...prev,
