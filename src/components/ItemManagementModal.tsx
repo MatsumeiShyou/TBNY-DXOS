@@ -25,6 +25,8 @@ export default function ItemManagementModal({ items = [], onSave, onDelete, onCl
   const [addForm, setAddForm] = useState({ name: '', kana: '', requiredVehicle: '', estimatedDuration: 0 });
   const [errorMsg, setErrorMsg] = useState('');
 
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+
   const handleStartEdit = (item: Item) => {
     setEditingId(item.id);
     setEditForm({ 
@@ -69,10 +71,42 @@ export default function ItemManagementModal({ items = [], onSave, onDelete, onCl
     setErrorMsg('');
   };
 
-  const handleDelete = (id: string) => {
-    if (confirm('この品目を削除してもよろしいですか？（顧客に設定されている場合は注意してください）')) {
+  const handleDelete = (id: string, name: string) => {
+    if (confirm(`「${name}」を削除してもよろしいですか？（顧客に設定されている場合は注意してください）`)) {
       onDelete(id);
+      setSelectedIds(prev => {
+        const next = new Set(prev);
+        next.delete(id);
+        return next;
+      });
     }
+  };
+
+  const handleBulkDelete = () => {
+    if (selectedIds.size === 0) return;
+    if (confirm(`選択した ${selectedIds.size} 件の品目を削除しますか？`)) {
+      Array.from(selectedIds).forEach(id => {
+        onDelete(id);
+      });
+      setSelectedIds(new Set());
+    }
+  };
+
+  const toggleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.checked) {
+      setSelectedIds(new Set(items.map(i => i.id)));
+    } else {
+      setSelectedIds(new Set());
+    }
+  };
+
+  const toggleSelect = (id: string, checked: boolean) => {
+    setSelectedIds(prev => {
+      const next = new Set(prev);
+      if (checked) next.add(id);
+      else next.delete(id);
+      return next;
+    });
   };
 
   return (
@@ -158,9 +192,28 @@ export default function ItemManagementModal({ items = [], onSave, onDelete, onCl
 
           {/* List */}
           <div className="bg-white rounded shadow-sm border border-gray-200 overflow-hidden">
+            <div className="p-3 border-b flex justify-between items-center bg-gray-50">
+              <span className="text-sm font-bold text-gray-700">登録済み品目 ({items.length}件)</span>
+              {selectedIds.size > 0 && (
+                <button
+                  onClick={handleBulkDelete}
+                  className="text-xs bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded flex items-center gap-1"
+                >
+                  <Trash2 size={14} /> 選択を削除 ({selectedIds.size})
+                </button>
+              )}
+            </div>
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="bg-gray-100 border-b text-gray-600 text-sm">
+                  <th className="p-3 w-10 text-center">
+                    <input 
+                      type="checkbox"
+                      checked={items.length > 0 && selectedIds.size === items.length}
+                      onChange={toggleSelectAll}
+                      className="cursor-pointer"
+                    />
+                  </th>
                   <th className="p-3 w-1/4">品目名</th>
                   <th className="p-3 w-1/4">フリガナ</th>
                   <th className="p-3 w-1/4">必須車種制限</th>
@@ -171,14 +224,14 @@ export default function ItemManagementModal({ items = [], onSave, onDelete, onCl
               <tbody>
                 {items.length === 0 ? (
                   <tr>
-                    <td colSpan={5} className="p-8 text-center text-gray-500">
+                    <td colSpan={6} className="p-8 text-center text-gray-500">
                       品目が登録されていません
                     </td>
                   </tr>
                 ) : items.map(item => (
                   <tr key={item.id} className="border-b hover:bg-gray-50 transition-colors group">
                     {editingId === item.id ? (
-                      <td colSpan={5} className="p-3">
+                      <td colSpan={6} className="p-3">
                         <div className="flex gap-2 items-start flex-col lg:flex-row">
                           <div className="flex-1 w-full space-y-2">
                             <div className="flex gap-2 flex-col sm:flex-row">
@@ -226,6 +279,14 @@ export default function ItemManagementModal({ items = [], onSave, onDelete, onCl
                       </td>
                     ) : (
                       <>
+                        <td className="p-3 text-center">
+                          <input 
+                            type="checkbox"
+                            checked={selectedIds.has(item.id)}
+                            onChange={(e) => toggleSelect(item.id, e.target.checked)}
+                            className="cursor-pointer"
+                          />
+                        </td>
                         <td className="p-3 font-bold">{item.name}</td>
                         <td className="p-3 text-sm text-gray-600">{item.kana || <span className="text-gray-400 text-xs">(未登録)</span>}</td>
                         <td className="p-3 text-gray-600 text-sm">{item.requiredVehicle || <span className="text-gray-400">-</span>}</td>
@@ -238,7 +299,7 @@ export default function ItemManagementModal({ items = [], onSave, onDelete, onCl
                               title="編集"
                             ><Edit2 size={16} /></button>
                             <button 
-                              onClick={() => handleDelete(item.id)}
+                              onClick={() => handleDelete(item.id, item.name)}
                               className="p-1.5 text-red-600 hover:bg-red-100 rounded transition-colors"
                               title="削除"
                             ><Trash2 size={16} /></button>

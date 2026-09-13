@@ -130,6 +130,37 @@ export default function CustomerManagementModal({ customers, masterVehicles, mas
   const [isEditing, setIsEditing] = useState(!!initialData);
   const [validationErrors, setValidationErrors] = useState<{name?: string, kana?: string}>({});
 
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+
+  const handleBulkDelete = async () => {
+    if (selectedIds.size === 0) return;
+    if (window.confirm(`選択した ${selectedIds.size} 件の顧客を削除しますか？\n(配車実績がある場合は論理削除になります)`)) {
+      if (onDelete) {
+        for (const id of Array.from(selectedIds)) {
+          await onDelete(id);
+        }
+      }
+      setSelectedIds(new Set());
+    }
+  };
+
+  const toggleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.checked) {
+      setSelectedIds(new Set(filteredCustomers.map(c => c.id)));
+    } else {
+      setSelectedIds(new Set());
+    }
+  };
+
+  const toggleSelect = (id: string, checked: boolean) => {
+    setSelectedIds(prev => {
+      const next = new Set(prev);
+      if (checked) next.add(id);
+      else next.delete(id);
+      return next;
+    });
+  };
+
   const [optimisticCustomers, setOptimisticCustomer] = useOptimistic<Customer[], any>(
     customers,
     (state, updatedCustomer) => {
@@ -413,12 +444,22 @@ export default function CustomerManagementModal({ customers, masterVehicles, mas
             </div>
 
             <div className="flex gap-2 mt-3">
-              <button
-                onClick={handleCreateNew}
-                className="flex-1 bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100 font-bold py-1.5 px-2 rounded-md text-sm flex items-center justify-center gap-1 transition-colors"
-              >
-                <Plus size={15} /> 新規顧客
-              </button>
+              {selectedIds.size > 0 && (
+                <button
+                  onClick={handleBulkDelete}
+                  className="flex-1 bg-red-50 text-red-700 border border-red-200 hover:bg-red-100 font-bold py-1.5 px-2 rounded-md text-xs flex items-center justify-center gap-1 transition-colors"
+                >
+                  <Trash2 size={13} /> {selectedIds.size}件削除
+                </button>
+              )}
+              {selectedIds.size === 0 && (
+                <button
+                  onClick={handleCreateNew}
+                  className="flex-1 bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100 font-bold py-1.5 px-2 rounded-md text-sm flex items-center justify-center gap-1 transition-colors"
+                >
+                  <Plus size={15} /> 新規顧客
+                </button>
+              )}
               {onOpenGridMode && (
                 <button
                   onClick={onOpenGridMode}
@@ -427,6 +468,17 @@ export default function CustomerManagementModal({ customers, masterVehicles, mas
                   <Grid size={13} /> 一括設定
                 </button>
               )}
+            </div>
+            <div className="mt-2 flex items-center justify-between text-xs text-gray-500">
+              <label className="flex items-center gap-1 cursor-pointer">
+                <input 
+                  type="checkbox"
+                  checked={filteredCustomers.length > 0 && selectedIds.size === filteredCustomers.length}
+                  onChange={toggleSelectAll}
+                  className="w-3.5 h-3.5 cursor-pointer"
+                />
+                全選択
+              </label>
             </div>
             <button
               onClick={() => {
@@ -450,13 +502,22 @@ export default function CustomerManagementModal({ customers, masterVehicles, mas
               <div
                 key={customer.id}
                 onClick={() => handleSelectCustomer(customer)}
-                className={`px-3 py-2.5 cursor-pointer transition-colors border-l-2 border-b border-b-gray-100 ${
+                className={`px-3 py-2.5 cursor-pointer transition-colors border-l-2 border-b border-b-gray-100 flex gap-2 ${
                   (selectedCustomerId === customer.id || (selectedCustomerId === 'new' && formData.id === customer.id))
                     ? 'bg-emerald-50 border-l-emerald-500'
                     : 'border-l-transparent hover:bg-emerald-50/50'
                 }`}
               >
-                <div className="flex justify-between items-start mb-0.5">
+                <div className="pt-0.5" onClick={e => e.stopPropagation()}>
+                  <input 
+                    type="checkbox"
+                    checked={selectedIds.has(customer.id)}
+                    onChange={(e) => toggleSelect(customer.id, e.target.checked)}
+                    className="w-4 h-4 cursor-pointer"
+                  />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex justify-between items-start mb-0.5">
                   <div className="font-bold text-sm truncate flex items-center gap-1">
                     {(() => {
                       const warning = getCustomerWarning(customer);
@@ -474,6 +535,7 @@ export default function CustomerManagementModal({ customers, masterVehicles, mas
                   {customer.isInvalid && <span className="text-[10px] bg-red-100 text-red-600 px-1.5 py-0.5 rounded whitespace-nowrap">停止中</span>}
                 </div>
                 <div className="text-xs text-gray-500 truncate">{customer.area || 'エリア未定'} · {customer.jobType === 'regular' ? '定期' : 'スポット'}</div>
+                </div>
               </div>
             ))}
             {filteredCustomers.length === 0 && (

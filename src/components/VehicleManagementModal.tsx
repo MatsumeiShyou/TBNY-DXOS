@@ -29,6 +29,8 @@ export default function VehicleManagementModal({ vehicles, onSave, onDelete, onC
   const [formType, setFormType] = useState(VEHICLE_TYPE_OPTIONS[0].value);
   const [formCapacity, setFormCapacity] = useState('');
 
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+
   const resetForm = () => {
     setFormName('');
     setFormType(VEHICLE_TYPE_OPTIONS[0].value);
@@ -64,6 +66,44 @@ export default function VehicleManagementModal({ vehicles, onSave, onDelete, onC
     resetForm();
   };
 
+  const handleDelete = (id: string, name: string) => {
+    if (window.confirm(`「${name}」を削除しますか？\n（過去の配車実績がある場合は論理削除として扱われます）`)) {
+      onDelete(id);
+      setSelectedIds(prev => {
+        const next = new Set(prev);
+        next.delete(id);
+        return next;
+      });
+    }
+  };
+
+  const handleBulkDelete = () => {
+    if (selectedIds.size === 0) return;
+    if (window.confirm(`選択した ${selectedIds.size} 件の車両を削除しますか？`)) {
+      Array.from(selectedIds).forEach(id => {
+        onDelete(id);
+      });
+      setSelectedIds(new Set());
+    }
+  };
+
+  const toggleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.checked) {
+      setSelectedIds(new Set(vehicles.map(w => w.id)));
+    } else {
+      setSelectedIds(new Set());
+    }
+  };
+
+  const toggleSelect = (id: string, checked: boolean) => {
+    setSelectedIds(prev => {
+      const next = new Set(prev);
+      if (checked) next.add(id);
+      else next.delete(id);
+      return next;
+    });
+  };
+
   const getTypeLabel = (typeValue?: string) => {
     const found = VEHICLE_TYPE_OPTIONS.find(o => o.value === typeValue);
     return found ? found.label : (typeValue || '');
@@ -87,15 +127,34 @@ export default function VehicleManagementModal({ vehicles, onSave, onDelete, onC
         {/* 一覧 */}
         <div className="flex-1 overflow-y-auto p-4">
           <div className="flex justify-between items-center mb-3">
-            <h3 className="text-sm font-bold text-gray-700">登録済み車両 ({vehicles.length}台)</h3>
-            {!isFormOpen && (
-              <button 
-                onClick={startAdd}
-                className="text-xs bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded flex items-center gap-1"
-              >
-                <Plus size={14} /> 新規追加
-              </button>
-            )}
+            <h3 className="text-sm font-bold text-gray-700 flex items-center gap-2">
+              <input 
+                type="checkbox" 
+                checked={vehicles.length > 0 && selectedIds.size === vehicles.length}
+                onChange={toggleSelectAll}
+                className="w-4 h-4 cursor-pointer"
+                title="全選択/解除"
+              />
+              登録済み車両 ({vehicles.length}台)
+            </h3>
+            <div className="flex items-center gap-2">
+              {selectedIds.size > 0 && !isFormOpen && (
+                <button
+                  onClick={handleBulkDelete}
+                  className="text-xs bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded flex items-center gap-1"
+                >
+                  <Trash2 size={14} /> 選択を削除 ({selectedIds.size})
+                </button>
+              )}
+              {!isFormOpen && (
+                <button 
+                  onClick={startAdd}
+                  className="text-xs bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded flex items-center gap-1"
+                >
+                  <Plus size={14} /> 新規追加
+                </button>
+              )}
+            </div>
           </div>
 
           {vehicles.map(v => (
@@ -106,6 +165,12 @@ export default function VehicleManagementModal({ vehicles, onSave, onDelete, onC
               }`}
             >
               <div className="flex items-center gap-3">
+                <input 
+                  type="checkbox"
+                  checked={selectedIds.has(v.id)}
+                  onChange={(e) => toggleSelect(v.id, e.target.checked)}
+                  className="w-4 h-4 cursor-pointer"
+                />
                 <div className="w-8 h-8 rounded flex items-center justify-center text-sm bg-orange-100 text-orange-700">
                   <Truck size={16} />
                 </div>
@@ -127,9 +192,7 @@ export default function VehicleManagementModal({ vehicles, onSave, onDelete, onC
                   <Edit3 size={14} />
                 </button>
                 <button 
-                  onClick={() => {
-                    if (window.confirm(`「${v.name}」を削除しますか？`)) onDelete(v.id);
-                  }}
+                  onClick={() => handleDelete(v.id, v.name)}
                   className="text-gray-400 hover:text-red-600 p-1" title="削除"
                 >
                   <Trash2 size={14} />
