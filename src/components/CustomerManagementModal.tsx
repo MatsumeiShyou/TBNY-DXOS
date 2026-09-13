@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useOptimistic, useActionState, startTransition } from 'react';
+import React, { useState, useEffect, useRef, useMemo, useOptimistic, useActionState, startTransition } from 'react';
 import { Customer, MasterVehicle } from '../types';
 import { Item } from './ItemManagementModal';
 import { X, Plus, Search, Trash2, Building, Calendar, Settings, AlertCircle, Grid, Check, Copy } from 'lucide-react';
@@ -6,6 +6,7 @@ import { MASTER_VEHICLES_LIST } from '../data/constants';
 import { parsePreferredTime } from '../utils/timeUtils';
 import { toHalfWidthKatakana } from '../utils/textUtils';
 import SearchableMultiSelect from './SearchableMultiSelect';
+import procurementCandidates from '../data/procurementCandidates.json';
 
 const TIME_OPTIONS = (() => {
   const options = [];
@@ -86,6 +87,24 @@ const initialFormState = {
   items: [], note: '', isInvalid: false, preferredTime: '', customSchedule: ''
 };
 
+const getCustomerWarning = (customer: Customer) => {
+  if (!customer.name?.trim() || !customer.kana?.trim()) {
+    return { color: 'text-red-500', title: '必須項目が未入力です' };
+  }
+  const hasAccounting = !!(customer.payeeCode && String(customer.payeeCode).trim() && 
+                           customer.payeeName && String(customer.payeeName).trim() && 
+                           customer.supplierCode && String(customer.supplierCode).trim() && 
+                           customer.supplierName && String(customer.supplierName).trim());
+  if (!hasAccounting) {
+    return { color: 'text-orange-500', title: '経理・管理情報が未入力です' };
+  }
+  const hasSiteInfo = !!(customer.area && String(customer.area).trim() && 
+                         customer.address && String(customer.address).trim());
+  if (!hasSiteInfo) {
+    return { color: 'text-emerald-500', title: '現場情報が未入力です' };
+  }
+  return null;
+};
 
 interface CustomerManagementModalProps {
   customers: Customer[];
@@ -281,6 +300,30 @@ export default function CustomerManagementModal({ customers, masterVehicles, mas
     }
   };
 
+  const candidateRows = useMemo(() => {
+    const name = String(formData.name || '').normalize('NFKC').toLowerCase().replace(/[\s・（）()-]/g, '');
+    return procurementCandidates
+      .map(candidate => {
+        const candidateName = String(candidate.supplierName || candidate.payeeName || '').normalize('NFKC').toLowerCase().replace(/[\s・（）()-]/g, '');
+        const similarity = name && candidateName && (name.includes(candidateName) || candidateName.includes(name))
+          ? Math.min(name.length, candidateName.length) / Math.max(name.length, candidateName.length)
+          : 0;
+        return { ...candidate, similarity };
+      })
+      .sort((a, b) => b.similarity - a.similarity || b.records - a.records)
+      .slice(0, 10);
+  }, [formData.name]);
+
+  const handleCandidateSelect = (candidate: typeof procurementCandidates[number]) => {
+    setFormData(prev => ({
+      ...prev,
+      supplierCode: candidate.supplierCode,
+      supplierName: candidate.supplierName,
+      payeeCode: candidate.payeeCode,
+      payeeName: candidate.payeeName
+    }));
+  };
+
   const handlePrefTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newType = e.target.value;
     let newStr = '';
@@ -414,8 +457,16 @@ export default function CustomerManagementModal({ customers, masterVehicles, mas
                 }`}
               >
                 <div className="flex justify-between items-start mb-0.5">
-                  <div className="font-bold text-sm text-gray-800 truncate flex items-center gap-1">
-                    {customer.name}
+                  <div className="font-bold text-sm truncate flex items-center gap-1">
+                    {(() => {
+                      const warning = getCustomerWarning(customer);
+                      return (
+                        <span className={`truncate flex items-center gap-1 ${warning ? warning.color : 'text-gray-800'}`} title={warning?.title}>
+                          {warning && <AlertCircle size={14} className="shrink-0" />}
+                          {customer.name || '(未入力)'}
+                        </span>
+                      );
+                    })()}
                     {customer.syncStatus === 'saving' && <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse ml-1" title="保存中..."></span>}
                     {customer.syncStatus === 'error' && <span className="w-2 h-2 rounded-full bg-red-500 ml-1" title="保存エラー"></span>}
                     {customer.syncStatus === 'draft' && <span className="w-2 h-2 rounded-full bg-amber-500 ml-1" title="未同期"></span>}
@@ -535,6 +586,37 @@ export default function CustomerManagementModal({ customers, masterVehicles, mas
                           <label className="text-xs font-bold text-gray-500 whitespace-nowrap w-20 shrink-0">仕入先名</label>
                           <input type="text" name="supplierName" value={formData.supplierName || ''} onChange={handleChange} className="flex-1 border rounded px-2 py-1.5 text-sm bg-white" />
                         </div>
+                        {(!formData.supplierCode || !formData.payeeCode) && (
+                          <div className="col-span-2 mt-2 rounded border border-emerald-100 bg-emerald-50/40 p-3">
+                            <div className="mb-2">
+                              <div className="text-xs font-bold text-emerald-800">仕入日報から候補を選択</div>
+                              <div className="text-[10px] text-emerald-700/80">
+                                Pythonで集計した226組を、回収先名との一致度・取引件数順で表示しています。選択すると4項目に反映されます。
+                              </div>
+                            </div>
+                            <div className="max-h-48 space-y-1 overflow-y-auto">
+                              {candidateRows.map((candidate, index) => (
+                                <button
+                                  key={`${candidate.supplierCode}-${candidate.payeeCode}`}
+                                  type="button"
+                                  onClick={() => handleCandidateSelect(candidate)}
+                                  className="w-full rounded border border-gray-200 bg-white px-2 py-1.5 text-left hover:border-emerald-400 hover:bg-emerald-50"
+                                >
+                                  <div className="flex items-center gap-2">
+                                    <span className="w-4 shrink-0 text-[10px] font-bold text-emerald-700">{index + 1}.</span>
+                                    <span className="min-w-0 flex-1">
+                                      <span className="block truncate text-xs font-bold text-gray-800">{candidate.supplierName || candidate.payeeName}</span>
+                                      <span className="block truncate text-[10px] text-gray-500">
+                                        仕入先 {candidate.supplierCode || '—'} ・ 支払先 {candidate.payeeName || '—'} ({candidate.payeeCode || '—'})
+                                      </span>
+                                    </span>
+                                    <span className="shrink-0 text-[10px] text-gray-500">{candidate.records.toLocaleString()}件</span>
+                                  </div>
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>

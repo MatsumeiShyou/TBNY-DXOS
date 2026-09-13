@@ -90,7 +90,9 @@ export const storageService = {
             id: row.front_id || row.id,
             dbId: row.id,
             originalCustomerId: row.collection_point_id,
-            driverId: row.vehicle_id || undefined,
+            driverId: row.worker_id || undefined, // UI上でdriverIdとして扱っているのはworker_id
+            workerId: row.worker_id || undefined,
+            vehicleId: row.vehicle_id || undefined,
             startTime: row.planned_time ? row.planned_time.substring(0, 5) : undefined,
             status: row.status,
             is_skipped: row.is_skipped,
@@ -125,8 +127,8 @@ export const storageService = {
       return null;
     } catch (e) {
       console.error(`Supabase読み込みエラー(${dateString}):`, e);
+      throw e;
     }
-    return null;
   },
 
 
@@ -146,50 +148,57 @@ export const storageService = {
 
       const allJobs = [...(state.jobs || []), ...(state.pendingJobs || [])];
       
-      if (allJobs.length > 0) {
-        const { data: existing } = await supabase
-          .from('daily_jobs')
-          .select('id, front_id')
-          .eq('planned_date', dateString);
-          
-        const existingMap = new Map((existing || []).map((r: any) => [r.front_id || '', r.id]));
-        const currentFrontIds = new Set();
-        const inserts: any[] = [];
-        const updates: any[] = [];
+      const { data: existing } = await supabase
+        .from('daily_jobs')
+        .select('id, front_id')
+        .eq('planned_date', dateString);
+        
+      const existingMap = new Map((existing || []).map((r: any) => [r.front_id || '', r.id]));
+      const currentFrontIds = new Set();
+      const inserts: any[] = [];
+      const updates: any[] = [];
 
-        for (const job of allJobs) {
-          currentFrontIds.add(job.id);
-          const payload = {
-            planned_date: dateString,
-            front_id: job.id,
-            collection_point_id: job.originalCustomerId,
-            vehicle_id: job.driverId || null,
-            planned_time: job.startTime || null,
-            status: job.status || 'PENDING'
-          };
+      for (const job of allJobs) {
+        currentFrontIds.add(job.id);
+        const payload = {
+          planned_date: dateString,
+          front_id: job.id,
+          collection_point_id: job.originalCustomerId,
+          worker_id: job.workerId || job.driverId || null, // driverId は worker_id として扱う
+          vehicle_id: job.vehicleId || null,
+          planned_time: job.startTime || null,
+          status: (!job.status || job.status === ('PENDING' as any)) ? 'PLANNED' : job.status,
+          is_skipped: !!job.is_skipped
+        };
 
-          if (existingMap.has(job.id)) {
-            updates.push({ ...payload, id: existingMap.get(job.id) });
-          } else {
-            inserts.push(payload);
+        if (existingMap.has(job.id)) {
+          updates.push({ ...payload, id: existingMap.get(job.id) });
+        } else {
+          inserts.push(payload);
+        }
+      }
+
+      if (existing) {
+        for (const row of existing) {
+          if (!currentFrontIds.has(row.front_id)) {
+            // 物理削除が禁止されているため論理削除(SKIPPED)として更新
+            updates.push({ id: row.id, status: 'SKIPPED', is_skipped: true });
           }
         }
+      }
 
-        if (existing) {
-          for (const row of existing) {
-            if (!currentFrontIds.has(row.front_id)) {
-              updates.push({ id: row.id, status: 'DELETED' });
-            }
-          }
+      if (inserts.length > 0) {
+        const { error: insertErr } = await supabase.from('daily_jobs').insert(inserts);
+        if (insertErr) {
+          console.error('Supabase saveDailyState INSERT Error:', insertErr);
+          throw insertErr;
         }
-
-        if (inserts.length > 0) {
-          const { error: insertErr } = await supabase.from('daily_jobs').insert(inserts);
-          if (insertErr) console.error('Supabase saveDailyState INSERT Error:', insertErr);
-        }
-        if (updates.length > 0) {
-          const { error: updateErr } = await supabase.from('daily_jobs').upsert(updates, { onConflict: 'id' });
-          if (updateErr) console.error('Supabase saveDailyState UPDATE/DELETE Error:', updateErr);
+      }
+      if (updates.length > 0) {
+        const { error: updateErr } = await supabase.from('daily_jobs').upsert(updates, { onConflict: 'id' });
+        if (updateErr) {
+          console.error('Supabase saveDailyState UPDATE/DELETE Error:', updateErr);
+          throw updateErr;
         }
       }
     } catch (e) {
@@ -240,10 +249,10 @@ export const storageService = {
         `)
       ]);
 
-      if (itemsErr) console.error('items fetch err:', itemsErr);
-      if (workersErr) console.error('workers fetch err:', workersErr);
-      if (vehiclesErr) console.error('vehicles fetch err:', vehiclesErr);
-      if (pointsErr) console.error('points fetch err:', pointsErr);
+      if (itemsErr || workersErr || vehiclesErr || pointsErr) {
+        console.error('Master Data Fetch Error:', { itemsErr, workersErr, vehiclesErr, pointsErr });
+        throw new Error('マスターデータの取得に失敗しました。');
+      }
 
       // フロントエンド向けの形式に変換
       const items = (itemsData || []).map(i => ({ id: i.item_code, name: i.name, is_active: i.is_active }));
@@ -287,16 +296,16 @@ export const storageService = {
       });
 
       return {
-        workers: workers.length > 0 ? workers : defaultWorkers,
-        vehicles: vehicles.length > 0 ? vehicles : defaultVehicles,
-        customers: customers.length > 0 ? customers : defaultCustomers,
-        items: items.length > 0 ? items : defaultItems
+        workers,
+        vehicles,
+        customers,
+        items
       };
       
     } catch (e) {
       console.error('Supabaseマスタ読み込みエラー:', e);
+      throw e;
     }
-    return { workers: defaultWorkers, vehicles: defaultVehicles, customers: defaultCustomers, items: defaultItems };
   },
 
   saveMasterData: async ({ workers, vehicles, customers, items }) => {
@@ -391,23 +400,65 @@ export const storageService = {
         
         if (pointsToUpsert.length > 0) {
           const { error } = await supabase.from('master_collection_points').upsert(pointsToUpsert, { onConflict: 'id' });
-          if (error) console.error('Supabase Collection Points save error:', error);
+          if (error) {
+            console.error('Supabase Collection Points save error:', error);
+            throw error;
+          }
         }
       }
       
     } catch (e) {
       console.error('Supabaseマスタ保存エラー:', e);
+      throw e;
     }
   },
 
+  saveSingleCustomer: async (customer: any) => {
+    try {
+      const { supabase } = await import('../lib/supabase');
+      // A single lookup for the contractor
+      let contractor_id = null;
+      if (customer.supplierCode) {
+        const { data: dbContractors } = await supabase.from('master_contractors').select('id').eq('contractor_code', customer.supplierCode).limit(1);
+        if (dbContractors && dbContractors.length > 0) {
+          contractor_id = dbContractors[0].id;
+        }
+      }
 
+      const payload = {
+        id: customer.id.startsWith('c_') ? undefined : customer.id,
+        name: customer.name,
+        kana: customer.kana,
+        address: customer.area || customer.address,
+        target_item_codes: customer.items || [],
+        time_pattern: 'FREE',
+        vehicle_lock: !!customer.requiredVehicle,
+        schedule_rules: customer.scheduleRules,
+        holiday_collection: customer.holidayCollection,
+        default_duration: customer.defaultDuration,
+        note: customer.note,
+        is_active: !customer.isInvalid,
+        is_deleted: !!customer.isDeleted,
+        contractor_id: contractor_id
+      };
+      
+      const { error } = await supabase.from('master_collection_points').upsert(payload, { onConflict: 'id' });
+      if (error) {
+        console.error('Supabase saveSingleCustomer Error:', error);
+        throw error;
+      }
+    } catch (e) {
+      console.error('Supabase単体顧客保存エラー:', e);
+      throw e;
+    }
+  },
 
   deleteWorker: async (id: string) => {
     try {
       const { supabase } = await import('../lib/supabase');
-      const { error } = await supabase.from('master_workers').delete().eq('id', id);
+      const { error } = await supabase.from('master_workers').update({ is_active: false }).eq('id', id);
       if (error) {
-        console.error('Supabase Worker delete error:', error);
+        console.error('Supabase Worker logical delete error:', error);
         return { success: false, error };
       }
       return { success: true };
@@ -419,9 +470,9 @@ export const storageService = {
   deleteVehicle: async (id: string) => {
     try {
       const { supabase } = await import('../lib/supabase');
-      const { error } = await supabase.from('master_vehicles').delete().eq('id', id);
+      const { error } = await supabase.from('master_vehicles').update({ is_active: false }).eq('id', id);
       if (error) {
-        console.error('Supabase Vehicle delete error:', error);
+        console.error('Supabase Vehicle logical delete error:', error);
         return { success: false, error };
       }
       return { success: true };
@@ -433,9 +484,10 @@ export const storageService = {
   deleteItem: async (id: string) => {
     try {
       const { supabase } = await import('../lib/supabase');
-      const { error } = await supabase.from('master_items').delete().eq('id', id);
+      // master_itemsの主キーは item_code (DB設計による) なので注意
+      const { error } = await supabase.from('master_items').update({ is_active: false }).eq('item_code', id);
       if (error) {
-        console.error('Supabase Item delete error:', error);
+        console.error('Supabase Item logical delete error:', error);
         return { success: false, error };
       }
       return { success: true };
@@ -485,10 +537,14 @@ export const storageService = {
       
       if (upserts.length > 0) {
         const { error } = await supabase.from('monthly_exceptions').upsert(upserts, { onConflict: 'target_date' });
-        if (error) console.error('Supabase Exceptions save error:', error);
+        if (error) {
+          console.error('Supabase Exceptions save error:', error);
+          throw error;
+        }
       }
     } catch (e) {
       console.error('Supabase例外データ保存エラー:', e);
+      throw e;
     }
   },
 };

@@ -30,22 +30,29 @@ if (!fs.existsSync(distDir) || !fs.existsSync(distHtml)) {
     }
 }
 
-// [2] src/ が変更されているのに README.md が未変更なら警告
+// [2] ドキュメント同期監査ゲート (README.md & DEBT_AND_FUTURE.md)
+const args = process.argv.slice(2);
+const isDocsChecked = args.includes('--docs-checked');
+
 try {
     const status = execSync('git status --porcelain', { cwd: rootDir, encoding: 'utf8' });
     const changedFiles = status.split('\n').map(f => f.trim()).filter(Boolean);
     const srcChanged = changedFiles.some(f => f.includes('src/'));
-    const readmeChanged = changedFiles.some(f => f.includes('README.md'));
 
-    if (srcChanged && !readmeChanged) {
-        console.warn('⚠️ [監査2] src/ が変更されていますが、README.md が更新されていません。');
-        console.warn('   → [SSOT Sync Protocol] に従い、README.md を確認・更新してください。');
-        console.warn('   → 不要な場合はコミットメッセージに [README-Skip: 理由] を含めてください。');
-        warnings++;
-    } else if (srcChanged && readmeChanged) {
-        console.log('✅ [監査2] src/ と README.md の両方が変更されています（SSOT同期済み）。');
+    if (srcChanged) {
+        if (!isDocsChecked) {
+            console.error('\n🚨 [違反] ドキュメントの同期確認証明がありません。');
+            console.error('以下の2ファイルを確認し、今回のコード変更に合わせて更新（または完了済みの負債を打ち消し）してください：');
+            console.error('  1. README.md (SSOTの同期)');
+            console.error('  2. DEBT_AND_FUTURE.md (解決した負債の打ち消し)');
+            console.error('\n確認が完了した（または更新不要と判断した）場合は、以下のコマンドで再度実行してください：');
+            console.error('  npm run done -- --docs-checked\n');
+            process.exit(1);
+        } else {
+            console.log('✅ [監査2] ドキュメント同期確認証明 (--docs-checked) を受理しました。');
+        }
     } else {
-        console.log('✅ [監査2] src/ に変更はありません（README確認不要）。');
+        console.log('✅ [監査2] src/ に変更はありません（ドキュメント同期確認不要）。');
     }
 
     // [3.5] Phase 0: ガバナンス制約の簡易チェック (テストとワークログ)

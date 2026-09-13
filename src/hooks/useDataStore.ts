@@ -100,22 +100,29 @@ export function useDataStore(dateStr: string | null | undefined, isPreviewMode: 
   // 3. データの初期ロードとカスケード処理
   // ==========================================
   useEffect(() => {
+    let isActive = true;
+
     const loadData = async () => {
-      // 1. マスタデータのロード
-      const master = await storageService.loadMasterData(INITIAL_WORKERS, INITIAL_VEHICLES, CUSTOMERS, INITIAL_ITEMS);
-      setMasterWorkers(master.workers);
-      setMasterVehicles(master.vehicles);
-      console.log('master customers:', master.customers?.length); setMasterCustomers(master.customers);
-      setMasterItems(master.items);
+      try {
+        // 1. マスタデータのロード
+        const master = await storageService.loadMasterData(INITIAL_WORKERS, INITIAL_VEHICLES, CUSTOMERS, INITIAL_ITEMS);
+        if (!isActive) return;
 
-      // 2. 日次データのロードと孤児データの判定
-      if (dateStr) {
-        const dailyState = await storageService.loadDailyState(dateStr);
-        const exceptionsData = await storageService.loadExceptions() || {};
-        const dailyExceptions = exceptionsData[dateStr] || { spotJobs: [], cancellations: [], reschedules: [] };
+        setMasterWorkers(master.workers);
+        setMasterVehicles(master.vehicles);
+        console.log('master customers:', master.customers?.length); 
+        setMasterCustomers(master.customers);
+        setMasterItems(master.items);
 
-        if (dailyState) {
-          const customerMap = new Map(master.customers.map((c: Customer) => [c.id, c]));
+        // 2. 日次データのロードと孤児データの判定
+        if (dateStr) {
+          const dailyState = await storageService.loadDailyState(dateStr);
+          if (!isActive) return;
+          const exceptionsData = await storageService.loadExceptions() || {};
+          const dailyExceptions = exceptionsData[dateStr] || { spotJobs: [], cancellations: [], reschedules: [] };
+
+          if (dailyState) {
+            const customerMap = new Map(master.customers.map((c: Customer) => [c.id, c]));
           
           // ジョブをマスタの最新情報で同期（リフレッシュ）し、孤児データを判定
           const refreshJob = (j: any) => {
@@ -255,11 +262,24 @@ export function useDataStore(dateStr: string | null | undefined, isPreviewMode: 
       }
       setMonthlyExceptions(filteredExceptions);
 
-      setIsLoaded(true);
-      if (clearHistory) clearHistory();
+        if (isActive) {
+          setIsLoaded(true);
+          if (clearHistory) clearHistory();
+        }
+      } catch (err) {
+        if (isActive) {
+          console.error("Failed to load initial data:", err);
+          // In a real app we'd dispatch an error state here.
+          // Currently, leaving it throwing or logging will prevent the app from reaching "loaded" state
+          // and prevent dirty overwrites.
+        }
+      }
     };
 
     loadData();
+    return () => {
+      isActive = false;
+    };
   }, [dateStr, clearHistory]);
 
   // ==========================================
@@ -267,6 +287,9 @@ export function useDataStore(dateStr: string | null | undefined, isPreviewMode: 
   // ==========================================
 
   const saveCustomer = async (customerData: Customer & { isInvalid?: boolean; kana?: string; preferredTime?: string; items?: any[]; note?: string; holidayCollection?: boolean }) => {
+    // 確実な保存のための個別保存処理 (UIループ等によるタイマーキャンセルを防ぐ)
+    await storageService.saveSingleCustomer(customerData);
+
     setMasterCustomers(prev => {
       const exists = prev.find(c => c.id === customerData.id);
       if (exists) {

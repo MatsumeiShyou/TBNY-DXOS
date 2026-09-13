@@ -1,6 +1,7 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useRef, useState, useLayoutEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { Job, Customer, Driver } from '../types';
+import { buildPrintableData } from '../utils/printUtils';
 
 interface PrintableDispatchSheetProps {
   driverId: string | null;
@@ -15,211 +16,291 @@ export const PrintableDispatchSheet: React.FC<PrintableDispatchSheetProps> = ({
   drivers,
   jobs,
   customers,
+  onCancel,
 }) => {
-  const driver = drivers.find((d) => d.id === driverId);
-  const targetJobs = jobs.filter((j) => j.driverId === driverId);
+  const printableData = useMemo(() => {
+    if (!driverId) return null;
+    return buildPrintableData(driverId, drivers, jobs, customers);
+  }, [driverId, drivers, jobs, customers]);
 
-  // ソート処理
-  // 1. startTime昇順
-  // 2. startTimeなしは後ろ
-  const sortedJobs = useMemo(() => {
-    return [...targetJobs].sort((a, b) => {
-      if (a.startTime && b.startTime) {
-        return a.startTime.localeCompare(b.startTime);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const [scale, setScale] = useState<number>(1);
+
+  const MAX_HEIGHT_PX = 1040; // 調整
+
+  useLayoutEffect(() => {
+    if (contentRef.current) {
+      const currentHeight = contentRef.current.scrollHeight;
+      if (currentHeight > MAX_HEIGHT_PX) {
+        setScale(MAX_HEIGHT_PX / currentHeight);
+      } else {
+        setScale(1);
       }
-      if (a.startTime && !b.startTime) return -1;
-      if (!a.startTime && b.startTime) return 1;
-      return 0; // 同時刻またはどちらも無し
-    });
-  }, [targetJobs]);
+    }
+  }, [printableData]);
 
-  const today = new Date().toLocaleDateString('ja-JP', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    weekday: 'short',
-  });
+  if (!driverId || !printableData) return null;
 
   const content = (
-    <div className="fixed inset-0 z-[9999] bg-white text-black p-8 print:p-0 print:static print:block overflow-auto font-sans">
-      <div className="max-w-[210mm] mx-auto bg-white">
-        {/* Header */}
-        <div className="flex justify-between items-end border-b-2 border-black pb-2 mb-4">
-          <h1 className="text-2xl font-bold tracking-widest">回収指示書</h1>
-          <div className="text-right text-sm space-y-1">
-            <div>日付: {today}</div>
-            <div className="text-lg font-bold border border-black px-4 py-1 inline-block mt-1">
-              担当: {driver?.name || '未設定'}
-              {driver?.currentVehicle ? ` (${driver.currentVehicle})` : ''}
+    <div className="fixed inset-0 z-[9999] bg-gray-500 overflow-auto print:bg-white print:static print:block flex flex-col items-center py-8 print:p-0">
+      
+      {/* アクションバー (印刷時は非表示) */}
+      <div className="print:hidden fixed top-4 right-8 flex gap-4 z-[10000]">
+        <button 
+          onClick={() => window.print()} 
+          className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded shadow-lg font-bold flex items-center gap-2 transition-colors"
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+          </svg>
+          印刷する
+        </button>
+        <button 
+          onClick={onCancel}
+          className="bg-gray-800 hover:bg-gray-900 text-white px-6 py-2 rounded shadow-lg font-bold transition-colors"
+        >
+          閉じる
+        </button>
+      </div>
+
+      <div className="w-[210mm] min-h-[297mm] bg-white relative print:w-[210mm] print:h-[297mm] print:overflow-hidden print:p-[10mm] shadow-2xl print:shadow-none print:mt-0 mt-8">
+        <div 
+          ref={contentRef}
+          style={{ 
+            transform: `scale(${scale})`, 
+            transformOrigin: 'top center',
+            width: '100%'
+          }}
+        >
+          {/* Header */}
+          <div className="flex justify-between items-end border-b-[3px] border-black pb-1 mb-2">
+            <h1 className="text-xl font-bold tracking-widest flex items-center gap-4">
+              運行指示
+              <span className="text-sm font-normal border border-black px-2 py-0.5">
+                {printableData.vehicleName} (空車約____kg)
+              </span>
+            </h1>
+            <div className="text-center border border-black px-4 py-0.5 text-sm font-bold">
+              受領書を全て添付願います
+            </div>
+            <div className="text-right text-xs font-bold space-y-1 flex items-center gap-4">
+              <div>{printableData.date}</div>
             </div>
           </div>
-        </div>
 
-        {/* Table */}
-        <table className="w-full border-collapse text-xs mb-6">
-          <thead>
-            <tr className="text-center font-bold">
-              <th className="border border-black px-1 py-1 w-10">運行順</th>
-              <th className="border border-black px-1 py-1 w-48">回収先</th>
-              <th className="border border-black px-1 py-1 w-64">住所・その他</th>
-              <th className="border border-black px-1 py-1 w-16">時間</th>
-              <th className="border border-black px-1 py-1 w-24">品目</th>
-              <th className="border border-black px-1 py-1 w-16">概算重量</th>
-              <th className="border border-black px-1 py-1 w-16 text-red-600">入力重量</th>
-            </tr>
-          </thead>
-          <tbody>
-            {sortedJobs.map((job, index) => {
-              const customer = customers.find((c) => c.id === job.originalCustomerId);
-              const isOrphan = job.isOrphan || (job.originalCustomerId && !customer);
+          {/* Table */}
+          <table className="w-full border-collapse text-[10px] mb-4 border-[2px] border-black table-fixed leading-tight" style={{ pageBreakInside: 'avoid' }}>
+            <thead>
+              <tr className="text-center font-bold border-b-[2px] border-black">
+                <th className="border-r border-black w-6"></th> {/* 期間 */}
+                <th className="border-r border-black w-10">管理</th>
+                <th className="border-r border-black w-[90px]">回収先</th>
+                <th className="border-r border-black w-[150px]">住所・その他</th>
+                <th className="border-r border-black w-8">順番</th>
+                <th className="border-r border-black w-[50px]">時間</th>
+                <th className="border-r border-black w-[80px]">品目</th>
+                <th className="border-r border-black w-14">概算重量</th>
+                <th className="w-16">入力重量</th>
+              </tr>
+            </thead>
+            {printableData.groups.map((group, groupIndex) => (
+              <tbody key={group.period} className="border-b-[3px] border-black">
+                {group.blocks.map((block, blockIndex) => {
+                  const rows = [];
+                  for (let r = 0; r < block.rowCount; r++) {
+                    const isFirstRow = r === 0;
+                    const isLastRow = r === block.rowCount - 1;
+                    
+                    // 厚木事業所と通常の出し分け
+                    let actionLabel = '';
+                    let actionExtra = '';
+                    if (block.isAtsugi) {
+                      if (block.id.includes('start')) { // 先頭の厚木事業所
+                        if (r === 0) { actionLabel = '出発'; actionExtra = '総重量→'; }
+                        else if (r === 1) { actionLabel = '到着'; }
+                        else if (r === 2) { actionLabel = '出発'; }
+                      } else { // 末尾の厚木事業所
+                        if (r === 0) { actionLabel = '到着'; }
+                        else if (r === 1) { actionLabel = ''; }
+                      }
+                    } else {
+                      if (r === 0) actionLabel = '到着';
+                      else if (r === 1) actionLabel = '出発';
+                      else if (r === 2) actionLabel = '↓';
+                    }
 
-              // プレフィックスの生成
-              const prefixes: string[] = [];
-              if (job.preferredTime) prefixes.push(`時間指定 ${job.preferredTime}着`);
-              if (job.requiredVehicle || customer?.requiredVehicle) prefixes.push('【要車両】');
-              if (job.isDeleted || customer?.isDeleted) prefixes.push('【削除済】');
-              if (job.isSuspended) prefixes.push('【一時停止】');
+                    // 住所・その他の列の内容
+                    let addressContent: React.ReactNode = null;
+                    if (r === 0) addressContent = block.address;
+                    else if (r > 0 && block.notes[r - 1]) {
+                      addressContent = (
+                        <div className="text-red-600 font-bold border-red-600 border px-1 inline-block bg-white text-[9px] leading-none py-0.5">
+                          {block.notes[r - 1]}
+                        </div>
+                      );
+                    }
 
-              // 顧客名と住所の解決
-              let customerName = customer?.name || job.title;
-              let address = customer?.address || ''; // areaではなくaddressを使用
-              if (isOrphan) {
-                customerName = '【顧客マスタ未解決】';
-                address = '【顧客マスタ未解決】';
-              }
+                    // 回収先列の内容
+                    let customerContent: React.ReactNode = null;
+                    if (r === 0) customerContent = block.customerName;
+                    else if (r === 1) customerContent = block.schedule;
+                    else if (r === 2 && !block.isAtsugi) customerContent = '↓';
 
-              // 備考の併記ルール
-              let noteStr = '';
-              const cNote = customer?.note || '';
-              const jNote = job.note || '';
+                    // 品目
+                    const item = block.items[r];
 
-              if (isOrphan && job.originalCustomerId) {
-                noteStr = `[ID: ${job.originalCustomerId}] ${jNote}`;
-              } else if (cNote && jNote) {
-                if (cNote === jNote) {
-                  noteStr = cNote;
-                } else {
-                  noteStr = `${cNote} / ${jNote}`;
-                }
-              } else {
-                noteStr = cNote || jNote;
-              }
-              
-              if (noteStr) prefixes.push(noteStr);
-              
-              // Excelでは注意事項は改行して赤字で住所列に表示される
-              const notesElements = prefixes.map((p, i) => (
-                <div key={i} className="text-red-600 font-bold text-[11px] leading-tight mt-1">{p}</div>
-              ));
+                    rows.push(
+                      <tr key={`${block.id}-${r}`} className={`${isLastRow ? '' : 'border-b border-gray-300'}`}>
+                        {/* 期間 (rowSpan for the whole group) */}
+                        {isFirstRow && blockIndex === 0 && (
+                          <td rowSpan={group.blocks.reduce((acc, b) => acc + b.rowCount, 0)} className="border-r-[2px] border-black bg-gray-50 font-bold text-center align-middle writing-vertical-rl" style={{ writingMode: 'vertical-rl', textOrientation: 'upright' }}>
+                            {group.period}
+                          </td>
+                        )}
 
-              return (
-                <tr key={job.id || index} className="break-inside-avoid h-16">
-                  {/* 運行順: 手書き用の空欄 */}
-                  <td className="border border-black px-1 py-1 text-center font-medium"></td>
+                        {/* 管理 */}
+                        {isFirstRow && (
+                          <td rowSpan={block.rowCount} className="border-r-[2px] border-black font-bold align-top pt-1 px-1 text-center bg-gray-50/30">
+                            {!block.isAtsugi && block.manager && (
+                              <div className="break-all">{block.manager}</div>
+                            )}
+                          </td>
+                        )}
+
+                        {/* 回収先 */}
+                        <td className={`border-r-[2px] border-black px-1 font-bold ${r === 0 ? 'text-xs' : 'text-[9px]'}`}>
+                          {customerContent}
+                        </td>
+
+                        {/* 住所・その他 */}
+                        <td className="border-r-[2px] border-black px-1">
+                          {addressContent}
+                        </td>
+
+                        {/* 順番 */}
+                        {isFirstRow && (
+                          <td rowSpan={block.rowCount} className="border-r-[2px] border-black font-bold text-center align-top pt-1 text-xs">
+                            {block.sequence}
+                          </td>
+                        )}
+
+                        {/* 時間 */}
+                        <td className="border-r-[2px] border-black px-1">
+                          <div className="flex justify-between items-center w-full">
+                            <span className="w-6">{actionLabel ? actionLabel : ''}</span>
+                            <span>{actionLabel && actionLabel !== '↓' ? ':' : ''}</span>
+                            <span className="text-[8px] text-gray-500 font-normal ml-1">
+                              {r === 0 && !block.isAtsugi ? block.plannedStartTime : actionExtra}
+                            </span>
+                          </div>
+                        </td>
+
+                        {/* 品目 */}
+                        <td className="border-r border-black px-1 font-bold">
+                          {item ? item.name : ''}
+                        </td>
+
+                        {/* 概算重量 */}
+                        <td className="border-r-[2px] border-black px-1 text-right text-[9px] text-gray-500">
+                          {item ? (item.estimatedWeight + ' kg') : ''}
+                          {!item && r === 0 && block.isAtsugi && block.id.includes('start') ? 'kg' : ''}
+                          {!item && !block.isAtsugi ? 'kg' : ''}
+                        </td>
+
+                        {/* 入力重量 */}
+                        <td className="px-1 text-right font-bold text-xs">
+                          {(!block.isAtsugi || (r === 0 && block.id.includes('start'))) ? 'kg' : ''}
+                        </td>
+                      </tr>
+                    );
+                  }
                   
-                  {/* 回収先 */}
-                  <td className="border border-black px-1 py-1 font-bold align-top">
-                    <div className="mt-1">{customerName}</div>
-                  </td>
+                  // blockの最後に太い下線を引く
+                  if (blockIndex < group.blocks.length - 1) {
+                    rows[rows.length - 1] = React.cloneElement(rows[rows.length - 1], {
+                      className: 'border-b-[2px] border-black'
+                    });
+                  }
                   
-                  {/* 住所・その他（赤字の注意事項含む） */}
-                  <td className="border border-black px-1 py-1 align-top">
-                    <div className="mb-1">{address}</div>
-                    {notesElements}
-                  </td>
-                  
-                  {/* 時間: 手書き用の空欄 */}
-                  <td className="border border-black px-1 py-1 text-[10px] leading-tight flex flex-col justify-between h-full min-h-[3.5rem]">
-                    <div className="flex justify-between"><span>到着 :</span></div>
-                    <div className="flex justify-between border-t border-dotted border-gray-400 mt-2 pt-1"><span>出発 :</span></div>
-                  </td>
-                  
-                  {/* 品目: 手書き用の空欄 */}
-                  <td className="border border-black px-1 py-1"></td>
-                  
-                  {/* 概算重量: 手書き用の空欄 */}
-                  <td className="border border-black px-1 py-1 text-right align-bottom">kg</td>
-                  
-                  {/* 入力重量: 手書き用の空欄 */}
-                  <td className="border border-black px-1 py-1 text-right align-bottom text-red-500">kg</td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+                  return rows;
+                })}
+              </tbody>
+            ))}
+          </table>
 
-        {/* Footer */}
-        <div className="flex justify-between mt-4 break-inside-avoid text-xs mb-8 gap-2">
-          {/* 左側のブロック（休憩・チェック欄・サイン） */}
-          <div className="w-[48%] flex flex-col gap-2">
-            {/* 休憩欄 */}
-            <div className="border border-black p-2 h-24">
-              <table className="w-full text-[10px]">
+          {/* Footer */}
+          <div className="flex gap-2 text-[10px]" style={{ breakInside: 'avoid', pageBreakInside: 'avoid' }}>
+            {/* 左側のブロック（休憩・給油） */}
+            <div className="w-[45%] flex flex-col gap-1 border-[2px] border-black p-1">
+              <table className="w-full border-collapse">
                 <tbody>
-                  <tr>
-                    <td className="w-10">休憩</td>
-                    <td>出発 : </td>
-                    <td>場所</td>
+                  <tr className="border-b border-black">
+                    <td rowSpan={2} className="w-8 border-r border-black text-center font-bold bg-gray-100">休憩</td>
+                    <td className="px-1 w-12 border-r border-gray-300">到着 : </td>
+                    <td className="px-1">場所</td>
+                  </tr>
+                  <tr className="border-b border-black">
+                    <td className="px-1 border-r border-gray-300">出発 : </td>
+                    <td className="px-1"></td>
+                  </tr>
+                  <tr className="border-b border-black">
+                    <td rowSpan={2} className="w-8 border-r border-black text-center font-bold bg-gray-100">休憩</td>
+                    <td className="px-1 border-r border-gray-300">到着 : </td>
+                    <td className="px-1">場所</td>
+                  </tr>
+                  <tr className="border-b border-black">
+                    <td className="px-1 border-r border-gray-300">出発 : </td>
+                    <td className="px-1"></td>
+                  </tr>
+                  <tr className="border-b border-black">
+                    <td rowSpan={2} className="w-8 border-r border-black text-center font-bold bg-gray-100">給油</td>
+                    <td className="px-1 border-r border-gray-300">到着 : </td>
+                    <td className="px-1">場所</td>
                   </tr>
                   <tr>
-                    <td></td>
-                    <td>到着 : </td>
-                    <td></td>
-                  </tr>
-                  <tr>
-                    <td>休憩</td>
-                    <td>出発 : </td>
-                    <td>場所</td>
-                  </tr>
-                  <tr>
-                    <td></td>
-                    <td>到着 : </td>
-                    <td></td>
+                    <td className="px-1 border-r border-gray-300">出発 : </td>
+                    <td className="px-1"></td>
                   </tr>
                 </tbody>
               </table>
+              <div className="font-bold flex items-center">
+                <span className="text-lg leading-none mr-1">┗</span> 給油のレシートを添付してください
+              </div>
             </div>
 
-            {/* レシート貼付・サイン欄 */}
-            <div className="border-[3px] border-black p-2 relative h-40 flex flex-col justify-end">
-              <div className="absolute top-2 left-2 flex items-center">
-                <span className="font-bold text-lg mr-1">┗</span> 右側のレシートを貼付してください
-              </div>
-              
-              <div className="space-y-1">
-                <div>チェック欄</div>
-                <div className="flex items-center"><div className="w-3 h-3 border border-black mr-2"></div> 伝票入力漏れありません</div>
-                <div className="flex items-center"><div className="w-3 h-3 border border-black mr-2"></div> 記入漏れありません</div>
-                
-                <div className="flex items-center mt-2">
-                  <div className="border border-black px-2 py-1 flex items-center bg-white">
-                    サイン <span className="inline-block w-40 border-b border-black ml-2 mb-1"></span>
-                  </div>
+            {/* 右側のブロック（連絡・報告欄） */}
+            <div className="w-[55%] flex flex-col">
+              <div className="border-[2px] border-black p-1 flex-1 relative min-h-[90px]">
+                <div className="absolute top-0 left-1 font-bold">連絡・報告欄</div>
+                <div className="mt-4 flex flex-col gap-3">
+                  <div className="border-b border-gray-400 w-full h-3"></div>
+                  <div className="border-b border-gray-400 w-full h-3"></div>
+                  <div className="border-b border-gray-400 w-full h-3"></div>
+                  <div className="border-b border-gray-400 w-full h-3"></div>
                 </div>
               </div>
             </div>
           </div>
-
-          {/* 右側のブロック（連絡・報告欄） */}
-          <div className="w-[48%] border border-black p-2 relative">
-            <div className="absolute top-1 left-2">連絡・報告欄</div>
-            {/* 罫線を複数行引く */}
-            <div className="mt-6 flex flex-col gap-4">
-              <div className="border-b border-gray-400 w-full h-4"></div>
-              <div className="border-b border-gray-400 w-full h-4"></div>
-              <div className="border-b border-gray-400 w-full h-4"></div>
-              <div className="border-b border-gray-400 w-full h-4"></div>
-              <div className="border-b border-gray-400 w-full h-4"></div>
-              <div className="border-b border-gray-400 w-full h-4"></div>
-              <div className="border-b border-gray-400 w-full h-4"></div>
-              <div className="border-b border-gray-400 w-full h-4"></div>
+          
+          {/* 最下部（チェック欄・サイン） */}
+          <div className="mt-2 flex gap-4 text-[10px] items-end" style={{ breakInside: 'avoid', pageBreakInside: 'avoid' }}>
+            <div>
+              <div className="font-bold mb-1">チェック欄</div>
+              <div className="flex items-center gap-1"><div className="w-3 h-3 border border-black"></div> 伝票入力漏れありません</div>
+              <div className="flex items-center gap-1 mt-1"><div className="w-3 h-3 border border-black"></div> 記入漏れありません</div>
+            </div>
+            <div className="flex items-center border-[2px] border-black px-2 py-1 bg-white">
+              <span className="font-bold w-12 text-center">サイン</span>
+              <div className="flex flex-col border-l border-black pl-1 w-40 h-8 justify-between">
+                <div className="border-b border-gray-300 flex-1"></div>
+                <div className="flex-1"></div>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
   );
-  if (!driverId) return null;
 
   return createPortal(content, document.body);
 };

@@ -161,22 +161,10 @@ export default function App() {
   }, [jobs]);
 
   useEffect(() => {
-    if (isPrinting && printingDriverId) {
-      const handleAfterPrint = () => {
-        setIsPrinting(false);
-        setPrintingDriverId(null);
-      };
-      window.addEventListener('afterprint', handleAfterPrint);
-
-      const timer = setTimeout(() => {
-        window.print();
-      }, 500);
-
-      return () => {
-        window.removeEventListener('afterprint', handleAfterPrint);
-        clearTimeout(timer);
-      };
-    }
+    // 以前はここで setTimeout で自動的に window.print() を呼び、
+    // afterprint で自動的にプレビューを閉じていたが、
+    // 「じっくりプレビューを見たい」という要望により自動実行を廃止。
+    // 手動で印刷・閉じる操作を行う。
   }, [isPrinting, printingDriverId]);
 
   const handleCancelPrint = useCallback(() => {
@@ -979,20 +967,7 @@ export default function App() {
         </div>
       )}
 
-      {/* 印刷用フェイルセーフボタン (afterprintが効かなかった時用) */}
-      {isPrinting && (
-        <div className="bg-yellow-500 text-black px-4 py-2 flex items-center justify-between shadow-md z-50 relative print:hidden">
-          <div className="flex items-center gap-2 font-bold">
-            <span>印刷プレビューモード</span>
-          </div>
-          <button 
-            onClick={handleCancelPrint}
-            className="px-4 py-1.5 bg-gray-900 hover:bg-gray-800 text-white font-bold rounded shadow transition-colors"
-          >
-            印刷モードを終了する
-          </button>
-        </div>
-      )}
+
 
       {/* 印刷用コンポーネント (Portalでマウント) */}
       {isPrinting && printingDriverId && (

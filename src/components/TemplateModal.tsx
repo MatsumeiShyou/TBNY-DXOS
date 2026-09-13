@@ -61,7 +61,7 @@ export default function TemplateModal({ isOpen, onClose, currentData, masterCust
       createdAt: new Date().toISOString(),
       targetWeek,
       targetDay,
-      data: {
+      state: {
         drivers: currentData.drivers,
         jobs: currentData.jobs,
         pendingJobs: currentData.pendingJobs,
@@ -120,8 +120,8 @@ export default function TemplateModal({ isOpen, onClose, currentData, masterCust
       return { processed, deletedCount, suspendedCount, orphanCount };
     };
 
-    const jobsResult = processJobsList(template.data?.jobs || []);
-    const pendingResult = processJobsList(template.data?.pendingJobs || []);
+    const jobsResult = processJobsList(template.state?.jobs || []);
+    const pendingResult = processJobsList(template.state?.pendingJobs || []);
     const totalDeleted = jobsResult.deletedCount + pendingResult.deletedCount;
     const totalSuspended = jobsResult.suspendedCount + pendingResult.suspendedCount;
 
@@ -135,7 +135,7 @@ export default function TemplateModal({ isOpen, onClose, currentData, masterCust
     onPreviewTemplate({
       ...template,
       state: {
-        ...template.data,
+        ...template.state,
         jobs: jobsResult.processed,
         pendingJobs: pendingResult.processed
       }

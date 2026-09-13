@@ -15,6 +15,20 @@ function AuthWrapper() {
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
+      
+      // 開発環境かつ未ログインの場合、自動ログインを試行
+      if (!session && import.meta.env.DEV && import.meta.env.VITE_AUTO_LOGIN_EMAIL && import.meta.env.VITE_AUTO_LOGIN_PASSWORD) {
+        supabase.auth.signInWithPassword({
+          email: import.meta.env.VITE_AUTO_LOGIN_EMAIL,
+          password: import.meta.env.VITE_AUTO_LOGIN_PASSWORD,
+        }).then(({ error }) => {
+          if (error) console.error("Auto login failed:", error);
+        }).finally(() => {
+          setInitialized(true);
+        });
+        return;
+      }
+
       setInitialized(true);
     });
 

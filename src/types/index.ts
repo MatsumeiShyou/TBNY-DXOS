@@ -79,9 +79,12 @@ export interface Driver {
 export interface Job {
   id: string;
   title: string;
-  driverId?: string; // pendingJobの場合はnull/undefined
+  driverId?: string; // pendingJobの場合 null/undefined (UI用の一時フィールド)
+  workerId?: string; // DBの worker_id にマッピングされる実態
+  vehicleId?: string; // DBの vehicle_id にマッピングされる実態
+  status?: 'PLANNED' | 'CONFIRMED' | 'COMPLETED' | 'SKIPPED'; // DBの job_status ENUM
   startTime?: string; // "HH:MM" 形式
-  duration: number; // 予定所要時間 (分)
+  duration: number; // 予定所要時間(分)
   bucket?: string;
   originalCustomerId?: string; // 顧客マスタとの紐付け
   jobType?: "regular" | "spot";
