@@ -229,27 +229,7 @@ export default function CustomerManagementModal({ customers, masterVehicles, mas
 
   const [activeRowFilter, setActiveRowFilter] = useState('all');
   
-  // フリガナ自動入力用のIMEバッファと制御
-  const compositionBuffer = useRef<string>('');
-  const IGNORE_KANA_LIST = ['かぶ', 'かぶしきがいしゃ', 'かぶしきかいしゃ', 'ゆうげん', 'ゆうげんがいしゃ', 'ごうどうがいしゃ', 'いりょうほうじん'];
 
-  const handleCompositionUpdate = (e: any) => {
-    compositionBuffer.current = e.data;
-  };
-
-  const handleCompositionEnd = (e: any) => {
-    const reading = compositionBuffer.current;
-    if (reading) {
-      if (!IGNORE_KANA_LIST.includes(reading) && /^[ぁ-んァ-ヶー]+$/.test(reading)) {
-        const halfKana = toHalfWidthKatakana(reading);
-        setFormData(prev => ({
-          ...prev,
-          kana: (prev.kana + halfKana).trim()
-        }));
-      }
-      compositionBuffer.current = '';
-    }
-  };
   
   // フィルターとソート
   const filteredCustomers = optimisticCustomers
@@ -606,8 +586,7 @@ export default function CustomerManagementModal({ customers, masterVehicles, mas
                             name="name" 
                             value={formData.name} 
                             onChange={handleChange} 
-                            onCompositionUpdate={handleCompositionUpdate}
-                            onCompositionEnd={handleCompositionEnd}
+
                             className={`w-full border rounded px-2 py-1.5 text-sm ${validationErrors.name ? 'border-red-500 bg-red-50' : ''}`} 
                             placeholder="例: 富士ロジ長沼 AM" 
                           />
