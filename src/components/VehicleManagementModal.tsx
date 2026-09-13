@@ -89,7 +89,7 @@ export default function VehicleManagementModal({ vehicles, onSave, onDelete, onC
 
   const toggleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.checked) {
-      setSelectedIds(new Set(vehicles.map(w => w.id)));
+      setSelectedIds(new Set(vehicles.filter(v => v.is_active !== false).map(w => w.id)));
     } else {
       setSelectedIds(new Set());
     }
@@ -130,12 +130,12 @@ export default function VehicleManagementModal({ vehicles, onSave, onDelete, onC
             <h3 className="text-sm font-bold text-gray-700 flex items-center gap-2">
               <input 
                 type="checkbox" 
-                checked={vehicles.length > 0 && selectedIds.size === vehicles.length}
+                checked={vehicles.filter(v => v.is_active !== false).length > 0 && selectedIds.size === vehicles.filter(v => v.is_active !== false).length}
                 onChange={toggleSelectAll}
                 className="w-4 h-4 cursor-pointer"
                 title="全選択/解除"
               />
-              登録済み車両 ({vehicles.length}台)
+              登録済み車両 ({vehicles.filter(v => v.is_active !== false).length}台)
             </h3>
             <div className="flex items-center gap-2">
               {selectedIds.size > 0 && !isFormOpen && (
@@ -157,7 +157,7 @@ export default function VehicleManagementModal({ vehicles, onSave, onDelete, onC
             </div>
           </div>
 
-          {vehicles.map(v => (
+          {vehicles.filter(v => v.is_active !== false).map(v => (
             <div 
               key={v.id} 
               className={`flex justify-between items-center p-3 mb-2 rounded border transition-colors ${
@@ -201,7 +201,7 @@ export default function VehicleManagementModal({ vehicles, onSave, onDelete, onC
             </div>
           ))}
 
-          {vehicles.length === 0 && (
+          {vehicles.filter(v => v.is_active !== false).length === 0 && (
             <div className="text-xs text-gray-400 py-8 text-center">車両が登録されていません</div>
           )}
         </div>

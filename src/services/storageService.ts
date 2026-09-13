@@ -268,7 +268,8 @@ export const storageService = {
       const vehicles = (vehiclesData || []).map(v => ({
         id: v.id,
         name: v.vehicle_no,
-        max_capacity_kg: v.capacity_kg
+        max_capacity_kg: v.capacity_kg,
+        is_active: v.is_active
       }));
 
       const customers = (pointsData || []).map((p: any) => {

@@ -8,6 +8,7 @@ export interface Item {
   kana?: string;
   requiredVehicle?: string;
   estimatedDuration?: number;
+  is_active?: boolean;
 }
 
 interface ItemManagementModalProps {
@@ -94,7 +95,7 @@ export default function ItemManagementModal({ items = [], onSave, onDelete, onCl
 
   const toggleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.checked) {
-      setSelectedIds(new Set(items.map(i => i.id)));
+      setSelectedIds(new Set(items.filter(i => i.is_active !== false).map(i => i.id)));
     } else {
       setSelectedIds(new Set());
     }
@@ -193,7 +194,7 @@ export default function ItemManagementModal({ items = [], onSave, onDelete, onCl
           {/* List */}
           <div className="bg-white rounded shadow-sm border border-gray-200 overflow-hidden">
             <div className="p-3 border-b flex justify-between items-center bg-gray-50">
-              <span className="text-sm font-bold text-gray-700">登録済み品目 ({items.length}件)</span>
+              <span className="text-sm font-bold text-gray-700">登録済み品目 ({items.filter(item => item.is_active !== false).length}件)</span>
               {selectedIds.size > 0 && (
                 <button
                   onClick={handleBulkDelete}
@@ -209,7 +210,7 @@ export default function ItemManagementModal({ items = [], onSave, onDelete, onCl
                   <th className="p-3 w-10 text-center">
                     <input 
                       type="checkbox"
-                      checked={items.length > 0 && selectedIds.size === items.length}
+                      checked={items.filter(item => item.is_active !== false).length > 0 && selectedIds.size === items.filter(item => item.is_active !== false).length}
                       onChange={toggleSelectAll}
                       className="cursor-pointer"
                     />
@@ -222,13 +223,13 @@ export default function ItemManagementModal({ items = [], onSave, onDelete, onCl
                 </tr>
               </thead>
               <tbody>
-                {items.length === 0 ? (
+                {items.filter(item => item.is_active !== false).length === 0 ? (
                   <tr>
                     <td colSpan={6} className="p-8 text-center text-gray-500">
                       品目が登録されていません
                     </td>
                   </tr>
-                ) : items.map(item => (
+                ) : items.filter(item => item.is_active !== false).map(item => (
                   <tr key={item.id} className="border-b hover:bg-gray-50 transition-colors group">
                     {editingId === item.id ? (
                       <td colSpan={6} className="p-3">

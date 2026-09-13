@@ -27,6 +27,7 @@ export interface MasterVehicle {
   heightLimit?: number; // 車高制限 (m)
   vehicle_type?: string;
   max_capacity_kg?: number | null;
+  is_active?: boolean;
 }
 
 export interface CustomerVisit {
