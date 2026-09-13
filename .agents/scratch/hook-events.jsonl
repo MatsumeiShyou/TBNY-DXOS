@@ -4940,3 +4940,13 @@
 {"timestamp":"2026-09-13T13:44:34.822Z","event":"hook_observed","tool":"unknown","isSubagent":false,"conversation_id":"parent","argsSummary":[]}
 {"timestamp":"2026-09-13T13:44:41.359Z","event":"hook_observed","tool":"unknown","isSubagent":false,"conversation_id":"parent","argsSummary":[]}
 {"timestamp":"2026-09-13T13:44:50.211Z","event":"hook_observed","tool":"unknown","isSubagent":false,"conversation_id":"parent","argsSummary":[]}
+{"timestamp":"2026-09-13T13:45:01.940Z","event":"hook_observed","tool":"unknown","isSubagent":false,"conversation_id":"parent","argsSummary":[]}
+{"timestamp":"2026-09-13T13:53:41.220Z","event":"hook_observed","tool":"unknown","isSubagent":false,"conversation_id":"parent","argsSummary":[]}
+{"timestamp":"2026-09-13T13:53:47.810Z","event":"hook_observed","tool":"unknown","isSubagent":false,"conversation_id":"parent","argsSummary":[]}
+{"timestamp":"2026-09-13T13:54:06.774Z","event":"hook_observed","tool":"unknown","isSubagent":false,"conversation_id":"parent","argsSummary":[]}
+{"timestamp":"2026-09-13T13:54:17.828Z","event":"hook_observed","tool":"unknown","isSubagent":false,"conversation_id":"parent","argsSummary":[]}
+{"timestamp":"2026-09-13T13:54:23.695Z","event":"hook_observed","tool":"unknown","isSubagent":false,"conversation_id":"parent","argsSummary":[]}
+{"timestamp":"2026-09-13T13:54:32.591Z","event":"hook_observed","tool":"unknown","isSubagent":false,"conversation_id":"parent","argsSummary":[]}
+{"timestamp":"2026-09-13T13:54:40.398Z","event":"hook_observed","tool":"unknown","isSubagent":false,"conversation_id":"parent","argsSummary":[]}
+{"timestamp":"2026-09-13T13:54:46.700Z","event":"hook_observed","tool":"unknown","isSubagent":false,"conversation_id":"parent","argsSummary":[]}
+{"timestamp":"2026-09-13T13:54:56.669Z","event":"hook_observed","tool":"unknown","isSubagent":false,"conversation_id":"parent","argsSummary":[]}
