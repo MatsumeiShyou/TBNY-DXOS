@@ -847,7 +847,7 @@ export default function CustomerManagementModal({ customers, masterVehicles, mas
                           <label className="text-xs font-bold text-gray-600 w-24 shrink-0 pt-1">回収品目</label>
                           <div className="flex-1">
                             <SearchableMultiSelect
-                              options={masterItems}
+                              options={(masterItems || []).filter(i => i.is_active !== false)}
                               value={formData.items || []}
                               onChange={(newItems) => setFormData(prev => ({ ...prev, items: newItems }))}
                               placeholder="品目を検索・選択..."
