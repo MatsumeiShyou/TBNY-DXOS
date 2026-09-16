@@ -5,7 +5,7 @@
 -- ==========================================
 
 -- 1. Revoke anon access from ALL tables in public schema
-DO \$\$
+DO $$
 DECLARE
     r RECORD;
 BEGIN
@@ -13,10 +13,10 @@ BEGIN
         EXECUTE 'REVOKE ALL PRIVILEGES ON TABLE public.' || quote_ident(r.tablename) || ' FROM anon;';
     END LOOP;
 END
-\$\$ ;
+$$ ;
 
 -- 2. Ensure RLS is enabled on all tables
-DO \$\$
+DO $$
 DECLARE
     r RECORD;
 BEGIN
@@ -24,7 +24,7 @@ BEGIN
         EXECUTE 'ALTER TABLE public.' || quote_ident(r.tablename) || ' ENABLE ROW LEVEL SECURITY;';
     END LOOP;
 END
-\$\$ ;
+$$ ;
 
 -- 3. Lock down event_logs to INSERT only for authenticated users
 DROP POLICY IF EXISTS "Allow authenticated full access" ON public.event_logs;

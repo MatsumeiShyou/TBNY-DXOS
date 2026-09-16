@@ -5,7 +5,7 @@ export const storageService = {
     try {
       const { supabase } = await import('../lib/supabase');
       const { data, error } = await supabase.from('templates').select('*').eq('is_active', true);
-      if (error) console.error('Supabase loadTemplates Error:', error);
+      if (error) throw error;
 
       if (data) {
         return data.map((t: any) => ({
@@ -18,6 +18,7 @@ export const storageService = {
       }
     } catch (e) {
       console.error('Supabaseテンプレート読み込みエラー:', e);
+      throw e;
     }
     return [];
   },
@@ -36,7 +37,7 @@ export const storageService = {
         is_active: true
       };
       const { error } = await supabase.from('templates').upsert(payload, { onConflict: 'id' });
-      if (error) console.error('Supabase Template save error:', error);
+      if (error) throw error;
     } catch (e) {
       console.error('Supabase Template save exception:', e);
     }
@@ -46,7 +47,7 @@ export const storageService = {
     try {
       const { supabase } = await import('../lib/supabase');
       const { error } = await supabase.from('templates').update({ is_active: false }).eq('id', id);
-      if (error) console.error('Supabase Template delete error:', error);
+      if (error) throw error;
     } catch (e) {
       console.error('Supabase Template delete exception:', e);
     }
@@ -74,8 +75,8 @@ export const storageService = {
           .eq('planned_date', dateString)
           .maybeSingle()
       ]);
-      if (configError) console.error('Supabase loadDailyConfigs Error:', configError);
-      if (error) console.error('Supabase loadDailyState Error:', error);
+      if (configError) throw configError;
+      if (error) throw error;
 
       if (data && data.length > 0) {
         const jobs: any[] = [];
@@ -143,7 +144,7 @@ export const storageService = {
           drivers: state.drivers || [],
           splits: state.splits || []
         }, { onConflict: 'planned_date' });
-        if (configErr) console.error('Supabase saveDailyConfigs Error:', configErr);
+        if (configErr) throw configErr;
       }
 
       const allJobs = [...(state.jobs || []), ...(state.pendingJobs || [])];
@@ -203,6 +204,7 @@ export const storageService = {
       }
     } catch (e) {
       console.error(`Supabase保存エラー(${dateString}):`, e);
+      throw e;
     }
   },
 
@@ -224,7 +226,7 @@ export const storageService = {
     // Supabase移行完了: ローカルキャッシュは使用しないため、no-op。
   },
 
-  loadMasterData: async (defaultWorkers = [], defaultVehicles = [], defaultCustomers = [], defaultItems = []) => {
+  loadMasterData: async () => {
     try {
       // 1. Supabase からマスタデータを取得
       const { supabase } = await import('../lib/supabase');
@@ -296,11 +298,12 @@ export const storageService = {
         };
       });
 
+      // Supabase SSOT: DBが空なら空配列を返す（フォールバック禁止: AGENTS.md §1-6）
       return {
-        workers: workers.length > 0 ? workers : defaultWorkers,
-        vehicles: vehicles.length > 0 ? vehicles : defaultVehicles,
-        customers: customers.length > 0 ? customers : defaultCustomers,
-        items: items.length > 0 ? items : defaultItems
+        workers,
+        vehicles,
+        customers,
+        items
       };
       
     } catch (e) {
@@ -319,7 +322,7 @@ export const storageService = {
           items.map(i => ({ item_code: i.id, name: i.name, is_active: i.is_active })),
           { onConflict: 'item_code' }
         );
-        if (error) console.error('Supabase Items save error:', error);
+        if (error) throw error;
       }
 
       // 2. Workersの保存
@@ -328,7 +331,7 @@ export const storageService = {
           workers.map(w => ({ id: w.id, name: w.name, kana: w.kana, license_types: w.license_types, is_active: w.is_active })),
           { onConflict: 'id' }
         );
-        if (error) console.error('Supabase Workers save error:', error);
+        if (error) throw error;
       }
 
       // 3. Vehiclesの保存
@@ -337,7 +340,7 @@ export const storageService = {
           vehicles.map(v => ({ id: v.id, vehicle_no: v.name, capacity_kg: v.max_capacity_kg, is_active: v.is_active })),
           { onConflict: 'id' }
         );
-        if (error) console.error('Supabase Vehicles save error:', error);
+        if (error) throw error;
       }
 
       // 4. Customers (3層) の保存
@@ -353,7 +356,7 @@ export const storageService = {
         }
         if (payersToUpsert.length > 0) {
           const { error } = await supabase.from('master_payers').upsert(payersToUpsert, { onConflict: 'payee_code' });
-          if (error) console.error('Supabase Payers save error:', error);
+          if (error) throw error;
         }
 
         // B: master_contractors (payer_idを引く必要があるため一度SELECTする)
@@ -375,7 +378,7 @@ export const storageService = {
         }
         if (contractorsToUpsert.length > 0) {
           const { error } = await supabase.from('master_contractors').upsert(contractorsToUpsert, { onConflict: 'contractor_code' });
-          if (error) console.error('Supabase Contractors save error:', error);
+          if (error) throw error;
         }
 
         // C: master_collection_points (contractor_idを引く)
@@ -574,7 +577,7 @@ export const storageService = {
     try {
       const { supabase } = await import('../lib/supabase');
       const { data, error } = await supabase.from('monthly_exceptions').select('*');
-      if (error) console.error('Supabase loadExceptions Error:', error);
+      if (error) throw error;
       
       const exceptions: any = {};
       if (data) {
@@ -589,8 +592,8 @@ export const storageService = {
       return exceptions;
     } catch (e) {
       console.error('Supabase例外データ読み込みエラー:', e);
+      throw e;
     }
-    return {};
   },
 
   saveExceptions: async (exceptions: any) => {

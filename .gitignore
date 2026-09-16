@@ -5,3 +5,18 @@ dist
 
 scratch/
 Artifact/
+
+# ルート衛生: AI作業痕跡スクリプトのコミット防止
+/fix_*
+/fix.*
+/patch_*
+/temp_*
+/insert_*
+/remove_*
+/add_*
+/make_*
+/apply_*
+/update_*
+/old_*
+/refactor.*
+/dom*.html

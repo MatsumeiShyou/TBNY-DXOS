@@ -16,4 +16,7 @@
   - **残存負債（Lint設定の正規化）**: Lintゲートウェイ導入時にエラー回避・トークン節約の目的で一時的に `warn` や `off` に降格したルール（`@typescript-eslint/no-explicit-any`, `prefer-const`, `react/prop-types` 等）を `error` に戻し、コードベース全体で型・構文の健全性を満たすこと。
 - ~~**[Phase 6] Supabase連携とスキーマ・マイグレーション**~~: ✅完了 (`useDataStore.ts` / `storageService.ts` がSupabaseに完全接続し、RLS権限も含め実運用環境への移行を完了済み。スキーマ履歴は `SCHEMA_HISTORY.md` に分離記録)
 - ~~**[CAVR Bypass]**: ヘッダーアイコンのUI整理（最短の解決策）、ブラウザのデバッガ接続タイムアウトが発生したため実機検証をバイパス。対象が単一アイコンの削除のみでリスク極小のため。~~ ✅解決 (次回以降の Adaptive Verification Level A として正式に処理)
-- **統治スクリプトの拡張 (`.agents/` 対応)**: `scan.js` や `done.js` が、AGENTS.md だけでなく `.agents/` 側のAntigravityカスタマイゼーション（skills, Hooks, Subagents）の整合性も検証できるようにする。
+- **統治スクリプトの拡張 (`.agents/` 対応 + ルート衛生)**: `scan.js` や `done.js` が、AGENTS.md だけでなく `.agents/` 側のAntigravityカスタマイゼーション（skills, Hooks, Subagents）の整合性も検証できるようにする。加えて、プロジェクトルート直下のAI作業痕跡スクリプト（`fix_*`, `patch_*` 等）の検知・警告機能を追加する。（物理強制層として `.gitignore` パターン + `.husky/pre-commit` hookは導入済み）
+- **[Phase 7] コンポーネント・フック分割**: `App.tsx`（50KB超）、`CustomerManagementModal.tsx`（52KB超）、`useDataStore.ts`（31KB・ゴッドフック）の責務分離。D&Dロジック・モーダル管理・フォーム状態をそれぞれ専用のhook/コンポーネントに分割する。
+- **[Phase 8] コアロジックのテスト追加**: テストカバレッジが極めて低い。優先対象は (1) `calendarUtils.ts` のスケジュール生成ロジック、(2) `useDataStore` の状態更新（特にdeleteCustomer・saveBulkCustomers）、(3) `storageService` のDB連携（モック使用）。
+- **[Phase 9] 保存処理の差分更新化**: 現在の500ms全件upsert（`saveDailyState` / `saveMasterData`）を差分更新に置き換え、ネットワーク・DB負荷を軽減する。ユーザー数増加時のボトルネック予防。

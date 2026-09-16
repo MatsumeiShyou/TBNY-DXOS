@@ -1,8 +1,9 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { storageService } from '../services/storageService';
 import { generateDailySchedule } from '../utils/calendarUtils';
-import { INITIAL_DRIVERS, CUSTOMERS, INITIAL_WORKERS, INITIAL_VEHICLES, INITIAL_ITEMS } from '../data/constants';
+import { INITIAL_DRIVERS } from '../data/constants';
 import { useHistory } from './useHistory';
+import { useToast } from '../components/Toast';
 import { MasterWorker, MasterVehicle, Customer, Driver, Job, Split } from '../types';
 
 export interface MasterItem {
@@ -39,6 +40,7 @@ function uniqueJobs(jobsArray: Job[] | undefined): Job[] {
 }
 
 export function useDataStore(dateStr: string | null | undefined, isPreviewMode: boolean = false) {
+  const { showToast } = useToast();
   // ==========================================
   // 1. 状態の定義 (Master Data)
   // ==========================================
@@ -75,13 +77,18 @@ export function useDataStore(dateStr: string | null | undefined, isPreviewMode: 
   useEffect(() => {
     if (!isLoaded) return;
     if (saveMasterTimeout.current) clearTimeout(saveMasterTimeout.current);
-    saveMasterTimeout.current = setTimeout(() => {
-      storageService.saveMasterData({
-        workers: masterWorkers,
-        vehicles: masterVehicles,
-        customers: masterCustomers,
-        items: masterItems
-      });
+    saveMasterTimeout.current = setTimeout(async () => {
+      try {
+        await storageService.saveMasterData({
+          workers: masterWorkers,
+          vehicles: masterVehicles,
+          customers: masterCustomers,
+          items: masterItems
+        });
+      } catch (err: any) {
+        console.error('マスタ自動保存エラー:', err);
+        showToast('マスタデータの保存に失敗しました: ' + (err.message || '不明なエラー'), 'error');
+      }
     }, 500);
   }, [masterWorkers, masterVehicles, masterCustomers, masterItems, isLoaded]);
 
@@ -90,9 +97,14 @@ export function useDataStore(dateStr: string | null | undefined, isPreviewMode: 
     if (!isLoaded || !dateStr || isPreviewMode) return; // プレビュー中は自動保存を完全にブロック
     if (saveDailyTimeout.current) clearTimeout(saveDailyTimeout.current);
     saveDailyTimeout.current = setTimeout(async () => {
-      await storageService.saveDailyState(dateStr, { drivers, jobs, pendingJobs, splits });
-      storageService.saveState({ drivers, jobs, pendingJobs, splits }); 
-      storageService.saveExceptions(monthlyExceptions);
+      try {
+        await storageService.saveDailyState(dateStr, { drivers, jobs, pendingJobs, splits });
+        storageService.saveState({ drivers, jobs, pendingJobs, splits }); 
+        await storageService.saveExceptions(monthlyExceptions);
+      } catch (err: any) {
+        console.error('自動保存エラー:', err);
+        showToast('日次データの保存に失敗しました: ' + (err.message || '不明なエラー'), 'error');
+      }
     }, 500);
   }, [drivers, jobs, pendingJobs, splits, monthlyExceptions, dateStr, isLoaded, isPreviewMode]);
 
@@ -105,7 +117,7 @@ export function useDataStore(dateStr: string | null | undefined, isPreviewMode: 
     const loadData = async () => {
       try {
         // 1. マスタデータのロード
-        const master = await storageService.loadMasterData(INITIAL_WORKERS, INITIAL_VEHICLES, CUSTOMERS, INITIAL_ITEMS);
+        const master = await storageService.loadMasterData();
         if (!isActive) return;
 
         setMasterWorkers(master.workers);
@@ -472,6 +484,8 @@ export function useDataStore(dateStr: string | null | undefined, isPreviewMode: 
       if (!isUUID) {
         // 未保存またはローカル専用IDのため、DBには存在しない -> 即時物理削除
         setMasterCustomers(prev => prev.filter(c => c.id !== id));
+        setJobs(prev => prev.filter(j => j.originalCustomerId !== id));
+        setPendingJobs(prev => prev.filter(j => j.originalCustomerId !== id));
         if (clearHistory) clearHistory();
         return 'hard';
       }
@@ -494,6 +508,20 @@ export function useDataStore(dateStr: string | null | undefined, isPreviewMode: 
         if (delErr) throw delErr;
 
         setMasterCustomers(prev => prev.filter(c => c.id !== id));
+        // 孤児データ防止: 配車盤・未配車・月間例外から当該顧客のジョブを即時除去
+        setJobs(prev => prev.filter(j => j.originalCustomerId !== id));
+        setPendingJobs(prev => prev.filter(j => j.originalCustomerId !== id));
+        setMonthlyExceptions(prev => {
+          const updated: MonthlyExceptions = {};
+          for (const [d, exp] of Object.entries(prev)) {
+            updated[d] = {
+              spotJobs: (exp.spotJobs || []).filter(j => j.originalCustomerId !== id),
+              cancellations: (exp.cancellations || []).filter(cId => cId !== id),
+              reschedules: (exp.reschedules || []).filter(j => j.originalCustomerId !== id)
+            };
+          }
+          return updated;
+        });
         if (clearHistory) clearHistory();
         return 'hard';
       } else {
