@@ -1,4 +1,4 @@
-import React, { useMemo, useLayoutEffect, useRef, useState } from 'react';
+import React, { useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import { Job, Customer, Driver } from '../types';
 import { buildPrintableData } from '../utils/printUtils';
@@ -77,30 +77,44 @@ export const PrintableDispatchSheet: React.FC<PrintableDispatchSheetProps> = ({
           </div>
         </div>
 
-        {/* Table */}
-        <table className="w-full table-fixed border-collapse border-[2px] border-black text-[10px] mb-2 shrink-1 flex-grow leading-tight">
-          <thead>
-            <tr className="bg-gray-100 border-b-[2px] border-black">
-              <th className="border-r-[2px] border-black w-6 py-1"></th>
-              <th className="border-r-[2px] border-black w-[13%] py-1">管理</th>
-              <th className="border-r-[2px] border-black w-[20%] py-1">回収先</th>
-              <th className="border-r-[2px] border-black w-[25%] py-1">住所・その他</th>
-              <th className="border-r-[2px] border-black w-7 py-1">順番</th>
-              <th className="border-r-[2px] border-black w-10 py-1">時間</th>
-              <th className="border-r border-black w-[15%] py-1">品目</th>
-              <th className="border-r-[2px] border-black w-12 py-1">概算重量</th>
-              <th className="w-12 py-1">入力重量</th>
-            </tr>
-          </thead>
-          <tbody>
-            {printableData.groups.map((group, groupIndex) => {
-              const groupRowSpan = group.blocks.reduce((acc, b) => acc + (b.isAtsugi ? 1 : b.rowCount), 0);
-              
-              return (
-                <React.Fragment key={group.period}>
+        {/* 運行ブロックごとの独立テーブル群 */}
+        <div className="flex-grow flex flex-col shrink-1 overflow-hidden">
+          {printableData.groups.map((group, groupIndex) => {
+            const groupRowSpan = group.blocks.reduce((acc, b) => acc + (b.isAtsugi ? 1 : b.rowCount), 0);
+            
+            return (
+              <table key={group.period} className="w-full table-fixed border-collapse border-[2px] border-black text-[10px] mb-4 leading-tight">
+                <colgroup>
+                  <col className="w-6" />          {/* 期間 */}
+                  <col className="w-[13%]" />      {/* 管理 */}
+                  <col className="w-[20%]" />      {/* 回収先 */}
+                  <col className="w-[25%]" />      {/* 住所・その他 */}
+                  <col className="w-7" />          {/* 順番 */}
+                  <col className="w-10" />         {/* 時間 */}
+                  <col className="w-[15%]" />      {/* 品目 */}
+                  <col className="w-12" />         {/* 概算重量 */}
+                  <col className="w-12" />         {/* 入力重量 */}
+                </colgroup>
+                
+                {groupIndex === 0 && (
+                  <thead>
+                    <tr className="bg-gray-100 border-b-[2px] border-black">
+                      <th className="border-r-[2px] border-black py-1"></th>
+                      <th className="border-r-[2px] border-black py-1">管理</th>
+                      <th className="border-r-[2px] border-black py-1">回収先</th>
+                      <th className="border-r-[2px] border-black py-1">住所・その他</th>
+                      <th className="border-r-[2px] border-black py-1">順番</th>
+                      <th className="border-r-[2px] border-black py-1">時間</th>
+                      <th className="border-r border-black py-1">品目</th>
+                      <th className="border-r-[2px] border-black py-1">概算重量</th>
+                      <th className="py-1">入力重量</th>
+                    </tr>
+                  </thead>
+                )}
+                
+                <tbody>
                   {group.blocks.map((block, blockIndex) => {
                     const isStartAtsugi = block.isAtsugi && block.id.includes('start');
-                    const isEndAtsugi = block.isAtsugi && block.id.includes('end');
                     
                     let managerStr = block.manager || '';
                     if (managerStr.trim() === block.customerName?.trim()) {
@@ -108,7 +122,7 @@ export const PrintableDispatchSheet: React.FC<PrintableDispatchSheetProps> = ({
                     }
 
                     const isLastBlockInGroup = blockIndex === group.blocks.length - 1;
-                    const blockBorderClass = isLastBlockInGroup ? 'border-b-[2px] border-black' : 'border-b-[1px] border-black';
+                    const blockBorderClass = isLastBlockInGroup ? '' : 'border-b-[1px] border-black';
 
                     // 厚木事業所は1行にまとめる
                     if (block.isAtsugi) {
@@ -215,11 +229,11 @@ export const PrintableDispatchSheet: React.FC<PrintableDispatchSheetProps> = ({
                     }
                     return rows;
                   })}
-                </React.Fragment>
-              );
-            })}
-          </tbody>
-        </table>
+                </tbody>
+              </table>
+            );
+          })}
+        </div>
 
         {/* Footer Area */}
         <div className="flex flex-col gap-2 shrink-0 h-[170px] text-[10px]">
