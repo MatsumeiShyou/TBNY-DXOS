@@ -49,7 +49,7 @@ import ItemManagementModal from './components/ItemManagementModal';
 import TemplateModal from './components/TemplateModal';
 import Sidebar from './components/Sidebar';
 import CalendarView from './components/CalendarView';
-import { useToast } from './components/Toast';
+import { useToast } from './hooks/useToast';
 import { PrintableDispatchSheet } from './components/PrintableDispatchSheet';
 
 // ==========================================

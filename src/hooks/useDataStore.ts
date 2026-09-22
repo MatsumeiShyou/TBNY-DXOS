@@ -3,7 +3,7 @@ import { storageService } from '../services/storageService';
 import { generateDailySchedule } from '../utils/calendarUtils';
 import { INITIAL_DRIVERS } from '../data/constants';
 import { useHistory } from './useHistory';
-import { useToast } from '../components/Toast';
+import { useToast } from './useToast';
 import { MasterWorker, MasterVehicle, Customer, Driver, Job, Split } from '../types';
 
 export interface MasterItem {
@@ -98,8 +98,10 @@ export function useDataStore(dateStr: string | null | undefined, isPreviewMode: 
     if (saveDailyTimeout.current) clearTimeout(saveDailyTimeout.current);
     saveDailyTimeout.current = setTimeout(async () => {
       try {
-        await storageService.saveDailyState(dateStr, { drivers, jobs, pendingJobs, splits });
-        storageService.saveState({ drivers, jobs, pendingJobs, splits }); 
+        const validJobs = jobs.filter(j => !j.isDeleted && !j.isSuspended);
+        const validPending = pendingJobs.filter(j => !j.isDeleted && !j.isSuspended);
+        await storageService.saveDailyState(dateStr, { drivers, jobs: validJobs, pendingJobs: validPending, splits });
+        storageService.saveState({ drivers, jobs: validJobs, pendingJobs: validPending, splits }); 
         await storageService.saveExceptions(monthlyExceptions);
       } catch (err: any) {
         console.error('自動保存エラー:', err);

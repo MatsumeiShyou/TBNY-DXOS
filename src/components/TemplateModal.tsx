@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { X, Save, FileDown, Trash2, Search, ArrowUpDown } from 'lucide-react';
 import { storageService } from '../services/storageService';
-import { useToast } from './Toast';
+import { useToast } from '../hooks/useToast';
 
 export default function TemplateModal({ isOpen, onClose, currentData, masterCustomers = [], onPreviewTemplate, currentDate }) {
   const { showToast } = useToast();

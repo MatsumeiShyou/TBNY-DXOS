@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 
 # ルート衛生チェック: AI作業痕跡がステージングされていないか検査
-DIRTY=$(git diff --cached --name-only | grep -E '^(fix_|fix\.|patch_|temp_|insert_|remove_|add_|make_|apply_|update_|old_|refactor\.|dom[0-9]*\.html)')
+DIRTY=$(git diff --cached --name-only | grep -E '^(fix_|fix\.|patch_|temp_|insert_|remove_|add_|make_|apply_|update_|old_|refactor\.|dom[0-9]*\.html)' || true)
 if [ -n "$DIRTY" ]; then
   echo ""
   echo "⛔ ルート衛生違反: 以下のファイルはルート直下にコミットできません。"
