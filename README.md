@@ -140,3 +140,5 @@ npm run dev
 ## 6. 技術的負債と今後の課題 (Technical Debt & Future Work)
 
 未解決の課題や将来的な展望については、`DEBT_AND_FUTURE.md` に一元管理されています。新機能を実装する前には、既存の負債との干渉がないか確認してください。
+
+
