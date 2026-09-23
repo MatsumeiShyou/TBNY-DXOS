@@ -1,7 +1,8 @@
 import React, { useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import { Job, Customer, Driver } from '../types';
-import { buildPrintableData, PrintableGroup, PrintableBlock } from '../utils/printUtils';
+import { buildPrintableData } from '../utils/printUtils';
+import type { PrintableGroup, PrintableBlock } from '../utils/printUtils';
 
 interface PrintableDispatchSheetProps {
   driverId: string | null;
@@ -428,8 +429,7 @@ export const PrintableDispatchSheet: React.FC<PrintableDispatchSheetProps> = ({
         className="print-container"
         style={{
           width: '210mm',
-          minHeight: '297mm',
-          maxHeight: '297mm',
+          minHeight: '285mm', /* A4(297mm) - margin(12mm) */
           backgroundColor: '#fff',
           border: `3px solid ${COLORS.border}`,
           padding: '6mm',
@@ -439,7 +439,6 @@ export const PrintableDispatchSheet: React.FC<PrintableDispatchSheetProps> = ({
           fontFamily: '"Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif',
           color: COLORS.text,
           fontSize: '11px',
-          overflow: 'hidden',
           position: 'relative',
         }}
       >
@@ -487,7 +486,7 @@ export const PrintableDispatchSheet: React.FC<PrintableDispatchSheetProps> = ({
         {/* ============================================================
             テーブルエリア（運行ブロック群）
             ============================================================ */}
-        <div style={{ flex: 1, overflow: 'hidden' }}>
+        <div style={{ flex: 1 }}>
           {printableData.groups.map((group, groupIndex) =>
             renderGroupTable(group, groupIndex),
           )}
