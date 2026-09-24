@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef, useMemo, useOptimistic, useActionSt
 import { Customer, MasterVehicle } from '../types';
 import { Item } from './ItemManagementModal';
 import { X, Plus, Search, Trash2, Building, Calendar, Settings, AlertCircle, Grid, Check, Copy } from 'lucide-react';
-import { MASTER_VEHICLES_LIST } from '../data/constants';
 import { parsePreferredTime } from '../utils/timeUtils';
 import { toHalfWidthKatakana } from '../utils/textUtils';
 import SearchableMultiSelect from './SearchableMultiSelect';
