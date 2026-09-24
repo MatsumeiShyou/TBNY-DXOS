@@ -51,6 +51,7 @@ import Sidebar from './components/Sidebar';
 import CalendarView from './components/CalendarView';
 import { useToast } from './hooks/useToast';
 import { PrintableDispatchSheet } from './components/PrintableDispatchSheet';
+import { PDFPreviewModal } from './components/pdf/PDFPreviewModal';
 
 // ==========================================
 // 3. メインコンポーネント
@@ -152,6 +153,10 @@ export default function App() {
   const [printingDriverId, setPrintingDriverId] = useState<string | null>(null);
   const [isPrinting, setIsPrinting] = useState(false);
 
+  // PDF印刷用State
+  const [pdfPrintingDriverId, setPdfPrintingDriverId] = useState<string | null>(null);
+  const [isPdfPrinting, setIsPdfPrinting] = useState(false);
+
   const startPrint = useCallback((driverId: string) => {
     const targetJobs = jobs.filter(j => j.driverId === driverId);
     if (targetJobs.length === 0) return;
@@ -170,6 +175,19 @@ export default function App() {
   const handleCancelPrint = useCallback(() => {
     setIsPrinting(false);
     setPrintingDriverId(null);
+  }, []);
+
+  const startPdfPrint = useCallback((driverId: string) => {
+    const targetJobs = jobs.filter(j => j.driverId === driverId);
+    if (targetJobs.length === 0) return;
+
+    setPdfPrintingDriverId(driverId);
+    setIsPdfPrinting(true);
+  }, [jobs]);
+
+  const handleCancelPdfPrint = useCallback(() => {
+    setIsPdfPrinting(false);
+    setPdfPrintingDriverId(null);
   }, []);
 
   // テンプレートモーダル用State
@@ -980,6 +998,17 @@ export default function App() {
         />
       )}
 
+      {/* PDFプレビュー用コンポーネント (Portalでマウント) */}
+      {isPdfPrinting && pdfPrintingDriverId && (
+        <PDFPreviewModal
+          driverId={pdfPrintingDriverId}
+          drivers={drivers}
+          jobs={jobs}
+          customers={masterCustomers}
+          onClose={handleCancelPdfPrint}
+        />
+      )}
+
       {/* Main Content Area */}
       {viewMode === 'calendar' ? (
         <CalendarView 
@@ -1008,6 +1037,7 @@ export default function App() {
                     jobCount={driverJobCount}
                     onEdit={openHeaderEdit} 
                     onPrint={startPrint}
+                    onPdfPrint={startPdfPrint}
                   />
                 );
               })}
