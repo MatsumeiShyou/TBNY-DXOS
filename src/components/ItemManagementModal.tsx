@@ -25,6 +25,7 @@ export default function ItemManagementModal({ items = [], onSave, onDelete, onCl
   const [isAdding, setIsAdding] = useState(false);
   const [addForm, setAddForm] = useState({ name: '', kana: '', requiredVehicle: '', estimatedDuration: 0 });
   const [errorMsg, setErrorMsg] = useState('');
+  const [showInactive, setShowInactive] = useState(false);
 
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
 
@@ -95,7 +96,7 @@ export default function ItemManagementModal({ items = [], onSave, onDelete, onCl
 
   const toggleSelectAll = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.checked) {
-      setSelectedIds(new Set(items.filter(i => i.is_active !== false).map(i => i.id)));
+      setSelectedIds(new Set(items.filter(i => showInactive || i.is_active !== false).map(i => i.id)));
     } else {
       setSelectedIds(new Set());
     }
@@ -191,10 +192,22 @@ export default function ItemManagementModal({ items = [], onSave, onDelete, onCl
             )}
           </div>
 
+          <div className="flex justify-end mb-2">
+            <label className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={showInactive}
+                onChange={(e) => setShowInactive(e.target.checked)}
+                className="rounded text-blue-600"
+              />
+              非アクティブ（無効化済）の品目も表示する
+            </label>
+          </div>
+
           {/* List */}
           <div className="bg-white rounded shadow-sm border border-gray-200 overflow-hidden">
             <div className="p-3 border-b flex justify-between items-center bg-gray-50">
-              <span className="text-sm font-bold text-gray-700">登録済み品目 ({items.filter(item => item.is_active !== false).length}件)</span>
+              <span className="text-sm font-bold text-gray-700">登録済み品目 ({items.filter(item => showInactive || item.is_active !== false).length}件)</span>
               {selectedIds.size > 0 && (
                 <button
                   onClick={handleBulkDelete}
@@ -210,7 +223,7 @@ export default function ItemManagementModal({ items = [], onSave, onDelete, onCl
                   <th className="p-3 w-10 text-center">
                     <input 
                       type="checkbox"
-                      checked={items.filter(item => item.is_active !== false).length > 0 && selectedIds.size === items.filter(item => item.is_active !== false).length}
+                      checked={items.filter(item => showInactive || item.is_active !== false).length > 0 && selectedIds.size === items.filter(item => showInactive || item.is_active !== false).length}
                       onChange={toggleSelectAll}
                       className="cursor-pointer"
                     />
@@ -223,13 +236,13 @@ export default function ItemManagementModal({ items = [], onSave, onDelete, onCl
                 </tr>
               </thead>
               <tbody>
-                {items.filter(item => item.is_active !== false).length === 0 ? (
+                {items.filter(item => showInactive || item.is_active !== false).length === 0 ? (
                   <tr>
                     <td colSpan={6} className="p-8 text-center text-gray-500">
                       品目が登録されていません
                     </td>
                   </tr>
-                ) : items.filter(item => item.is_active !== false).map(item => (
+                ) : items.filter(item => showInactive || item.is_active !== false).map(item => (
                   <tr key={item.id} className="border-b hover:bg-gray-50 transition-colors group">
                     {editingId === item.id ? (
                       <td colSpan={6} className="p-3">
@@ -288,7 +301,10 @@ export default function ItemManagementModal({ items = [], onSave, onDelete, onCl
                             className="cursor-pointer"
                           />
                         </td>
-                        <td className="p-3 font-bold">{item.name}</td>
+                        <td className="p-3 font-bold">
+                          <span className={item.is_active === false ? 'text-gray-400 line-through' : ''}>{item.name}</span>
+                          {item.is_active === false && <span className="ml-2 text-[10px] bg-gray-200 text-gray-600 px-1 rounded">無効</span>}
+                        </td>
                         <td className="p-3 text-sm text-gray-600">{item.kana || <span className="text-gray-400 text-xs">(未登録)</span>}</td>
                         <td className="p-3 text-gray-600 text-sm">{item.requiredVehicle || <span className="text-gray-400">-</span>}</td>
                         <td className="p-3 text-gray-600">{item.estimatedDuration && item.estimatedDuration > 0 ? `${item.estimatedDuration}分` : <span className="text-gray-400">-</span>}</td>
