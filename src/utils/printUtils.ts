@@ -1,4 +1,5 @@
 import { Job, Customer, Driver } from '../types';
+import { timeToMinutes } from './timeUtils';
 
 export type PrintableItem = {
   name: string;
@@ -21,7 +22,7 @@ export type PrintableBlock = {
 };
 
 export type PrintableGroup = {
-  period: '早朝' | 'am' | 'pm';
+  period: string;
   blocks: PrintableBlock[];
 };
 
@@ -78,9 +79,10 @@ export function buildPrintableData(
     return 0;
   });
 
-  const earlyMorningBlocks: PrintableBlock[] = [];
-  const amBlocks: PrintableBlock[] = [];
-  const pmBlocks: PrintableBlock[] = [];
+  const groups: PrintableGroup[] = [];
+  let currentGroupBlocks: PrintableBlock[] = [];
+  let currentPeriod = '';
+  let prevJobEndTime = -1;
 
   sortedJobs.forEach((job, index) => {
     const customer = customers.find((c) => c.id === job.originalCustomerId);
@@ -116,7 +118,6 @@ export function buildPrintableData(
     }
     if (noteStr) prefixes.push(noteStr);
 
-    // 抽出：括弧内（例：「㈱ﾘﾗｲｽﾞ（DSP）」から「DSP」を取り出す）
     let manager = '';
     if (customer?.supplierName) {
       manager = customer.supplierName;
@@ -124,19 +125,13 @@ export function buildPrintableData(
       const match = customerName.match(/[（(]([^）)]+)[）)]/);
       if (match) {
         manager = match[1];
-        // 名前から括弧部分を削除するかは要検討だが、画像を見ると「富士ロジ（長沼）」の長沼は残ってて、PSなどの管理名が別にある。
-        // 今回はそのまま抽出のみ行う。
       }
     }
-    // 特別に DSP, PS, アイイ などがよく使われる
     if (manager.length > 5) {
-      manager = manager.substring(0, 5) + '...'; // 長すぎる場合は切る
+      manager = manager.substring(0, 5) + '...';
     }
 
-    // items の変換（現在 job に items はないが、将来的に拡張されることを見越す）
     const items: PrintableItem[] = [];
-    // ダミーで空を少し入れておく？ いや、items が無ければ空配列でよい。
-
     const rowCount = Math.max(3, items.length);
 
     const block: PrintableBlock = {
@@ -153,39 +148,65 @@ export function buildPrintableData(
       rowCount,
     };
 
-    // 時間帯による振り分け
-    if (job.startTime) {
-      const [h] = job.startTime.split(':').map(Number);
-      if (h < 8) {
-        earlyMorningBlocks.push(block);
-      } else if (h < 12) {
-        amBlocks.push(block);
-      } else {
-        pmBlocks.push(block);
-      }
+    const startMins = job.startTime ? timeToMinutes(job.startTime) : -1;
+    // 顧客のデフォルト滞在時間、または30分
+    const duration = job.duration || customer?.defaultDuration || 30;
+
+    let isNewGroup = false;
+
+    if (currentGroupBlocks.length === 0) {
+      isNewGroup = true;
     } else {
-      amBlocks.push(block);
+      // 直前のジョブ終了時間より、今回のジョブ開始時間が遅ければ（間が空いていれば）新しいグループ
+      if (startMins !== -1 && prevJobEndTime !== -1 && startMins > prevJobEndTime) {
+        isNewGroup = true;
+      }
+    }
+
+    if (isNewGroup) {
+      if (currentGroupBlocks.length > 0) {
+        groups.push({
+          period: currentPeriod,
+          blocks: [
+            createAtsugiBlock(`group-${groups.length}-start`),
+            ...currentGroupBlocks,
+            createAtsugiBlock(`group-${groups.length}-end`),
+          ],
+        });
+      }
+
+      currentGroupBlocks = [];
+
+      if (startMins === -1) {
+        currentPeriod = '未定';
+      } else if (startMins < 8 * 60) {
+        currentPeriod = '早朝';
+      } else if (startMins < 12 * 60) {
+        currentPeriod = '午前';
+      } else if (startMins < 17 * 60) {
+        currentPeriod = '午後';
+      } else {
+        currentPeriod = '夜間';
+      }
+    }
+
+    currentGroupBlocks.push(block);
+
+    if (startMins !== -1) {
+      prevJobEndTime = startMins + duration;
+    } else {
+      prevJobEndTime = -1;
     }
   });
 
-  const groups: PrintableGroup[] = [];
-
-  if (earlyMorningBlocks.length > 0) {
+  if (currentGroupBlocks.length > 0) {
     groups.push({
-      period: '早朝',
-      blocks: [createAtsugiBlock('early-start'), ...earlyMorningBlocks, createAtsugiBlock('early-end')]
-    });
-  }
-  if (amBlocks.length > 0) {
-    groups.push({
-      period: 'am',
-      blocks: [createAtsugiBlock('am-start'), ...amBlocks, createAtsugiBlock('am-end')]
-    });
-  }
-  if (pmBlocks.length > 0) {
-    groups.push({
-      period: 'pm',
-      blocks: [createAtsugiBlock('pm-start'), ...pmBlocks, createAtsugiBlock('pm-end')]
+      period: currentPeriod,
+      blocks: [
+        createAtsugiBlock(`group-${groups.length}-start`),
+        ...currentGroupBlocks,
+        createAtsugiBlock(`group-${groups.length}-end`),
+      ],
     });
   }
 

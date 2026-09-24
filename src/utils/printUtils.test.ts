@@ -76,12 +76,12 @@ describe('printUtils', () => {
     expect(earlyGroup?.blocks[1].schedule).toBe('(月・水・金)');
     expect(earlyGroup?.blocks[1].rowCount).toBe(3); // 最低3行
 
-    const amGroup = result.groups.find(g => g.period === 'am');
+    const amGroup = result.groups.find(g => g.period === '午前');
     expect(amGroup).toBeDefined();
     expect(amGroup?.blocks.length).toBe(3); // atsugi, j3, atsugi
     expect(amGroup?.blocks[1].customerName).toBe('【顧客マスタ未解決】');
     
-    const pmGroup = result.groups.find(g => g.period === 'pm');
+    const pmGroup = result.groups.find(g => g.period === '午後');
     expect(pmGroup).toBeDefined();
     expect(pmGroup?.blocks.length).toBe(3); // atsugi, j2, atsugi
     expect(pmGroup?.blocks[1].customerName).toBe('株式会社B');
