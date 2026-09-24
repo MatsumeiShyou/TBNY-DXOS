@@ -179,7 +179,7 @@ const TableHeader = () => (
 
 const renderGroup = (group: PrintableGroup) => {
   return (
-    <View key={group.period} style={styles.table} wrap={false}>
+    <View key={group.period} style={styles.table}>
       <TableHeader />
       {group.blocks.map((block, i) => {
         const isStartAtsugi = block.isAtsugi && block.id.includes('start');
