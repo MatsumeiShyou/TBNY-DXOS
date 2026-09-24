@@ -62,7 +62,8 @@ export function buildPrintableData(
   driverId: string,
   drivers: Driver[],
   jobs: Job[],
-  customers: Customer[]
+  customers: Customer[],
+  masterItems: { id: string, name: string }[] = []
 ): PrintableDispatchSheetData | null {
   const driver = drivers.find((d) => d.id === driverId);
   if (!driver) return null;
@@ -132,6 +133,18 @@ export function buildPrintableData(
     }
 
     const items: PrintableItem[] = [];
+    if (customer?.items && Array.isArray(customer.items)) {
+      customer.items.forEach(itemId => {
+        const masterItem = masterItems.find(mi => mi.id === itemId);
+        if (masterItem) {
+          items.push({
+            name: masterItem.name,
+            estimatedWeight: '',
+            actualWeight: ''
+          });
+        }
+      });
+    }
     const rowCount = Math.max(3, items.length);
 
     const block: PrintableBlock = {

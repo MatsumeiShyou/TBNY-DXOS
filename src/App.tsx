@@ -994,6 +994,7 @@ export default function App() {
           drivers={drivers}
           jobs={jobs}
           customers={masterCustomers}
+          masterItems={masterItems}
           onCancel={handleCancelPrint}
         />
       )}
@@ -1005,6 +1006,7 @@ export default function App() {
           drivers={drivers}
           jobs={jobs}
           customers={masterCustomers}
+          masterItems={masterItems}
           onClose={handleCancelPdfPrint}
         />
       )}

@@ -9,6 +9,7 @@ interface PrintableDispatchSheetProps {
   drivers: Driver[];
   jobs: Job[];
   customers: Customer[];
+  masterItems?: { id: string; name: string }[];
   onCancel?: () => void;
 }
 
@@ -331,12 +332,13 @@ export const PrintableDispatchSheet: React.FC<PrintableDispatchSheetProps> = ({
   drivers,
   jobs,
   customers,
+  masterItems,
   onCancel,
 }) => {
   const printableData = useMemo(() => {
     if (!driverId) return null;
-    return buildPrintableData(driverId, drivers, jobs, customers);
-  }, [driverId, drivers, jobs, customers]);
+    return buildPrintableData(driverId, drivers, jobs, customers, masterItems || []);
+  }, [driverId, drivers, jobs, customers, masterItems]);
 
   if (!driverId || !printableData) return null;
 

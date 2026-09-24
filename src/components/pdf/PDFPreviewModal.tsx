@@ -14,6 +14,7 @@ interface PDFPreviewModalProps {
   drivers: Driver[];
   jobs: Job[];
   customers: Customer[];
+  masterItems?: { id: string; name: string }[];
   onClose: () => void;
 }
 
@@ -22,6 +23,7 @@ export const PDFPreviewModal: React.FC<PDFPreviewModalProps> = ({
   drivers,
   jobs,
   customers,
+  masterItems,
   onClose,
 }) => {
   const [isReady, setIsReady] = useState(false);
@@ -39,8 +41,8 @@ export const PDFPreviewModal: React.FC<PDFPreviewModalProps> = ({
   }, []);
 
   const data = useMemo<PrintableDispatchSheetData | null>(() => {
-    return buildPrintableData(driverId, drivers, jobs, customers);
-  }, [driverId, drivers, jobs, customers]);
+    return buildPrintableData(driverId, drivers, jobs, customers, masterItems || []);
+  }, [driverId, drivers, jobs, customers, masterItems]);
 
   if (!data || !isReady) return null;
 
