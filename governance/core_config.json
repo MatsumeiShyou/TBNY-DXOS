@@ -36,6 +36,6 @@
   },
   "governance": {
     "deep_harmony_check": true,
-    "bypass_tag": "// gov-bypass"
+    "bypass_tag": "// gov-bypass: <ref>"
   }
 }

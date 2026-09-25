@@ -191,6 +191,8 @@ export const storageService = {
       if (inserts.length > 0) {
         const { error: insertErr } = await supabase.from('daily_jobs').insert(inserts);
         if (insertErr) {
+          if (insertErr.code === '23502') throw new Error('必須項目（顧客ID等）が欠落しているため保存できませんでした。');
+          if (insertErr.code === '23503') throw new Error('存在しない顧客が指定されたため保存がブロックされました。');
           console.error('Supabase saveDailyState INSERT Error:', insertErr);
           throw insertErr;
         }
@@ -198,11 +200,13 @@ export const storageService = {
       if (updates.length > 0) {
         const { error: updateErr } = await supabase.from('daily_jobs').upsert(updates, { onConflict: 'id' });
         if (updateErr) {
+          if (updateErr.code === '23502') throw new Error('必須項目（顧客ID等）が欠落しているため保存できませんでした。');
+          if (updateErr.code === '23503') throw new Error('存在しない顧客が指定されたため保存がブロックされました。');
           console.error('Supabase saveDailyState UPDATE/DELETE Error:', updateErr);
           throw updateErr;
         }
       }
-    } catch (e) {
+    } catch (e: any) {
       console.error(`Supabase保存エラー(${dateString}):`, e);
       throw e;
     }

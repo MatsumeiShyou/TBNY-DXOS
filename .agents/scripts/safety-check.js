@@ -24,6 +24,22 @@ const DANGEROUS_PATTERNS = [
   { pattern: /Remove-Item\s+.*-Recurse\s+.*-Force/i, reason: 'PowerShellの再帰的強制削除は禁止です' },
 ];
 
+import fs from 'fs';
+import path from 'path';
+
+const AMPLOG_PATH = path.join(import.meta.dirname, '..', 'scratch', 'AMPLOG.jsonl');
+
+function hasApprovedDecisionFor(bypassRef) {
+  if (!fs.existsSync(AMPLOG_PATH)) return false;
+
+  const lines = fs.readFileSync(AMPLOG_PATH, 'utf-8').trim().split('\n').filter(Boolean);
+  const decisions = lines
+    .map(line => { try { return JSON.parse(line); } catch { return null; } })
+    .filter(entry => entry && (entry.type === 'decision' || entry.event === 'decision'));
+
+  return decisions.some(entry => entry.ref === bypassRef);
+}
+
 async function main() {
   let input = '';
   
@@ -39,8 +55,36 @@ async function main() {
     
     process.stderr.write(`[safety-check] Checking command: ${commandLine}\n`);
 
+    const bypassMatch = commandLine.match(/\/\/\s*gov-bypass:\s*(\S+)/);
+    let bypassRef = null;
+    let isBypassRequested = false;
+
+    if (bypassMatch) {
+      isBypassRequested = true;
+      bypassRef = bypassMatch[1];
+    } else if (commandLine.includes('// gov-bypass')) {
+      const result = { decision: 'deny', reason: `⛔ ブロック: // gov-bypass には参照ID(ref)が必要です。例: // gov-bypass: ADR-008` };
+      process.stdout.write(JSON.stringify(result));
+      process.stderr.write(`[safety-check] DENIED: Missing bypass ref\n`);
+      return;
+    }
+
+    let isDangerous = false;
     for (const { pattern, reason } of DANGEROUS_PATTERNS) {
       if (pattern.test(commandLine)) {
+        isDangerous = true;
+        if (isBypassRequested && bypassRef) {
+          if (!hasApprovedDecisionFor(bypassRef)) {
+            const msg = `WARNING: gov-bypass タグ(${bypassRef})に対応するT3承認記録がAMPLOG.jsonlに見つかりません。バイパスには事前の人間承認(T3)と記録が必要です。`;
+            const result = { decision: 'deny', reason: `⛔ ブロック: ${msg}` };
+            process.stdout.write(JSON.stringify(result));
+            process.stderr.write(`[safety-check] DENIED: ${msg}\n`);
+            return;
+          }
+          process.stderr.write(`[safety-check] BYPASS ALLOWED for pattern: ${reason} (ref: ${bypassRef})\n`);
+          continue; // 安全を担保できたので次のパターンチェックへ
+        }
+
         const result = { decision: 'deny', reason: `⛔ ブロック: ${reason} — コマンド: ${commandLine}` };
         process.stdout.write(JSON.stringify(result));
         process.stderr.write(`[safety-check] DENIED: ${reason}\n`);
@@ -48,7 +92,7 @@ async function main() {
       }
     }
 
-    const result = { decision: 'allow', reason: '安全なコマンドと判定' };
+    const result = { decision: 'allow', reason: isDangerous ? 'バイパス適用により許可' : '安全なコマンドと判定' };
     process.stdout.write(JSON.stringify(result));
     process.stderr.write(`[safety-check] ALLOWED\n`);
   } catch (err) {
