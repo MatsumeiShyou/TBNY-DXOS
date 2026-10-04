@@ -4,6 +4,7 @@ import reactHooks from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
+import importPlugin from 'eslint-plugin-import';
 
 export default tseslint.config(
   { ignores: ['dist', '*.js', '*.cjs', '*.mjs', '!eslint.config.js'] },
@@ -24,15 +25,16 @@ export default tseslint.config(
       react,
       'react-hooks': reactHooks,
       'react-refresh': reactRefresh,
+      import: importPlugin
     },
     rules: {
       ...react.configs.recommended.rules,
       ...react.configs['jsx-runtime'].rules,
       ...reactHooks.configs.recommended.rules,
-      'no-unused-vars': 'off', // JS用を無効化し、TS用をwarnに
+      'no-unused-vars': 'off',
       '@typescript-eslint/no-unused-vars': 'warn',
-      '@typescript-eslint/no-explicit-any': 'warn', // トークン節約のためanyエラーをwarnに降格
-      'react/prop-types': 'off', // TS環境のため不要
+      '@typescript-eslint/no-explicit-any': 'warn',
+      'react/prop-types': 'off',
       'prefer-const': 'warn',
       'react-hooks/set-state-in-effect': 'off',
       'react-hooks/immutability': 'off',
@@ -41,6 +43,26 @@ export default tseslint.config(
         'warn',
         { allowConstantExport: true },
       ],
+      // [Layer 1 Firewall] Prevent importing anything outside apps/repaper/
+      'import/no-restricted-paths': [
+        'error',
+        {
+          zones: [
+            {
+              target: './src/**/*',
+              from: '../../apps/**/*',
+              except: ['./**/*'],
+              message: '【境界防衛型モノレポの掟】他のアプリからの直接インポート（越境）は禁止されています。'
+            },
+            {
+              target: './src/**/*',
+              from: '../../db/**/*',
+              except: ['./**/*'],
+              message: '【境界防衛型モノレポの掟】dbディレクトリからの直接インポートは禁止されています。'
+            }
+          ]
+        }
+      ]
     },
   },
 );

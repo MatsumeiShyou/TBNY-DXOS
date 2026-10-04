@@ -17,6 +17,23 @@ try {
     process.exit(0);
   }
 
+  // [Phase 3] Database Append-Only Enforcement
+  const diffStatus = execSync('git diff --cached --name-status', { encoding: 'utf8' })
+    .split('\n')
+    .filter(Boolean);
+  
+  diffStatus.forEach(line => {
+    const [status, file] = line.split('\t');
+    const filePosix = file.split(path.sep).join('/');
+    if (filePosix.startsWith('db/supabase/migrations/')) {
+      if (status !== 'A') {
+        console.error(`🚨 【データベース追記型の掟】 既存のマイグレーションファイルを変更・削除することは禁止されています。`);
+        console.error(`違反ファイル: ${file} (ステータス: ${status})`);
+        process.exit(1);
+      }
+    }
+  });
+
   // Find all affected apps
   const affectedApps = new Set();
   let dbAffected = false;
@@ -36,7 +53,7 @@ try {
           affectedApps.add(appRoot);
         }
       }
-
+    }
   });
 
   // DB affected = test all apps (Phase 3 logic)
@@ -62,8 +79,30 @@ try {
     try {
       const tscPath = path.join(appRoot, 'node_modules', '.bin', 'tsc');
       if (fs.existsSync(tscPath)) {
-        execSync(`"${tscPath}" --noEmit`, { cwd: appRoot, stdio: 'inherit' });
-        console.log(`✅ Passed: ${relName}`);
+        // [Layer 2 Firewall] Generate an externally injected, strict tsconfig
+        const strictTsConfig = {
+          extends: "./tsconfig.json",
+          compilerOptions: {
+            paths: {}, // Disable all alias paths to prevent bypasses
+            strict: true,
+            noImplicitAny: true,
+            strictNullChecks: true,
+            noEmit: true
+          },
+          include: ["src/**/*"],
+          exclude: ["node_modules"]
+        };
+        const tempTsConfigPath = path.join(appRoot, 'tsconfig.strict.temp.json');
+        fs.writeFileSync(tempTsConfigPath, JSON.stringify(strictTsConfig, null, 2), 'utf8');
+
+        try {
+          execSync(`"${tscPath}" --project tsconfig.strict.temp.json`, { cwd: appRoot, stdio: 'inherit' });
+          console.log(`✅ Passed: ${relName}`);
+        } finally {
+          if (fs.existsSync(tempTsConfigPath)) {
+            fs.unlinkSync(tempTsConfigPath);
+          }
+        }
       } else {
         console.log(`⚠️ Skipped: No tsc found in ${relName}`);
       }
