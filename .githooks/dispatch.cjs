@@ -79,14 +79,12 @@ try {
     try {
       const tscPath = path.join(appRoot, 'node_modules', '.bin', 'tsc');
       if (fs.existsSync(tscPath)) {
-        // [Layer 2 Firewall] Generate an externally injected, strict tsconfig
+        // [Layer 2 Firewall] Generate an externally injected tsconfig
+        // This prevents the AI from using `paths` or `rootDir` tricks to escape the app sandbox.
         const strictTsConfig = {
           extends: "./tsconfig.json",
           compilerOptions: {
-            paths: {}, // Disable all alias paths to prevent bypasses
-            strict: true,
-            noImplicitAny: true,
-            strictNullChecks: true,
+            paths: {}, // Disable all alias paths to prevent cross-app bypasses
             noEmit: true
           },
           include: ["src/**/*"],

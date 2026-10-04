@@ -50,8 +50,7 @@ export default tseslint.config(
           zones: [
             {
               target: './src/**/*',
-              from: '../../apps/**/*',
-              except: ['./**/*'],
+              from: '../../apps/!(repaper)/**/*',
               message: '【境界防衛型モノレポの掟】他のアプリからの直接インポート（越境）は禁止されています。'
             },
             {
