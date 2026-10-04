@@ -2,12 +2,10 @@
 const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
-
 try {
   const gitRoot = execSync('git rev-parse --show-toplevel', { encoding: 'utf8' }).trim();
   const bypassFile = path.join(gitRoot, '.emergency-bypass');
   const ledgerFile = path.join(gitRoot, 'docs', 'debt_ledger.json');
-
   // --- Step 4: Emergency Bypass ---
   if (fs.existsSync(bypassFile)) {
     const reason = fs.readFileSync(bypassFile, 'utf8');
@@ -16,7 +14,6 @@ try {
     console.log(`理由: ${reason}\n`);
     process.exit(0);
   }
-
   // --- Step 3: Debt Deadline Check ---
   if (fs.existsSync(ledgerFile)) {
     const ledger = JSON.parse(fs.readFileSync(ledgerFile, 'utf8'));
@@ -29,58 +26,62 @@ try {
       process.exit(1);
     }
   }
-
   const stagedFiles = execSync('git diff --cached --name-only', { encoding: 'utf8' })
     .split('\n')
     .map(f => f.trim())
     .filter(Boolean);
-
-  if (stagedFiles.length === 0) {
-    process.exit(0);
+  if (stagedFiles.length === 0) { process.exit(0); }
+  // --- Step 1: Root Directory Protection (Whitelist Enforcement) ---
+  const allowlistPath = path.join(gitRoot, 'governance/root_allowlist.json');
+  if (fs.existsSync(allowlistPath)) {
+    const allowlist = JSON.parse(fs.readFileSync(allowlistPath, 'utf8'));
+    const allowedFiles = allowlist.allowed_root_files || [];
+    const allowedDirs = allowlist.allowed_root_directories || [];
+    
+    // Built-in safe lists for governance and core project files
+    const builtinAllowedFiles = [
+      '.gitignore', '.emergency-bypass', 'AGENTS.md', 
+      'DEBT_AND_FUTURE.md', 'package.json', 'README.md', 'package-lock.json'
+    ];
+    const builtinAllowedDirs = [
+      '.git', '.githooks', '.github', '.husky', '.agents', 'governance'
+    ];
+    
+    stagedFiles.forEach(file => {
+      const filePosix = file.split(path.sep).join('/');
+      const parts = filePosix.split('/');
+      
+      const isAllowedFile = parts.length === 1 && (allowedFiles.includes(parts[0]) || builtinAllowedFiles.includes(parts[0]));
+      const isAllowedDir = parts.length > 1 && (allowedDirs.includes(parts[0]) || builtinAllowedDirs.includes(parts[0]));
+      
+      if (!isAllowedFile && !isAllowedDir) {
+        console.error('\n[BLOCKED] ルート直下または未許可ディレクトリへのファイル追加は禁止されています: ' + filePosix);
+        console.error('許可されたディレクトリ(apps/ 等)に移動するか、root_allowlist.json を更新してください。');
+        process.exit(1);
+      }
+    });
   }
-
   // Phase 3: DB Append-Only Enforcement
   const diffStatus = execSync('git diff --cached --name-status', { encoding: 'utf8' })
     .split('\n')
     .filter(Boolean);
-  
+  let hasDbDeleteOrModify = false;
   diffStatus.forEach(line => {
-    const [status, file] = line.split('\t');
-    const filePosix = file.split(path.sep).join('/');
-    if (filePosix.startsWith('db/supabase/migrations/')) {
-      if (status !== 'A') {
-        console.error(`\n❌ 【データ変更の掟】既存のマイグレーションファイルを変更・削除することは禁止されています。`);
-        console.error(`違反ファイル: ${file} (ステータス: ${status})`);
-        process.exit(1);
+    const [status, ...fileParts] = line.split('\t');
+    const file = fileParts.join('\t');
+    if (file.startsWith('db/') && (status.startsWith('D') || status.startsWith('M'))) {
+      if (file.includes('db/shared/')) {
+        // 'db/shared' modifications are handled below
+      } else {
+        hasDbDeleteOrModify = true;
       }
     }
   });
-
-  // --- Step 1: Strict Copy Verification (db/shared) ---
-  const sharedDir = path.join(gitRoot, 'db', 'shared');
-  if (fs.existsSync(sharedDir)) {
-    const sharedFiles = fs.readdirSync(sharedDir).filter(f => f.endsWith('.ts') || f.endsWith('.json'));
-    const appsDir = path.join(gitRoot, 'apps');
-    if (fs.existsSync(appsDir)) {
-      const apps = fs.readdirSync(appsDir);
-      apps.forEach(app => {
-        const appRoot = path.join(appsDir, app);
-        if (fs.existsSync(path.join(appRoot, 'package.json'))) {
-          const generatedDir = path.join(appRoot, 'src', 'types', 'generated');
-          sharedFiles.forEach(file => {
-            const destFile = path.join(generatedDir, file);
-            if (fs.existsSync(destFile)) {
-              // We could check exact content, but simpler: check if it's staged
-              // If the user staged an edit to apps/*/src/types/generated/*, we block it.
-              // They MUST run sync-shared.mjs and NOT edit it locally.
-            }
-          });
-        }
-      });
-    }
+  if (hasDbDeleteOrModify) {
+    console.error('\n❌ [エラー] db/ 配下の既存ファイルの変更または削除は禁止されています。(Append-Only Principle)');
+    console.error('スキーマ変更は必ず新規マイグレーションファイルを作成してください。');
+    process.exit(1);
   }
-
-  // Instead of complex content matching on every commit, we check if the staged file exactly matches what sync-shared.mjs would produce.
   stagedFiles.forEach(file => {
     const filePosix = file.split(path.sep).join('/');
     const match = filePosix.match(/^apps\/[^\/]+\/src\/types\/generated\/(.+)$/);
@@ -101,12 +102,9 @@ try {
       }
     }
   });
-
   const affectedApps = new Set();
   let dbAffected = false;
-
   stagedFiles.forEach(file => {
-    const absPath = path.join(gitRoot, file);
     const filePosix = file.split(path.sep).join('/');
     
     if (filePosix.startsWith('db/')) {
@@ -121,7 +119,6 @@ try {
       }
     }
   });
-
   // --- Step 2: DB Impact Notification ---
   if (dbAffected) {
     const appsDir = path.join(gitRoot, 'apps');
@@ -136,29 +133,26 @@ try {
       });
     }
     console.log('\n======================================================');
-    console.log('⚠️ [通知] データベース(db/)の変更が検知されました。');
-    console.log('【3段階変更ルール】 ①拡張(今回) -> ②移行 -> ③縮小');
-    console.log('以下の全アプリが将来的に新しいデータ形式への対応(②移行)が必要です:');
+    console.log('📣 [通知] データベース(db/)の変更が検知されました。');
+    console.log('  段階変更ルール： １拡張(今回) -> ２移行 -> ３縮小');
+    console.log('以下の全アプリが将来的に新しいデータ形式への対応（２移行）が必要です：');
     allApps.forEach(app => console.log(` - apps/${app}`));
     console.log('======================================================\n');
   }
-
   let failed = false;
   let newWarnings = [];
-
   // Run checks in affected apps
   affectedApps.forEach(appRoot => {
     const relName = path.relative(gitRoot, appRoot) || 'root';
     console.log(`\n> Running checks for ${relName}...`);
     
-    // 1. ESLint Check (with JSON output to parse errors/warnings)
+    // 1. ESLint Check
     try {
       const eslintPath = path.join(appRoot, 'node_modules', '.bin', 'eslint');
       if (fs.existsSync(eslintPath)) {
         try {
-          const eslintOut = execSync(`"${eslintPath}" . --format json`, { cwd: appRoot, encoding: 'utf8' });
+          execSync(`"${eslintPath}" . --format json`, { cwd: appRoot, encoding: 'utf8' });
         } catch (e) {
-          // ESLint returns non-zero on error
           if (e.stdout) {
             const results = JSON.parse(e.stdout);
             const hasErrors = results.some(r => r.errorCount > 0);
@@ -167,13 +161,10 @@ try {
               failed = true;
               try {
                 execSync(`"${eslintPath}" .`, { cwd: appRoot, stdio: 'inherit' });
-              } catch (err) {
-                // Ignore the error from execSync since we already set failed = true
-              }
+              } catch (err) {}
             } else {
-              // Only warnings -> register debt
               const warnCount = results.reduce((acc, r) => acc + r.warningCount, 0);
-              console.log(`⚠️ ESLint Warnings in ${relName}: ${warnCount}件`);
+              console.log(`📣 ESLint Warnings in ${relName}: ${warnCount}件`);
               newWarnings.push({
                 app: relName,
                 count: warnCount,
@@ -189,7 +180,6 @@ try {
     } catch (e) {
       console.error(`Failed to run ESLint in ${relName}:`, e.message);
     }
-
     // 2. TSC Check
     try {
       const tscPath = path.join(appRoot, 'node_modules', '.bin', 'tsc');
@@ -202,13 +192,11 @@ try {
         };
         const tempTsConfigPath = path.join(appRoot, 'tsconfig.strict.temp.json');
         fs.writeFileSync(tempTsConfigPath, JSON.stringify(strictTsConfig, null, 2), 'utf8');
-
         try {
           execSync(`"${tscPath}" --project tsconfig.strict.temp.json`, { cwd: appRoot, stdio: 'pipe' });
           console.log(`✅ Passed TS check: ${relName}`);
         } catch (e) {
           console.error(`❌ TS Error in ${relName}`);
-          // Print TS errors to console
           console.error(e.stdout ? e.stdout.toString() : e.message);
           failed = true;
         } finally {
@@ -222,12 +210,10 @@ try {
       failed = true;
     }
   });
-
   if (failed) {
-    console.error('\n🚨 Pre-commit hook failed.');
+    console.error('\n💥 Pre-commit hook failed.');
     process.exit(1);
   }
-
   // --- Register New Warnings as Debt ---
   if (newWarnings.length > 0) {
     let ledger = { debts: [] };
@@ -249,10 +235,7 @@ try {
     }
     fs.writeFileSync(ledgerFile, JSON.stringify(ledger, null, 2), 'utf8');
     console.log(`\n📝 軽微な警告を「後で直すリスト」に記録しました (期限: 14日後)`);
-    // automatically add the ledger file to the commit if possible, but standard hooks shouldn't modify index
-    // so we just let it be untracked or modified for the next commit.
   }
-
   process.exit(0);
 } catch (e) {
   console.error('Fatal pre-commit hook error:', e.message);
