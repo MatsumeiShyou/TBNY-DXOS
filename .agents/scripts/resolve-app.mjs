@@ -24,10 +24,6 @@ export function resolveAppRoot(targetFile) {
       return path.join(gitRoot, 'db');
     }
 
-    // Temporary fallback for current flat layout before migration (Dual-layout support)
-    if (fs.existsSync(path.join(gitRoot, 'package.json')) && !relativeToGitRoot.startsWith('apps/')) {
-      return gitRoot; // Fallback to root for pre-migration state
-    }
 
     // Traverse upwards to find package.json
     while (currentDir.length >= gitRoot.length && currentDir.startsWith(gitRoot)) {

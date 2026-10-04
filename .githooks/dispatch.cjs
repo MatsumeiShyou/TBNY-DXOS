@@ -36,12 +36,7 @@ try {
           affectedApps.add(appRoot);
         }
       }
-    } else {
-      // For pre-migration flat layout
-      if (!filePosix.startsWith('apps/') && fs.existsSync(path.join(gitRoot, 'package.json'))) {
-         affectedApps.add(gitRoot);
-      }
-    }
+
   });
 
   // DB affected = test all apps (Phase 3 logic)

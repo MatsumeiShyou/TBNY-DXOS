@@ -1,4 +1,3 @@
-
 name: CI Quality Gate
 
 on:
@@ -8,8 +7,11 @@ on:
     branches: [ "master" ]
 
 jobs:
-  build-and-test:
+  repaper-checks:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./apps/repaper
     steps:
       - uses: actions/checkout@v4
       
@@ -18,6 +20,7 @@ jobs:
         with:
           node-version: '20'
           cache: 'npm'
+          cache-dependency-path: './apps/repaper/package-lock.json'
           
       - name: Install dependencies
         run: npm ci
