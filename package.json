@@ -1,5 +1,6 @@
 {
   "name": "tbny-dxos-root",
   "private": true,
-  "description": "Boundary-Defended Monorepo Root."
+  "type": "module",
+  "description": "Boundary-Defended Monorepo Root. NO DEPENDENCIES ALLOWED."
 }
