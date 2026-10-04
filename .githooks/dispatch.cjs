@@ -164,8 +164,12 @@ try {
             const hasErrors = results.some(r => r.errorCount > 0);
             if (hasErrors) {
               console.error(`❌ ESLint Error in ${relName}`);
-              execSync(`"${eslintPath}" .`, { cwd: appRoot, stdio: 'inherit' });
               failed = true;
+              try {
+                execSync(`"${eslintPath}" .`, { cwd: appRoot, stdio: 'inherit' });
+              } catch (err) {
+                // Ignore the error from execSync since we already set failed = true
+              }
             } else {
               // Only warnings -> register debt
               const warnCount = results.reduce((acc, r) => acc + r.warningCount, 0);
