@@ -1,4 +1,4 @@
-﻿import crypto from 'crypto';
+import crypto from 'crypto';
 import fs from 'fs';
 import path from 'path';
 import { execSync } from 'child_process';
@@ -8,7 +8,23 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const rootDir = path.resolve(__dirname, '../../');
 
-console.log('\n🔍 [Delivery Audit] 納品前監査を実行中...\n');
+console.log('🔍 [Delivery Audit] 納品前監査を実行中...\n');
+
+    // [追加] Grok原則: npm run 経由を避け、固定バイナリを直接叩く
+    console.log('⏳ [監査0] TypeScript型チェックを厳格モードで実行中...');
+    try {
+        const tscPath = path.join(rootDir, 'node_modules', '.bin', 'tsc');
+        if (!fs.existsSync(tscPath)) {
+            console.error('❌ [エラー] tscバイナリが見つかりません。環境が破壊されています。');
+            process.exit(1);
+        }
+        // shell: false 相当の直接実行を担保
+        execSync(`"${tscPath}" --noEmit`, { cwd: rootDir, stdio: 'inherit' });
+        console.log('✅ [監査0] TypeScript型チェック通過 (エラー0件)');
+    } catch (e) {
+        console.error('\n❌ [エラー] 型チェックに失敗しました。AIは原因究明を行い、必ずエラーをゼロにしてから完了報告してください。');
+        process.exit(1);
+    }
 
 try {
     const status = execSync('git status --porcelain', { cwd: rootDir, encoding: 'utf8' });
@@ -79,3 +95,4 @@ console.log('\n実装完了報告用の GSEAL コードが発行されました�
 console.log('以下のコードを最終報告の末尾に引用提示してください。\n');
 console.log(`> **${gseal}**\n`);
 console.log('=========================================\n');
+

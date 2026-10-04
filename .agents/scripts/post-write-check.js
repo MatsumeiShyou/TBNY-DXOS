@@ -1,50 +1,62 @@
 import { execSync } from 'child_process';
 import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const rootDir = path.resolve(__dirname, '../../');
 
 async function main() {
   let input = '';
-  
-  for await (const chunk of process.stdin) {
-    input += chunk;
-  }
+  for await (const chunk of process.stdin) { input += chunk; }
 
   try {
     const payload = JSON.parse(input);
     const targetFile = payload?.toolCall?.args?.TargetFile || payload?.args?.TargetFile;
 
-    // 対象がJS/JSX/TS/TSXファイル以外、またはファイルが存在しない場合はチェックスキップ
     if (!targetFile || !targetFile.match(/\.(js|jsx|ts|tsx)$/) || !fs.existsSync(targetFile)) {
       process.stdout.write('{}');
       return;
     }
 
-    try {
-      // ESLintの自動修正（自己修復）を同期実行、タイムアウト8秒
-      execSync(`npx eslint --fix "${targetFile}"`, { encoding: 'utf8', timeout: 8000 });
-      process.stderr.write(`[post-write-check] ✅ ESLint fix applied successfully for ${targetFile}\n`);
-      process.stdout.write('{}');
-    } catch (lintErr) {
-      if (lintErr.code === 'ETIMEDOUT' || lintErr.signal === 'SIGTERM') {
-        process.stderr.write(`[post-write-check] 🚨 タイムアウト: ESLintの実行が超過したため強制終了しました。(${targetFile})\n`);
-        process.stdout.write(JSON.stringify({ 
-          additionalContext: `ESLint Error: 実行がタイムアウト（8秒超過）しました。対象ファイルが大きすぎるか、パースに時間がかかっています。` 
-        }));
-        return;
-      }
+    let errorMessages = [];
 
-      // 静的解析エラーが発生した場合
-      process.stderr.write(`[post-write-check] ⚠️ ESLint found errors in ${targetFile}\n`);
-      
-      const stdoutStr = lintErr.stdout || '';
-      const stderrStr = lintErr.stderr || '';
-      const errorMsg = `ESLint Error in ${targetFile}:\n${stdoutStr.substring(0, 1000)}\n${stderrStr.substring(0, 1000)}\n上記のエラーを自己修復ループ内で解消してください。`;
-      
-      // PostToolUseフックは標準出力でコンテキスト注入できないため、stderrに出力してフック自体を失敗させる
-      process.stderr.write(errorMsg + '\n');
+    // 1. ESLint Check
+    try {
+      const eslintPath = path.join(rootDir, 'node_modules', '.bin', 'eslint');
+      if (fs.existsSync(eslintPath)) {
+        execSync(`"${eslintPath}" "${targetFile}"`, { cwd: rootDir, encoding: 'utf8', timeout: 8000 });
+      }
+    } catch (err) {
+      if (err.stdout || err.stderr) {
+        errorMessages.push(`[ESLint Error in ${path.basename(targetFile)}]\n${(err.stdout || '').substring(0, 500)}`);
+      }
+    }
+
+    // 2. TypeScript Check
+    if (targetFile.match(/\.(ts|tsx)$/)) {
+      try {
+        const tscPath = path.join(rootDir, 'node_modules', '.bin', 'tsc');
+        if (fs.existsSync(tscPath)) {
+          execSync(`"${tscPath}" --noEmit`, { cwd: rootDir, encoding: 'utf8', timeout: 15000 });
+        }
+      } catch (err) {
+         if (err.stdout || err.stderr) {
+            errorMessages.push(`[TypeScript Error]\n${(err.stdout || err.stderr || '').substring(0, 1000)}`);
+         }
+      }
+    }
+
+    if (errorMessages.length > 0) {
+      process.stderr.write(`[post-write-check] ⚠️ Verification Failed:\n\n${errorMessages.join('\n\n')}\n`);
       process.exit(1);
+    } else {
+      process.stderr.write(`[post-write-check] ✅ Verification Passed for ${path.basename(targetFile)}\n`);
+      process.stdout.write('{}');
     }
   } catch (err) {
-    process.stderr.write(`[post-write-check] 🚨 Fatal error parsing input: ${err.message}\n`);
+    process.stderr.write(`[post-write-check] 🚨 Fatal hook error: ${err.message}\n`);
     process.stdout.write('{}');
   }
 }
