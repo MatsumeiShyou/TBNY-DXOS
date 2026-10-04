@@ -622,4 +622,79 @@ export const storageService = {
       throw e;
     }
   },
+
+  processSyncBatch: async (operations: any[]) => {
+    try {
+      const { supabase } = await import('../lib/supabase');
+      
+      const jobsToUpsert: any[] = [];
+      const jobsToSkip: string[] = [];
+      const configsToUpsert: any[] = [];
+
+      for (const op of operations) {
+        if (op.entity === 'daily_configs') {
+          if (op.type === 'upsert') configsToUpsert.push(op.payload);
+        } else if (op.entity === 'daily_jobs') {
+          if (op.type === 'upsert') {
+            const job = op.payload;
+            jobsToUpsert.push({
+              planned_date: job.planned_date || job.dateStr,
+              front_id: job.id,
+              collection_point_id: job.originalCustomerId,
+              ui_column_id: job.ui_column_id || null,
+              worker_id: job.workerId || null,
+              vehicle_id: job.vehicleId || null,
+              planned_time: job.startTime || null,
+              status: (!job.status || job.status === 'PENDING') ? 'PLANNED' : job.status,
+              is_skipped: !!job.is_skipped
+            });
+          } else if (op.type === 'delete') {
+            jobsToSkip.push(op.id);
+          }
+        }
+      }
+
+      if (configsToUpsert.length > 0) {
+        const { error } = await supabase.from('daily_configs').upsert(configsToUpsert, { onConflict: 'planned_date' });
+        if (error) throw error;
+      }
+
+      if (jobsToSkip.length > 0) {
+        const { data: existingMap } = await supabase.from('daily_jobs').select('id, front_id').in('front_id', jobsToSkip);
+        if (existingMap && existingMap.length > 0) {
+          const skipUpdates = existingMap.map((r: any) => ({ id: r.id, status: 'SKIPPED', is_skipped: true }));
+          const { error } = await supabase.from('daily_jobs').upsert(skipUpdates, { onConflict: 'id' });
+          if (error) throw error;
+        }
+      }
+
+      if (jobsToUpsert.length > 0) {
+        const frontIds = jobsToUpsert.map((j: any) => j.front_id);
+        const { data: existing } = await supabase.from('daily_jobs').select('id, front_id').in('front_id', frontIds);
+        const existMap = new Map((existing || []).map((r: any) => [r.front_id, r.id]));
+        
+        const inserts: any[] = [];
+        const updates: any[] = [];
+        for (const job of jobsToUpsert) {
+          if (existMap.has(job.front_id)) {
+            updates.push({ ...job, id: existMap.get(job.front_id) });
+          } else {
+            inserts.push(job);
+          }
+        }
+
+        if (inserts.length > 0) {
+          const { error } = await supabase.from('daily_jobs').insert(inserts);
+          if (error) throw error;
+        }
+        if (updates.length > 0) {
+          const { error } = await supabase.from('daily_jobs').upsert(updates, { onConflict: 'id' });
+          if (error) throw error;
+        }
+      }
+    } catch (e) {
+      console.error('Supabase Sync Batch Error:', e);
+      throw e;
+    }
+  }
 };

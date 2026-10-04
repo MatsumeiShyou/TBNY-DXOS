@@ -3,6 +3,34 @@ import { storageService } from '../services/storageService';
 import { generateDailySchedule } from '../utils/calendarUtils';
 import { INITIAL_DRIVERS } from '../data/constants';
 import { useHistory } from './useHistory';
+import { syncQueue } from '../lib/syncQueue';
+import { mapJobForSync } from '../utils/jobSyncUtils';
+
+function diffAndEnqueue<T extends { id: string }>(
+  prevArray: T[], 
+  newArray: T[], 
+  entity: 'daily_jobs' | 'daily_configs', 
+  dateStr: string,
+  drivers?: any[]
+) {
+  const prevMap = new Map(prevArray.map(item => [item.id, item]));
+  const currentMap = new Map(newArray.map(item => [item.id, item]));
+
+  for (const item of newArray) {
+    const prev = prevMap.get(item.id);
+    if (!prev || JSON.stringify(prev) !== JSON.stringify(item)) {
+      let payload = entity === 'daily_jobs' 
+        ? mapJobForSync(item as any, dateStr, drivers)
+        : { ...item, dateStr };
+      syncQueue.enqueue('upsert', entity, item.id, payload);
+    }
+  }
+  for (const prev of prevArray) {
+    if (!currentMap.has(prev.id)) {
+      syncQueue.enqueue('delete', entity, prev.id);
+    }
+  }
+}
 import { useToast } from './useToast';
 import { MasterWorker, MasterVehicle, Customer, Driver, Job, Split } from '../types';
 
@@ -98,17 +126,14 @@ export function useDataStore(dateStr: string | null | undefined, isPreviewMode: 
     if (saveDailyTimeout.current) clearTimeout(saveDailyTimeout.current);
     saveDailyTimeout.current = setTimeout(async () => {
       try {
-        const validJobs = jobs.filter(j => !j.isDeleted && !j.isSuspended);
-        const validPending = pendingJobs.filter(j => !j.isDeleted && !j.isSuspended);
-        await storageService.saveDailyState(dateStr, { drivers, jobs: validJobs, pendingJobs: validPending, splits });
-        storageService.saveState({ drivers, jobs: validJobs, pendingJobs: validPending, splits }); 
+        // jobsとconfigsは個別の変更時にsyncQueue経由で保存されるため、ここでは例外データのみ保存
         await storageService.saveExceptions(monthlyExceptions);
       } catch (err: any) {
-        console.error('自動保存エラー:', err);
-        showToast('日次データの保存に失敗しました: ' + (err.message || '不明なエラー'), 'error');
+        console.error('例外保存エラー:', err);
+        showToast('例外データの保存に失敗しました: ' + (err.message || '不明なエラー'), 'error');
       }
     }, 500);
-  }, [drivers, jobs, pendingJobs, splits, monthlyExceptions, dateStr, isLoaded, isPreviewMode]);
+  }, [monthlyExceptions, dateStr, isLoaded, isPreviewMode]);
 
   // ==========================================
   // 3. データの初期ロードとカスケード処理
@@ -587,18 +612,22 @@ export function useDataStore(dateStr: string | null | undefined, isPreviewMode: 
   };
 
   const saveJobs = async (newJobs: Job[]) => {
+    diffAndEnqueue(jobs, newJobs, 'daily_jobs', dateStr, drivers);
     setJobs(newJobs);
   };
   
   const savePendingJobs = async (newPendingJobs: Job[]) => {
+    diffAndEnqueue(pendingJobs, newPendingJobs, 'daily_jobs', dateStr, drivers);
     setPendingJobs(newPendingJobs);
   };
 
   const saveSplits = async (newSplits: Split[]) => {
+    syncQueue.enqueue('upsert', 'daily_configs', dateStr, { planned_date: dateStr, drivers, splits: newSplits });
     setSplits(newSplits);
   };
 
   const saveDrivers = async (newDrivers: Driver[]) => {
+    syncQueue.enqueue('upsert', 'daily_configs', dateStr, { planned_date: dateStr, drivers: newDrivers, splits });
     setDrivers(newDrivers);
   };
 

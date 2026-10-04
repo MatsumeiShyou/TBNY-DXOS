@@ -28,6 +28,14 @@ export default tseslint.config(
       import: importPlugin
     },
     rules: {
+      // [Type Safety Firewall] Prevent casting to Branded Types to enforce runtime validation
+      'no-restricted-syntax': [
+        'error',
+        {
+          selector: 'TSAsExpression[typeAnnotation.typeName.name="UUID"]',
+          message: 'UUID型へのキャスト (as UUID) は禁止されています。必ず parseUUID または assertUUID を通じて実行時検証を行ってください。'
+        }
+      ],
       ...react.configs.recommended.rules,
       ...react.configs['jsx-runtime'].rules,
       ...reactHooks.configs.recommended.rules,

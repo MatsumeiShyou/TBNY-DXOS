@@ -55,5 +55,31 @@
         ]
       }
     ]
+  },
+  "anomaly-lock": {
+    "PreToolUse": [
+      {
+        "matcher": "write_to_file|replace_file_content|multi_replace_file_content",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node scripts/anomaly-lock-hook.js pre",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node scripts/anomaly-lock-hook.js post",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
   }
 }
