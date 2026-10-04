@@ -1,0 +1,12 @@
+{
+  "debts": [
+    {
+      "id": "EMERGENCY-1791102022112",
+      "type": "EMERGENCY_BYPASS",
+      "reason": "Testing emergency bypass",
+      "createdAt": "2026-10-04T08:20:22.112Z",
+      "deadline": "2026-10-05T08:20:22.112Z",
+      "resolved": false
+    }
+  ]
+}
