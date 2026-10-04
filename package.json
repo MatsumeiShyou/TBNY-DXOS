@@ -11,8 +11,7 @@
     "agent:scan": "node .agents/scripts/scan.js",
     "type-check": "tsc --noEmit",
     "lint": "eslint .",
-    "test": "vitest run",
-    "prepare": "husky"
+    "test": "vitest run"
   },
   "dependencies": {
     "@react-pdf/renderer": "^4.9.0",

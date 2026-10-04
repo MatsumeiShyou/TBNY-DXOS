@@ -1,0 +1,3 @@
+#!/bin/sh
+# Dispatch to the Node.js script
+node "$(dirname "$0")/dispatch.cjs"
