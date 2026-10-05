@@ -20,3 +20,6 @@ Artifact/
 /old_*
 /refactor.*
 /dom*.html
+
+# Claude Code の個人設定（「常に許可」などで自動生成される）
+.claude/settings.local.json
