@@ -77,9 +77,12 @@ if (!isWaiver) {
 }
 
 // 4. fail-to-pass 検証エンジン (chore以外)
-if (taskType === 'chore' || taskType === 'waiver') {
+// AI(Claude Code)による Waiver は保護パス検査の免除のみ。テスト(pass-after)は免除しない
+const isAiSession = !!process.env.CLAUDECODE;
+if (taskType === 'chore' || (taskType === 'waiver' && !isAiSession)) {
   console.log(`-> [${taskType}] テスト検証免除。変更パスの静的解析のみ完了。`);
 } else {
+  if (taskType === 'waiver') console.log("-> [waiver] AIセッションのため、テスト検証(pass-after)は免除されません。");
   // === V3 Engine Sandbox ===
   const worktreeDir = path.resolve('../temp-verify-worktree');
   const patchFile = path.resolve('../staged.patch');
@@ -119,12 +122,17 @@ if (taskType === 'chore' || taskType === 'waiver') {
       if (testFiles.length === 0) throw new Error("No tests found");
       if (prodFiles.length > 0) execSync(`git apply -R ${includeArgs} "${patchFile}"`, { cwd: worktreeDir });
 
+      // 失敗の検出を try の外で行う（以前は throw を同じ catch が握りつぶし、fail-before が常に OK になっていた）
+      let oldCodeGreen = false;
       try {
-        execSync('npm test --run', { cwd: path.join(worktreeDir, 'apps/repaper'), stdio: 'ignore' });
-        console.error("【Error】 旧コードでテストが GREEN になりました(fail-before 失敗)。");
-        throw new Error("fail-before check failed");
+        execSync('npm test', { cwd: path.join(worktreeDir, 'apps/repaper'), stdio: 'ignore' });
+        oldCodeGreen = true;
       } catch (e) {
         console.log("   -> OK: 旧コードでのテスト失敗 (RED) を確認。");
+      }
+      if (oldCodeGreen) {
+        console.error("【Error】 旧コードでもテストが GREEN です(fail-before 失敗)。修正した不具合を再現するテストを追加してください。");
+        throw new Error("fail-before check failed");
       }
       
       if (prodFiles.length > 0) execSync(`git apply ${includeArgs} "${patchFile}"`, { cwd: worktreeDir });
@@ -132,14 +140,17 @@ if (taskType === 'chore' || taskType === 'waiver') {
 
     console.log("-> pass-after 検証(全体GREEN)を開始...");
     try {
-      execSync('npm test --run', { cwd: path.join(worktreeDir, 'apps/repaper'), stdio: 'ignore' });
+      execSync('npm test', { cwd: path.join(worktreeDir, 'apps/repaper'), stdio: 'pipe' });
       console.log("   -> OK: 新コードでのテスト成功 (GREEN) を確認。");
     } catch (e) {
       console.error("【Error】 新コードでテストが失敗しました (pass-after 失敗)。");
+      console.error(String(e.stdout || '').split('\n').filter(l => /FAIL|✗|×|Error/.test(l)).slice(0, 15).join('\n'));
       throw new Error("pass-after check failed");
     }
   } catch (e) {
-    console.error("\n【Governance v3.2】 検証失敗のためコミットを破棄します。");
+    // 原因を必ず表示する（以前は「検証失敗」としか出ず、原因の特定に時間がかかった）
+    console.error(`\n【原因】 ${String(e.message).split('\n').slice(0, 5).join('\n')}`);
+    console.error("【Governance v3.2】 検証失敗のためコミットを破棄します。");
     unlinkSandboxNodeModules();
     try { execSync(`git worktree remove --force ${worktreeDir}`, { stdio: 'ignore' }); } catch (err) {}
     process.exit(1);
