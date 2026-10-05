@@ -7,6 +7,7 @@ import path from 'path';
 import { judgeWrite } from './guard-write.mjs';
 import { judgeBash } from './guard-bash.mjs';
 import { appOf } from './post-edit-check.mjs';
+import { classifyDebts, buildContext } from './session-context.mjs';
 
 // 実リポジトリに依存しない仮のプロジェクトルート
 const root = fs.mkdtempSync(path.join(os.tmpdir(), 'tbny-hooks-'));
@@ -106,4 +107,23 @@ test('post-edit-check はアプリ内のスクリプトだけを対象にする'
   assert.equal(appOf('apps/repaper/src/index.css'), null);
   assert.equal(appOf('scripts/sync-shared.mjs'), null);
   assert.equal(appOf(null), null);
+});
+
+test('session-context は期限切れと期限間近の未解決負債を知らせる', () => {
+  const now = new Date('2026-10-05T00:00:00Z');
+  const ledger = { debts: [
+    { id: 'A', reason: '期限切れ', deadline: '2026-10-04T00:00:00Z', resolved: false },
+    { id: 'B', reason: '間近', deadline: '2026-10-06T00:00:00Z', resolved: false },
+    { id: 'C', reason: '先', deadline: '2026-10-20T00:00:00Z', resolved: false },
+    { id: 'D', reason: '解決済み', deadline: '2026-10-01T00:00:00Z', resolved: true }
+  ] };
+  const { expired, soon } = classifyDebts(ledger, now);
+  assert.deepEqual(expired.map(d => d.id), ['A']);
+  assert.deepEqual(soon.map(d => d.id), ['B']);
+
+  const text = buildContext({ branch: 'master', ledger, now });
+  assert.match(text, /作業用ブランチ/);
+  assert.match(text, /\[A\]/);
+  assert.doesNotMatch(text, /\[C\]|\[D\]/);
+  assert.doesNotMatch(buildContext({ branch: 'fix/x', ledger: { debts: [] }, now }), /作業用ブランチ|負債/);
 });
