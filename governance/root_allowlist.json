@@ -12,6 +12,7 @@
   "allowed_root_directories": [
     ".claude",
     "apps",
+    "archive",
     "db",
     "docs",
     "scripts",

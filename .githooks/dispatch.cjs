@@ -62,10 +62,13 @@ try {
     const builtinAllowedFiles = ['.gitignore', '.emergency-bypass', 'AGENTS.md', 'DEBT_AND_FUTURE.md', 'package.json', 'README.md', 'package-lock.json'];
     const builtinAllowedDirs = ['.git', '.githooks', '.github', '.husky', '.agents', 'governance'];
     
-    stagedFiles.forEach(file => {
+    // 削除は対象外（許可リスト外の痕跡を消すコミットが止まらないように。追加・変更・リネーム先のみ検査）
+    const addedOrModified = execSync('git diff --cached --name-only --diff-filter=ACMR', { encoding: 'utf8' })
+      .split('\n').map(f => f.trim()).filter(Boolean);
+    addedOrModified.forEach(file => {
       const filePosix = file.split(path.sep).join('/');
       const parts = filePosix.split('/');
-      
+
       const isAllowedFile = parts.length === 1 && (allowedFiles.includes(parts[0]) || builtinAllowedFiles.includes(parts[0]));
       const isAllowedDir = parts.length > 1 && (allowedDirs.includes(parts[0]) || builtinAllowedDirs.includes(parts[0]));
       

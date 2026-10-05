@@ -36,5 +36,6 @@
 | L4 ビルド・CI | vite の境界監査プラグイン、GitHub Actions | アプリ外ファイルのバンドル拒否／型・lint・テスト・ビルド |
 | L5 OS | `scripts/governance_lock.ps1`（人間が UAC で実行） | 統治ファイルへの書き込みを NTFS ACL で拒否（**施錠時のみ**） |
 
-* `.agents/hooks.json` と `.agents/scripts/` の書き込み・コマンド検査は Antigravity 用であり、**Claude Code では動作しません**。
+* Antigravity 2.0 用のツールフック等は退役し、`archive/antigravity-governance/` に移しました。
+* L3 の `Waiver:` は保護パス検査の免除のみです。AI セッション（`CLAUDECODE`）では fix 以外もテスト（pass-after）を免除せず、緊急バイパス（`.emergency-bypass`）は使えません。ESLint 警告は `docs/lint_baseline.json` の件数を超えると拒否されます（減ったら基準を下げる）。
 * AI は L3 を `--no-verify` で迂回できる立場にあるため、L1/L2 でそれを禁止しています。最終防衛線は L4（ブランチ保護）と L5（ACL 施錠）です。
