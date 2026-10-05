@@ -1,0 +1,30 @@
+#!/usr/bin/env node
+const fs = require('fs');
+const path = require('path');
+
+const msgPath = process.argv[2];
+const msg = fs.readFileSync(msgPath, 'utf8');
+
+const debtMatch = msg.match(/^Debt:\s*(.+)$/im);
+if (!debtMatch) {
+  console.error('[BLOCKED] コミットメッセージに Debt: Trailer が見つかりません。');
+  console.error('例: Debt: DEBT-042 resolved  または  Debt: none');
+  process.exit(1);
+}
+
+const debtValue = debtMatch[1].trim();
+const isNone = debtValue.toLowerCase() === 'none';
+
+if (!isNone) {
+  const root = path.resolve(__dirname, '..');
+  const debtFile = path.join(root, 'DEBT_AND_FUTURE.md');
+  if (fs.existsSync(debtFile)) {
+    const debtContent = fs.readFileSync(debtFile, 'utf8');
+    const id = debtValue.split(' ')[0];
+    if (!debtContent.includes(id)) {
+      console.error('[BLOCKED] 申告されたDebt ID (' + id + ') が DEBT_AND_FUTURE.md 内に見つかりません。');
+      process.exit(1);
+    }
+  }
+}
+process.exit(0);

@@ -1,0 +1,23 @@
+{
+  "allowed_root_files": [
+    "AGENTS.md",
+    "CLAUDE.md",
+    "DEBT_AND_FUTURE.md",
+    "package.json",
+    "README.md",
+    ".gitignore",
+    "vitest.workspace.ts",
+    "eslint.config.js"
+  ],
+  "allowed_root_directories": [
+    ".claude",
+    "apps",
+    "archive",
+    "db",
+    "docs",
+    "scripts",
+    "scratch",
+    "shared",
+    "supabase"
+  ]
+}

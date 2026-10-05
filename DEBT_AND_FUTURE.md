@@ -1,4 +1,4 @@
-# DEBT AND FUTURE
+﻿# DEBT AND FUTURE
 
 謚陦鍋噪雋蛯ｵ縺ｨ譛ｪ隗｣豎ｺ隱ｲ鬘後∝ｰ・擂縺ｮ蟇ｾ蠢懊ち繧ｹ繧ｯ繧定ｨ倬鹸縺吶ｋ蛟滄≡繝ｪ繧ｹ繝医・
 ## 迴ｾ蝨ｨ縺ｮ雋蛯ｵ (Debt Loan)
@@ -31,8 +31,25 @@
 > **2026-10-04 霑ｽ險・ 譁ｹ驥戡 繧呈治逕ｨ縺励∫ｧｻ蜍輔・縺吶∋縺ｦ蜿悶ｊ豸医＠貂医∩・医Ν繝ｼ繝域ｧ区・縺ｫ蠕ｩ蟶ｰ・峨・* 荳玖ｨ・1縲・ 縺ｯ縲悟・邱ｨ繧貞・螳滓命縺吶ｋ髫帙↓莠句燕縺ｫ蟇ｾ蠢懊☆縺ｹ縺崎ｨｭ險郁ｪｲ鬘後阪→縺励※謇ｱ縺・・縲・1 縺ｯ蠑輔″邯壹″譛牙柑縲ゅせ繧ｳ繝ｼ繝苓ｦ丞ｮ壹・闕画｡医・莨夊ｩｱ繧｢繝ｼ繝・ぅ繝輔ぃ繧ｯ繝医・ `scratch/routing_draft_AGENTS.md` 縺ｫ騾驕ｿ縲・
 繝ｫ繝ｼ繝育峩荳九・繧｢繝励Μ荳蠑上ｒ `apps/repaper-route/` 縺ｸ縲～governance/` 繧・`docs/governance/`縲～supabase/` 繧・`db/supabase/` 縺ｸ荳諡ｬ遘ｻ蜍輔＠縺溽ｵ先棡縲∽ｻ･荳九′蛻､譏弱＠縺溘らｧｻ蜍輔・譛ｪ繧ｳ繝溘ャ繝茨ｼ・it荳翫・ 197莉ｶ縺ｮ蜑企勁・区悴霑ｽ霍｡・峨・
 **蛻､譏取ｸ医∩縺ｮ逡ｰ蟶ｸ・郁ｦ∽ｿｮ豁｣・・*
-1. **[蜆ｪ蜈亥ｺｦ:譛鬮肋 write-safety-gate 縺ｮ T3繝代せ菫晁ｭｷ縺檎┌險縺ｧ辟｡蜉ｹ蛹・*: `.agents/scripts/write-safety-check.js` 縺・`governance/core_config.json` 繧定ｪｭ繧√★縲∬ｭｦ蜻翫・縺ｿ縺ｧ `T3_force_paths` 繧堤ｩｺ縺ｨ縺励※邯夊｡後＠縺ｦ縺・ｋ・医ヵ繧ｩ繝ｼ繝ｫ繝舌ャ繧ｯ遖∵ｭ｢蜴溷援縺ｫ繧よ慣隗ｦ・峨・2. **[蜆ｪ蜈亥ｺｦ:鬮肋 CI 遐ｴ謳・*: `.github/workflows/ci.yml` 縺後Ν繝ｼ繝医〒 `npm ci` 遲峨ｒ螳溯｡後☆繧句燕謠舌ゅΝ繝ｼ繝医↓ package.json 縺檎┌縺・◆繧∝､ｱ謨励☆繧九Ａworking-directory: apps/repaper-route` 遲峨・蟇ｾ蠢懊′蠢・ｦ√・3. **[蜆ｪ蜈亥ｺｦ:鬮肋 pre-commit 縺ｮ繝ｫ繝ｼ繝郁｡帷函繝√ぉ繝・け縺檎ｩｺ謖ｯ繧・*: `.husky/pre-commit` 縺ｯ繝ｫ繝ｼ繝育峩荳九・ `fix_*` / `patch_*` 遲峨・縺ｿ讀懈渊縲らｧｻ蜍募ｾ後・ `apps/repaper-route/` 驟堺ｸ九↓邏・00莉ｶ縺ｮ荳譎ゅせ繧ｯ繝ｪ繝励ヨ縺後≠繧翫∵､懈渊繧偵☆繧頑栢縺代※繧ｳ繝溘ャ繝医＆繧後ｋ縲・4. **[蜆ｪ蜈亥ｺｦ:鬮肋 邨ｱ豐ｻ繧ｹ繧ｯ繝ｪ繝励ヨ縺ｮ蜿ら・縺壹ｌ**: `closure_gate.js` / `commit-msg-hook.js`・・src/`繝ｻ`README.md` 繧偵Ν繝ｼ繝亥渕貅悶〒蛻､螳夲ｼ峨～scan.js`・医Ν繝ｼ繝医・ package.json繝ｻ`governance/ADR/`・峨～write-safety-check.js`・井ｸ願ｨ・・峨ゅい繝励Μ蛛ｴ AGENTS.md 蜀・・ `governance/...`縲～scripts/check_tier_paths.mjs` 縺ｮ險倩ｿｰ繧らｧｻ蜍募・縺ｨ荳堺ｸ閾ｴ縲・5. **[蜆ｪ蜈亥ｺｦ:荳ｭ] husky 縺ｮ prepare**: `apps/repaper-route/package.json` 縺ｮ `"prepare": "husky"` 縺ｯgit繝ｫ繝ｼ繝亥､悶°繧牙ｮ溯｡後＆繧後ｋ縲Ａcore.hooksPath` 縺ｯ `.husky/_` 縺ｧ險ｭ螳壽ｸ医∩縺ｮ縺溘ａ蜊ｳ譎ゅ・螳溷ｮｳ縺ｯ譛ｪ遒ｺ隱阪・6. **[蜆ｪ蜈亥ｺｦ:荳ｭ] 繝ｫ繝ｼ繝・`.gitignore` 縺ｮ豸亥､ｱ**: `.gitignore` 縺後い繝励Μ蛛ｴ縺ｸ遘ｻ蜍輔ゅΝ繝ｼ繝医〒辟｡隕悶＠縺ｦ縺・◆蟇ｾ雎｡縺ｮ謇ｱ縺・ｒ遒ｺ隱阪☆繧九・
+1. ~~**[蜆ｪ蜈亥ｺｦ:譛鬮肋 write-safety-gate 縺ｮ T3繝代せ菫晁ｭｷ縺檎┌險縺ｧ辟｡蜉ｹ蛹・**~~: `.agents/scripts/write-safety-check.js` 縺・`governance/core_config.json` 繧定ｪｭ繧√★縲∬ｭｦ蜻翫・縺ｿ縺ｧ `T3_force_paths` 繧堤ｩｺ縺ｨ縺励※邯夊｡後＠縺ｦ縺・ｋ・医ヵ繧ｩ繝ｼ繝ｫ繝舌ャ繧ｯ遖∵ｭ｢蜴溷援縺ｫ繧よ慣隗ｦ・峨・2. **[蜆ｪ蜈亥ｺｦ:鬮肋 CI 遐ｴ謳・*: `.github/workflows/ci.yml` 縺後Ν繝ｼ繝医〒 `npm ci` 遲峨ｒ螳溯｡後☆繧句燕謠舌ゅΝ繝ｼ繝医↓ package.json 縺檎┌縺・◆繧∝､ｱ謨励☆繧九Ａworking-directory: apps/repaper-route` 遲峨・蟇ｾ蠢懊′蠢・ｦ√・3. ~~**[蜆ｪ蜈亥ｺｦ:鬮肋 pre-commit 縺ｮ繝ｫ繝ｼ繝郁｡帷函繝√ぉ繝・け縺檎ｩｺ謖ｯ繧・**~~: `.husky/pre-commit` 縺ｯ繝ｫ繝ｼ繝育峩荳九・ `fix_*` / `patch_*` 遲峨・縺ｿ讀懈渊縲らｧｻ蜍募ｾ後・ `apps/repaper-route/` 驟堺ｸ九↓邏・00莉ｶ縺ｮ荳譎ゅせ繧ｯ繝ｪ繝励ヨ縺後≠繧翫∵､懈渊繧偵☆繧頑栢縺代※繧ｳ繝溘ャ繝医＆繧後ｋ縲・4. **[蜆ｪ蜈亥ｺｦ:鬮肋 邨ｱ豐ｻ繧ｹ繧ｯ繝ｪ繝励ヨ縺ｮ蜿ら・縺壹ｌ**: `closure_gate.js` / `commit-msg-hook.js`・・src/`繝ｻ`README.md` 繧偵Ν繝ｼ繝亥渕貅悶〒蛻､螳夲ｼ峨～scan.js`・医Ν繝ｼ繝医・ package.json繝ｻ`governance/ADR/`・峨～write-safety-check.js`・井ｸ願ｨ・・峨ゅい繝励Μ蛛ｴ AGENTS.md 蜀・・ `governance/...`縲～scripts/check_tier_paths.mjs` 縺ｮ險倩ｿｰ繧らｧｻ蜍募・縺ｨ荳堺ｸ閾ｴ縲・5. **[蜆ｪ蜈亥ｺｦ:荳ｭ] husky 縺ｮ prepare**: `apps/repaper-route/package.json` 縺ｮ `"prepare": "husky"` 縺ｯgit繝ｫ繝ｼ繝亥､悶°繧牙ｮ溯｡後＆繧後ｋ縲Ａcore.hooksPath` 縺ｯ `.husky/_` 縺ｧ險ｭ螳壽ｸ医∩縺ｮ縺溘ａ蜊ｳ譎ゅ・螳溷ｮｳ縺ｯ譛ｪ遒ｺ隱阪・6. **[蜆ｪ蜈亥ｺｦ:荳ｭ] 繝ｫ繝ｼ繝・`.gitignore` 縺ｮ豸亥､ｱ**: `.gitignore` 縺後い繝励Μ蛛ｴ縺ｸ遘ｻ蜍輔ゅΝ繝ｼ繝医〒辟｡隕悶＠縺ｦ縺・◆蟇ｾ雎｡縺ｮ謇ｱ縺・ｒ遒ｺ隱阪☆繧九・
 **繧ｻ繧ｭ繝･繝ｪ繝・ぅ・井ｺｺ髢薙・菴懈･ｭ・・*
 7. **[蜆ｪ蜈亥ｺｦ:譛鬮肋 繧ｷ繝ｼ繧ｯ繝ｬ繝・ヨ縺ｮ繝ｭ繝ｼ繝・・繧ｷ繝ｧ繝ｳ**: 菴懈･ｭ荳ｭ縺ｫ service role key繝ｻDB謗･邯壹ヱ繧ｹ繝ｯ繝ｼ繝峨・繝・せ繝育畑繝ｭ繧ｰ繧､繝ｳ諠・ｱ縺窟I縺ｮ莨夊ｩｱ繝ｭ繧ｰ縺ｫ髴ｲ蜃ｺ縺励◆縲よ立繝励Ο繧ｸ繧ｧ繧ｯ繝医〒縺ｯ DB 繝代せ繝ｯ繝ｼ繝峨′ `VITE_` 莉倥″縺ｧ螳夂ｾｩ縺輔ｌ縺ｦ縺・◆縺溘ａ縲∵立繝薙Ν繝画・譫懃黄縺ｫ蜷ｫ縺ｾ繧後◆蜿ｯ閭ｽ諤ｧ繧ゅ≠繧九４upabase 繝繝・す繝･繝懊・繝峨〒蜀咲匱陦後＠縲～.env` / `.env.local` 繧呈峩譁ｰ縺吶ｋ縲・
 **菫晉蕗荳ｭ縺ｮ菴懈･ｭ**
-8. **繧ｹ繧ｳ繝ｼ繝怜ｼｷ蛻ｶ繝輔ャ繧ｯ・・.agents/scripts/scope_hook.js`・・*: 迴ｾ蝨ｨ縺ｮ hooks.json 縺ｮ譖ｸ蠑擾ｼ・{蜷榊燕: {PreToolUse: [{matcher, hooks}]}}`・峨ｄ蜈･蜉帙・繧､繝ｭ繝ｼ繝会ｼ・payload.args`・峨・莉墓ｧ倥ｒ遒ｺ縺九ａ縺壹↓菴懊▲縺溘ｂ縺ｮ縲ゅヵ繝・け螳溯｡梧凾縺ｮ cwd 縺ｯ `.agents` 縺ｧ縺ゅｊ縲～process.cwd()` 縺ｧ蛻､螳壹☆繧区婿蠑上・謌千ｫ九＠縺ｪ縺・ゆｾ句､匁凾縺ｫ險ｱ蜿ｯ縺吶ｋ繝輔か繝ｼ繝ｫ繝舌ャ繧ｯ繧ゅ≠繧九・*迴ｾ蝨ｨ縺ｯ hooks.json 縺ｫ逋ｻ骭ｲ縺励※縺翫ｉ縺夂┌蜉ｹ**縲ゆｽ懊ｊ逶ｴ縺吶°蜑企勁縺吶ｋ縺区悴豎ｺ螳壹・9. **繝ｫ繝ｼ繝茨ｼ冗ｵｱ豐ｻ菴懈･ｭ縺ｮ繧ｹ繧ｳ繝ｼ繝怜玄蛻・*: 繝ｫ繝ｼ繝医・ AGENTS.md 縺ｯ `repaper / vehicle / db` 縺ｮ3蛹ｺ蛻・・縺ｿ縲Ａ.agents/`繝ｻ`docs/`繝ｻCI 縺ｪ縺ｩ繝ｫ繝ｼ繝育ｵｱ豐ｻ縺ｾ繧上ｊ縺ｮ菴懈･ｭ蛹ｺ蛻・′譛ｪ螳夂ｾｩ縲・10. **譌ｧ繝ｪ繝昴ず繝医Μ `repaper-route` 縺ｮ繧｢繝ｼ繧ｫ繧､繝・*: 譛ｪ繧ｳ繝溘ャ繝亥ｷｮ蛻・ｼ・.agents/*`縲～AGENTS.md`縲～governance/ADR/ADR-001-Dual-Context-Sync.md` 遲会ｼ峨・繧ｳ繝溘ャ繝医・Push縲；itHub縺ｧ縺ｮ繝ｪ繝阪・繝繝ｻArchive縲√Ο繝ｼ繧ｫ繝ｫ蜑企勁縺梧悴螳滓命縲・11. **繝ｫ繝ｼ繝医・谿狗ｽｮ迚ｩ**: `.agent/`・域立繧ｨ繝ｼ繧ｸ繧ｧ繝ｳ繝郁ｨｭ螳夲ｼ峨～Artifact/`・郁ｩ穂ｾ｡雉・侭・峨・謇ｱ縺・′譛ｪ螳壹・
+8. ~~**繧ｹ繧ｳ繝ｼ繝怜ｼｷ蛻ｶ繝輔ャ繧ｯ・・.agents/scripts/scope_hook.js`・・**~~: 迴ｾ蝨ｨ縺ｮ hooks.json 縺ｮ譖ｸ蠑擾ｼ・{蜷榊燕: {PreToolUse: [{matcher, hooks}]}}`・峨ｄ蜈･蜉帙・繧､繝ｭ繝ｼ繝会ｼ・payload.args`・峨・莉墓ｧ倥ｒ遒ｺ縺九ａ縺壹↓菴懊▲縺溘ｂ縺ｮ縲ゅヵ繝・け螳溯｡梧凾縺ｮ cwd 縺ｯ `.agents` 縺ｧ縺ゅｊ縲～process.cwd()` 縺ｧ蛻､螳壹☆繧区婿蠑上・謌千ｫ九＠縺ｪ縺・ゆｾ句､匁凾縺ｫ險ｱ蜿ｯ縺吶ｋ繝輔か繝ｼ繝ｫ繝舌ャ繧ｯ繧ゅ≠繧九・*迴ｾ蝨ｨ縺ｯ hooks.json 縺ｫ逋ｻ骭ｲ縺励※縺翫ｉ縺夂┌蜉ｹ**縲ゆｽ懊ｊ逶ｴ縺吶°蜑企勁縺吶ｋ縺区悴豎ｺ螳壹・9. **繝ｫ繝ｼ繝茨ｼ冗ｵｱ豐ｻ菴懈･ｭ縺ｮ繧ｹ繧ｳ繝ｼ繝怜玄蛻・*: 繝ｫ繝ｼ繝医・ AGENTS.md 縺ｯ `repaper / vehicle / db` 縺ｮ3蛹ｺ蛻・・縺ｿ縲Ａ.agents/`繝ｻ`docs/`繝ｻCI 縺ｪ縺ｩ繝ｫ繝ｼ繝育ｵｱ豐ｻ縺ｾ繧上ｊ縺ｮ菴懈･ｭ蛹ｺ蛻・′譛ｪ螳夂ｾｩ縲・10. **譌ｧ繝ｪ繝昴ず繝医Μ `repaper-route` 縺ｮ繧｢繝ｼ繧ｫ繧､繝・*: 譛ｪ繧ｳ繝溘ャ繝亥ｷｮ蛻・ｼ・.agents/*`縲～AGENTS.md`縲～governance/ADR/ADR-001-Dual-Context-Sync.md` 遲会ｼ峨・繧ｳ繝溘ャ繝医・Push縲；itHub縺ｧ縺ｮ繝ｪ繝阪・繝繝ｻArchive縲√Ο繝ｼ繧ｫ繝ｫ蜑企勁縺梧悴螳滓命縲・11. **繝ｫ繝ｼ繝医・谿狗ｽｮ迚ｩ**: `.agent/`・域立繧ｨ繝ｼ繧ｸ繧ｧ繝ｳ繝郁ｨｭ螳夲ｼ峨～Artifact/`・郁ｩ穂ｾ｡雉・侭・峨・謇ｱ縺・′譛ｪ螳壹・
+
+
+## 統治負債の棚卸し (2026-10-04)
+
+### 解決済み
+
+- ~~**[優先度:最高] write-safety-gate の T3パス保護が無言で無効化**~~
+  - *解決済*: `workspacePaths` を利用した共通パス解決モジュール (`paths.cjs`) の導入と、Fail-closed 設計への移行により修正完了。
+- ~~**[優先度:高] pre-commit のルート直下チェックが空振り**~~
+  - *解決済*: データの分離 (`root_allowlist.json`) と、シェル経由の作成 (`safety-check.js`) を含めた包括的なホワイトリスト方式に移行完了。
+- ~~**スコープ強制フックのCWD依存バグ**~~
+  - *解決済*: 全統治スクリプトで `process.cwd()` 依存を廃止し解決。
+
+### 新規負債・TODO
+
+- **[DEBT-GOV-01] Debt Trailer 検証の厳格化 (Husky)**: 現在の `.husky/commit-msg` は `Debt: none` の入力を許容している。本来は `git diff --cached --name-only` を用いて、`apps/` や `db/` の機能変更が行われた場合は `none` を拒否するようフックを強化する必要がある。
+- **[DEBT-GOV-02] T3ロックアウト時の運用マニュアル整備**: Fail-closed の原則により、統治スクリプトがバグを起こすとAIが完全に操作不能（ロックアウト）になる。人間側で緊急復旧（ブレークグラス）を行う手順や、フック無効化の安全な方法をドキュメント化しておく必要がある。

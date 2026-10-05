@@ -15,7 +15,8 @@ export function resolveAppRoot(targetFile) {
   if (!targetFile) return null;
 
   try {
-    const gitRoot = execSync('git rev-parse --show-toplevel', { encoding: 'utf8' }).trim();
+    let gitRoot = execSync('git rev-parse --show-toplevel', { encoding: 'utf8' }).trim();
+    gitRoot = path.resolve(gitRoot);
     let currentDir = path.dirname(path.resolve(targetFile));
 
     // Handle db/ directory specially
@@ -26,7 +27,7 @@ export function resolveAppRoot(targetFile) {
 
 
     // Traverse upwards to find package.json
-    while (currentDir.length >= gitRoot.length && currentDir.startsWith(gitRoot)) {
+    while (currentDir.length >= gitRoot.length && currentDir.toLowerCase().startsWith(gitRoot.toLowerCase())) {
       if (fs.existsSync(path.join(currentDir, 'package.json'))) {
         const relPath = path.relative(gitRoot, currentDir);
         const relPathPosix = relPath.split(path.sep).join('/');

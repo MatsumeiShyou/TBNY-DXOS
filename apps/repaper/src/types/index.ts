@@ -1,3 +1,4 @@
+import { UUID } from '../utils/uuid';
 /**
  * Collection Shift Manager
  * Core Domain Types (Single Source of Truth)
@@ -80,9 +81,10 @@ export interface Driver {
 export interface Job {
   id: string;
   title: string;
-  driverId?: string; // pendingJobの場合 null/undefined (UI用の一時フィールド)
-  workerId?: string; // DBの worker_id にマッピングされる実態
-  vehicleId?: string; // DBの vehicle_id にマッピングされる実態
+  driverId?: string;
+    ui_column_id?: string; // DB保存用のUI列位置記憶 // pendingJobの場合 null/undefined (UI用の一時フィールド)
+  workerId?: UUID; // DBの worker_id にマッピングされる実態
+  vehicleId?: UUID; // DBの vehicle_id にマッピングされる実態
   status?: 'PLANNED' | 'CONFIRMED' | 'COMPLETED' | 'SKIPPED'; // DBの job_status ENUM
   startTime?: string; // "HH:MM" 形式
   duration: number; // 予定所要時間(分)
@@ -101,7 +103,7 @@ export interface Job {
   isSuspended?: boolean; // マスタに存在するが一時停止中（無効）のデータ
   isVehicleError?: boolean;
   seriesId?: string;
-  dbId?: string; // Supabaseの本来の UUID (job_id として利用)
+  dbId?: UUID; // Supabaseの本来の UUID (job_id として利用)
   actualQuantity?: number;
   quantityUnit?: string;
   netWeight?: number;

@@ -10,6 +10,12 @@ try {
 
   // --- Step 4: Emergency Bypass ---
   if (fs.existsSync(bypassFile)) {
+    // 緊急バイパスは人間専用。Claude Code のシェルには CLAUDECODE=1 が付く
+    if (process.env.CLAUDECODE) {
+      console.error('\n❌ [BLOCKED] 緊急バイパスは人間専用です。AIセッション(CLAUDECODE)からは使用できません。');
+      console.error(`人間が内容を確認のうえ、自分の端末からコミットするか ${bypassFile} を削除してください。`);
+      process.exit(1);
+    }
     const reason = fs.readFileSync(bypassFile, 'utf8');
     fs.unlinkSync(bypassFile);
     console.log(`\n🚨 [EMERGENCY BYPASS] 緊急回避が作動しました。全ての検査をスキップします。`);
@@ -18,14 +24,22 @@ try {
   }
 
   // --- Step 3: Debt Deadline Check ---
-  if (fs.existsSync(ledgerFile)) {
-    const ledger = JSON.parse(fs.readFileSync(ledgerFile, 'utf8'));
+  // ステージ済みの台帳で判定する（台帳を resolved にするコミット自体が止まるデッドロックを防ぐ）
+  let ledgerText = null;
+  try {
+    ledgerText = execSync('git show :docs/debt_ledger.json', { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] });
+  } catch (e) {
+    if (fs.existsSync(ledgerFile)) ledgerText = fs.readFileSync(ledgerFile, 'utf8');
+  }
+  if (ledgerText) {
+    const ledger = JSON.parse(ledgerText);
     const now = new Date();
     const expired = ledger.debts.filter(d => !d.resolved && new Date(d.deadline) < now);
     if (expired.length > 0) {
       console.error('\n❌ [エラー] 「後で直すリスト」に期限切れのタスクがあります！');
       expired.forEach(d => console.error(` - [${d.id}] ${d.reason} (期限: ${d.deadline})`));
       console.error('これらを解決（resolved: trueに更新するか問題を修正）するまでコミットは許可されません。');
+      console.error('resolved にした docs/debt_ledger.json をステージすれば、そのコミットは通過します。');
       process.exit(1);
     }
   }
@@ -35,9 +49,37 @@ try {
     .map(f => f.trim())
     .filter(Boolean);
 
-  if (stagedFiles.length === 0) {
-    process.exit(0);
+  if (stagedFiles.length === 0) { process.exit(0); }
+
+  // --- Step 1: Root Directory Protection (Whitelist Enforcement) ---
+  const allowlistPath = path.join(gitRoot, 'governance/root_allowlist.json');
+  if (fs.existsSync(allowlistPath)) {
+    const allowlist = JSON.parse(fs.readFileSync(allowlistPath, 'utf8'));
+    const allowedFiles = allowlist.allowed_root_files || [];
+    const allowedDirs = allowlist.allowed_root_directories || [];
+    
+    // Allow standard governance/git files that might not be in the explicit list but are safe
+    const builtinAllowedFiles = ['.gitignore', '.emergency-bypass', 'AGENTS.md', 'DEBT_AND_FUTURE.md', 'package.json', 'README.md', 'package-lock.json'];
+    const builtinAllowedDirs = ['.git', '.githooks', '.github', '.husky', '.agents', 'governance'];
+    
+    // 削除は対象外（許可リスト外の痕跡を消すコミットが止まらないように。追加・変更・リネーム先のみ検査）
+    const addedOrModified = execSync('git diff --cached --name-only --diff-filter=ACMR', { encoding: 'utf8' })
+      .split('\n').map(f => f.trim()).filter(Boolean);
+    addedOrModified.forEach(file => {
+      const filePosix = file.split(path.sep).join('/');
+      const parts = filePosix.split('/');
+
+      const isAllowedFile = parts.length === 1 && (allowedFiles.includes(parts[0]) || builtinAllowedFiles.includes(parts[0]));
+      const isAllowedDir = parts.length > 1 && (allowedDirs.includes(parts[0]) || builtinAllowedDirs.includes(parts[0]));
+      
+      if (!isAllowedFile && !isAllowedDir) {
+        console.error('\n[BLOCKED] ルート直下または未許可ディレクトリへのファイル追加は禁止されています: ' + filePosix);
+        console.error('許可されたディレクトリ(apps/ 等)に移動するか、root_allowlist.json を更新してください。');
+        process.exit(1);
+      }
+    });
   }
+
 
   // Phase 3: DB Append-Only Enforcement
   const diffStatus = execSync('git diff --cached --name-status', { encoding: 'utf8' })
@@ -144,50 +186,58 @@ try {
   }
 
   let failed = false;
-  let newWarnings = [];
+  const lintBaselineFile = path.join(gitRoot, 'docs', 'lint_baseline.json');
+  const lintBaseline = fs.existsSync(lintBaselineFile) ? JSON.parse(fs.readFileSync(lintBaselineFile, 'utf8')) : {};
 
   // Run checks in affected apps
   affectedApps.forEach(appRoot => {
     const relName = path.relative(gitRoot, appRoot) || 'root';
     console.log(`\n> Running checks for ${relName}...`);
     
-    // 1. ESLint Check (with JSON output to parse errors/warnings)
+    // 1. ESLint Check: エラーは即ブロック。警告は基準値（docs/lint_baseline.json）からの増加のみブロック（ラチェット）
+    //    ※ ESLint は警告だけなら終了コード 0 のため、成功時も JSON を解析する
     try {
       const eslintPath = path.join(appRoot, 'node_modules', '.bin', 'eslint');
       if (fs.existsSync(eslintPath)) {
+        let eslintOut = '';
         try {
-          const eslintOut = execSync(`"${eslintPath}" . --format json`, { cwd: appRoot, encoding: 'utf8' });
+          eslintOut = execSync(`"${eslintPath}" . --format json`, { cwd: appRoot, encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 });
         } catch (e) {
-          // ESLint returns non-zero on error
-          if (e.stdout) {
-            const results = JSON.parse(e.stdout);
-            const hasErrors = results.some(r => r.errorCount > 0);
-            if (hasErrors) {
-              console.error(`❌ ESLint Error in ${relName}`);
-              failed = true;
-              try {
-                execSync(`"${eslintPath}" .`, { cwd: appRoot, stdio: 'inherit' });
-              } catch (err) {
-                // Ignore the error from execSync since we already set failed = true
-              }
-            } else {
-              // Only warnings -> register debt
-              const warnCount = results.reduce((acc, r) => acc + r.warningCount, 0);
-              console.log(`⚠️ ESLint Warnings in ${relName}: ${warnCount}件`);
-              newWarnings.push({
-                app: relName,
-                count: warnCount,
-                reason: `ESLint warnings in ${relName}`
+          eslintOut = e.stdout || '';
+        }
+        let results = null;
+        try {
+          results = JSON.parse(eslintOut);
+        } catch (e) {
+          console.error(`❌ ESLint failed to execute in ${relName}`);
+          failed = true;
+        }
+        if (results) {
+          const errorCount = results.reduce((acc, r) => acc + r.errorCount, 0);
+          const warnCount = results.reduce((acc, r) => acc + r.warningCount, 0);
+          if (errorCount > 0) {
+            console.error(`❌ ESLint Error in ${relName}: ${errorCount}件`);
+            results.filter(r => r.errorCount > 0).slice(0, 10).forEach(r => {
+              r.messages.filter(m => m.severity === 2).slice(0, 3).forEach(m => {
+                console.error(`   ${path.relative(appRoot, r.filePath)}:${m.line} ${m.message} (${m.ruleId})`);
               });
-            }
-          } else {
-            console.error(`❌ ESLint failed to execute in ${relName}`);
+            });
             failed = true;
+          }
+          const baseline = lintBaseline[relName.split(path.sep).join('/')];
+          if (typeof baseline === 'number' && warnCount > baseline) {
+            console.error(`❌ ESLint 警告が増えています (${relName}): 基準 ${baseline}件 → ${warnCount}件。増やした警告を解消してください。`);
+            failed = true;
+          } else if (typeof baseline === 'number' && warnCount < baseline) {
+            console.log(`🎉 ESLint 警告が基準より減りました (${relName}): ${baseline}件 → ${warnCount}件。docs/lint_baseline.json を ${warnCount} に下げてください。`);
+          } else {
+            console.log(`✅ ESLint: ${relName}（警告 ${warnCount}件${typeof baseline === 'number' ? ` / 基準 ${baseline}件` : ''}）`);
           }
         }
       }
     } catch (e) {
       console.error(`Failed to run ESLint in ${relName}:`, e.message);
+      failed = true;
     }
 
     // 2. TSC Check
@@ -226,31 +276,6 @@ try {
   if (failed) {
     console.error('\n🚨 Pre-commit hook failed.');
     process.exit(1);
-  }
-
-  // --- Register New Warnings as Debt ---
-  if (newWarnings.length > 0) {
-    let ledger = { debts: [] };
-    if (fs.existsSync(ledgerFile)) {
-      ledger = JSON.parse(fs.readFileSync(ledgerFile, 'utf8'));
-    }
-    newWarnings.forEach(w => {
-      ledger.debts.push({
-        id: 'LINT-' + Date.now() + Math.floor(Math.random() * 1000),
-        type: 'LINT_WARNING',
-        reason: w.reason,
-        createdAt: new Date().toISOString(),
-        deadline: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(),
-        resolved: false
-      });
-    });
-    if (!fs.existsSync(path.dirname(ledgerFile))) {
-      fs.mkdirSync(path.dirname(ledgerFile), { recursive: true });
-    }
-    fs.writeFileSync(ledgerFile, JSON.stringify(ledger, null, 2), 'utf8');
-    console.log(`\n📝 軽微な警告を「後で直すリスト」に記録しました (期限: 14日後)`);
-    // automatically add the ledger file to the commit if possible, but standard hooks shouldn't modify index
-    // so we just let it be untracked or modified for the next commit.
   }
 
   process.exit(0);
