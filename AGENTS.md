@@ -33,9 +33,10 @@
 | L1/L2 Claude Code | `.claude/settings.json` のフック（`.claude/hooks/`） | **拒否**: ルート許可リスト外への書き込み、ルートの `package-lock.json`・`node_modules`・依存追加、`packages/`、`generated/` の直接編集、既存マイグレーションの編集、`--no-verify`、`core.hooksPath` の変更、緊急バイパス、ACL 操作、強制 push、`CLAUDECODE` の改変<br>**人間の承認**: 統治ファイル（`.claude/` `.agents/` `.githooks/` `.github/` `governance/` `AGENTS.md` `CLAUDE.md` `db/AGENTS.md`）の変更、`Waiver:` 付きコミット、`reset --hard`・再帰削除・破壊的 SQL・push<br>**編集後検査**: アプリ内の編集ごとに ESLint（エラー）と型チェックを実行し、結果を AI に返す |
 | L3 git | `.githooks/pre-commit`（`dispatch.cjs`） | ルート許可リスト（`governance/root_allowlist.json`）、マイグレーション追記のみ、`generated/` と `db/shared/` の一致、期限切れ負債、影響アプリの ESLint エラーと型チェック |
 | L3 git | `.githooks/commit-msg`（`.agents/scripts/verify-task.cjs`） | コミット種別の必須化、一時ファイル混入の拒否、保護パス（`Waiver:` で免除）、`fix:` の fail-before / pass-after テスト検証 |
-| L4 ビルド・CI | vite の境界監査プラグイン、GitHub Actions | アプリ外ファイルのバンドル拒否／型・lint・テスト・ビルド |
-| L5 OS | `scripts/governance_lock.ps1`（人間が UAC で実行） | 統治ファイルへの書き込みを NTFS ACL で拒否（**施錠時のみ**） |
+| L4 ビルド・CI | vite の境界監査プラグイン、GitHub Actions、master のブランチ保護 | アプリ外ファイルのバンドル拒否／型・lint・テスト・ビルド（`repaper-checks` は必須・管理者も免除なし）／統治ファイルを変更した PR に `Governance Flag` が × を付ける（必須ではない。マージ前に人間が確認する目印） |
+| L5 OS | `scripts/governance_lock.ps1`（人間が UAC で実行） | 統治ファイルへの書き込みを NTFS ACL で拒否（**施錠時のみ**。通常は使わない。Claude 以外の AI に長期間作業させる場合などに限る） |
 
 * Antigravity 2.0 用のツールフック等は退役し、`archive/antigravity-governance/` に移しました。
 * L3 の `Waiver:` は保護パス検査の免除のみです。AI セッション（`CLAUDECODE`）では fix 以外もテスト（pass-after）を免除せず、緊急バイパス（`.emergency-bypass`）は使えません。ESLint 警告は `docs/lint_baseline.json` の件数を超えると拒否されます（減ったら基準を下げる）。
-* AI は L3 を `--no-verify` で迂回できる立場にあるため、L1/L2 でそれを禁止しています。最終防衛線は L4（ブランチ保護）と L5（ACL 施錠）です。
+* AI は L3 を `--no-verify` で迂回できる立場にあるため、L1/L2 でそれを禁止しています。最終防衛線は L4（ブランチ保護）です。
+* L1/L2 は Claude Code でのみ働きます。他の AI・開発環境では L3〜L4 が守りになるため、`Governance Flag` の × が付いた PR は必ず中身を確認してからマージしてください。
