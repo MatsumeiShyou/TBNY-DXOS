@@ -87,11 +87,13 @@ export const storageService = {
           if (row.is_skipped || row.status === 'DELETED') continue;
           const weighing = row.weighing_records?.[0] || {};
           const actual = row.actuals?.[0] || {};
+          // 盤面の列ID。現行は ui_column_id に保存。旧データは vehicle_id に列IDが入っている
+          const columnId = row.ui_column_id || row.vehicle_id || row.worker_id || undefined;
           const job = {
             id: row.front_id || row.id,
             dbId: row.id,
             originalCustomerId: row.collection_point_id,
-            driverId: row.worker_id || undefined, // UI上でdriverIdとして扱っているのはworker_id
+            driverId: columnId,
             workerId: row.worker_id || undefined,
             vehicleId: row.vehicle_id || undefined,
             startTime: row.planned_time ? row.planned_time.substring(0, 5) : undefined,
@@ -102,7 +104,7 @@ export const storageService = {
             operator_id: weighing.operator_id || null,
             item_id: row.item_id || null
           };
-          if (row.vehicle_id) {
+          if (columnId) {
             jobs.push(job);
           } else {
             pendingJobs.push(job);
@@ -489,6 +491,51 @@ export const storageService = {
     }
   },
 
+  saveSingleWorker: async (worker: any) => {
+    try {
+      const { supabase } = await import('../lib/supabase');
+      const { error } = await supabase.from('master_workers').upsert(
+        { id: worker.id, name: worker.name, kana: worker.kana, license_types: worker.license_types, is_active: worker.is_active },
+        { onConflict: 'id' }
+      );
+      if (error) throw error;
+      return { success: true };
+    } catch (e) {
+      console.error('Supabase単体作業員保存エラー:', e);
+      throw e;
+    }
+  },
+
+  saveSingleVehicle: async (vehicle: any) => {
+    try {
+      const { supabase } = await import('../lib/supabase');
+      const { error } = await supabase.from('master_vehicles').upsert(
+        { id: vehicle.id, vehicle_no: vehicle.name, capacity_kg: vehicle.max_capacity_kg, is_active: vehicle.is_active },
+        { onConflict: 'id' }
+      );
+      if (error) throw error;
+      return { success: true };
+    } catch (e) {
+      console.error('Supabase単体車両保存エラー:', e);
+      throw e;
+    }
+  },
+
+  saveSingleItem: async (item: any) => {
+    try {
+      const { supabase } = await import('../lib/supabase');
+      const { error } = await supabase.from('master_items').upsert(
+        { item_code: item.id, name: item.name, is_active: item.is_active },
+        { onConflict: 'item_code' }
+      );
+      if (error) throw error;
+      return { success: true };
+    } catch (e) {
+      console.error('Supabase単体品目保存エラー:', e);
+      throw e;
+    }
+  },
+
   deleteWorker: async (id: string) => {
     try {
       const { supabase } = await import('../lib/supabase');
@@ -630,6 +677,7 @@ export const storageService = {
       const jobsToUpsert: any[] = [];
       const jobsToSkip: string[] = [];
       const configsToUpsert: any[] = [];
+      const exceptionsToUpsert: any[] = [];
 
       for (const op of operations) {
         if (op.entity === 'daily_configs') {
@@ -651,11 +699,25 @@ export const storageService = {
           } else if (op.type === 'delete') {
             jobsToSkip.push(op.id);
           }
+        } else if (op.entity === 'monthly_exceptions') {
+          if (op.type === 'upsert') {
+            exceptionsToUpsert.push({
+              target_date: op.id, // dateStr
+              spot_jobs: op.payload.spotJobs || [],
+              cancellations: op.payload.cancellations || [],
+              reschedules: op.payload.reschedules || []
+            });
+          }
         }
       }
 
       if (configsToUpsert.length > 0) {
         const { error } = await supabase.from('daily_configs').upsert(configsToUpsert, { onConflict: 'planned_date' });
+        if (error) throw error;
+      }
+
+      if (exceptionsToUpsert.length > 0) {
+        const { error } = await supabase.from('monthly_exceptions').upsert(exceptionsToUpsert, { onConflict: 'target_date' });
         if (error) throw error;
       }
 

@@ -45,6 +45,7 @@ import TemplateModal from './components/TemplateModal';
 import Sidebar from './components/Sidebar';
 import CalendarView from './components/CalendarView';
 import { useToast } from './hooks/useToast';
+import { syncQueue } from './lib/syncQueue';
 import { PrintableDispatchSheet } from './components/PrintableDispatchSheet';
 import { PDFPreviewModal } from './components/pdf/PDFPreviewModal';
 
@@ -944,7 +945,14 @@ export default function App() {
         setViewMode={setViewMode}
         currentDate={currentDate}
         onChangeDate={setCurrentDate}
-        onSave={() => alert('保存しました')}
+        onSave={async () => {
+          const saved = await syncQueue.forceFlush();
+          if (!saved) {
+            showToast('保存に失敗しました。通信状況を確認してください', 'error');
+          } else {
+            showToast('保存しました', 'success');
+          }
+        }}
         isPreviewMode={!!previewingTemplate}
         onOpenTemplateModal={() => setIsTemplateModalOpen(true)}
       />

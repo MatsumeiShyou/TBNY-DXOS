@@ -1,6 +1,6 @@
-﻿import { storageService } from '../services/storageService';
+import { storageService } from '../services/storageService';
 
-export type EntityKind = 'daily_jobs' | 'daily_configs';
+export type EntityKind = 'daily_jobs' | 'daily_configs' | 'monthly_exceptions';
 export type OpType = 'upsert' | 'delete';
 
 export interface SyncOp {
@@ -29,8 +29,10 @@ class SyncQueue {
     this.timeoutId = setTimeout(() => this.flush(), this.debounceMs);
   }
 
-  async flush(retryCount = 0) {
-    if (this.isFlushing || this.queue.size === 0) return;
+  // 戻り値: キュー内の変更がすべてDBに保存されたら true
+  async flush(retryCount = 0): Promise<boolean> {
+    if (this.isFlushing) return false;
+    if (this.queue.size === 0) return true;
     this.isFlushing = true;
 
     // レースコンディション対策: 現在のキューを退避して空にする
@@ -45,6 +47,7 @@ class SyncQueue {
       if (this.queue.size > 0) {
         this.scheduleFlush();
       }
+      return true;
     } catch (error: any) {
       console.error(`Sync flush error (retry ${retryCount}):`, error);
       
@@ -56,7 +59,7 @@ class SyncQueue {
         console.error('【Dead Letter】 恒久エラーを検知しました。バッチを破棄します:', currentBatch);
         this.isFlushing = false;
         if (this.queue.size > 0) this.scheduleFlush();
-        return;
+        return false;
       }
       
       // 失敗時はバッチをキューに戻す（その間に新しい変更があれば上書きしない）
@@ -77,11 +80,16 @@ class SyncQueue {
         console.error('Max retries reached. Sync failed.');
         // TODO: UIへの未保存警告イベントの発火
       }
+      return false;
     }
   }
 
-  forceFlush() {
+  // 送信中のバッチがあれば完了を待ってから、残りを即時送信する
+  async forceFlush(): Promise<boolean> {
     if (this.timeoutId) clearTimeout(this.timeoutId);
+    while (this.isFlushing) {
+      await new Promise(resolve => setTimeout(resolve, 100));
+    }
     return this.flush();
   }
 

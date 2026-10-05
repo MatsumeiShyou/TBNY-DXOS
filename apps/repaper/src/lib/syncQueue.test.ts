@@ -28,7 +28,7 @@ describe('SyncQueue Error Handling', () => {
     syncQueue.enqueue('upsert', 'daily_jobs', 'job-1', { name: 'Temp' });
     
     // flushを実行
-    await syncQueue.forceFlush();
+    expect(await syncQueue.forceFlush()).toBe(false);
     
     // エラーが起きた後、キューにデータが戻っていること
     expect((syncQueue as any).queue.size).toBe(1);
@@ -42,7 +42,8 @@ describe('SyncQueue Error Handling', () => {
 
     syncQueue.enqueue('upsert', 'daily_jobs', 'job-2', { name: 'Perm' });
     
-    await syncQueue.forceFlush();
+    // 破棄されてキューは空になるが、保存は失敗として報告されること
+    expect(await syncQueue.forceFlush()).toBe(false);
     
     // 恒久エラーなので破棄され、キューは空になること
     expect((syncQueue as any).queue.size).toBe(0);
@@ -59,5 +60,19 @@ describe('SyncQueue Error Handling', () => {
     await syncQueue.forceFlush();
     
     expect((syncQueue as any).queue.size).toBe(0);
+  });
+
+  it('保存に成功した場合、forceFlush が true を返すこと', async () => {
+    vi.mocked(storageService.processSyncBatch).mockResolvedValueOnce(undefined);
+
+    syncQueue.enqueue('upsert', 'daily_jobs', 'job-4', { name: 'OK' });
+
+    expect(await syncQueue.forceFlush()).toBe(true);
+    expect((syncQueue as any).queue.size).toBe(0);
+  });
+
+  it('キューが空の場合、forceFlush が true を返すこと', async () => {
+    expect(await syncQueue.forceFlush()).toBe(true);
+    expect(storageService.processSyncBatch).not.toHaveBeenCalled();
   });
 });
