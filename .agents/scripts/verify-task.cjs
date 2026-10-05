@@ -92,6 +92,9 @@ if (taskType === 'chore' || taskType === 'waiver') {
   try {
     console.log("-> 独立サンドボックス(worktree)を構築します...");
     execSync(`git diff --cached > ${patchFile}`);
+    // フック実行中は git が GIT_INDEX_FILE=.git/index（相対パス）を渡してくる。
+    // 継承すると worktree 内で解決され index.lock を作れず必ず失敗するため、以降のサンドボックス操作から外す
+    delete process.env.GIT_INDEX_FILE;
     unlinkSandboxNodeModules();
     try { execSync(`git worktree remove --force ${worktreeDir}`, { stdio: 'ignore' }); } catch (e) {}
     execSync(`git worktree add ${worktreeDir} HEAD`, { stdio: 'ignore' });
