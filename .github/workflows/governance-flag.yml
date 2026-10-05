@@ -1,0 +1,48 @@
+# 統治ファイルの変更を PR 上で目立たせる（どの AI・開発環境から来た変更でも検知する）
+# - 統治ファイルが変わっていれば、このチェックを失敗（赤い ×）にしてマージ前に気づけるようにする
+# - ブランチ保護の必須チェックには入れない。マージ自体は止めず、人間が中身を確認して判断する
+name: Governance Flag
+
+on:
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  governance-files-changed:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 統治ファイルの変更を検査
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          # 保護対象（AGENTS.md「4. 物理強制の実装状況」と scripts/governance_lock.ps1 の対象に合わせる）
+          PATTERN='^(AGENTS\.md|CLAUDE\.md|package\.json|db/AGENTS\.md|governance/|\.agents/|\.claude/|\.githooks/|\.github/|scripts/governance_lock\.ps1$)'
+          changed=$(git diff --name-only "$BASE_SHA...$HEAD_SHA" | grep -E "$PATTERN" || true)
+
+          if [ -z "$changed" ]; then
+            echo "✅ 統治ファイルの変更はありません。" >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          {
+            echo "## ⚠️ 統治ファイルが変更されています"
+            echo ""
+            echo "AI の行動規則や検査の仕組みに関わるファイルです。意図した変更か、中身を確認してからマージしてください。"
+            echo "（このチェックは必須ではないため、確認のうえでそのままマージできます）"
+            echo ""
+            echo '```'
+            echo "$changed"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          while IFS= read -r f; do
+            echo "::warning file=$f::統治ファイルの変更です。内容を確認してください。"
+          done <<< "$changed"
+
+          echo "::error::統治ファイルが $(echo "$changed" | wc -l) 件変更されています。詳細は Summary を確認してください。"
+          exit 1
