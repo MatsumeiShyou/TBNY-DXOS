@@ -13,7 +13,9 @@ const DENY_RULES = [
   { re: /\bcore\.hooksPath\b/, reason: 'core.hooksPath の変更・上書きは git フックの無効化にあたるため禁止です。' },
   { re: /\.emergency-bypass\b/, reason: '緊急バイパスは人間専用です。必要な場合は人間が自分の端末で node .agents/scripts/emergency.js を実行します。' },
   { re: /(\bunset\s+CLAUDECODE\b|\benv\s+-u\s+CLAUDECODE\b|\bCLAUDECODE=|\$env:CLAUDECODE)/, reason: 'CLAUDECODE は git フックが AI の操作を識別するための目印です。変更・削除は禁止です。' },
-  { re: /\b(icacls|takeown)\b|governance_lock\.ps1/, reason: '統治ファイルの ACL 操作は人間専用です（UAC を伴う governance_lock.ps1 を人間が実行します）。' },
+  { re: /\b(icacls|takeown|Set-Acl)\b/i, reason: '統治ファイルの ACL 操作は人間専用です（UAC を伴う governance_lock.ps1 を人間が実行します）。' },
+  // スクリプトの「実行」だけを止める（git add / diff / 閲覧は統治ファイルの管理として許可）
+  { re: /(\b(pwsh|powershell)(\.exe)?\b[^\n;|&]*|(^|[;&|]\s*)(&\s*)?['"]?[^\s;|&'"]*)governance_lock\.ps1/im, reason: 'governance_lock.ps1 の実行は人間専用です（UAC を伴う ACL 操作）。' },
   { re: /\bgit\b[^\n;|&]*\bpush\b[^\n;|&]*(\s--force\b|\s-f\b|\s\+\S)/, reason: '強制 push は履歴を破壊するため禁止です。' }
 ];
 

@@ -127,3 +127,20 @@ test('session-context は期限切れと期限間近の未解決負債を知ら�
   assert.doesNotMatch(text, /\[C\]|\[D\]/);
   assert.doesNotMatch(buildContext({ branch: 'fix/x', ledger: { debts: [] }, now }), /作業用ブランチ|負債/);
 });
+
+test('governance_lock.ps1 は実行のみ拒否し、git 管理や閲覧は許可する', () => {
+  const S = 'scripts/governance_lock.ps1';
+  for (const c of [
+    `pwsh -File ${S} -Action Lock`,
+    `powershell.exe -NoProfile -File "${S}" -Action Unlock`,
+    `& "./${S}" -Action Lock`,
+    `./${S} -Action Unlock`,
+    `cd x; .\\scripts\\governance_lock.ps1`,
+    'Set-Acl -Path AGENTS.md -AclObject $a'
+  ]) {
+    assert.equal(decision(bash(c)), 'deny', c);
+  }
+  for (const c of [`git add ${S}`, `git diff ${S}`, `cat ${S}`, `git log -- ${S}`]) {
+    assert.equal(decision(bash(c)), 'none', c);
+  }
+});
