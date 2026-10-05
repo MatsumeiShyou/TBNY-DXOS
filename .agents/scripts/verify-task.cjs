@@ -83,10 +83,16 @@ if (taskType === 'chore' || taskType === 'waiver') {
   // === V3 Engine Sandbox ===
   const worktreeDir = path.resolve('../temp-verify-worktree');
   const patchFile = path.resolve('../staged.patch');
+  const sandboxNodeModules = path.join(worktreeDir, 'apps/repaper/node_modules');
+  // worktree 削除時にジャンクション先（本物の node_modules）まで消されないよう、先にリンクだけ外す
+  const unlinkSandboxNodeModules = () => {
+    try { if (fs.existsSync(sandboxNodeModules)) execSync(`rmdir "${sandboxNodeModules}"`, { stdio: 'ignore' }); } catch (e) {}
+  };
 
   try {
     console.log("-> 独立サンドボックス(worktree)を構築します...");
     execSync(`git diff --cached > ${patchFile}`);
+    unlinkSandboxNodeModules();
     try { execSync(`git worktree remove --force ${worktreeDir}`, { stdio: 'ignore' }); } catch (e) {}
     execSync(`git worktree add ${worktreeDir} HEAD`, { stdio: 'ignore' });
     
@@ -95,17 +101,20 @@ if (taskType === 'chore' || taskType === 'waiver') {
       execSync(`git apply ${patchFile}`, { cwd: worktreeDir });
     }
 
-    if (!fs.existsSync(path.join(worktreeDir, 'node_modules'))) {
-       execSync(`mklink /J node_modules "..\\TBNY-DXOS\\node_modules"`, { cwd: worktreeDir });
+    // ルートに node_modules は存在しない（境界防衛）ため、アプリの node_modules をジャンクションで借りる
+    if (!fs.existsSync(sandboxNodeModules)) {
+       execSync(`mklink /J "${sandboxNodeModules}" "${path.resolve('apps/repaper/node_modules')}"`, { cwd: worktreeDir });
     }
 
     const testFiles = stagedFiles.filter(f => f.includes('.test.') || f.includes('__tests__'));
-    const prodFiles = stagedFiles.filter(f => !testFiles.includes(f) && f.endsWith('.ts'));
+    const prodFiles = stagedFiles.filter(f => !testFiles.includes(f) && /\.tsx?$/.test(f));
+    // 本番コードだけをパッチ単位で戻す/当て直す（新規追加ファイルも扱え、適用済みのテスト変更と衝突しない）
+    const includeArgs = prodFiles.map(f => `--include="${f}"`).join(' ');
 
     if (taskType === 'fix') {
       console.log("-> [fix] fail-before 検証を開始...");
       if (testFiles.length === 0) throw new Error("No tests found");
-      if (prodFiles.length > 0) execSync(`git checkout HEAD -- ${prodFiles.join(' ')}`, { cwd: worktreeDir });
+      if (prodFiles.length > 0) execSync(`git apply -R ${includeArgs} "${patchFile}"`, { cwd: worktreeDir });
 
       try {
         execSync('npm test --run', { cwd: path.join(worktreeDir, 'apps/repaper'), stdio: 'ignore' });
@@ -115,10 +124,7 @@ if (taskType === 'chore' || taskType === 'waiver') {
         console.log("   -> OK: 旧コードでのテスト失敗 (RED) を確認。");
       }
       
-      if (prodFiles.length > 0) {
-        execSync(`git checkout HEAD -- ${prodFiles.join(' ')}`, { cwd: worktreeDir });
-        execSync(`git apply ${patchFile}`, { cwd: worktreeDir });
-      }
+      if (prodFiles.length > 0) execSync(`git apply ${includeArgs} "${patchFile}"`, { cwd: worktreeDir });
     }
 
     console.log("-> pass-after 検証(全体GREEN)を開始...");
@@ -131,9 +137,11 @@ if (taskType === 'chore' || taskType === 'waiver') {
     }
   } catch (e) {
     console.error("\n【Governance v3.2】 検証失敗のためコミットを破棄します。");
+    unlinkSandboxNodeModules();
     try { execSync(`git worktree remove --force ${worktreeDir}`, { stdio: 'ignore' }); } catch (err) {}
     process.exit(1);
   } finally {
+    unlinkSandboxNodeModules();
     try { execSync(`git worktree remove --force ${worktreeDir}`, { stdio: 'ignore' }); } catch (e) {}
     try { fs.unlinkSync(patchFile); } catch (e) {}
   }
